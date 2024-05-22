@@ -2,6 +2,7 @@ Cannons
 =======
 
 by derPavlov
+
 Updated by IntByte
 
 Bukkit: https://dev.bukkit.org/projects/cannons  
