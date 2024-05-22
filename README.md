@@ -2,10 +2,18 @@ Cannons
 =======
 
 by derPavlov
+Updated by IntByte
 
 Bukkit: https://dev.bukkit.org/projects/cannons  
 Spigot: https://www.spigotmc.org/resources/cannons.56764/  
 Discord: https://discord.gg/taqPnRD389
+
+
+
+How to build
+---------------------
+You can build the plugin yourself using `mvn install`
+
 
 Install:
 ---------------
