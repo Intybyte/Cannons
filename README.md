@@ -6,6 +6,7 @@ Original by derPavlov
 
 New features/fixes:
 ---------------
+- 1.21 Build (other branch)
 - 1.20.4 Build
 - Made ProjectilePiercingEvent cancellable
 - Upgraded to Java 14 language level
