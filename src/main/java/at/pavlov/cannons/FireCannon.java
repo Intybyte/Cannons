@@ -404,7 +404,7 @@ public class FireCannon {
 
         //simple particle effects for close distance
         //loc.getWorld().createExplosion(loc, 0F, false);
-        loc.getWorld().spawnParticle(Particle.EXPLOSION, loc, 1);
+        loc.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, loc, 1);
         //fake blocks effects for far distance
         if (!config.isImitatedFiringEffectEnabled()) {
             return;
@@ -483,7 +483,7 @@ public class FireCannon {
             LivingEntity livingEntity = (LivingEntity) next;
             if (livingEntity.getLocation().distance(firingLoc) < 5.0)
                 livingEntity.damage(1);
-            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, (int) confuseTime * 20, 0));
+            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, (int) confuseTime * 20, 0));
 
         }
     }

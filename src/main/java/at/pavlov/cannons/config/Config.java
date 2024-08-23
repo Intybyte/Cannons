@@ -156,7 +156,7 @@ public class Config
         }
         catch(Exception e){
             plugin.logSevere("Type for Explosion particle  is not correct. Please check spelling of " + config.getString("imitatedEffects.explosionParticles.type"));
-            setImitatedExplosionParticlesType(Particle.EXPLOSION);
+            setImitatedExplosionParticlesType(Particle.EXPLOSION_NORMAL);
         }
         setImitatedExplosionParticlesCount(config.getInt("imitatedEffects.explosionParticles.count", 5));
         setImitatedExplosionParticlesDiameter(config.getDouble("imitatedEffects.explosionParticles.diameter", 1));

@@ -289,10 +289,10 @@ public class CannonsUtil
         ItemStack pants = inv.getLeggings();
 
         double reduction = 0.0;
-        reduction += getItemSpecialeProtection(boots, Enchantment.BLAST_PROTECTION);
-        reduction += getItemSpecialeProtection(helmet, Enchantment.BLAST_PROTECTION);
-        reduction += getItemSpecialeProtection(chest, Enchantment.BLAST_PROTECTION);
-        reduction += getItemSpecialeProtection(pants, Enchantment.BLAST_PROTECTION);
+        reduction += getItemSpecialeProtection(boots, Enchantment.PROTECTION_EXPLOSIONS);
+        reduction += getItemSpecialeProtection(helmet, Enchantment.PROTECTION_EXPLOSIONS);
+        reduction += getItemSpecialeProtection(chest, Enchantment.PROTECTION_EXPLOSIONS);
+        reduction += getItemSpecialeProtection(pants, Enchantment.PROTECTION_EXPLOSIONS);
 
         /*
         if (boots != null)
@@ -363,10 +363,10 @@ public class CannonsUtil
 
         //int lvl = 1;
         double reduction = 0;
-        reduction += getItemSpecialeProtection(boots, Enchantment.PROJECTILE_PROTECTION);
-        reduction += getItemSpecialeProtection(helmet, Enchantment.PROJECTILE_PROTECTION);
-        reduction += getItemSpecialeProtection(chest, Enchantment.PROJECTILE_PROTECTION);
-        reduction += getItemSpecialeProtection(pants, Enchantment.PROJECTILE_PROTECTION);
+        reduction += getItemSpecialeProtection(boots, Enchantment.PROTECTION_PROJECTILE);
+        reduction += getItemSpecialeProtection(helmet, Enchantment.PROTECTION_PROJECTILE);
+        reduction += getItemSpecialeProtection(chest, Enchantment.PROTECTION_PROJECTILE);
+        reduction += getItemSpecialeProtection(pants, Enchantment.PROTECTION_PROJECTILE);
 
         /*
         if (boots != null)
@@ -429,7 +429,7 @@ public class CannonsUtil
         if (lvl > 0)
             reduction += (int) Math.floor((6 + lvl * lvl) * 1.5 / 3);
 
-        lvl = item.getEnchantmentLevel(Enchantment.PROTECTION);
+        lvl = item.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
         if (lvl > 0)
             reduction += (int) Math.floor((6 + lvl * lvl) * 0.75 / 3);
 
@@ -451,7 +451,7 @@ public class CannonsUtil
                 continue;
             }
 
-            int lvl = item.getEnchantmentLevel(Enchantment.UNBREAKING);
+            int lvl = item.getEnchantmentLevel(Enchantment.DURABILITY);
             //chance of breaking in 0-1
             double breakingChance = 0.6+0.4/(lvl+1);
 
