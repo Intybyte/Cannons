@@ -589,33 +589,42 @@ public class CannonsUtil
      * @param direction direction
      * @return returns the the location of one block in front of the surface or (if the surface is not found) the start location
      */
-    public static Location findSurface(Location start, Vector direction)
-    {
+    public static Location findSurface(Location start, Vector direction) {
         World world = start.getWorld();
         Location surface = start.clone();
 
-        //see if there is a block already - then go back if necessary
-        if (!start.getBlock().isEmpty())
-            surface.subtract(direction);
-
-        //are we now in air - if not, something is wrong
-        if (!start.getBlock().isEmpty())
-            return start;
-
-        //int length = (int) (direction.length()*3);
-        BlockIterator iter = new BlockIterator(world, start.toVector(), direction.clone().normalize(), 0, 10);
-
-        //try to find a surface of the
-        while (iter.hasNext())
-        {
-            Block next = iter.next();
-            //if there is no block, go further until we hit the surface
-            if (next.isEmpty())
-                surface = next.getLocation();
-            else
-                return surface;
+        // Adjust surface location if starting block is not empty
+        if (!start.getBlock().isEmpty()) {
+            surface = start.clone().subtract(direction.clone().normalize());
         }
-        // no surface found
+
+        // Check if we are still not in air, then return the original start location
+        if (!surface.getBlock().isEmpty()) {
+            return start;
+        }
+
+        // Create BlockIterator to find surface
+        try {
+            //maybe paper/spigot bug but sometimes internal variables of BlockIterator throw errors
+            BlockIterator iter = new BlockIterator(world, start.toVector(), direction.clone().normalize(), 0, 10);
+
+            // Try to find a surface in the given direction
+            while (iter.hasNext()) {
+                Block next = iter.next();
+
+                // If the block is empty, continue moving further
+                if (next.isEmpty()) {
+                    surface = next.getLocation();
+                } else {
+                    // Return the location of the first non-empty block found
+                    return surface;
+                }
+            }
+        } catch (Exception e) {
+            return surface;
+        }
+
+        // If no surface was found within the specified range, return the last location checked
         return surface;
     }
 
