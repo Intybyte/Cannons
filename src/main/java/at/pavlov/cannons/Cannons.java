@@ -6,6 +6,8 @@ import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.cannon.DesignStorage;
+import at.pavlov.cannons.commands.CannonsCommandManager;
+import at.pavlov.cannons.commands.Commands;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.dao.PersistenceDatabase;
@@ -120,7 +122,7 @@ public final class Cannons extends JavaPlugin
 		this.entityListener = new EntityListener(this);
 		this.signListener = new SignListener(this);
 		this.redstoneListener = new RedstoneListener(this);
-		this.commands = new Commands(this);
+		this.commands = new Commands();
 
 		setupEconomy();
 
@@ -150,7 +152,8 @@ public final class Cannons extends JavaPlugin
 			pm.registerEvents(signListener, this);
 			pm.registerEvents(redstoneListener, this);
 			//call command executer
-			getCommand("cannons").setExecutor(commands);
+			initializeCommands();
+
 
 			// Initialize the database
 			getServer().getScheduler().runTaskAsynchronously(this, () -> {
@@ -205,7 +208,12 @@ public final class Cannons extends JavaPlugin
 		}
     }
 
-    private void setupEconomy() {
+	private void initializeCommands() {
+		var cannonsCommandManager = new CannonsCommandManager(this);
+		cannonsCommandManager.registerCommand(commands);
+	}
+
+	private void setupEconomy() {
 		if (config.isEconomyDisabled()) {
 			economy = null;
 			return;
