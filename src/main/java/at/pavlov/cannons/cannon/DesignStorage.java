@@ -7,6 +7,7 @@ import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.DesignComparator;
+import at.pavlov.cannons.utils.ParseUtils;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
@@ -272,8 +273,8 @@ public class DesignStorage
         cannonDesign.setWarningTemperature(cannonDesignConfig.getDouble("heatManagement.warningTemperature", 100.0));
         cannonDesign.setCriticalTemperature(cannonDesignConfig.getDouble("heatManagement.criticalTemperature", 150.0));
         cannonDesign.setMaximumTemperature(cannonDesignConfig.getDouble("heatManagement.maximumTemperature", 200.0));
-        cannonDesign.setItemCooling(CannonsUtil.toItemHolderList(cannonDesignConfig.getStringList("heatManagement.coolingItems")));
-        cannonDesign.setItemCoolingUsed(CannonsUtil.toItemHolderList(cannonDesignConfig.getStringList("heatManagement.coolingItemsUsed")));
+        cannonDesign.setItemCooling(ParseUtils.toItemHolderList(cannonDesignConfig.getStringList("heatManagement.coolingItems")));
+        cannonDesign.setItemCoolingUsed(ParseUtils.toItemHolderList(cannonDesignConfig.getStringList("heatManagement.coolingItemsUsed")));
         if (cannonDesign.getItemCooling().size() != cannonDesign.getItemCoolingUsed().size())
             plugin.logSevere("CoolingItemsUsed and CoolingItems lists must have the same size. Check if both lists have the same number of entries");
 
@@ -361,7 +362,7 @@ public class DesignStorage
 		cannonDesign.setSchematicBlockTypeRightClickTrigger(CannonsUtil.createBlockData(cannonDesignConfig.getString("constructionBlocks.rightClickTrigger.schematic", "minecraft:torch")));
 		cannonDesign.setIngameBlockTypeRightClickTrigger(CannonsUtil.createBlockData(cannonDesignConfig.getString("constructionBlocks.rightClickTrigger.ingame", "minecraft:torch")));
 		// protected Blocks
-		cannonDesign.setSchematicBlockTypeProtected(CannonsUtil.toBlockDataList(cannonDesignConfig.getStringList("constructionBlocks.protectedBlocks")));
+		cannonDesign.setSchematicBlockTypeProtected(ParseUtils.toBlockDataList(cannonDesignConfig.getStringList("constructionBlocks.protectedBlocks")));
 	}
 
 	private Clipboard loadSchematic(String schematicFile) {

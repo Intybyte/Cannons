@@ -7,6 +7,7 @@ import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
+import at.pavlov.cannons.utils.ParseUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.block.data.BlockData;
@@ -181,7 +182,7 @@ public class Config
         setImitatedPredictorTime(config.getDouble("imitatedEffects.predictor.time", 1.0));
 
         //superbreakerBlocks
-        setSuperbreakerBlocks(CannonsUtil.toBlockDataList(config.getStringList("superbreakerBlocks")));
+        setSuperbreakerBlocks(ParseUtils.toBlockDataList(config.getStringList("superbreakerBlocks")));
         //if this list is empty add some blocks
         if (superbreakerBlocks.size() == 0)
         {
@@ -189,14 +190,14 @@ public class Config
         }
 
         //unbreakableBlocks
-        setUnbreakableBlocks(CannonsUtil.toBlockDataList(config.getStringList("unbreakableBlocks")));
+        setUnbreakableBlocks(ParseUtils.toBlockDataList(config.getStringList("unbreakableBlocks")));
         if (unbreakableBlocks.size() == 0)
         {
             plugin.logInfo("unbreakableBlocks list is empty");
         }
 
         //cancelEventForLoadingItem
-        setCancelItems(CannonsUtil.toItemHolderList(config.getStringList("cancelEventForLoadingItem")));
+        setCancelItems(ParseUtils.toItemHolderList(config.getStringList("cancelEventForLoadingItem")));
 	
 		//load other configs	
 		projectileStorage.loadProjectiles();

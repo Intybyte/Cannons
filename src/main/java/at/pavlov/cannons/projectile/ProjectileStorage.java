@@ -5,6 +5,7 @@ import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.utils.CannonsUtil;
+import at.pavlov.cannons.utils.ParseUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -198,7 +199,7 @@ public class ProjectileStorage
 		projectile.setDescription(projectileConfig.getString("general.description", "no description for this projectile"));
 		projectile.setItemName(projectileConfig.getString("general.itemName", "noItemName"));
 		projectile.setLoadingItem(new ItemHolder(projectileConfig.getString("general.loadingItem", "minecraft:cobblestone")));
-		projectile.setAlternativeItemList(CannonsUtil.toItemHolderList(projectileConfig.getStringList("general.alternativeId")));
+		projectile.setAlternativeItemList(ParseUtils.toItemHolderList(projectileConfig.getStringList("general.alternativeId")));
 
 		//cannonball
 		projectile.setProjectileEntity(getProjectileEntity(projectileConfig.getString("cannonball.entityType", "SNOWBALL")));
@@ -261,8 +262,8 @@ public class ProjectileStorage
 		projectile.setSpawnBlockRadius(projectileConfig.getDouble("spawnOnExplosion.blockRadius", 1.0));
 		projectile.setSpawnEntityRadius(projectileConfig.getDouble("spawnOnExplosion.entityRadius", 2.0));
 		projectile.setSpawnVelocity(projectileConfig.getDouble("spawnOnExplosion.velocity", 0.1));
-		projectile.setSpawnBlocks(CannonsUtil.toSpawnMaterialHolderList(projectileConfig.getStringList("spawnOnExplosion.block")));
-		projectile.setSpawnEntities(CannonsUtil.toSpawnEntityHolderList(projectileConfig.getStringList("spawnOnExplosion.entity")));
+		projectile.setSpawnBlocks(ParseUtils.toSpawnMaterialHolderList(projectileConfig.getStringList("spawnOnExplosion.block")));
+		projectile.setSpawnEntities(ParseUtils.toSpawnEntityHolderList(projectileConfig.getStringList("spawnOnExplosion.entity")));
 		projectile.setSpawnProjectiles(projectileConfig.getStringList("spawnOnExplosion.projectiles"));
 
 		//spawnFireworks
