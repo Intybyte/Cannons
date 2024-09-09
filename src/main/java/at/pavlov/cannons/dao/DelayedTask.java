@@ -1,4 +1,4 @@
-package at.pavlov.cannons.utils;
+package at.pavlov.cannons.dao;
 
 public abstract class DelayedTask implements Runnable {
 	private final Object wrapper;

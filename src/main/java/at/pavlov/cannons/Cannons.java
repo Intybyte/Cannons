@@ -61,10 +61,8 @@ public final class Cannons extends JavaPlugin
 	private PlayerListener playerListener;
 	private EntityListener entityListener;
 	private SignListener signListener;
-	private RedstoneListener redstoneListener;
-    private Commands commands;
-	
-	// database
+
+    // database
 	private PersistenceDatabase persistenceDatabase;
 	private Connection connection = null;
 
@@ -108,6 +106,16 @@ public final class Cannons extends JavaPlugin
 		ProjectileManager.initialize(this);
 		CannonSelector.initialize(this);
 
+		if (!checkWorldEdit())
+		{
+			//no worldEdit has been loaded. Disable plugin
+			this.logSevere(ChatColor.RED + "Please install WorldEdit, else Cannons can't load.");
+			this.logSevere(ChatColor.RED + "Plugin is now disabled.");
+
+			pm.disablePlugin(this);
+			return;
+		}
+
 		this.explosion = new CreateExplosion(this, config);
 		this.fireCannon = new FireCannon(this, config);
 		this.aiming = new Aiming(this);
@@ -121,8 +129,7 @@ public final class Cannons extends JavaPlugin
 		this.playerListener = new PlayerListener(this);
 		this.entityListener = new EntityListener(this);
 		this.signListener = new SignListener(this);
-		this.redstoneListener = new RedstoneListener(this);
-		this.commands = new Commands();
+        RedstoneListener redstoneListener = new RedstoneListener(this);
 
 		setupEconomy();
 
@@ -131,18 +138,6 @@ public final class Cannons extends JavaPlugin
 
 		//load some global variables
 		pm = getServer().getPluginManager();
-        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-		
-		//inform the user if worldedit it missing
-		if (!checkWorldEdit())
-		{
-			//no worldEdit has been loaded. Disable plugin
-			console.sendMessage(ChatColor.RED + "Please install WorldEdit, else Cannons can't load.");
-			console.sendMessage(ChatColor.RED + "Plugin is now disabled.");
-			
-			pm.disablePlugin(this);
-			return;
-		}
 
 		try
 		{
@@ -210,7 +205,7 @@ public final class Cannons extends JavaPlugin
 
 	private void initializeCommands() {
 		var cannonsCommandManager = new CannonsCommandManager(this);
-		cannonsCommandManager.registerCommand(commands);
+		cannonsCommandManager.registerCommand(new Commands());
 	}
 
 	private void setupEconomy() {
@@ -440,10 +435,6 @@ public final class Cannons extends JavaPlugin
 
     public FakeBlockHandler getFakeBlockHandler() {
         return fakeBlockHandler;
-    }
-
-    public Commands getCommandListener() {
-        return commands;
     }
 
     public Economy getEconomy(){

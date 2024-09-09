@@ -18,7 +18,7 @@ import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
-import at.pavlov.cannons.utils.DelayedTask;
+import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.utils.ParseUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;

@@ -1,4 +1,4 @@
-package at.pavlov.cannons.utils;
+package at.pavlov.cannons.dao.wrappers;
 
 import at.pavlov.cannons.Enum.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
