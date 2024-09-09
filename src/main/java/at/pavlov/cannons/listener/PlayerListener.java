@@ -21,7 +21,6 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -136,16 +135,6 @@ public class PlayerListener implements Listener
 
         // setup a new cannon
         cannonManager.getCannon(blockLoc, event.getPlayer().getUniqueId());
-
-        // Place wallsign
-        if (block.getBlockData() instanceof WallSign wallSign) {
-            // check cannon
-            Location loc = event.getBlock().getRelative(wallSign.getFacing().getOppositeFace()).getLocation();
-            Cannon cannon = cannonManager.getCannon(loc, event.getPlayer().getUniqueId(), true);
-            if (cannon != null) {
-                cannon.updateCannonSigns();
-            }
-        }
 
         // Place redstonetorch under to the cannon
         switch (block.getType()) {
@@ -480,9 +469,6 @@ public class PlayerListener implements Listener
 
         MessageEnum message = aiming.changeAngle(cannon, event.getAction(), event.getBlockFace(), player);
         userMessages.sendMessage(message, player, cannon);
-
-        // update Signs
-        cannon.updateCannonSigns();
 
         return message != null;
     }

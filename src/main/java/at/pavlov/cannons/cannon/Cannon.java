@@ -12,7 +12,6 @@ import at.pavlov.cannons.event.CannonPreLoadEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
-import at.pavlov.cannons.sign.CannonSign;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.InventoryManagement;
 import at.pavlov.cannons.utils.SoundUtils;
@@ -22,11 +21,9 @@ import org.bukkit.Chunk;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -454,9 +451,6 @@ public class Cannon {
 
         setLoadedGunpowder(gunpowder);
 
-        // update Signs
-        updateCannonSigns();
-
         //Overloading is enabled
         if (!design.isOverloadingEnabled()) {
             return MessageEnum.loadGunpowder;
@@ -587,10 +581,6 @@ public class Cannon {
         // remove from player
         if (design.isProjectileConsumption() && !design.isAmmoInfiniteForPlayer())
             InventoryManagement.takeFromPlayerHand(player, 1);
-
-        // update Signs
-        updateCannonSigns();
-
 
         return returnVal;
     }
@@ -819,9 +809,6 @@ public class Cannon {
         if (design.isGunpowderNeeded())
             this.setLoadedGunpowder(0);
         this.setLoadedProjectile(null);
-
-        //update Sign
-        this.updateCannonSigns();
     }
 
     /**
@@ -834,7 +821,6 @@ public class Cannon {
     public MessageEnum destroyCannon(boolean breakBlocks, boolean canExplode, BreakCause cause) {
         // update cannon signs the last time
         isValid = false;
-        updateCannonSigns();
 
         //fire and an event that this cannon is destroyed
         CannonDestroyedEvent destroyedEvent = new CannonDestroyedEvent(this, cause, breakBlocks, canExplode);
@@ -1494,120 +1480,6 @@ public class Cannon {
                 i++;
         }
         return i;
-    }
-
-    /**
-     * updates all signs that are attached to a cannon
-     */
-    public void updateCannonSigns() {
-        // update all possible sign locations
-        for (Location signLoc : design.getChestsAndSigns(this)) {
-            //check blocktype and orientation before updating sign.
-            if (isCannonSign(signLoc))
-                updateSign(signLoc.getBlock());
-        }
-    }
-
-    /**
-     * updates the selected sign
-     *
-     * @param block sign block
-     */
-    private void updateSign(Block block) {
-        Sign sign = (Sign) block.getState();
-        if (isValid) {
-            // Cannon name in the first line
-            sign.setLine(0, getSignString(0));
-            // Cannon owner in the second
-            sign.setLine(1, getSignString(1));
-            // loaded Gunpowder/Projectile
-            sign.setLine(2, getSignString(2));
-            // angles
-            sign.setLine(3, getSignString(3));
-        } else {
-            // Cannon name in the first line
-            sign.setLine(0, "this cannon is");
-            // Cannon owner in the second
-            sign.setLine(1, "damaged");
-            // loaded Gunpowder/Projectile
-            sign.setLine(2, "");
-            // angles
-            sign.setLine(3, "");
-        }
-        sign.setEditable(false);
-        sign.update(true);
-    }
-
-    /**
-     * returns the strings for the sign
-     *
-     * @param index line on sign
-     * @return line on the sign
-     */
-    public String getSignString(int index) {
-
-        switch (index) {
-
-            case 0:
-                // Cannon name in the first line
-                if (cannonName == null) cannonName = "missing Name";
-                return cannonName;
-            case 1:
-                // Cannon owner in the second
-                if (owner == null)
-                    return "missing Owner";
-                OfflinePlayer bPlayer = Bukkit.getOfflinePlayer(owner);
-                if (bPlayer == null || !bPlayer.hasPlayedBefore())
-                    return "not found";
-                return bPlayer.getName();
-            case 2:
-                // loaded Gunpowder/Projectile
-                if (loadedProjectile != null)
-                    return "p: " + loadedGunpowder + " c: " + loadedProjectile.getMaterialInformation();
-                else return "p: " + loadedGunpowder + " c: " + "0:0";
-            case 3:
-                // angles
-                return horizontalAngle + "/" + verticalAngle;
-        }
-        return "missing";
-    }
-
-
-    /**
-     * returns the name of the cannon written on the sign
-     *
-     * @return
-     */
-    private String getLineOfCannonSigns(int line) {
-        String lineStr = "";
-        // goto the first cannon sign
-        for (Location signLoc : design.getChestsAndSigns(this)) {
-            lineStr = CannonSign.getLineOfThisSign(signLoc.getBlock(), line);
-            // if something is found return it
-            if (lineStr != null && !lineStr.isEmpty()) {
-                return lineStr;
-            }
-        }
-
-        return lineStr;
-    }
-
-    /**
-     * returns the cannon name that is written on a cannon sign
-     *
-     * @return
-     */
-    public String getCannonNameFromSign() {
-        return getLineOfCannonSigns(0);
-    }
-
-    /**
-     * returns the cannon owner that is written on a cannon sign
-     *
-     * @return
-     */
-    public String getOwnerFromSign() {
-        return getLineOfCannonSigns(1);
     }
 
     /**

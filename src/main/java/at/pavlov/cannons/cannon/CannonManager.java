@@ -284,7 +284,6 @@ public class CannonManager {
             return MessageEnum.ErrorGeneric;
 
         cannon.setCannonName(newCannonName);
-        cannon.updateCannonSigns();
 
         return MessageEnum.CannonRenameSuccess;
 
@@ -324,7 +323,6 @@ public class CannonManager {
 
         if (saveToDatabase) {
             plugin.getPersistenceDatabase().saveCannon(cannon);
-            cannon.updateCannonSigns();
         } else {
             cannon.setUpdated(false);
             cannon.setWhitelistUpdated(false);
@@ -509,22 +507,6 @@ public class CannonManager {
         //if there is no cannon, exit
         if (cannon == null)
             return null;
-
-        // search cannon that is written on the sign
-        Cannon cannonFromSign = getCannon(cannon.getCannonNameFromSign());
-
-        // if there is a different name on the cannon sign we use that one
-        if (cannonFromSign != null) {
-            plugin.logDebug("use entry from cannon sign");
-            //update the position of the cannon
-            cannonFromSign.setCannonDirection(cannon.getCannonDirection());
-            cannonFromSign.setOffset(cannon.getOffset());
-            //use the updated object from the storage
-            cannon = cannonFromSign;
-
-            plugin.logDebug("Time to find cannon: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime) / 1000000.0) + "ms");
-            return cannon;
-        }
 
         // this cannon has no sign, so look in the database if there is something
         Cannon storageCannon = getCannonFromStorage(cannonBlock);

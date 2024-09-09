@@ -23,7 +23,6 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -60,7 +59,6 @@ public final class Cannons extends JavaPlugin
     private BlockListener blockListener;
 	private PlayerListener playerListener;
 	private EntityListener entityListener;
-	private SignListener signListener;
 
     // database
 	private PersistenceDatabase persistenceDatabase;
@@ -106,6 +104,7 @@ public final class Cannons extends JavaPlugin
 		ProjectileManager.initialize(this);
 		CannonSelector.initialize(this);
 
+		pm = getServer().getPluginManager();
 		if (!checkWorldEdit())
 		{
 			//no worldEdit has been loaded. Disable plugin
@@ -128,7 +127,6 @@ public final class Cannons extends JavaPlugin
 		this.blockListener = new BlockListener(this);
 		this.playerListener = new PlayerListener(this);
 		this.entityListener = new EntityListener(this);
-		this.signListener = new SignListener(this);
         RedstoneListener redstoneListener = new RedstoneListener(this);
 
 		setupEconomy();
@@ -137,14 +135,11 @@ public final class Cannons extends JavaPlugin
 
 
 		//load some global variables
-		pm = getServer().getPluginManager();
-
 		try
 		{
 			pm.registerEvents(blockListener, this);
 			pm.registerEvents(playerListener, this);
 			pm.registerEvents(entityListener, this);
-			pm.registerEvents(signListener, this);
 			pm.registerEvents(redstoneListener, this);
 			//call command executer
 			initializeCommands();
@@ -354,11 +349,6 @@ public final class Cannons extends JavaPlugin
 	public PlayerListener getPlayerListener()
 	{
 		return playerListener;
-	}
-
-	public SignListener getSignListener()
-	{
-		return signListener;
 	}
 
 	@Deprecated
