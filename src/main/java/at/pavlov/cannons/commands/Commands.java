@@ -25,6 +25,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -416,6 +417,15 @@ public class Commands extends BaseCommand {
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsStarted, player);
         plugin.getCannonManager().claimCannonsInBox(player.getLocation(), player.getUniqueId());
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player);
+    }
+
+    @Subcommand("version")
+    public static void onVersion(Player player) {
+        Cannons plugin = Cannons.getPlugin();
+        PluginDescriptionFile descriptionFile = plugin.getPluginDescription();
+        sendMessage(player, "Cannons plugin v" + descriptionFile.getVersion() + " is running");
+        List<String> authors = descriptionFile.getAuthors();
+        sendMessage(player, "Authors: " + String.join(",", authors));
     }
 
 
