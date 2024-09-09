@@ -20,6 +20,7 @@ import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.utils.ParseUtils;
+import at.pavlov.cannons.utils.SoundUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.ExplosionResult;
@@ -1231,7 +1232,7 @@ public class CreateExplosion {
      * @param sound     Which sound is broadcasted
      */
     public void sendExplosionToPlayers(Projectile proj, Location impactLoc, SoundHolder sound) {
-        CannonsUtil.imitateSound(impactLoc, sound, this.config.getImitatedSoundMaximumDistance(),
+        SoundUtils.imitateSound(impactLoc, sound, this.config.getImitatedSoundMaximumDistance(),
                 this.config.getImitatedSoundMaximumVolume());
 
         if (proj == null || !proj.isImpactIndicator())

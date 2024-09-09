@@ -15,9 +15,9 @@ import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.CannonsUtil;
+import at.pavlov.cannons.utils.SoundUtils;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -315,7 +315,7 @@ public class PlayerListener implements Listener
         if (plugin.getEconomy() != null && !cannon.isPaid()){
             // cannon fee is not paid
             userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, cannon);
-            CannonsUtil.playErrorSound(cannon.getMuzzle());
+            SoundUtils.playErrorSound(cannon.getMuzzle());
             return true;
         }
 
@@ -349,7 +349,7 @@ public class PlayerListener implements Listener
         if (plugin.getEconomy() != null && !cannon.isPaid()){
             // cannon fee is not paid
             userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, cannon);
-            CannonsUtil.playErrorSound(cannon.getMuzzle());
+            SoundUtils.playErrorSound(cannon.getMuzzle());
             return true;
         }
 
@@ -370,7 +370,7 @@ public class PlayerListener implements Listener
         if (plugin.getEconomy() != null && !cannon.isPaid()) {
             // cannon fee is not paid
             userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, cannon);
-            CannonsUtil.playErrorSound(cannon.getMuzzle());
+            SoundUtils.playErrorSound(cannon.getMuzzle());
             return true;
         }
 
@@ -419,7 +419,7 @@ public class PlayerListener implements Listener
         Location effectLoc = clickedBlock.getRelative(clickedFace).getLocation();
         effectLoc.getWorld().playEffect(effectLoc, Effect.SMOKE, BlockFace.UP);
         effectLoc.getWorld().playSound(effectLoc, Sound.BLOCK_FIRE_EXTINGUISH, 0.1F, 1F);
-        CannonsUtil.playSound(effectLoc, design.getSoundHot());
+        SoundUtils.playSound(effectLoc, design.getSoundHot());
     }
 
     private boolean isHandleCooling(Cannon cannon, ItemStack eventitem, Block clickedBlock, PlayerInteractEvent event) {
@@ -457,7 +457,7 @@ public class PlayerListener implements Listener
         event.setCancelled(true);
         userMessages.sendMessage(MessageEnum.HeatManagementInfo, player, cannon);
         player.playSound(cannon.getMuzzle(), Sound.BLOCK_ANVIL_LAND, 10f, 1f);
-        CannonsUtil.playSound(cannon.getMuzzle(), design.getSoundThermometer());
+        SoundUtils.playSound(cannon.getMuzzle(), design.getSoundThermometer());
 
         return true;
     }
@@ -474,7 +474,7 @@ public class PlayerListener implements Listener
         if (plugin.getEconomy() != null && !cannon.isPaid()){
             // cannon fee is not paid
             userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, cannon);
-            CannonsUtil.playErrorSound(cannon.getMuzzle());
+            SoundUtils.playErrorSound(cannon.getMuzzle());
             return true;
         }
 
@@ -499,7 +499,7 @@ public class PlayerListener implements Listener
         if (plugin.getEconomy() != null && !cannon.isPaid()){
             // cannon fee is not paid
             userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, cannon);
-            CannonsUtil.playErrorSound(cannon.getMuzzle());
+            SoundUtils.playErrorSound(cannon.getMuzzle());
             return true;
         }
 
@@ -527,7 +527,7 @@ public class PlayerListener implements Listener
         if (plugin.getEconomy() != null && !cannon.isPaid()){
             // cannon fee is not paid
             userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, cannon);
-            CannonsUtil.playErrorSound(cannon.getMuzzle());
+            SoundUtils.playErrorSound(cannon.getMuzzle());
             return true;
         }
 

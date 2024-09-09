@@ -14,9 +14,9 @@ import at.pavlov.cannons.event.CannonLinkFiringEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileProperties;
-import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
+import at.pavlov.cannons.utils.SoundUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
@@ -216,7 +216,7 @@ public class FireCannon {
             if (messageEnum.isError()) {
                 //there is not enough gunpowder or no projectile in the chest
                 plugin.logDebug("Can't reload cannon, because there is no valid charge in the chests");
-                CannonsUtil.playErrorSound(cannon.getMuzzle());
+                SoundUtils.playErrorSound(cannon.getMuzzle());
                 return messageEnum;
             } else {
                 //everything went fine - next click on torch will fire the cannon
@@ -230,7 +230,7 @@ public class FireCannon {
         MessageEnum message = getPrepareFireMessage(cannon, player);
 
         if (message != null && message.isError())
-            CannonsUtil.playErrorSound(cannon.getMuzzle());
+            SoundUtils.playErrorSound(cannon.getMuzzle());
 
         //return if there are permission missing
         if (message != MessageEnum.CannonFire)
@@ -257,7 +257,7 @@ public class FireCannon {
             torchLoc.setZ(torchLoc.getZ() + 0.5);
             torchLoc.getWorld().playEffect(torchLoc, Effect.SMOKE, BlockFace.UP);
             //torchLoc.getWorld().playSound(torchLoc, Sound.FUSE , 10f, 1f);
-            CannonsUtil.playSound(torchLoc, design.getSoundIgnite());
+            SoundUtils.playSound(torchLoc, design.getSoundIgnite());
         }
 
         final ProjectileCause projectileCause;
@@ -411,7 +411,7 @@ public class FireCannon {
         }
 
         int maxSoundDist = config.getImitatedSoundMaximumDistance();
-        CannonsUtil.imitateSound(loc, c.getCannonDesign().getSoundFiring(), maxSoundDist, maxVol);
+        SoundUtils.imitateSound(loc, c.getCannonDesign().getSoundFiring(), maxSoundDist, maxVol);
 
         List<Player> players = new ArrayList<>();
         for (Player p : loc.getWorld().getPlayers()) {

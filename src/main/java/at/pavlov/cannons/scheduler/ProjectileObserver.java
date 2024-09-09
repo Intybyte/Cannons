@@ -8,6 +8,7 @@ import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.utils.CannonsUtil;
+import at.pavlov.cannons.utils.SoundUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -125,7 +126,7 @@ public class ProjectileObserver {
                 plugin.getFakeBlockHandler().imitatedSphere(p, loc, 1, Bukkit.createBlockData(liquid.getType()), FakeBlockType.WATER_SPLASH, 1.0);
 
         }
-        CannonsUtil.imitateSound(loc, sound, maxSoundDist, maxVol);
+        SoundUtils.imitateSound(loc, sound, maxSoundDist, maxVol);
     }
 
     /**

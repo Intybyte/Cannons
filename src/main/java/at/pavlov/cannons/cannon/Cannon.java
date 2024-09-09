@@ -15,6 +15,7 @@ import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.sign.CannonSign;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.InventoryManagement;
+import at.pavlov.cannons.utils.SoundUtils;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -315,7 +316,7 @@ public class Cannon {
                 }
                 //push projectile and done
                 setProjectilePushed(0);
-                CannonsUtil.playSound(getMuzzle(), getLoadedProjectile().getSoundLoading());
+                SoundUtils.playSound(getMuzzle(), getLoadedProjectile().getSoundLoading());
                 lastLoaded = System.currentTimeMillis();
                 return MessageEnum.loadProjectile;
             }
@@ -523,20 +524,20 @@ public class Cannon {
         switch (returnVal) {
             case loadGunpowder:
             case loadGunpowderNormalLimit: {
-                CannonsUtil.playSound(getMuzzle(), design.getSoundGunpowderLoading());
+                SoundUtils.playSound(getMuzzle(), design.getSoundGunpowderLoading());
                 if (checkGunpowder) {
                     InventoryManagement.removeItem(player.getInventory(), design.getGunpowderType().toItemStack(gunpowder));
                 }
                 break;
             }
             case loadOverloadedGunpowder: {
-                CannonsUtil.playSound(getMuzzle(), design.getSoundGunpowderOverloading());
+                SoundUtils.playSound(getMuzzle(), design.getSoundGunpowderOverloading());
                 if (checkGunpowder)
                     InventoryManagement.takeFromPlayerHand(player, gunpowder);
                 break;
             }
             default: {
-                CannonsUtil.playErrorSound(getMuzzle());
+                SoundUtils.playErrorSound(getMuzzle());
             }
         }
         return returnVal;
@@ -576,12 +577,12 @@ public class Cannon {
         // check if loading of projectile was successful
         if (!returnVal.equals(MessageEnum.loadProjectile) && !returnVal.equals(MessageEnum.loadGunpowderAndProjectile)) {
             //projectile not loaded
-            CannonsUtil.playErrorSound(getMuzzle());
+            SoundUtils.playErrorSound(getMuzzle());
             return returnVal;
         }
         // load projectile
         setLoadedProjectile(projectile);
-        CannonsUtil.playSound(getMuzzle(), projectile.getSoundLoading());
+        SoundUtils.playSound(getMuzzle(), projectile.getSoundLoading());
 
         // remove from player
         if (design.isProjectileConsumption() && !design.isAmmoInfiniteForPlayer())
@@ -739,26 +740,26 @@ public class Cannon {
             return message;
         }
 
-        if (message.isError()) CannonsUtil.playErrorSound(getMuzzle());
+        if (message.isError()) SoundUtils.playErrorSound(getMuzzle());
         else switch (message) {
             case RamrodCleaning: {
-                CannonsUtil.playSound(getMuzzle(), design.getSoundRamrodCleaning());
+                SoundUtils.playSound(getMuzzle(), design.getSoundRamrodCleaning());
                 break;
             }
             case RamrodCleaningDone: {
-                CannonsUtil.playSound(getMuzzle(), design.getSoundRamrodCleaningDone());
+                SoundUtils.playSound(getMuzzle(), design.getSoundRamrodCleaningDone());
                 break;
             }
             case RamrodPushingProjectile: {
-                CannonsUtil.playSound(getMuzzle(), design.getSoundRamrodPushing());
+                SoundUtils.playSound(getMuzzle(), design.getSoundRamrodPushing());
                 break;
             }
             case RamrodPushingProjectileDone: {
-                CannonsUtil.playSound(getMuzzle(), design.getSoundRamrodPushingDone());
+                SoundUtils.playSound(getMuzzle(), design.getSoundRamrodPushingDone());
                 break;
             }
             default:
-                CannonsUtil.playErrorSound(getMuzzle());
+                SoundUtils.playErrorSound(getMuzzle());
         }
         return message;
     }
@@ -1310,7 +1311,7 @@ public class Cannon {
 
             effectLoc.getWorld().playEffect(effectLoc, Effect.SMOKE, face);
             //effectLoc.getWorld().playSound(effectLoc, Sound.FIZZ, 1, 1);
-            CannonsUtil.playSound(effectLoc, design.getSoundHot());
+            SoundUtils.playSound(effectLoc, design.getSoundHot());
         }
     }
 
@@ -1356,7 +1357,7 @@ public class Cannon {
         if (cooled && effectLoc != null && getTemperature() > design.getWarningTemperature()) {
             effectLoc.getWorld().playEffect(effectLoc, Effect.SMOKE, BlockFace.UP);
             //effectLoc.getWorld().playSound(effectLoc, Sound.FIZZ, 1, 1);
-            CannonsUtil.playSound(effectLoc, design.getSoundCool());
+            SoundUtils.playSound(effectLoc, design.getSoundCool());
         }
         return cooled;
     }

@@ -18,6 +18,7 @@ import at.pavlov.cannons.event.CannonTargetEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.utils.CannonsUtil;
+import at.pavlov.cannons.utils.SoundUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -175,7 +176,7 @@ public class Aiming {
 
         //display message only if the angle has changed
         if (hasChanged) {
-            CannonsUtil.playSound(cannon.getMuzzle(), design.getSoundAdjust());
+            SoundUtils.playSound(cannon.getMuzzle(), design.getSoundAdjust());
             //predict impact marker
             updateLastAimed(cannon);
             if (design.isAngleUpdateMessage())
@@ -518,7 +519,7 @@ public class Aiming {
                 MessageEnum messageEnum = cannon.reloadFromChests(null, !cannon.getCannonDesign().isAmmoInfiniteForRedstone());
                 if (messageEnum.isError()) {
                     cannon.setSentryLastLoadingFailed(System.currentTimeMillis());
-                    CannonsUtil.playErrorSound(cannon.getMuzzle());
+                    SoundUtils.playErrorSound(cannon.getMuzzle());
                     plugin.logDebug("Sentry " + cannon.getCannonName() + " loading message: " + messageEnum);
                 }
             }
@@ -543,7 +544,7 @@ public class Aiming {
                 plugin.logDebug("Sentry " + cannon.getCannonName() + " firing message: " + messageEnum);
                 if (messageEnum.isError()) {
                     cannon.setSentryLastFiringFailed(System.currentTimeMillis());
-                    CannonsUtil.playErrorSound(cannon.getMuzzle());
+                    SoundUtils.playErrorSound(cannon.getMuzzle());
                 }
             }
 
@@ -969,9 +970,9 @@ public class Aiming {
 
         MessageEnum message = enableAimingMode(player, cannon);
         if (message == MessageEnum.AimingModeEnabled)
-            CannonsUtil.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundEnableAimingMode());
+            SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundEnableAimingMode());
         else
-            CannonsUtil.playErrorSound(cannon.getMuzzle());
+            SoundUtils.playErrorSound(cannon.getMuzzle());
         userMessages.sendMessage(message, player, cannon);
     }
 
@@ -1029,7 +1030,7 @@ public class Aiming {
         //player.playSound(player.getEyeLocation(), Sound.MINECART_BASE, 0.25f, 0.75f);
         Cannon cannon = getCannonInAimingMode(player);
         if (cannon != null)
-            CannonsUtil.playSound(player.getEyeLocation(), cannon.getCannonDesign().getSoundDisableAimingMode());
+            SoundUtils.playSound(player.getEyeLocation(), cannon.getCannonDesign().getSoundDisableAimingMode());
         return disableAimingMode(player, cannon);
     }
 

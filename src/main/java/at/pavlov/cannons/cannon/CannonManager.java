@@ -11,9 +11,9 @@ import at.pavlov.cannons.dao.LoadWhitelistTask;
 import at.pavlov.cannons.event.CannonAfterCreateEvent;
 import at.pavlov.cannons.event.CannonBeforeCreateEvent;
 import at.pavlov.cannons.event.CannonRenameEvent;
-import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.dao.wrappers.RemoveTaskWrapper;
+import at.pavlov.cannons.utils.SoundUtils;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -165,10 +165,10 @@ public class CannonManager {
         long delay = 0;
         if (cause == BreakCause.Dismantling || cause == BreakCause.Other) {
             plugin.logDebug("Dismantling," + cannon.getCannonDesign().getSoundDismantle().toString());
-            CannonsUtil.playSound(cannon.getRandomBarrelBlock(), cannon.getCannonDesign().getSoundDismantle());
+            SoundUtils.playSound(cannon.getRandomBarrelBlock(), cannon.getCannonDesign().getSoundDismantle());
             delay = (long) (cannon.getCannonDesign().getDismantlingDelay() * 20.0);
         } else
-            CannonsUtil.playSound(cannon.getRandomBarrelBlock(), cannon.getCannonDesign().getSoundDestroy());
+            SoundUtils.playSound(cannon.getRandomBarrelBlock(), cannon.getCannonDesign().getSoundDestroy());
 
         //delay the remove task, so it fits to the sound
         RemoveTaskWrapper task = new RemoveTaskWrapper(cannon, breakCannon, canExplode, cause, removeEntry, ignoreInvalid);
@@ -570,7 +570,7 @@ public class CannonManager {
             //send messages
             if (!silent) {
                 userMessages.sendMessage(message, player, cannon);
-                CannonsUtil.playErrorSound(cannon.getMuzzle());
+                SoundUtils.playErrorSound(cannon.getMuzzle());
             }
 
             plugin.logDebug("Creating a cannon event was canceled: " + message);
@@ -583,7 +583,7 @@ public class CannonManager {
         //send messages
         if (!silent) {
             userMessages.sendMessage(message, owner, cannon);
-            CannonsUtil.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundCreate());
+            SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundCreate());
         }
 
         CannonAfterCreateEvent caceEvent = new CannonAfterCreateEvent(cannon, player.getUniqueId());
