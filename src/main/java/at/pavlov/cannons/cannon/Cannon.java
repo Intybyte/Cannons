@@ -11,6 +11,7 @@ import at.pavlov.cannons.event.CannonDestroyedEvent;
 import at.pavlov.cannons.event.CannonGunpowderLoadEvent;
 import at.pavlov.cannons.event.CannonPreLoadEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
+import at.pavlov.cannons.interfaces.ICannon;
 import at.pavlov.cannons.interfaces.Rotational;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
@@ -41,7 +42,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public class Cannon implements Rotational {
+public class Cannon implements ICannon, Rotational {
     // Database id - is -1 until stored in the database. Then it is the id in the
     // database
     private UUID databaseId;
@@ -1503,6 +1504,15 @@ public class Cannon implements Rotational {
         return databaseId;
     }
 
+    @Override
+    public boolean sameType(ICannon cannon) {
+        if (!(cannon instanceof Cannon blockCannon)) {
+            return false;
+        }
+
+        return blockCannon.getCannonDesign().equals(this.design);
+    }
+
     public void setUID(UUID ID) {
         this.databaseId = ID;
         this.hasUpdated();
@@ -2200,10 +2210,6 @@ public class Cannon implements Rotational {
 
     public UUID getSentryEntity() {
         return sentryEntity;
-    }
-
-    public boolean hasSentryEntity() {
-        return sentryEntity != null;
     }
 
     /**
