@@ -173,8 +173,7 @@ public class BlockListener implements Listener {
         }
 
         //if the the last block on a cannon is broken and signs are required
-        if (block.getBlockData() instanceof WallSign) {
-            WallSign sign = (WallSign) block.getBlockData();
+        if (block.getBlockData() instanceof WallSign sign) {
             cannon = plugin.getCannonManager().getCannon(block.getRelative(sign.getFacing().getOppositeFace()).getLocation(), null);
             plugin.logDebug("cancelled cannon sign  " + block.getRelative(sign.getFacing().getOppositeFace()));
             if (cannon != null && cannon.getCannonDesign().isSignRequired() && cannon.getNumberCannonSigns() <= 1) {

@@ -2,6 +2,7 @@ package at.pavlov.cannons.cannon;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.BreakCause;
+import at.pavlov.cannons.Enum.CannonRotation;
 import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.container.ItemHolder;
@@ -10,6 +11,7 @@ import at.pavlov.cannons.event.CannonDestroyedEvent;
 import at.pavlov.cannons.event.CannonGunpowderLoadEvent;
 import at.pavlov.cannons.event.CannonPreLoadEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
+import at.pavlov.cannons.interfaces.Rotational;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonsUtil;
@@ -39,7 +41,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public class Cannon {
+public class Cannon implements Rotational {
     // Database id - is -1 until stored in the database. Then it is the id in the
     // database
     private UUID databaseId;
@@ -1179,12 +1181,11 @@ public class Cannon {
      * updates the rotation of the cannon
      *
      * @param center - center of the rotation
-     * @param angle  - how far the cannon is rotated in degree (90, 180, 270, -90)
+     * @param rotation  - how far the cannon is rotated in degree (90, 180, 270, -90)
      */
-    public void rotate(Vector center, int angle) {
-        if (angle == 0)
-            return;
-
+    @Override
+    public void rotate(Vector center, CannonRotation rotation) {
+        int angle = rotation.getAngle();
         double dAngle = angle * Math.PI / 180;
 
         center = new Vector(center.getBlockX(), center.getBlockY(), center.getBlockZ());
@@ -1205,34 +1206,6 @@ public class Cannon {
                 cannonDirection = CannonsUtil.roatateFaceOpposite(cannonDirection);
         }
         this.hasUpdated();
-
-    }
-
-    /**
-     * updates the rotation of the cannon by rotating it 90 to the right
-     *
-     * @param center - center of the rotation
-     */
-    public void rotateRight(Vector center) {
-        this.rotate(center, 90);
-    }
-
-    /**
-     * updates the rotation of the cannon by rotating it 90 to the left
-     *
-     * @param center - center of the rotation
-     */
-    public void rotateLeft(Vector center) {
-        this.rotate(center, -90);
-    }
-
-    /**
-     * updates the rotation of the cannon by rotating it 180
-     *
-     * @param center - center of the rotation
-     */
-    public void rotateFlip(Vector center) {
-        this.rotate(center, 180);
     }
 
     /**
