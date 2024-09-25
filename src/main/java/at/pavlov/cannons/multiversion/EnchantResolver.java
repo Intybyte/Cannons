@@ -1,7 +1,6 @@
 package at.pavlov.cannons.multiversion;
 
 import at.pavlov.cannons.Cannons;
-import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
 
 import java.lang.reflect.Field;
@@ -78,11 +77,11 @@ public class EnchantResolver {
         }
     }
 
-    public static Enchantment getProjectile_protection() {
+    public static Enchantment getProjectileProtection() {
         return projectile_protection;
     }
 
-    public static Enchantment getBlast_protection() {
+    public static Enchantment getBlastProtection() {
         return blast_protection;
     }
 

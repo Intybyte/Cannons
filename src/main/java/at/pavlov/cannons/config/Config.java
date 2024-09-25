@@ -4,6 +4,7 @@ package at.pavlov.cannons.config;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.container.ItemHolder;
+import at.pavlov.cannons.multiversion.ParticleResolver;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
@@ -157,7 +158,7 @@ public class Config
         }
         catch(Exception e){
             plugin.logSevere("Type for Explosion particle  is not correct. Please check spelling of " + config.getString("imitatedEffects.explosionParticles.type"));
-            setImitatedExplosionParticlesType(Particle.EXPLOSION);
+            setImitatedExplosionParticlesType(ParticleResolver.getExplosion());
         }
         setImitatedExplosionParticlesCount(config.getInt("imitatedEffects.explosionParticles.count", 5));
         setImitatedExplosionParticlesDiameter(config.getDouble("imitatedEffects.explosionParticles.diameter", 1));

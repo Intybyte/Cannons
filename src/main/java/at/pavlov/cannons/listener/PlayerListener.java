@@ -10,6 +10,7 @@ import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
+import at.pavlov.cannons.multiversion.PotionTypeResolver;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
@@ -33,7 +34,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
 import org.jetbrains.annotations.Nullable;
 
@@ -403,7 +403,7 @@ public class PlayerListener implements Listener
         if (design.getBurnDamage() > 0)
             player.damage(design.getBurnDamage()*2);
         if (design.getBurnSlowing() > 0)
-            PotionEffectType.SLOWNESS.createEffect((int) (design.getBurnSlowing()*20.0), 0).apply(player);
+            PotionTypeResolver.getSlow().createEffect((int) (design.getBurnSlowing()*20.0), 0).apply(player);
 
         Location effectLoc = clickedBlock.getRelative(clickedFace).getLocation();
         effectLoc.getWorld().playEffect(effectLoc, Effect.SMOKE, BlockFace.UP);

@@ -12,6 +12,8 @@ import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.event.CannonFireEvent;
 import at.pavlov.cannons.event.CannonLinkFiringEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
+import at.pavlov.cannons.multiversion.ParticleResolver;
+import at.pavlov.cannons.multiversion.PotionTypeResolver;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.dao.DelayedTask;
@@ -21,7 +23,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -30,7 +31,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -404,7 +404,7 @@ public class FireCannon {
 
         //simple particle effects for close distance
         //loc.getWorld().createExplosion(loc, 0F, false);
-        loc.getWorld().spawnParticle(Particle.EXPLOSION, loc, 1);
+        loc.getWorld().spawnParticle(ParticleResolver.getExplosion(), loc, 1);
         //fake blocks effects for far distance
         if (!config.isImitatedFiringEffectEnabled()) {
             return;
@@ -483,7 +483,7 @@ public class FireCannon {
             LivingEntity livingEntity = (LivingEntity) next;
             if (livingEntity.getLocation().distance(firingLoc) < 5.0)
                 livingEntity.damage(1);
-            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, (int) confuseTime * 20, 0));
+            livingEntity.addPotionEffect(new PotionEffect(PotionTypeResolver.getNausea(), (int) confuseTime * 20, 0));
 
         }
     }

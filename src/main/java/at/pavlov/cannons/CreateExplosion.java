@@ -13,6 +13,7 @@ import at.pavlov.cannons.event.CannonsEntityDeathEvent;
 import at.pavlov.cannons.event.ProjectileImpactEvent;
 import at.pavlov.cannons.event.ProjectilePiercingEvent;
 import at.pavlov.cannons.event.CannonDamageEvent;
+import at.pavlov.cannons.multiversion.EntityTypeResolver;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileProperties;
@@ -1204,7 +1205,7 @@ public class CreateExplosion {
         }
 
         // apply to rocket
-        final Firework fw = (Firework) world.spawnEntity(projectile_entity.getLocation(), EntityType.FIREWORK_ROCKET);
+        final Firework fw = (Firework) world.spawnEntity(projectile_entity.getLocation(), EntityTypeResolver.getFirework());
         FireworkMeta meta = fw.getFireworkMeta();
 
         meta.addEffect(fwb.build());

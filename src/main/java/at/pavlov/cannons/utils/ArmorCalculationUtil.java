@@ -1,5 +1,6 @@
 package at.pavlov.cannons.utils;
 
+import at.pavlov.cannons.multiversion.EnchantResolver;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
@@ -132,7 +133,7 @@ public class ArmorCalculationUtil {
         if (lvl > 0)
             reduction += (int) Math.floor((6 + lvl * lvl) * 1.5 / 3);
 
-        lvl = item.getEnchantmentLevel(Enchantment.PROTECTION);
+        lvl = item.getEnchantmentLevel(EnchantResolver.getProtection());
         if (lvl > 0)
             reduction += (int) Math.floor((6 + lvl * lvl) * 0.75 / 3);
 
@@ -141,12 +142,12 @@ public class ArmorCalculationUtil {
 
     public static double getDirectHitReduction(HumanEntity human, double armorPiercing) {
         double overallPiercing = armorPiercing + 1;
-        return (1 - getArmorDamageReduced(human) / overallPiercing) * (1 - getPlayerEnchantProtection(human, Enchantment.PROJECTILE_PROTECTION) / overallPiercing);
+        return (1 - getArmorDamageReduced(human) / overallPiercing) * (1 - getPlayerEnchantProtection(human, EnchantResolver.getProjectileProtection()) / overallPiercing);
     }
 
     public static double getExplosionHitReduction(HumanEntity human, double armorPiercing) {
         double overallPiercing = armorPiercing + 1;
-        return (1 - getArmorDamageReduced(human) / overallPiercing) * (1 - getPlayerEnchantProtection(human, Enchantment.BLAST_PROTECTION));
+        return (1 - getArmorDamageReduced(human) / overallPiercing) * (1 - getPlayerEnchantProtection(human, EnchantResolver.getBlastProtection()));
     }
 
     /**
@@ -163,7 +164,7 @@ public class ArmorCalculationUtil {
                 continue;
             }
 
-            int lvl = item.getEnchantmentLevel(Enchantment.UNBREAKING);
+            int lvl = item.getEnchantmentLevel(EnchantResolver.getUnbreaking());
             //chance of breaking in 0-1
             double breakingChance = 0.6+0.4/(lvl+1);
 
