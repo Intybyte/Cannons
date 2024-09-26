@@ -12,7 +12,7 @@ public final class VersionHandler {
     private VersionHandler() {}
 
     private static void initVersion() {
-        var temp = Bukkit.getBukkitVersion().split("-");
+        var temp = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
         version = new int[3];
         for (int i = 0; i < temp.length; i++) {
             version[i] = Integer.parseInt(temp[i]);
