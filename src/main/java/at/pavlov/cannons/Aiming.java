@@ -634,7 +634,7 @@ public class Aiming {
 
                 case PLAYER -> {
                     if (!cannon.isTargetPlayer() || cannon.isWhitelisted(t.getUniqueId())) {
-                        break;
+                        continue;
                     }
 
                     Player p = Bukkit.getPlayer(t.getUniqueId());
@@ -649,7 +649,7 @@ public class Aiming {
 
                 case CANNON -> {
                     if (!cannon.isTargetCannon()) {
-                        break;
+                        continue;
                     }
 
                     Cannon tCannon = CannonManager.getCannon(t.getUniqueId());
@@ -669,7 +669,7 @@ public class Aiming {
 
                 case OTHER -> {
                     if (!cannon.isTargetOther()) {
-                        break;
+                        continue;
                     }
 
                     Cannon tCannon = CannonManager.getCannon(t.getUniqueId());

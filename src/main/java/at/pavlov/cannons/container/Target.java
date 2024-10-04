@@ -10,19 +10,19 @@ import java.util.UUID;
 
 public class Target {
 
-    private String name;
-    private TargetType targetType;
-    private EntityType type;
-    private UUID uid;
-    private Location groundLocation;
-    private Location centerLocation;
-    private Vector velocity;
+    private final String name;
+    private final TargetType targetType;
+    private final EntityType type;
+    private final UUID uniqueId;
+    private final Location groundLocation;
+    private final Location centerLocation;
+    private final Vector velocity;
 
     public Target(String name, TargetType targetType, EntityType type, UUID uid, Location groundLocation, Location centerLocation, Vector velocity) {
         this.name = name;
         this.targetType = targetType;
         this.type = type;
-        this.uid = uid;
+        this.uniqueId = uid;
         this.groundLocation = groundLocation;
         this.centerLocation = centerLocation;
         this.velocity = velocity;
@@ -30,16 +30,14 @@ public class Target {
 
     public Target(Entity entity) {
         this.name = entity.getName();
-        if (entity instanceof Player)
-            this.targetType = TargetType.PLAYER;
-        else if (entity instanceof Monster)
-            this.targetType = TargetType.MONSTER;
-        else if (entity instanceof Animals)
-            this.targetType = TargetType.ANIMAL;
-        else
-            this.targetType = TargetType.OTHER;
+        this.targetType = switch (entity) {
+            case Player player -> TargetType.PLAYER;
+            case Monster monster -> TargetType.MONSTER;
+            case Animals animals -> TargetType.ANIMAL;
+            default -> TargetType.OTHER;
+        };
         this.type = entity.getType();
-        this.uid = entity.getUniqueId();
+        this.uniqueId = entity.getUniqueId();
         // aim for center of mass
         if (entity instanceof LivingEntity)
             this.centerLocation = ((LivingEntity) entity).getEyeLocation().clone().add(0., -0.5, 0.);
@@ -52,14 +50,14 @@ public class Target {
         this.name = cannon.getCannonName();
         this.targetType = TargetType.CANNON;
         this.type = null;
-        this.uid = cannon.getUID();
+        this.uniqueId = cannon.getUID();
         this.groundLocation = cannon.getRandomBarrelBlock().clone().add(0.5, 0.0, 0.5);
         this.centerLocation = cannon.getRandomBarrelBlock().clone().add(0.5, 0.5, 0.5);
         this.velocity = cannon.getVelocity();
     }
 
     public String toString() {
-        return "name: " + this.name + "UID: " + this.uid + "location: " + this.centerLocation.toString() + " velocity: " + velocity.toString();
+        return "name: " + this.name + "UID: " + this.uniqueId + "location: " + this.centerLocation.toString() + " velocity: " + velocity.toString();
     }
 
     public String getName() {
@@ -79,7 +77,7 @@ public class Target {
     }
 
     public UUID getUniqueId() {
-        return uid;
+        return uniqueId;
     }
 
     public EntityType getType() {

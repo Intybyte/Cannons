@@ -7,6 +7,7 @@ import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
+import at.pavlov.cannons.data.FiringData;
 import at.pavlov.cannons.event.CannonDestroyedEvent;
 import at.pavlov.cannons.event.CannonGunpowderLoadEvent;
 import at.pavlov.cannons.event.CannonPreLoadEvent;
@@ -70,18 +71,11 @@ public class Cannon implements ICannon, Rotational {
     // last time the sentry mode solution was updated
     private long lastSentryUpdate;
 
-    // amount of loaded gunpowder
-    private int loadedGunpowder;
-    // the loaded projectile - can be null
-    private Projectile loadedProjectile;
     // the projectile which was loaded previously
     private Projectile lastFiredProjectile;
     private int lastFiredGunpowder;
 
-    // cleaning after firing (clicking with the stick several times
-    private double soot;
-    // pushing a projectile into the barrel after loading the projectile
-    private int projectilePushed;
+    private final FiringData firingData = new FiringData();
 
     // was the cannon fee paid
     private boolean paid;
@@ -329,7 +323,7 @@ public class Cannon implements ICannon, Rotational {
         if (!design.isGunpowderConsumption() || !design.isGunpowderNeeded() || !consumesAmmo) {
             //no ammo consumption - only load if there is less gunpowder then normal in the barrel
             if (getLoadedGunpowder() <= design.getMaxLoadableGunpowderNormal())
-                loadedGunpowder = design.getMaxLoadableGunpowderNormal();
+                firingData.setLoadedGunpowder(design.getMaxLoadableGunpowderNormal());
             return null;
         }
 
@@ -347,7 +341,7 @@ public class Cannon implements ICannon, Rotational {
 
         if (gunpowder.getAmount() == 0) {
             //there was enough gunpowder in the chest
-            loadedGunpowder = design.getMaxLoadableGunpowderNormal();
+            firingData.setLoadedGunpowder(design.getMaxLoadableGunpowderNormal());
             return null;
         }
 
@@ -772,7 +766,7 @@ public class Cannon implements ICannon, Rotational {
      * @return - true if there is a projectile in the cannon
      */
     public boolean isProjectileLoaded() {
-        return (loadedProjectile != null);
+        return (firingData.getLoadedProjectile() != null);
     }
 
     /**
@@ -788,6 +782,7 @@ public class Cannon implements ICannon, Rotational {
      * removes gunpowder and the projectile. Items are drop at the cannonball firing point
      */
     private void dropCharge() {
+        int loadedGunpowder = firingData.getLoadedGunpowder();
         //drop gunpowder
         if (loadedGunpowder > 0 && design.isGunpowderNeeded()) {
             ItemStack powder = design.getGunpowderType().toItemStack(loadedGunpowder);
@@ -796,7 +791,7 @@ public class Cannon implements ICannon, Rotational {
 
         // drop projectile
         if (isLoaded()) {
-            getWorldBukkit().dropItemNaturally(design.getMuzzle(this), loadedProjectile.getLoadingItem().toItemStack(1));
+            getWorldBukkit().dropItemNaturally(design.getMuzzle(this), firingData.getLoadedProjectile().getLoadingItem().toItemStack(1));
         }
         removeCharge();
 
@@ -1331,9 +1326,9 @@ public class Cannon implements ICannon, Rotational {
      * @return firing vector
      */
     public Vector getFiringVector(boolean addSpread, boolean usePlayerSpread) {
-        if (lastFiredProjectile == null && loadedProjectile == null)
+        if (lastFiredProjectile == null && firingData.getLoadedProjectile() == null)
             return new Vector(0, 0, 0);
-        Projectile projectile = loadedProjectile;
+        Projectile projectile = firingData.getLoadedProjectile();
         if (projectile == null)
             projectile = lastFiredProjectile;
 
@@ -1418,17 +1413,17 @@ public class Cannon implements ICannon, Rotational {
      * @return the velocity of the load projectile, 0 if nothing is loaded
      */
     public double getCannonballVelocity() {
-        if ((loadedProjectile == null && lastFiredProjectile == null) || design == null)
+        if ((firingData.getLoadedProjectile() == null && lastFiredProjectile == null) || design == null)
             return 0.0;
 
         int loadableGunpowder = design.getMaxLoadableGunpowderNormal();
         if (loadableGunpowder <= 0)
             loadableGunpowder = 1;
 
-        if (loadedProjectile == null)
-            return lastFiredProjectile.getVelocity() * design.getMultiplierVelocity() * (1 - Math.pow(2, -4 * lastFiredGunpowder / loadableGunpowder));
+        if (firingData.getLoadedProjectile() == null)
+            return lastFiredProjectile.getVelocity() * design.getMultiplierVelocity() * (1 - Math.pow(2, (double) (-4 * lastFiredGunpowder) / loadableGunpowder));
         else
-            return loadedProjectile.getVelocity() * design.getMultiplierVelocity() * (1 - Math.pow(2, -4 * loadedGunpowder / loadableGunpowder));
+            return firingData.getLoadedProjectile().getVelocity() * design.getMultiplierVelocity() * (1 - Math.pow(2, (double) (-4 * firingData.getLoadedGunpowder()) / loadableGunpowder));
     }
 
     /**
@@ -1564,14 +1559,14 @@ public class Cannon implements ICannon, Rotational {
     }
 
     public int getLoadedGunpowder() {
-        if (loadedGunpowder < design.getMaxLoadableGunpowderNormal() && !design.isGunpowderNeeded())
+        if (firingData.getLoadedGunpowder() < design.getMaxLoadableGunpowderNormal() && !design.isGunpowderNeeded())
             design.getMaxLoadableGunpowderNormal();
 
-        return loadedGunpowder;
+        return firingData.getLoadedGunpowder();
     }
 
     public void setLoadedGunpowder(int loadedGunpowder) {
-        this.loadedGunpowder = loadedGunpowder;
+        this.firingData.setLoadedGunpowder(loadedGunpowder);
         this.hasUpdated();
     }
 
@@ -1696,11 +1691,11 @@ public class Cannon implements ICannon, Rotational {
     }
 
     public Projectile getLoadedProjectile() {
-        return loadedProjectile;
+        return firingData.getLoadedProjectile();
     }
 
     public void setLoadedProjectile(Projectile loadedProjectile) {
-        this.loadedProjectile = loadedProjectile;
+        this.firingData.setLoadedProjectile(loadedProjectile);
         this.hasUpdated();
     }
 
@@ -1848,11 +1843,11 @@ public class Cannon implements ICannon, Rotational {
     }
 
     public double getSoot() {
-        return soot;
+        return firingData.getSoot();
     }
 
     public void setSoot(double soot) {
-        this.soot = (soot > 0) ? soot : 0;
+        firingData.setSoot(soot);
         this.hasUpdated();
     }
 
@@ -1866,11 +1861,11 @@ public class Cannon implements ICannon, Rotational {
     }
 
     public int getProjectilePushed() {
-        return projectilePushed;
+        return this.firingData.getProjectilePushed();
     }
 
     public void setProjectilePushed(int projectilePushed) {
-        this.projectilePushed = Math.max(projectilePushed, 0);
+        this.firingData.setProjectilePushed(projectilePushed);
         this.hasUpdated();
     }
 
@@ -2149,7 +2144,7 @@ public class Cannon implements ICannon, Rotational {
                 saferGunpowder = design.getMaxLoadableGunpowderNormal();
 
             //prevent negative values
-            int gunpowder = loadedGunpowder - saferGunpowder;
+            int gunpowder = firingData.getLoadedGunpowder() - saferGunpowder;
             if (gunpowder < 0)
                 gunpowder = 0;
             double chance = tempInc * design.getOverloadingChangeInc() * Math.pow(gunpowder * design.getOverloadingChanceOfExplosionPerGunpowder(), design.getOverloadingExponent());
@@ -2398,8 +2393,8 @@ public class Cannon implements ICannon, Rotational {
     }
 
     public EntityType getProjectileEntityType() {
-        if (loadedProjectile != null) {
-            return loadedProjectile.getProjectileEntity();
+        if (firingData.getLoadedProjectile() != null) {
+            return firingData.getLoadedProjectile().getProjectileEntity();
         }
         if (lastFiredProjectile != null) {
             return lastFiredProjectile.getProjectileEntity();
