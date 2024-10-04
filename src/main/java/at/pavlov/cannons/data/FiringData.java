@@ -8,6 +8,9 @@ import lombok.Data;
     private Projectile loadedProjectile;
     private double soot;
     private int projectilePushed;
+    // the projectile which was loaded previously
+    private Projectile lastFiredProjectile;
+    private int lastFiredGunpowder;
 
     public void setSoot(double soot) {
         this.soot = Math.max(soot, 0);
