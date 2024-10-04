@@ -1554,6 +1554,8 @@ public class Cannon implements ICannon, Rotational {
         this.hasUpdated();
     }
 
+    //TODO: Add a limit to these methods here
+    @Override
     public int getLoadedGunpowder() {
         if (firingData.getLoadedGunpowder() < design.getMaxLoadableGunpowderNormal() && !design.isGunpowderNeeded())
             design.getMaxLoadableGunpowderNormal();
@@ -1684,15 +1686,6 @@ public class Cannon implements ICannon, Rotational {
 
     public boolean sameDesign(Cannon cannon) {
         return design.equals(cannon.getCannonDesign());
-    }
-
-    public Projectile getLoadedProjectile() {
-        return firingData.getLoadedProjectile();
-    }
-
-    public void setLoadedProjectile(Projectile loadedProjectile) {
-        this.firingData.setLoadedProjectile(loadedProjectile);
-        this.hasUpdated();
     }
 
     public String getFiringButtonActivator() {
@@ -1832,55 +1825,6 @@ public class Cannon implements ICannon, Rotational {
      */
     public boolean barrelTooHot() {
         return getLastFired() + design.getBarrelCooldownTime() * 1000 >= System.currentTimeMillis();
-    }
-
-    public boolean isClean() {
-        return getSoot() < 1;
-    }
-
-    public double getSoot() {
-        return firingData.getSoot();
-    }
-
-    public void setSoot(double soot) {
-        firingData.setSoot(soot);
-        this.hasUpdated();
-    }
-
-    /**
-     * reduces the soot of the cannon by the given amount
-     *
-     * @param amount soot to reduce
-     */
-    public void cleanCannon(int amount) {
-        setSoot(getSoot() - amount);
-    }
-
-    public int getProjectilePushed() {
-        return this.firingData.getProjectilePushed();
-    }
-
-    public void setProjectilePushed(int projectilePushed) {
-        this.firingData.setProjectilePushed(projectilePushed);
-        this.hasUpdated();
-    }
-
-    /**
-     * is the Projectile in place and done
-     *
-     * @return if the projectile is ready to fire
-     */
-    public boolean isProjectilePushed() {
-        return (getProjectilePushed() == 0);
-    }
-
-    /**
-     * pushes the projectile to the gunpowder
-     *
-     * @param amount how often the projectile is pushed
-     */
-    public void pushProjectile(int amount) {
-        setProjectilePushed(getProjectilePushed() - amount);
     }
 
 
@@ -2254,14 +2198,6 @@ public class Cannon implements ICannon, Rotational {
         this.sentryLastLoadingFailed = sentryLastLoadingFailed;
     }
 
-    public Projectile getLastFiredProjectile() {
-        return firingData.getLastFiredProjectile();
-    }
-
-    public int getLastFiredGunpowder() {
-        return firingData.getLastFiredGunpowder();
-    }
-
     public long getLastLoaded() {
         return lastLoaded;
     }
@@ -2536,5 +2472,14 @@ public class Cannon implements ICannon, Rotational {
 
     public boolean isAccessLinkingAllowed(Cannon fcannon, Player player) {
         return !this.getCannonDesign().isAccessForOwnerOnly() || fcannon.getOwner() == player.getUniqueId();
+    }
+
+    /**
+     * If you plan on modifying the firing data directly
+     * remember to call Cannon#hasUpdated if you plan on changing data
+     */
+    @Override
+    public FiringData getFiringData() {
+        return this.firingData;
     }
 }
