@@ -56,7 +56,7 @@ public class Aiming {
     //<Player>
     private final HashSet<UUID> imitatedEffectsOff = new HashSet<>();
 
-    //<cannon uid, timespamp>
+    //<cannon uniqueId, timespamp>
     private final HashMap<UUID, Long> lastAimed = new HashMap<>();
 
     private final Random random = new Random();
@@ -581,13 +581,13 @@ public class Aiming {
 
         if (System.currentTimeMillis() > cannon.getSentryTargetingTime() + design.getSentrySwapTime() || !targets.containsKey(cannon.getSentryEntity())) {
             cannon.setSentryTarget(null);
-        } else if (!canFindTargetSolution(cannon, target, target.getCenterLocation(), target.getVelocity())) { //is the previous target still valid
+        } else if (!canFindTargetSolution(cannon, target, target.centerLocation(), target.velocity())) { //is the previous target still valid
             cannon.setSentryTarget(null);
         }
 
         //find target solution
         // find exact solution for the cannon
-        if (!calculateTargetSolution(cannon, target, target.getVelocity(), true)) {//no exact solution found for this target. So skip it and try it again in the next run
+        if (!calculateTargetSolution(cannon, target, target.velocity(), true)) {//no exact solution found for this target. So skip it and try it again in the next run
             cannon.setSentryTarget(null);
             return true;
         }
@@ -596,7 +596,7 @@ public class Aiming {
         Bukkit.getServer().getPluginManager().callEvent(targetEvent);
 
         if (!targetEvent.isCancelled()) {
-            cannon.setSentryTarget(target.getUniqueId());
+            cannon.setSentryTarget(target.uniqueId());
         } else {
             //event cancelled
             plugin.logDebug("can't find solution for target");
@@ -625,24 +625,24 @@ public class Aiming {
         // find a suitable target
         ArrayList<Target> possibleTargets = new ArrayList<>();
         for (Target t : targets.values()) {
-            switch (t.getTargetType()) {
+            switch (t.targetType()) {
                 case MONSTER -> {
-                    if (cannon.isTargetMob() && canFindTargetSolution(cannon, t, t.getCenterLocation(), t.getVelocity())) {
+                    if (cannon.isTargetMob() && canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
                         possibleTargets.add(t);
                     }
                 }
 
                 case PLAYER -> {
-                    if (!cannon.isTargetPlayer() || cannon.isWhitelisted(t.getUniqueId())) {
+                    if (!cannon.isTargetPlayer() || cannon.isWhitelisted(t.uniqueId())) {
                         continue;
                     }
 
-                    Player p = Bukkit.getPlayer(t.getUniqueId());
+                    Player p = Bukkit.getPlayer(t.uniqueId());
                     if (scoreboardCheck(p, cannon))
                         continue;
 
                     // get solution
-                    if (canFindTargetSolution(cannon, t, t.getCenterLocation(), t.getVelocity())) {
+                    if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
                         possibleTargets.add(t);
                     }
                 }
@@ -652,17 +652,17 @@ public class Aiming {
                         continue;
                     }
 
-                    Cannon tCannon = CannonManager.getCannon(t.getUniqueId());
+                    Cannon tCannon = CannonManager.getCannon(t.uniqueId());
                     //check if the owner is whitelisted
                     if (tCannon == null || cannon.isWhitelisted(tCannon.getOwner())) {
                         continue;
                     }
 
-                    Player p = Bukkit.getPlayer(t.getUniqueId());
+                    Player p = Bukkit.getPlayer(t.uniqueId());
                     if (scoreboardCheck(p, cannon))
                         continue;
 
-                    if (canFindTargetSolution(cannon, t, t.getCenterLocation(), t.getVelocity())) {
+                    if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
                         possibleTargets.add(t);
                     }
                 }
@@ -672,17 +672,17 @@ public class Aiming {
                         continue;
                     }
 
-                    Cannon tCannon = CannonManager.getCannon(t.getUniqueId());
+                    Cannon tCannon = CannonManager.getCannon(t.uniqueId());
                     //check if the owner is whitelisted
                     if (tCannon == null || cannon.isWhitelisted(tCannon.getOwner())) {
                         continue;
                     }
 
-                    Player p = Bukkit.getPlayer(t.getUniqueId());
+                    Player p = Bukkit.getPlayer(t.uniqueId());
                     if (scoreboardCheck(p, cannon))
                         continue;
 
-                    if (canFindTargetSolution(cannon, t, t.getCenterLocation(), t.getVelocity())) {
+                    if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
                         possibleTargets.add(t);
                     }
                 }
@@ -698,16 +698,16 @@ public class Aiming {
 
         for (Target t : possibleTargets) {
             //select one target
-            if (cannon.wasSentryTarget(t.getUniqueId())) {
+            if (cannon.wasSentryTarget(t.uniqueId())) {
                 continue;
             }
 
-            cannon.setSentryTarget(t.getUniqueId());
+            cannon.setSentryTarget(t.uniqueId());
             break;
         }
 
         if (!cannon.hasSentryEntity()) {
-            cannon.setSentryTarget(possibleTargets.get(0).getUniqueId());
+            cannon.setSentryTarget(possibleTargets.get(0).uniqueId());
         }
 
     }
@@ -729,7 +729,7 @@ public class Aiming {
         Location muzzle = cannon.getMuzzle();
         int maxSentryRange = cannon.getCannonDesign().getSentryMaxRange();
 
-        if (target.getCenterLocation().distanceSquared(muzzle) > maxSentryRange * maxSentryRange) {
+        if (target.centerLocation().distanceSquared(muzzle) > maxSentryRange * maxSentryRange) {
             return false;
         }
 
@@ -741,7 +741,7 @@ public class Aiming {
                 ignoredBlocks = proj.getSentryIgnoredBlocks();
         }
 
-        if (target.getTargetType() == TargetType.CANNON)
+        if (target.targetType() == TargetType.CANNON)
             ignoredBlocks = 1;
         if (!CannonsUtil.hasLineOfSight(muzzle, loctarget, ignoredBlocks)) {
             return false;
@@ -768,12 +768,12 @@ public class Aiming {
      * @return true if a solution was found
      */
     private boolean calculateTargetSolution(Cannon cannon, Target target, Vector targetVelocity, boolean addSpread) {
-        Location targetLoc = target.getCenterLocation();
+        Location targetLoc = target.centerLocation();
         //aim for the center of the target if there is an area effect of the projectile
         if (cannon.getLoadedProjectile() != null && (cannon.getLoadedProjectile().getExplosionPower() > 2. || (cannon.getLoadedProjectile().getPlayerDamage() > 1. && cannon.getLoadedProjectile().getPlayerDamageRange() > 2.)))
-            targetLoc = target.getGroundLocation();
+            targetLoc = target.groundLocation();
 
-        if (!canFindTargetSolution(cannon, target, target.getCenterLocation(), targetVelocity))
+        if (!canFindTargetSolution(cannon, target, target.centerLocation(), targetVelocity))
             return false;
 
         if (cannon.getCannonballVelocity() < 0.01)
@@ -857,7 +857,7 @@ public class Aiming {
         for (int i = 0; start.distance(predictor.getLoc()) < cannon.getCannonDesign().getSentryMaxRange() * 1.2 && i < maxInterations; i++) {
             //is target distance shorter than before
             Location predictorLoc = predictor.getLocation();
-            double newDist = predictorLoc.distance(target.getCenterLocation());
+            double newDist = predictorLoc.distance(target.centerLocation());
 
             if (!(newDist < targetDist)) {
                 // missed the target
@@ -868,7 +868,7 @@ public class Aiming {
             Block block = predictorLoc.getBlock();
             if (start.distance(predictor.getLoc()) > 1. && !block.isEmpty()) {
                 predictor.revertProjectileLocation(false);
-                return CannonsUtil.findSurface(predictorLoc, predictor.getVel()).distance(target.getCenterLocation()) < maxdistance;
+                return CannonsUtil.findSurface(predictorLoc, predictor.getVel()).distance(target.centerLocation()) < maxdistance;
             }
             predictor.updateProjectileLocation(false);
         }

@@ -440,8 +440,8 @@ public class CannonsUtil
 
         // additional targets from different plugins e.g. ships
         for (Target target : TargetManager.getTargetsInSphere(l, maxRadius))
-            if (target.getCenterLocation().distanceSquared(l) > minRadius * minRadius)
-                radiusTargets.put(target.getUniqueId(), target);
+            if (target.centerLocation().distanceSquared(l) > minRadius * minRadius)
+                radiusTargets.put(target.uniqueId(), target);
         return radiusTargets;
     }
 

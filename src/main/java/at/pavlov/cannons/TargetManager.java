@@ -12,7 +12,7 @@ public class TargetManager {
     private static HashMap<UUID, Target> targets = new HashMap<>();
 
     public static void addTarget(Target target){
-        targets.put(target.getUniqueId(), target);
+        targets.put(target.uniqueId(), target);
     }
 
     public static Target getTarget(UUID uid){
@@ -23,7 +23,7 @@ public class TargetManager {
         HashSet<Target> newTargetList = new HashSet<>();
 
         for (Target target : targets.values()) {
-            if (target.getCenterLocation().distanceSquared(center) < radius * radius)
+            if (target.centerLocation().distanceSquared(center) < radius * radius)
                 newTargetList.add(target);
         }
         return newTargetList;
@@ -33,7 +33,7 @@ public class TargetManager {
         HashSet<Target> newTargetList = new HashSet<>();
 
         for (Target target : targets.values()) {
-            Location newLoc = target.getCenterLocation();
+            Location newLoc = target.centerLocation();
             Vector box = newLoc.subtract(center).toVector();
 
             if (newLoc.getWorld().equals(center.getWorld().getUID()) && Math.abs(box.getX())<lengthX/2 && Math.abs(box.getY())<lengthY/2 && Math.abs(box.getZ())<lengthZ/2)
