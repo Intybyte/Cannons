@@ -2,7 +2,8 @@ package at.pavlov.cannons.interfaces;
 
 import java.util.UUID;
 
-public interface ITurret {
+//TODO: move to holder component
+public interface ISentry {
     void setTargetMob(boolean target);
     void setTargetPlayer(boolean target);
     void setTargetCannon(boolean target);
@@ -12,11 +13,6 @@ public interface ITurret {
     boolean isTargetPlayer();
     boolean isTargetCannon();
     boolean isTargetOther();
-
-    double getAimingPitch();
-    void setAimingPitch(double aimingPitch);
-    double getAimingYaw();
-    void setAimingYaw(double aimingYaw);
 
     UUID getSentryEntity();
     default boolean hasSentryEntity() {
