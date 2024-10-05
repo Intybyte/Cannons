@@ -5,6 +5,7 @@ import at.pavlov.cannons.Enum.BreakCause;
 import at.pavlov.cannons.Enum.CannonRotation;
 import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
+import at.pavlov.cannons.cannon.data.AimingData;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.cannon.data.FiringData;
@@ -76,17 +77,7 @@ public class Cannon implements ICannon, Rotational {
     // was the cannon fee paid
     private boolean paid;
 
-    // angles
-    private double horizontalAngle;
-    private double verticalAngle;
-    // additional angle if the cannon is mounted e.g. a ship which is facing a different angle
-    private double additionalHorizontalAngle;
-    private double additionalVerticalAngle;
-    // sentry aiming angles the cannon tries to reach
-    private double aimingPitch;
-    private double aimingYaw;
-    // is the cannon aiming at the given direction
-    private boolean aimingFinished;
+    private final AimingData aimingData = new AimingData();
 
     // tracking entity
     private UUID sentryEntity;
@@ -180,12 +171,12 @@ public class Cannon implements ICannon, Rotational {
         sentryTargetingTime = 0;
         sentryLastLoadingFailed = 0;
 
-        this.horizontalAngle = getHomeHorizontalAngle();
-        this.verticalAngle = getHomeVerticalAngle();
+        this.aimingData.setHorizontalAngle(getHomeHorizontalAngle());
+        this.aimingData.setVerticalAngle(getHomeVerticalAngle());
 
-        this.aimingPitch = 0.0;
-        this.aimingYaw = 0.0;
-        this.aimingFinished = false;
+        this.aimingData.setAimingPitch(0.0);
+        this.aimingData.setAimingYaw(0.0);
+        this.aimingData.setAimingFinished(false);
 
         this.lastPlayerSpreadMultiplier = 1.0;
 
@@ -1568,28 +1559,6 @@ public class Cannon implements ICannon, Rotational {
         this.hasUpdated();
     }
 
-    public double getHorizontalAngle() {
-        return horizontalAngle;
-    }
-
-    /**
-     * sets a new horizontal angle of the cannon. The angle is limited by the design
-     *
-     * @param horizontalAngle - new vertical angle
-     */
-    public void setHorizontalAngle(double horizontalAngle) {
-        this.horizontalAngle = horizontalAngle;
-
-        //the angle should not exceed the limits - if the cannon is on a ship, the max/min angles are smaller
-        double maxHorizontal = getMaxHorizontalAngle();
-        if (this.horizontalAngle > maxHorizontal)
-            this.horizontalAngle = maxHorizontal;
-        double minHorizontal = getMinHorizontalAngle();
-        if (this.horizontalAngle < minHorizontal)
-            this.horizontalAngle = minHorizontal;
-        this.hasUpdated();
-    }
-
     /**
      * returns the maximum horizontal angle, depending if the cannon is on a ship or not
      *
@@ -1606,27 +1575,6 @@ public class Cannon implements ICannon, Rotational {
      */
     public double getMinHorizontalAngle() {
         return (isOnShip()) ? design.getMinHorizontalAngleOnShip() : design.getMinHorizontalAngleNormal();
-    }
-
-    public double getVerticalAngle() {
-        return verticalAngle;
-    }
-
-    /**
-     * sets a new vertical angle of the cannon. The angle is limited by the design
-     *
-     * @param verticalAngle - new vertical angle
-     */
-    public void setVerticalAngle(double verticalAngle) {
-        this.verticalAngle = verticalAngle;
-        //the angle should not exceed the limits - if the cannon is on a ship, the max/min angles are smaller
-        double maxVertical = getMaxVerticalAngle();
-        if (this.verticalAngle > maxVertical)
-            this.verticalAngle = maxVertical;
-        double minVertical = getMinVerticalAngle();
-        if (this.verticalAngle < minVertical)
-            this.verticalAngle = minVertical;
-        this.hasUpdated();
     }
 
     /**
@@ -1827,39 +1775,13 @@ public class Cannon implements ICannon, Rotational {
         return getLastFired() + design.getBarrelCooldownTime() * 1000 >= System.currentTimeMillis();
     }
 
-
-    public double getAdditionalHorizontalAngle() {
-        return additionalHorizontalAngle;
-    }
-
-    public void setAdditionalHorizontalAngle(double additionalHorizontalAngle) {
-        this.additionalHorizontalAngle = additionalHorizontalAngle;
-    }
-
-    public double getAdditionalVerticalAngle() {
-        return additionalVerticalAngle;
-    }
-
-    public void setAdditionalVerticalAngle(double additionalVerticalAngle) {
-        this.additionalVerticalAngle = additionalVerticalAngle;
-    }
-
-    /**
-     * the total angle is sum of the cannon angle and the location where it is mounted
-     *
-     * @return sum of all angles
-     */
-    public double getTotalHorizontalAngle() {
-        return this.horizontalAngle + this.additionalHorizontalAngle;
-    }
-
     /**
      * the total angle is sum of the cannon angle, its design and the location where it is mounted
      *
      * @return sum of all angles
      */
     public double getTotalVerticalAngle() {
-        return design.getDefaultVerticalAngle() + this.verticalAngle + this.additionalVerticalAngle;
+        return design.getDefaultVerticalAngle() + this.getVerticalAngle() + this.getAdditionalVerticalAngle();
     }
 
     /**
@@ -1914,7 +1836,7 @@ public class Cannon implements ICannon, Rotational {
      * @return true if it can aim this direction
      */
     public boolean canAimYaw(double yaw) {
-        double horizontal = yaw - CannonsUtil.directionToYaw(getCannonDirection()) - this.additionalHorizontalAngle;
+        double horizontal = yaw - CannonsUtil.directionToYaw(getCannonDirection()) - this.getAdditionalHorizontalAngle();
 
         horizontal = horizontal % 360;
         while (horizontal < -180)
@@ -1929,12 +1851,12 @@ public class Cannon implements ICannon, Rotational {
      * @return true if it can aim this direction
      */
     public boolean canAimPitch(double pitch) {
-        double vertical = -pitch - design.getDefaultVerticalAngle() - this.additionalVerticalAngle;
+        double vertical = -pitch - design.getDefaultVerticalAngle() - this.getAdditionalVerticalAngle();
         return (vertical > getMinVerticalAngle() && vertical < getMaxVerticalAngle());
     }
 
     public double verticalAngleToPitch(double vertical) {
-        return -vertical - design.getDefaultVerticalAngle() - this.additionalVerticalAngle;
+        return -vertical - design.getDefaultVerticalAngle() - this.getAdditionalVerticalAngle();
     }
 
     public double getMaxVerticalPitch() {
@@ -1950,7 +1872,7 @@ public class Cannon implements ICannon, Rotational {
     }
 
     public double horizontalAngleToYaw(double horizontal) {
-        double yaw = horizontal + this.additionalHorizontalAngle + CannonsUtil.directionToYaw(getCannonDirection());
+        double yaw = horizontal + this.getHorizontalAngle() + CannonsUtil.directionToYaw(getCannonDirection());
 
         yaw %= 360;
         while (yaw < -180)
@@ -1978,24 +1900,6 @@ public class Cannon implements ICannon, Rotational {
 
     public void setOnShip(boolean onShip) {
         this.onShip = onShip;
-        this.hasUpdated();
-    }
-
-    public double getAimingPitch() {
-        return aimingPitch;
-    }
-
-    public void setAimingPitch(double aimingPitch) {
-        this.aimingPitch = aimingPitch;
-        this.hasUpdated();
-    }
-
-    public double getAimingYaw() {
-        return aimingYaw;
-    }
-
-    public void setAimingYaw(double aimingYaw) {
-        this.aimingYaw = aimingYaw;
         this.hasUpdated();
     }
 
@@ -2366,14 +2270,6 @@ public class Cannon implements ICannon, Rotational {
         this.whitelistUpdated = whitelistUpdated;
     }
 
-    public boolean isAimingFinished() {
-        return aimingFinished;
-    }
-
-    public void setAimingFinished(boolean aimingFinished) {
-        this.aimingFinished = aimingFinished;
-    }
-
     public UUID getCannonOperator() {
         return cannonOperator;
     }
@@ -2481,5 +2377,10 @@ public class Cannon implements ICannon, Rotational {
     @Override
     public FiringData getFiringData() {
         return this.firingData;
+    }
+
+    @Override
+    public AimingData getAimingData() {
+        return this.aimingData;
     }
 }
