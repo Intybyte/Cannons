@@ -580,15 +580,15 @@ public class Aiming {
         Target target = targets.get(cannon.getSentryEntity());
 
         if (System.currentTimeMillis() > cannon.getSentryTargetingTime() + design.getSentrySwapTime() || !targets.containsKey(cannon.getSentryEntity())) {
-            cannon.setSentryTarget(null);
+            cannon.setSentryEntity(null);
         } else if (!canFindTargetSolution(cannon, target, target.centerLocation(), target.velocity())) { //is the previous target still valid
-            cannon.setSentryTarget(null);
+            cannon.setSentryEntity(null);
         }
 
         //find target solution
         // find exact solution for the cannon
         if (!calculateTargetSolution(cannon, target, target.velocity(), true)) {//no exact solution found for this target. So skip it and try it again in the next run
-            cannon.setSentryTarget(null);
+            cannon.setSentryEntity(null);
             return true;
         }
 
@@ -596,11 +596,11 @@ public class Aiming {
         Bukkit.getServer().getPluginManager().callEvent(targetEvent);
 
         if (!targetEvent.isCancelled()) {
-            cannon.setSentryTarget(target.uniqueId());
+            cannon.setSentryEntity(target.uniqueId());
         } else {
             //event cancelled
             plugin.logDebug("can't find solution for target");
-            cannon.setSentryTarget(null);
+            cannon.setSentryEntity(null);
         }
 
         cannon.setLastSentryUpdate(System.currentTimeMillis() - cannon.getCannonDesign().getSentryUpdateTime());
@@ -702,12 +702,12 @@ public class Aiming {
                 continue;
             }
 
-            cannon.setSentryTarget(t.uniqueId());
+            cannon.setSentryEntity(t.uniqueId());
             break;
         }
 
         if (!cannon.hasSentryEntity()) {
-            cannon.setSentryTarget(possibleTargets.get(0).uniqueId());
+            cannon.setSentryEntity(possibleTargets.get(0).uniqueId());
         }
 
     }
@@ -921,7 +921,7 @@ public class Aiming {
         for (UUID sentryCannon : sentryCannons) {
             Cannon cannon = CannonManager.getCannon(sentryCannon);
             if (cannon.getSentryEntity() != null && cannon.getSentryEntity().equals(entity.getUniqueId())) {
-                cannon.setSentryTarget(null);
+                cannon.setSentryEntity(null);
             }
         }
     }

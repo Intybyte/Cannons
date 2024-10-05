@@ -2036,7 +2036,7 @@ public class Cannon implements ICannon, Rotational {
      *
      * @param sentryTarget
      */
-    public void setSentryTarget(UUID sentryTarget) {
+    public void setSentryEntity(UUID sentryTarget) {
         this.sentryData.setSentryEntity(sentryTarget);
         if (sentryTarget == null) {
             return;

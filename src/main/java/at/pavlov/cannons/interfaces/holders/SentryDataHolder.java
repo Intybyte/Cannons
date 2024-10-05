@@ -9,6 +9,7 @@ public interface SentryDataHolder extends Updatable {
     SentryData getSentryData();
     void setSentryData(SentryData sentryData);
 
+    //region Sentry Entity
     default UUID getSentryEntity() {
         return getSentryData().getSentryEntity();
     }
@@ -19,11 +20,11 @@ public interface SentryDataHolder extends Updatable {
 
     /**
      * Set this as new sentry target and add it to the list of targeted entities
-     *
-     * @param sentryTarget
      */
-    void setSentryTarget(UUID sentryTarget);
+    void setSentryEntity(UUID sentryTarget);
+    //endregion
 
+    //region Sentry Timestamps
     default long getSentryTargetingTime() {
         return getSentryData().getSentryTargetingTime();
     }
@@ -47,6 +48,7 @@ public interface SentryDataHolder extends Updatable {
     default void setSentryLastFiringFailed(long sentryLastFiringFailed) {
         getSentryData().setSentryLastFiringFailed(sentryLastFiringFailed);
     }
+    //endregion
     
     //region Target Handler
     default boolean isTargetMob() {
