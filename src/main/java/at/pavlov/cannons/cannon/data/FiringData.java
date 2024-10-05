@@ -11,6 +11,8 @@ import org.jetbrains.annotations.ApiStatus;
     private Projectile loadedProjectile;
     private double soot;
     private int projectilePushed;
+    // amount of fired cannonballs with this cannon
+    private long firedCannonballs;
     // the projectile which was loaded previously
     private Projectile lastFiredProjectile;
     private int lastFiredGunpowder;

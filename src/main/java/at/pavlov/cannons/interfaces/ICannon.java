@@ -19,9 +19,6 @@ public interface ICannon extends CannonDataHolder {
     long getTemperatureTimeStamp();
     //endregion
 
-    void setFiredCannonballs(long firedCannonballs);
-    long getFiredCannonballs();
-
     void setPaid(boolean paid);
     boolean isPaid();
 }

@@ -21,6 +21,8 @@ import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.InventoryManagement;
 import at.pavlov.cannons.utils.SoundUtils;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -111,13 +113,12 @@ public class Cannon implements ICannon, Rotational {
     private double tempValue;
     private long tempTimestamp;
 
-    // amount of fired cannonballs with this cannon
-    private long firedCannonballs;
-
     // time stamp of the player last time inside the aiming mode range (needs a certain time to disable aiming mode)
     private long timestampAimingMode;
 
     // has the cannon entry changed since it was last saved in the database
+    @Setter
+    @Getter
     private boolean updated;
     private boolean whitelistUpdated;
 
@@ -1992,20 +1993,6 @@ public class Cannon implements ICannon, Rotational {
         return Math.random() < chance;
     }
 
-    public long getFiredCannonballs() {
-        return firedCannonballs;
-    }
-
-    public void setFiredCannonballs(long firedCannonballs) {
-        this.firedCannonballs = firedCannonballs;
-        this.hasUpdated();
-    }
-
-    public void incrementFiredCannonballs() {
-        this.firedCannonballs++;
-        this.hasUpdated();
-    }
-
     public double getLastPlayerSpreadMultiplier() {
         return lastPlayerSpreadMultiplier;
     }
@@ -2142,18 +2129,6 @@ public class Cannon implements ICannon, Rotational {
             return firingData.getLastFiredProjectile().getProjectileEntity();
         }
         return EntityType.SNOWBALL;
-    }
-
-    public boolean isUpdated() {
-        return updated;
-    }
-
-    public void hasUpdated() {
-        this.updated = true;
-    }
-
-    public void setUpdated(boolean updated) {
-        this.updated = updated;
     }
 
     public boolean isWhitelistUpdated() {

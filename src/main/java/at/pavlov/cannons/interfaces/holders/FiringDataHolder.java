@@ -81,4 +81,20 @@ interface FiringDataHolder extends Updatable {
         setProjectilePushed(getProjectilePushed() - amount);
     }
     //endregion
+
+    //region Fired Cannonballs
+    default long getFiredCannonballs() {
+        return getFiringData().getFiredCannonballs();
+    }
+
+    default void setFiredCannonballs(long firedCannonballs) {
+        getFiringData().setFiredCannonballs(firedCannonballs);
+        this.hasUpdated();
+    }
+
+    default void incrementFiredCannonballs() {
+        this.setFiredCannonballs(this.getFiredCannonballs() + 1);
+        this.hasUpdated();
+    }
+    //endregion
 }
