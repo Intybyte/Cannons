@@ -727,15 +727,6 @@ public class Cannon implements ICannon, Rotational {
     }
 
     /**
-     * is the cannon loaded with a projectile
-     *
-     * @return - true if there is a projectile in the cannon
-     */
-    public boolean isProjectileLoaded() {
-        return (firingData.getLoadedProjectile() != null);
-    }
-
-    /**
      * returns true if the cannon has at least 1 gunpowder loaded
      *
      * @return true if loaded with gunpowder

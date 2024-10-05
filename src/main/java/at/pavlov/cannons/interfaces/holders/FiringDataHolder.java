@@ -4,6 +4,7 @@ import at.pavlov.cannons.cannon.data.FiringData;
 import at.pavlov.cannons.interfaces.Updatable;
 import at.pavlov.cannons.projectile.Projectile;
 
+//TODO: Separate all "Last" to a cannon state class if this gets too convoluted
 interface FiringDataHolder extends Updatable {
     FiringData getFiringData();
     void setFiringData(FiringData firingData);
@@ -38,6 +39,7 @@ interface FiringDataHolder extends Updatable {
     default int getLoadedGunpowder() {
         return getFiringData().getLoadedGunpowder();
     }
+    public boolean isGunpowderLoaded();
 
     default void setLoadedProjectile(Projectile projectile) {
         getFiringData().setLoadedProjectile(projectile);
@@ -45,6 +47,14 @@ interface FiringDataHolder extends Updatable {
     }
     default Projectile getLoadedProjectile() {
         return getFiringData().getLoadedProjectile();
+    }
+    /**
+     * is the cannon loaded with a projectile
+     *
+     * @return - true if there is a projectile in the cannon
+     */
+    default boolean isProjectileLoaded() {
+        return (getLoadedProjectile() != null);
     }
 
     default Projectile getLastFiredProjectile() {
