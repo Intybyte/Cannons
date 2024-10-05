@@ -6,6 +6,7 @@ import at.pavlov.cannons.Enum.CannonRotation;
 import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.data.AimingData;
+import at.pavlov.cannons.cannon.data.CannonPosition;
 import at.pavlov.cannons.cannon.data.SentryData;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
@@ -55,16 +56,7 @@ public class Cannon implements ICannon, Rotational {
     private String designID;
     private String cannonName;
 
-    // direction the cannon is facing
-    private BlockFace cannonDirection;
-    // the location is describe by the offset of the cannon and the design
-    private Vector offset;
-    // world of the cannon
-    private UUID world;
-    // if the cannon is on a ship, the operation might be limited (e.g smaller angles to adjust the cannon)
-    private boolean onShip;
-    // with which velocity the canno is moving (set by other plugins)
-    private Vector velocity;
+    private CannonPosition cannonPosition = new CannonPosition();
 
     // time it was last aimed
     private long lastAimed;
@@ -130,9 +122,9 @@ public class Cannon implements ICannon, Rotational {
 
         this.design = design;
         this.designID = design.getDesignID();
-        this.world = world;
-        this.offset = cannonOffset;
-        this.cannonDirection = cannonDirection;
+        this.cannonPosition.setWorld(world);
+        this.cannonPosition.setOffset(cannonOffset);
+        this.cannonPosition.setCannonDirection(cannonDirection);
         this.owner = owner;
         this.isValid = true;
         this.cannonName = null;
@@ -143,7 +135,7 @@ public class Cannon implements ICannon, Rotational {
             whitelist.add(owner);
 
         //the cannon is not moving
-        this.velocity = new Vector(0, 0, 0);
+        this.cannonPosition.setVelocity(new Vector(0, 0, 0));
 
         this.sentryData.setSentryEntity(null);
         this.sentryData.setSentryEntityHistory(new ArrayList<>());
@@ -810,7 +802,7 @@ public class Cannon implements ICannon, Rotational {
      */
     public void show() {
         for (SimpleBlock cBlock : design.getAllCannonBlocks(this.getCannonDirection())) {
-            Block wBlock = cBlock.toLocation(getWorldBukkit(), offset).getBlock();
+            Block wBlock = cBlock.toLocation(getWorldBukkit(), getOffset()).getBlock();
             //todo check show
             wBlock.setBlockData(cBlock.getBlockData());
             //wBlock.setBlockData(cBlock);
@@ -823,7 +815,7 @@ public class Cannon implements ICannon, Rotational {
     public void hide() {
         //remove only attachable block
         for (SimpleBlock cBlock : design.getAllCannonBlocks(this.getCannonDirection())) {
-            Block wBlock = cBlock.toLocation(getWorldBukkit(), offset).getBlock();
+            Block wBlock = cBlock.toLocation(getWorldBukkit(), getOffset()).getBlock();
             //if that block is not loaded
 
             if (wBlock.getState() instanceof Attachable) {
@@ -835,7 +827,7 @@ public class Cannon implements ICannon, Rotational {
 
         //remove all
         for (SimpleBlock cBlock : design.getAllCannonBlocks(this.getCannonDirection())) {
-            Block wBlock = cBlock.toLocation(getWorldBukkit(), offset).getBlock();
+            Block wBlock = cBlock.toLocation(getWorldBukkit(), getOffset()).getBlock();
 
             if (wBlock.getType() != Material.AIR) {
                 wBlock.setType(Material.AIR);
@@ -867,8 +859,8 @@ public class Cannon implements ICannon, Rotational {
             return false;
         }
 
-        for (SimpleBlock designBlock : design.getAllCannonBlocks(cannonDirection)) {
-            if (designBlock.compareMaterialAndLoc(block, offset)) {
+        for (SimpleBlock designBlock : design.getAllCannonBlocks(getCannonDirection())) {
+            if (designBlock.compareMaterialAndLoc(block, getOffset())) {
                 return true;
             }
         }
@@ -942,7 +934,7 @@ public class Cannon implements ICannon, Rotational {
 
         for (SimpleBlock cannonblock : cannonBlocks.getChestsAndSigns()) {
             // compare location
-            if (cannonblock.toLocation(this.getWorldBukkit(), this.offset).equals(loc)) {
+            if (cannonblock.toLocation(this.getWorldBukkit(), this.getOffset()).equals(loc)) {
                 //Block block = loc.getBlock();
                 //compare and data
                 //only the two lower bits of the bytes are important for the direction (delays are not interessting here)
@@ -1018,7 +1010,7 @@ public class Cannon implements ICannon, Rotational {
 
         for (SimpleBlock cannonblock : cannonBlocks.getRedstoneWiresAndRepeater()) {
             // compare location
-            if (cannonblock.toLocation(this.getWorldBukkit(), this.offset).equals(loc)) {
+            if (cannonblock.toLocation(this.getWorldBukkit(), this.getOffset()).equals(loc)) {
                 //Block block = loc.getBlock();
                 //compare and data
                 //only the two lower bits of the bytes are important for the direction (delays are not interessting here)
@@ -1048,7 +1040,7 @@ public class Cannon implements ICannon, Rotational {
      * @return - first block of the cannon
      */
     public Location getFirstCannonBlock() {
-        return design.getAllCannonBlocks(cannonDirection).get(0).toLocation(getWorldBukkit(), offset);
+        return design.getAllCannonBlocks(getCannonDirection()).get(0).toLocation(getWorldBukkit(), getOffset());
 
     }
 
@@ -1121,16 +1113,6 @@ public class Cannon implements ICannon, Rotational {
     }
 
     /**
-     * updates the location of the cannon
-     *
-     * @param moved - how far the cannon has been moved
-     */
-    public void move(Vector moved) {
-        offset.add(moved);
-        this.hasUpdated();
-    }
-
-    /**
      * updates the rotation of the cannon
      *
      * @param center - center of the rotation
@@ -1143,20 +1125,20 @@ public class Cannon implements ICannon, Rotational {
 
         center = new Vector(center.getBlockX(), center.getBlockY(), center.getBlockZ());
 
-        Vector diffToCenter = offset.clone().subtract(center);
+        Vector diffToCenter = getOffset().clone().subtract(center);
 
         double newX = diffToCenter.getX() * Math.cos(dAngle) - diffToCenter.getZ() * Math.sin(dAngle);
         double newZ = diffToCenter.getX() * Math.sin(dAngle) + diffToCenter.getZ() * Math.cos(dAngle);
 
-        offset = new Vector(Math.round(center.getX() + newX), offset.getBlockY(), Math.round(center.getZ() + newZ));
+        setOffset(new Vector(Math.round(center.getX() + newX), getOffset().getBlockY(), Math.round(center.getZ() + newZ)));
 
         //rotate blockface
         if (angle > 0) {
             for (int i = 0; i <= angle % 90; i++)
-                cannonDirection = CannonsUtil.roatateFace(cannonDirection);
+                setCannonDirection(CannonsUtil.roatateFace(getCannonDirection()));
         } else {
             for (int i = 0; i <= (-angle) % 90; i++)
-                cannonDirection = CannonsUtil.roatateFaceOpposite(cannonDirection);
+                setCannonDirection(CannonsUtil.roatateFaceOpposite(getCannonDirection()));
         }
         this.hasUpdated();
     }
@@ -1298,7 +1280,7 @@ public class Cannon implements ICannon, Rotational {
 
         if (addSpread)
             deviation = random.nextGaussian() * spread;
-        double h = (getTotalHorizontalAngle() + deviation + CannonsUtil.directionToYaw(cannonDirection));
+        double h = (getTotalHorizontalAngle() + deviation + CannonsUtil.directionToYaw(getCannonDirection()));
 
         if (addSpread)
             deviation = random.nextGaussian() * spread;
@@ -1323,7 +1305,7 @@ public class Cannon implements ICannon, Rotational {
         if (multi < 0.1)
             multi = 0.1;
 
-        return CannonsUtil.directionToVector(getTotalHorizontalAngle() + CannonsUtil.directionToYaw(cannonDirection), -getTotalVerticalAngle(), multi);
+        return CannonsUtil.directionToVector(getTotalHorizontalAngle() + CannonsUtil.directionToYaw(getCannonDirection()), -getTotalVerticalAngle(), multi);
     }
 
     /**
@@ -1442,13 +1424,13 @@ public class Cannon implements ICannon, Rotational {
      * @return
      */
     public World getWorldBukkit() {
-        if (this.world == null) {
+        if (this.getWorld() == null) {
             return null;
         }
-        World bukkitWorld = Bukkit.getWorld(this.world);
+        World bukkitWorld = Bukkit.getWorld(this.getWorld());
         if (bukkitWorld == null)
-            Cannons.logger().info("Can't find world: " + world);
-        return Bukkit.getWorld(this.world);
+            Cannons.logger().info("Can't find world: " + getWorld());
+        return Bukkit.getWorld(this.getWorld());
         // return new Location(bukkitWorld, )
     }
 
@@ -1485,24 +1467,6 @@ public class Cannon implements ICannon, Rotational {
 
     public void setCannonName(String name) {
         this.cannonName = name;
-        this.hasUpdated();
-    }
-
-    public BlockFace getCannonDirection() {
-        return cannonDirection;
-    }
-
-    public void setCannonDirection(BlockFace cannonDirection) {
-        this.cannonDirection = cannonDirection;
-        this.hasUpdated();
-    }
-
-    public UUID getWorld() {
-        return world;
-    }
-
-    public void setWorld(UUID world) {
-        this.world = world;
         this.hasUpdated();
     }
 
@@ -1572,15 +1536,6 @@ public class Cannon implements ICannon, Rotational {
 
     public void setValid(boolean isValid) {
         this.isValid = isValid;
-        this.hasUpdated();
-    }
-
-    public Vector getOffset() {
-        return offset;
-    }
-
-    public void setOffset(Vector offset) {
-        this.offset = offset;
         this.hasUpdated();
     }
 
@@ -1769,7 +1724,7 @@ public class Cannon implements ICannon, Rotational {
      * @return default horizontal home position
      */
     public double getHomeYaw() {
-        return getHomeHorizontalAngle() + CannonsUtil.directionToYaw(cannonDirection);
+        return getHomeHorizontalAngle() + CannonsUtil.directionToYaw(getCannonDirection());
     }
 
     /**
@@ -1853,15 +1808,6 @@ public class Cannon implements ICannon, Rotational {
 
     public double getHorizontalYaw() {
         return horizontalAngleToYaw(getHorizontalAngle());
-    }
-
-    public boolean isOnShip() {
-        return onShip;
-    }
-
-    public void setOnShip(boolean onShip) {
-        this.onShip = onShip;
-        this.hasUpdated();
     }
 
     public HashMap<UUID, Boolean> getObserverMap() {
@@ -2012,14 +1958,6 @@ public class Cannon implements ICannon, Rotational {
      */
     public boolean wasSentryTarget(UUID entityId) {
         return entityId != null && this.sentryData.getSentryEntityHistory().contains(entityId);
-    }
-
-    public Vector getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(Vector velocity) {
-        this.velocity = velocity;
     }
 
     public HashSet<UUID> getWhitelist() {
@@ -2238,5 +2176,15 @@ public class Cannon implements ICannon, Rotational {
     public void setSentryData(SentryData sentryData) {
         this.sentryData = sentryData;
         hasUpdated();
+    }
+
+    @Override
+    public CannonPosition getCannonPosition() {
+        return cannonPosition;
+    }
+
+    @Override
+    public void setCannonPosition(CannonPosition position) {
+        this.hasUpdated();
     }
 }
