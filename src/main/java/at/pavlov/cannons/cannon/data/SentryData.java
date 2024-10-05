@@ -21,6 +21,8 @@ import java.util.UUID;
     private long sentryLastFiringFailed;
     // return to default angles after firing
     private boolean sentryHomedAfterFiring;
+    // last time the sentry mode solution was updated
+    private long lastSentryUpdate;
 
     //target options for cannon
     private boolean targetMob;

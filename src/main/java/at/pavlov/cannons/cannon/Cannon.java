@@ -66,14 +66,8 @@ public class Cannon implements ICannon, Rotational {
     // with which velocity the canno is moving (set by other plugins)
     private Vector velocity;
 
-    // time the cannon was last time fired
-    private long lastFired;
     // time it was last aimed
     private long lastAimed;
-    // it was loaded for the last time
-    private long lastLoaded;
-    // last time the sentry mode solution was updated
-    private long lastSentryUpdate;
 
     private FiringData firingData = new FiringData();
 
@@ -283,7 +277,7 @@ public class Cannon implements ICannon, Rotational {
                 //push projectile and done
                 setProjectilePushed(0);
                 SoundUtils.playSound(getMuzzle(), getLoadedProjectile().getSoundLoading());
-                lastLoaded = System.currentTimeMillis();
+                firingData.setLastLoaded(System.currentTimeMillis());
                 return MessageEnum.loadProjectile;
             }
         }
@@ -1521,15 +1515,6 @@ public class Cannon implements ICannon, Rotational {
         this.hasUpdated();
     }
 
-    public long getLastFired() {
-        return lastFired;
-    }
-
-    public void setLastFired(long lastFired) {
-        this.lastFired = lastFired;
-        this.hasUpdated();
-    }
-
     //TODO: Add a limit to these methods here
     @Override
     public int getLoadedGunpowder() {
@@ -1677,7 +1662,7 @@ public class Cannon implements ICannon, Rotational {
     public boolean isLoading() {
         //delayTime is the time how long the loading should take
         long delayTime = (long) (design.getLoadTime() * 1000.0);
-        return (lastLoaded + delayTime) > System.currentTimeMillis();
+        return (getLastLoaded() + delayTime) > System.currentTimeMillis();
     }
 
     /**
@@ -2005,14 +1990,6 @@ public class Cannon implements ICannon, Rotational {
         this.lastPlayerSpreadMultiplier = 1.0;
     }
 
-    public long getLastSentryUpdate() {
-        return lastSentryUpdate;
-    }
-
-    public void setLastSentryUpdate(long lastSentryUpdate) {
-        this.lastSentryUpdate = lastSentryUpdate;
-    }
-
     public boolean isChunkLoaded() {
         Chunk chunk = getLocation().getChunk();
         return chunk.isLoaded();
@@ -2052,14 +2029,6 @@ public class Cannon implements ICannon, Rotational {
 
     public void setVelocity(Vector velocity) {
         this.velocity = velocity;
-    }
-
-    public long getLastLoaded() {
-        return lastLoaded;
-    }
-
-    public void setLastLoaded(long lastLoaded) {
-        this.lastLoaded = lastLoaded;
     }
 
     public HashSet<UUID> getWhitelist() {

@@ -16,6 +16,10 @@ import org.jetbrains.annotations.ApiStatus;
     // the projectile which was loaded previously
     private Projectile lastFiredProjectile;
     private int lastFiredGunpowder;
+    // time the cannon was last time fired
+    private long lastFired;
+    // it was loaded for the last time
+    private long lastLoaded;
 
     public void setSoot(double soot) {
         this.soot = Math.max(soot, 0);

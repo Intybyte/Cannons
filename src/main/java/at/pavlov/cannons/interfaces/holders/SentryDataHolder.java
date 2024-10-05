@@ -48,6 +48,14 @@ public interface SentryDataHolder extends Updatable {
     default void setSentryLastFiringFailed(long sentryLastFiringFailed) {
         getSentryData().setSentryLastFiringFailed(sentryLastFiringFailed);
     }
+
+    default long getLastSentryUpdate() {
+        return getSentryData().getLastSentryUpdate();
+    }
+
+    default void setLastSentryUpdate(long lastSentryUpdate) {
+        getSentryData().setLastSentryUpdate(lastSentryUpdate);
+    }
     //endregion
     
     //region Target Handler

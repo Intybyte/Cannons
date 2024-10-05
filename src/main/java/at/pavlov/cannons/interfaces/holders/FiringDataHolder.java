@@ -97,4 +97,22 @@ interface FiringDataHolder extends Updatable {
         this.hasUpdated();
     }
     //endregion
+
+    default long getLastFired() {
+        return getFiringData().getLastFired();
+    }
+
+    default void setLastFired(long lastFired) {
+        this.getFiringData().setLastFired(lastFired);
+        this.hasUpdated();
+    }
+
+    default long getLastLoaded() {
+        return getFiringData().getLastLoaded();
+    }
+
+    default void setLastLoaded(long lastLoaded) {
+        getFiringData().setLastLoaded(lastLoaded);
+    }
+
 }
