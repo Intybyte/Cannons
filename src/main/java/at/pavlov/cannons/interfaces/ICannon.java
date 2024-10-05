@@ -1,6 +1,6 @@
 package at.pavlov.cannons.interfaces;
 
-import at.pavlov.cannons.interfaces.legacy.FiringDataHolder;
+import at.pavlov.cannons.interfaces.holders.FiringDataHolder;
 import at.pavlov.cannons.projectile.Projectile;
 
 import java.util.UUID;

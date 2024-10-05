@@ -7,7 +7,7 @@ import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
-import at.pavlov.cannons.data.FiringData;
+import at.pavlov.cannons.cannon.data.FiringData;
 import at.pavlov.cannons.event.CannonDestroyedEvent;
 import at.pavlov.cannons.event.CannonGunpowderLoadEvent;
 import at.pavlov.cannons.event.CannonPreLoadEvent;

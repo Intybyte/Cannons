@@ -1,4 +1,4 @@
-package at.pavlov.cannons.data;
+package at.pavlov.cannons.cannon.data;
 
 import at.pavlov.cannons.projectile.Projectile;
 import lombok.Data;
