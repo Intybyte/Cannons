@@ -6,6 +6,7 @@ import at.pavlov.cannons.Enum.CannonRotation;
 import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.data.AimingData;
+import at.pavlov.cannons.cannon.data.SentryData;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.cannon.data.FiringData;
@@ -79,24 +80,7 @@ public class Cannon implements ICannon, Rotational {
 
     private final AimingData aimingData = new AimingData();
 
-    // tracking entity
-    private UUID sentryEntity;
-    // store older targets, so we do not target the same all the time
-    private final ArrayList<UUID> sentryEntityHistory;
-    // how long this entity is targeted by this cannon
-    private long sentryTargetingTime;
-    // last time loading was tried and failed. Wait some time before trying again
-    private long sentryLastLoadingFailed;
-    // last time firing failed. Wait some time before trying again
-    private long sentryLastFiringFailed;
-    // return to default angles after firing
-    private boolean sentryHomedAfterFiring;
-
-    //target options for cannon
-    private boolean targetMob;
-    private boolean targetPlayer;
-    private boolean targetCannon;
-    private boolean targetOther;
+    private final SentryData sentryData = new SentryData();
 
     // cannon operator (can be null), distance to the cannon matters
     private UUID cannonOperator;
@@ -166,10 +150,10 @@ public class Cannon implements ICannon, Rotational {
         //the cannon is not moving
         this.velocity = new Vector(0, 0, 0);
 
-        this.sentryEntity = null;
-        sentryEntityHistory = new ArrayList<>();
-        sentryTargetingTime = 0;
-        sentryLastLoadingFailed = 0;
+        this.sentryData.setSentryEntity(null);
+        this.sentryData.setSentryEntityHistory(new ArrayList<>());
+        this.sentryData.setSentryTargetingTime(0);
+        this.sentryData.setSentryLastLoadingFailed(0);
 
         this.aimingData.setHorizontalAngle(getHomeHorizontalAngle());
         this.aimingData.setVerticalAngle(getHomeVerticalAngle());
@@ -199,9 +183,9 @@ public class Cannon implements ICannon, Rotational {
         this.tempValue = 0.0;
         this.tempTimestamp = 0;
 
-        this.targetMob = true;
-        this.targetPlayer = false;
-        this.targetCannon = false;
+        this.sentryData.setTargetMob(true);
+        this.sentryData.setTargetPlayer(false);
+        this.sentryData.setTargetCannon(false);
 
         this.databaseId = UUID.randomUUID();
         this.updated = true;
@@ -2047,25 +2031,22 @@ public class Cannon implements ICannon, Rotational {
         return chunk.isLoaded();
     }
 
-    public UUID getSentryEntity() {
-        return sentryEntity;
-    }
-
     /**
      * Set this as new sentry target and add it to the list of targeted entities
      *
      * @param sentryTarget
      */
     public void setSentryTarget(UUID sentryTarget) {
-        this.sentryEntity = sentryTarget;
+        this.sentryData.setSentryEntity(sentryTarget);
         if (sentryTarget == null) {
             return;
         }
         setSentryTargetingTime(System.currentTimeMillis());
+        var history = sentryData.getSentryEntityHistory();
         //store only 5
-        if (sentryEntityHistory.size() > 5)
-            sentryEntityHistory.remove(0);
-        sentryEntityHistory.add(sentryTarget);
+        if (history.size() > 5)
+            history.remove(0);
+        history.add(sentryTarget);
     }
 
     /**
@@ -2075,15 +2056,7 @@ public class Cannon implements ICannon, Rotational {
      * @return true if it was target
      */
     public boolean wasSentryTarget(UUID entityId) {
-        return entityId != null && sentryEntityHistory.contains(entityId);
-    }
-
-    public long getSentryTargetingTime() {
-        return sentryTargetingTime;
-    }
-
-    private void setSentryTargetingTime(long sentryTargetingTime) {
-        this.sentryTargetingTime = sentryTargetingTime;
+        return entityId != null && this.sentryData.getSentryEntityHistory().contains(entityId);
     }
 
     public Vector getVelocity() {
@@ -2094,28 +2067,12 @@ public class Cannon implements ICannon, Rotational {
         this.velocity = velocity;
     }
 
-    public long getSentryLastLoadingFailed() {
-        return sentryLastLoadingFailed;
-    }
-
-    public void setSentryLastLoadingFailed(long sentryLastLoadingFailed) {
-        this.sentryLastLoadingFailed = sentryLastLoadingFailed;
-    }
-
     public long getLastLoaded() {
         return lastLoaded;
     }
 
     public void setLastLoaded(long lastLoaded) {
         this.lastLoaded = lastLoaded;
-    }
-
-    public long getSentryLastFiringFailed() {
-        return sentryLastFiringFailed;
-    }
-
-    public void setSentryLastFiringFailed(long sentryLastFiringFailed) {
-        this.sentryLastFiringFailed = sentryLastFiringFailed;
     }
 
     public HashSet<UUID> getWhitelist() {
@@ -2160,57 +2117,6 @@ public class Cannon implements ICannon, Rotational {
         this.lastWhitelisted = lastWhitelisted;
     }
 
-    public boolean isTargetMob() {
-        return targetMob;
-    }
-
-    public void setTargetMob(boolean targetMob) {
-        this.targetMob = targetMob;
-        this.hasUpdated();
-    }
-
-    public void toggleTargetMob() {
-        setTargetMob(!this.targetMob);
-    }
-
-    public boolean isTargetPlayer() {
-        return targetPlayer;
-    }
-
-    public void setTargetPlayer(boolean targetPlayer) {
-        this.targetPlayer = targetPlayer;
-        this.hasUpdated();
-    }
-
-    public void toggleTargetPlayer() {
-        setTargetPlayer(!this.targetPlayer);
-    }
-
-    public boolean isTargetCannon() {
-        return targetCannon;
-    }
-
-    public void setTargetCannon(boolean targetCannon) {
-        this.targetCannon = targetCannon;
-        this.hasUpdated();
-    }
-
-    public void toggleTargetCannon() {
-        setTargetCannon(!this.targetCannon);
-    }
-
-    public boolean isTargetOther() {
-        return targetOther;
-    }
-
-    public void setTargetOther(boolean targetOther) {
-        this.targetOther = targetOther;
-        this.hasUpdated();
-    }
-
-    public void toggleTargetOther() {
-        setTargetOther(!this.targetOther);
-    }
 
     public boolean isPaid() {
         return paid;
@@ -2236,14 +2142,6 @@ public class Cannon implements ICannon, Rotational {
             return firingData.getLastFiredProjectile().getProjectileEntity();
         }
         return EntityType.SNOWBALL;
-    }
-
-    public boolean isSentryHomedAfterFiring() {
-        return sentryHomedAfterFiring;
-    }
-
-    public void setSentryHomedAfterFiring(boolean sentryHomedAfterFiring) {
-        this.sentryHomedAfterFiring = sentryHomedAfterFiring;
     }
 
     public boolean isUpdated() {
@@ -2382,5 +2280,10 @@ public class Cannon implements ICannon, Rotational {
     @Override
     public AimingData getAimingData() {
         return this.aimingData;
+    }
+
+    @Override
+    public SentryData getSentryData() {
+        return this.sentryData;
     }
 }
