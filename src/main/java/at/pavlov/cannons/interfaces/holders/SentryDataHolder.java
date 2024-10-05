@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public interface SentryDataHolder extends Updatable {
     SentryData getSentryData();
+    void setSentryData(SentryData sentryData);
 
     default UUID getSentryEntity() {
         return getSentryData().getSentryEntity();

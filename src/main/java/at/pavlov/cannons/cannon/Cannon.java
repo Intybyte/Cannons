@@ -73,14 +73,14 @@ public class Cannon implements ICannon, Rotational {
     // last time the sentry mode solution was updated
     private long lastSentryUpdate;
 
-    private final FiringData firingData = new FiringData();
+    private FiringData firingData = new FiringData();
 
     // was the cannon fee paid
     private boolean paid;
 
-    private final AimingData aimingData = new AimingData();
+    private AimingData aimingData = new AimingData();
 
-    private final SentryData sentryData = new SentryData();
+    private SentryData sentryData = new SentryData();
 
     // cannon operator (can be null), distance to the cannon matters
     private UUID cannonOperator;
@@ -2278,12 +2278,30 @@ public class Cannon implements ICannon, Rotational {
     }
 
     @Override
+    public void setFiringData(FiringData firingData) {
+        this.firingData = firingData;
+        hasUpdated();
+    }
+
+    @Override
     public AimingData getAimingData() {
         return this.aimingData;
     }
 
     @Override
+    public void setAimingData(AimingData aimingData) {
+        this.aimingData = aimingData;
+        hasUpdated();
+    }
+
+    @Override
     public SentryData getSentryData() {
         return this.sentryData;
+    }
+
+    @Override
+    public void setSentryData(SentryData sentryData) {
+        this.sentryData = sentryData;
+        hasUpdated();
     }
 }

@@ -6,6 +6,7 @@ import at.pavlov.cannons.projectile.Projectile;
 
 interface FiringDataHolder extends Updatable {
     FiringData getFiringData();
+    void setFiringData(FiringData firingData);
 
     //region Soot
     default void setSoot(double soot) {

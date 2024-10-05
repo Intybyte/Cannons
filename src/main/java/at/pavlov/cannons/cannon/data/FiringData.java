@@ -2,7 +2,10 @@ package at.pavlov.cannons.cannon.data;
 
 import at.pavlov.cannons.projectile.Projectile;
 import lombok.Data;
+import lombok.Setter;
+import org.jetbrains.annotations.ApiStatus;
 
+@Setter(onMethod_ = {@ApiStatus.Internal})
 @Data public class FiringData {
     private int loadedGunpowder;
     private Projectile loadedProjectile;

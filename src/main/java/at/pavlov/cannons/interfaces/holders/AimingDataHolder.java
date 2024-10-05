@@ -5,6 +5,7 @@ import at.pavlov.cannons.interfaces.Updatable;
 
 public interface AimingDataHolder extends Updatable {
     AimingData getAimingData();
+    void setAimingData(AimingData aimingData);
 
     //region Vertical Angle
     default void setVerticalAngle(double verticalAngle) {

@@ -1,7 +1,10 @@
 package at.pavlov.cannons.cannon.data;
 
 import lombok.Data;
+import lombok.Setter;
+import org.jetbrains.annotations.ApiStatus;
 
+@Setter(onMethod_ = {@ApiStatus.Internal})
 @Data public class AimingData {
     // angles
     private double horizontalAngle;

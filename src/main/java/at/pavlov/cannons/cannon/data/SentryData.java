@@ -1,10 +1,13 @@
 package at.pavlov.cannons.cannon.data;
 
 import lombok.Data;
+import lombok.Setter;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
+@Setter(onMethod_ = {@ApiStatus.Internal})
 @Data public class SentryData {
     // tracking entity
     private UUID sentryEntity;
