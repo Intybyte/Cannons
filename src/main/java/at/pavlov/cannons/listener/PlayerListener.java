@@ -24,6 +24,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -127,8 +128,9 @@ public class PlayerListener implements Listener
      * if loaded Checks for redstone torches if built
      * @param event BlockPlaceEvent
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void BlockPlace(BlockPlaceEvent event) {
+        if (event.isCancelled()) return;
 
         Block block = event.getBlockPlaced();
         Location blockLoc = block.getLocation();

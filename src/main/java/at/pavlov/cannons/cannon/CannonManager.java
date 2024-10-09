@@ -29,6 +29,7 @@ import org.bukkit.util.Vector;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -381,29 +382,53 @@ public class CannonManager {
         return newCannonList;
     }
 
+    //always call this in a thread if possible
+    private List<Cannon> getCannonInBox(Location center, UUID owner, int range) {
+        LinkedList<Cannon> list = new LinkedList<>();
+
+        for (int x = range; x >= -range; x--) {
+            for (int y = range; y >= -range; y--) {
+                for (int z = range; z >= -range; z--) {
+                    list.add(getCannon(center.clone().add(x, y, z), owner));
+                }
+            }
+        }
+
+        return list;
+    }
+
     //please nobody call this
-    public void claimCannonsInBox(Location center, UUID owner) {
+    public void claimCannonsInBox(Location center, UUID owner, int size) {
         try {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    int halflength = 20;
-                    for (int x = halflength; x >= -halflength; x--) {
-                        for (int y = halflength; y >= -halflength; y--) {
-                            for (int z = halflength; z >= -halflength; z--) {
-                                getCannon(center.clone().add(x, y, z), owner);
-                            }
-                        }
-                    }
+                    getCannonInBox(center, owner, size);
                 }
             }.runTaskAsynchronously(Cannons.getPlugin());
         } catch (Exception e) {
-            System.err.println(e.getClass());
+            Bukkit.getLogger().severe(e.getClass().getName());
             e.printStackTrace();
-
         }
-
     }
+
+    public void dismantleCannonsInBox(Location center, int size) {
+        try {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    var cannonList = CannonManager.getCannonsInBox(center, size, size, size);
+                    cannonList.forEach( it ->
+                            it.destroyCannon(false, false, BreakCause.Dismantling)
+                    );
+                }
+            }.runTaskAsynchronously(Cannons.getPlugin());
+        } catch (Exception e) {
+            Bukkit.getLogger().severe(e.getClass().getName());
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * returns all cannons for a list of locations

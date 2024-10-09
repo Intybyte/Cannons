@@ -410,13 +410,31 @@ public class Commands extends BaseCommand {
 
     @Subcommand("claim")
     @CommandPermission("cannons.player.claim")
-    public static void onClaim(Player player) {
+    public static void onClaim(Player player, @Default("20") int size) {
         Cannons plugin = Cannons.getPlugin();
         UserMessages userMessages = plugin.getMyConfig().getUserMessages();
 
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsStarted, player);
         plugin.getCannonManager().claimCannonsInBox(player.getLocation(), player.getUniqueId());
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player);
+    }
+
+    @Subcommand("dismantleArea")
+    @CommandPermission("cannons.admin.reload")
+    public static void onDismantleArea(Player player, @Default("20") int size) {
+        Cannons plugin = Cannons.getPlugin();
+
+        player.sendMessage("Dismantling started");
+        plugin.getCannonManager().dismantleCannonsInBox(player.getLocation(), size);
+        player.sendMessage("Dismantling finished");
+    }
+
+    @Subcommand("scanArea")
+    @CommandPermission("cannons.admin.reload")
+    public static void scanArea(Player player, @Default("20") int size) {
+        Cannons plugin = Cannons.getPlugin();
+        int found = CannonManager.getCannonsInBox(player.getLocation(), size , size, size).size();
+        player.sendMessage("Cannons found: " + found);
     }
 
     @Subcommand("version")
