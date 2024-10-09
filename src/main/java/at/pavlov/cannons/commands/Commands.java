@@ -415,7 +415,7 @@ public class Commands extends BaseCommand {
         UserMessages userMessages = plugin.getMyConfig().getUserMessages();
 
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsStarted, player);
-        plugin.getCannonManager().claimCannonsInBox(player.getLocation(), player.getUniqueId());
+        plugin.getCannonManager().claimCannonsInBox(player.getLocation(), player.getUniqueId(), size);
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player);
     }
 
