@@ -9,6 +9,7 @@ import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
+import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.block.data.BlockData;
@@ -24,8 +25,7 @@ import java.util.List;
  * 
  */
 
-
-
+@Data
 public class Config
 {
 	//general
@@ -35,19 +35,19 @@ public class Config
     private boolean economyDisabled;
 	
 	//build limits
-	private boolean buildLimitEnabled;
-	private int buildLimitA;
-	private int buildLimitB;
+    private boolean buildLimitEnabled;
+    private int buildLimitA;
+    private int buildLimitB;
     //keepProjectileAlive
     private boolean keepAliveEnabled;
     private double keepAliveTeleportDistance;
 	//tools
-	private ItemHolder toolAdjust = new ItemHolder("minecraft:air");
-	private ItemHolder toolAutoaim = new ItemHolder("minecraft:clock");
-	private double toolAutoaimRange;
-	private ItemHolder toolFiring = new ItemHolder("minecraft:flint_and_steel");
+    private ItemHolder toolAdjust = new ItemHolder("minecraft:air");
+    private ItemHolder toolAutoaim = new ItemHolder("minecraft:clock");
+    private double toolAutoaimRange;
+    private ItemHolder toolFiring = new ItemHolder("minecraft:flint_and_steel");
     private ItemHolder toolRamrod = new ItemHolder("minecraft:stick");
-	private ItemHolder toolRotating = new ItemHolder("minecraft:rail");
+    private ItemHolder toolRotating = new ItemHolder("minecraft:rail");
     private ItemHolder toolThermometer = new ItemHolder("minecraft:gold_nugget");
 
     private int imitatedBlockMinimumDistance;
@@ -91,10 +91,9 @@ public class Config
     //cancelEventForLoadingItem
     private List<ItemHolder> cancelItems = new ArrayList<>();
 
-
     private final UserMessages userMessage;
 	private final Cannons plugin;
-	private final ProjectileStorage projectileStorage;
+    private final ProjectileStorage projectileStorage;
     private final CannonManager cannonManager;
 
 	public Config(Cannons plugin)
@@ -185,15 +184,13 @@ public class Config
         //superbreakerBlocks
         setSuperbreakerBlocks(ParseUtils.toBlockDataList(config.getStringList("superbreakerBlocks")));
         //if this list is empty add some blocks
-        if (superbreakerBlocks.size() == 0)
-        {
+        if (superbreakerBlocks.isEmpty()) {
             plugin.logInfo("superbreakerBlock list is empty");
         }
 
         //unbreakableBlocks
         setUnbreakableBlocks(ParseUtils.toBlockDataList(config.getStringList("unbreakableBlocks")));
-        if (unbreakableBlocks.size() == 0)
-        {
+        if (unbreakableBlocks.isEmpty()) {
             plugin.logInfo("unbreakableBlocks list is empty");
         }
 
@@ -206,403 +203,15 @@ public class Config
 		userMessage.loadLanguage();
 	}
 
-
-	/**
-	 * returns the class UserMessages
-	 * @return
-	 */
-	public UserMessages getUserMessages()
-	{
-		return userMessage;
-	}
-
-	public ProjectileStorage getProjectileStorage()
-	{
-		return projectileStorage;
-	}
-
-	public boolean isBuildLimitEnabled()
-	{
-		return buildLimitEnabled;
-	}
-
-	void setBuildLimitEnabled(boolean buildLimitEnabled)
-	{
-		this.buildLimitEnabled = buildLimitEnabled;
-	}
-
-	public int getBuildLimitA()
-	{
-		return buildLimitA;
-	}
-
-	void setBuildLimitA(int buildLimitA)
-	{
-		this.buildLimitA = buildLimitA;
-	}
-
-	public int getBuildLimitB()
-	{
-		return buildLimitB;
-	}
-
-	void setBuildLimitB(int buildLimitB)
-	{
-		this.buildLimitB = buildLimitB;
-	}
-
-	public ItemHolder getToolAdjust()
-	{
-		return toolAdjust;
-	}
-
-	void setToolAdjust(ItemHolder toolAdjust)
-	{
-		this.toolAdjust = toolAdjust;
-	}
-
-	public ItemHolder getToolAutoaim()
-	{
-		return toolAutoaim;
-	}
-
-	void setToolAutoaim(ItemHolder toolAutoaim)
-	{
-		this.toolAutoaim = toolAutoaim;
-	}
-
-	public ItemHolder getToolRotating()
-	{
-		return toolRotating;
-	}
-
-	void setToolRotating(ItemHolder toolRotating)
-	{
-		this.toolRotating = toolRotating;
-	}
-
-    @Deprecated
-	public boolean isDebugMode()
-	{
-		return debugMode;
-	}
-
-    @Deprecated
-	void setDebugMode(boolean debugMode)
-	{
-		plugin.setDebugMode(debugMode);
-	}
-
-    public boolean isEconomyDisabled() {
-        return this.economyDisabled;
+    public UserMessages getUserMessages() {
+        return userMessage;
     }
 
-    public void setEconomyDisabled(boolean b) {
-        this.economyDisabled = b;
-    }
-
-	public ItemHolder getToolFiring()
-	{
-		return toolFiring;
-	}
-
-	void setToolFiring(ItemHolder toolFiring)
-	{
-		this.toolFiring = toolFiring;
-	}
-
-
-    public List<BlockData> getSuperbreakerBlocks() {
-        return superbreakerBlocks;
-    }
-
-    void setSuperbreakerBlocks(List<BlockData> superbreakerBlocks) {
-        this.superbreakerBlocks = superbreakerBlocks;
-    }
-
-    public List<BlockData> getUnbreakableBlocks() {
-        return unbreakableBlocks;
-    }
-
-    void setUnbreakableBlocks(List<BlockData> unbreakableBlocks) {
-        this.unbreakableBlocks = unbreakableBlocks;
-    }
-
-    public CannonManager getCannonManager() {
-        return cannonManager;
-    }
-
-    public ItemHolder getToolThermometer() {
-        return toolThermometer;
-    }
-
-    public void setToolThermometer(ItemHolder toolThermometer) {
-        this.toolThermometer = toolThermometer;
-    }
-
-    public ItemHolder getToolRamrod() {
-        return toolRamrod;
-    }
-
-    public void setToolRamrod(ItemHolder toolRamrod) {
-        this.toolRamrod = toolRamrod;
-    }
-
-    public List<ItemHolder> getCancelItems() {
-        return cancelItems;
-    }
-
-    public void setCancelItems(List<ItemHolder> cancelItems) {
-        this.cancelItems = cancelItems;
-    }
-
-    public boolean isCancelItem(ItemStack item)
-    {
-        for (ItemHolder item2 : getCancelItems())
-        {
+    public boolean isCancelItem(ItemStack item) {
+        for (ItemHolder item2 : getCancelItems()) {
             if (item2.equalsFuzzy(item))
                 return true;
         }
         return false;
-    }
-
-    public BlockData getImitatedExplosionMaterial() {
-        return imitatedExplosionMaterial;
-    }
-
-    public void setImitatedExplosionMaterial(BlockData imitatedExplosionMaterial) {
-        this.imitatedExplosionMaterial = imitatedExplosionMaterial;
-    }
-
-    public double getImitatedExplosionTime() {
-        return imitatedExplosionTime;
-    }
-
-    public void setImitatedExplosionTime(double imitatedExplosionTime) {
-        this.imitatedExplosionTime = imitatedExplosionTime;
-    }
-
-    public BlockData getImitatedAimingMaterial() {
-        return imitatedAimingMaterial;
-    }
-
-    public void setImitatedAimingMaterial(BlockData imitatedAimingMaterial) {
-        this.imitatedAimingMaterial = imitatedAimingMaterial;
-    }
-
-    public BlockData getImitatedFireMaterial() {
-        return imitatedFireMaterial;
-    }
-
-    public void setImitatedFireMaterial(BlockData imitatedFireMaterial) {
-        this.imitatedFireMaterial = imitatedFireMaterial;
-    }
-
-    public BlockData getImitatedSmokeMaterial() {
-        return imitatedSmokeMaterial;
-    }
-
-    public void setImitatedSmokeMaterial(BlockData imitatedSmokeMaterial) {
-        this.imitatedSmokeMaterial = imitatedSmokeMaterial;
-    }
-
-    public boolean isImitatedAimingEnabled() {
-        return imitatedAimingEnabled;
-    }
-
-    public void setImitatedAimingEnabled(boolean imitatedAimingEnabled) {
-        this.imitatedAimingEnabled = imitatedAimingEnabled;
-    }
-
-    public boolean isImitatedFiringEffectEnabled() {
-        return imitatedFiringEffectEnabled;
-    }
-
-    public void setImitatedFiringEffectEnabled(boolean imitatedFiringEffectEnabled) {
-        this.imitatedFiringEffectEnabled = imitatedFiringEffectEnabled;
-    }
-
-    public int getImitatedAimingLineLength() {
-        return imitatedAimingLineLength;
-    }
-
-    public void setImitatedAimingLineLength(int imitatedAimingLineLength) {
-        this.imitatedAimingLineLength = imitatedAimingLineLength;
-    }
-
-    public double getImitatedBlockMinimumDistance() {
-        return imitatedBlockMinimumDistance;
-    }
-
-    public void setImitatedBlockMinimumDistance(int imitatedBlockMinimumDistance) {
-        this.imitatedBlockMinimumDistance = imitatedBlockMinimumDistance;
-    }
-
-    public double getImitatedBlockMaximumDistance() {
-        return imitatedBlockMaximumDistance;
-    }
-
-    public void setImitatedBlockMaximumDistance(int imitatedBlockMaximumDistance) {
-        this.imitatedBlockMaximumDistance = imitatedBlockMaximumDistance;
-    }
-
-    public int getImitatedSoundMaximumDistance() {
-        return imitatedSoundMaximumDistance;
-    }
-
-    public void setImitatedSoundMaximumDistance(int imitatedSoundMaximumDistance) {
-        this.imitatedSoundMaximumDistance = imitatedSoundMaximumDistance;
-    }
-
-    public int getImitatedExplosionSphereSize() {
-        return imitatedExplosionSphereSize;
-    }
-
-    public void setImitatedExplosionSphereSize(int imitatedExplosionSphereSize) {
-        this.imitatedExplosionSphereSize = imitatedExplosionSphereSize;
-    }
-
-    public boolean isImitatedExplosionEnabled() {
-        return imitatedExplosionEnabled;
-    }
-
-    public void setImitatedExplosionEnabled(boolean imitatedExplosionEnabled) {
-        this.imitatedExplosionEnabled = imitatedExplosionEnabled;
-    }
-
-    public double getImitatedAimingTime() {
-        return imitatedAimingTime;
-    }
-
-    public void setImitatedAimingTime(double imitatedAimingTime) {
-        this.imitatedAimingTime = imitatedAimingTime;
-    }
-
-    public double getImitatedFiringTime() {
-        return imitatedFiringTime;
-    }
-
-    public void setImitatedFiringTime(double imitatedFiringTime) {
-        this.imitatedFiringTime = imitatedFiringTime;
-    }
-
-    public boolean isKeepAliveEnabled() {
-        return keepAliveEnabled;
-    }
-
-    public void setKeepAliveEnabled(boolean keepAliveEnabled) {
-        this.keepAliveEnabled = keepAliveEnabled;
-    }
-
-    public double getKeepAliveTeleportDistance() {
-        return keepAliveTeleportDistance;
-    }
-
-    public void setKeepAliveTeleportDistance(double keepAliveTeleportDistance) {
-        this.keepAliveTeleportDistance = keepAliveTeleportDistance;
-    }
-
-    public boolean isImitatedPredictorEnabled() {
-        return imitatedPredictorEnabled;
-    }
-
-    public void setImitatedPredictorEnabled(boolean imitatedPredictorEnabled) {
-        this.imitatedPredictorEnabled = imitatedPredictorEnabled;
-    }
-
-    public int getImitatedPredictorIterations() {
-        return imitatedPredictorIterations;
-    }
-
-    public void setImitatedPredictorIterations(int imitatedPredictorIterations) {
-        this.imitatedPredictorIterations = imitatedPredictorIterations;
-    }
-
-    public double getImitatedPredictorDistance() {
-        return imitatedPredictorDistance;
-    }
-
-    public void setImitatedPredictorDistance(double imitatedPredictorDistance) {
-        this.imitatedPredictorDistance = imitatedPredictorDistance;
-    }
-
-    public BlockData getImitatedPredictorMaterial() {
-        return imitatedPredictorMaterial;
-    }
-
-    public void setImitatedPredictorMaterial(BlockData imitatedPredictorMaterial) {
-        this.imitatedPredictorMaterial = imitatedPredictorMaterial;
-    }
-
-    public double getImitatedPredictorTime() {
-        return imitatedPredictorTime;
-    }
-
-    public void setImitatedPredictorTime(double imitatedPredictorTime) {
-        this.imitatedPredictorTime = imitatedPredictorTime;
-    }
-
-    public boolean isRelayExplosionEvent() {
-        return relayExplosionEvent;
-    }
-
-    public void setRelayExplosionEvent(boolean relayExplosionEvent) {
-        this.relayExplosionEvent = relayExplosionEvent;
-    }
-
-    public float getImitatedSoundMaximumVolume() {
-        return imitatedSoundMaximumVolume;
-    }
-
-    public void setImitatedSoundMaximumVolume(float imitatedSoundMaximumVolume) {
-        this.imitatedSoundMaximumVolume = imitatedSoundMaximumVolume;
-    }
-
-    public int getClaimEdgeLength() {
-        return claimEdgeLength;
-    }
-
-    public void setClaimEdgeLength(int claimEdgeLength) {
-        this.claimEdgeLength = claimEdgeLength;
-    }
-
-    public double getToolAutoaimRange() {
-        return toolAutoaimRange;
-    }
-
-    public void setToolAutoaimRange(double toolAutoaimRange) {
-        this.toolAutoaimRange = toolAutoaimRange;
-    }
-
-    public boolean isImitatedExplosionParticlesEnabled() {
-        return imitatedExplosionParticlesEnabled;
-    }
-
-    public void setImitatedExplosionParticlesEnabled(boolean imitatedExplosionParticlesEnabled) {
-        this.imitatedExplosionParticlesEnabled = imitatedExplosionParticlesEnabled;
-    }
-
-    public double getImitatedExplosionParticlesDiameter() {
-        return imitatedExplosionParticlesDiameter;
-    }
-
-    public void setImitatedExplosionParticlesDiameter(double imitatedExplosionParticlesDiameter) {
-        this.imitatedExplosionParticlesDiameter = imitatedExplosionParticlesDiameter;
-    }
-
-    public int getImitatedExplosionParticlesCount() {
-        return imitatedExplosionParticlesCount;
-    }
-
-    public void setImitatedExplosionParticlesCount(int imitatedExplosionParticlesCount) {
-        this.imitatedExplosionParticlesCount = imitatedExplosionParticlesCount;
-    }
-
-    public Particle getImitatedExplosionParticlesType() {
-        return imitatedExplosionParticlesType;
-    }
-
-    public void setImitatedExplosionParticlesType(Particle imitatedExplosionParticlesType) {
-        this.imitatedExplosionParticlesType = imitatedExplosionParticlesType;
     }
 }
