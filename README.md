@@ -31,18 +31,11 @@ I suggest you download an IDE like IntellijIDEA and get you more experienced wit
 Dependency:
 ---------------
 
-Use [jitpack.io](https://jitpack.io/#Intybyte/Cannons/) for dependency
-
 ```xml
-<repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
-</repository>
-
 <dependency>
-    <groupId>com.github.Intybyte</groupId>
-    <artifactId>Cannons</artifactId>
-    <version>Tag</version>
+    <groupId>at.pavlov</groupId>
+    <artifactId>cannons</artifactId>
+    <version>LATEST</version>
     <scope>provided</scope>
 </dependency>
 ```
