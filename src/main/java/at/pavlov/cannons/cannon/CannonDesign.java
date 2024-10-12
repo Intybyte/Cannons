@@ -5,6 +5,7 @@ import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.projectile.Projectile;
+import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -17,9 +18,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
-
-public class CannonDesign
-{
+@Data public class CannonDesign {
 	//general
 	private String designID;
 	private String designName;
@@ -256,7 +255,7 @@ public class CannonDesign
     		return cannonBlocks.getAllCannonBlocks();
     	}
     	
-    	return new ArrayList<SimpleBlock>();
+    	return new ArrayList<>();
     }
 
 
@@ -268,7 +267,7 @@ public class CannonDesign
     public List<Location> getAllCannonBlocks(Cannon cannon)
     {
         CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
-        List<Location> locList = new ArrayList<Location>();
+        List<Location> locList = new ArrayList<>();
         if (cannonBlocks != null)
         {
             for (SimpleBlock block : cannonBlocks.getAllCannonBlocks())
@@ -288,7 +287,7 @@ public class CannonDesign
     public List<Location> getDestructibleBlocks(Cannon cannon)
     {
      	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
-    	List<Location> locList = new ArrayList<Location>();
+    	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
     		for (Vector vect : cannonBlocks.getDestructibleBlocks())
@@ -308,7 +307,7 @@ public class CannonDesign
     public List<Location> getFiringIndicator(Cannon cannon)
     {
      	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
-    	List<Location> locList = new ArrayList<Location>();
+    	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
     		for (Vector vect : cannonBlocks.getFiringIndicator())
@@ -327,7 +326,7 @@ public class CannonDesign
     public List<Location> getLoadingInterface(Cannon cannon)
     {
         CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
-        List<Location> locList = new ArrayList<Location>();
+        List<Location> locList = new ArrayList<>();
         if (cannonBlocks != null)
         {
             for (Vector vect : cannonBlocks.getBarrelBlocks())
@@ -346,7 +345,7 @@ public class CannonDesign
     public List<Location> getBarrelBlocks(Cannon cannon)
     {
         CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
-        List<Location> locList = new ArrayList<Location>();
+        List<Location> locList = new ArrayList<>();
         if (cannonBlocks != null)
         {
             for (Vector vect : cannonBlocks.getBarrelBlocks())
@@ -365,7 +364,7 @@ public class CannonDesign
     public List<Location> getRightClickTrigger(Cannon cannon)
     {
      	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
-    	List<Location> locList = new ArrayList<Location>();
+    	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
     		for (Vector vect : cannonBlocks.getRightClickTrigger())
@@ -384,7 +383,7 @@ public class CannonDesign
     public List<Location> getRedstoneTrigger(Cannon cannon)
     {
      	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
-    	List<Location> locList = new ArrayList<Location>();
+    	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
     		for (Vector vect : cannonBlocks.getRedstoneTrigger())
@@ -404,7 +403,7 @@ public class CannonDesign
     public List<Location> getChestsAndSigns(Cannon cannon)
     {
     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
-    	List<Location> locList = new ArrayList<Location>();
+    	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
     		for (SimpleBlock block : cannonBlocks.getChestsAndSigns())
@@ -423,7 +422,7 @@ public class CannonDesign
     public List<Location> getRedstoneTorches(Cannon cannon)
     {
     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
-    	List<Location> locList = new ArrayList<Location>();
+    	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
     		for (Vector vect : cannonBlocks.getRedstoneTorches())
@@ -442,7 +441,7 @@ public class CannonDesign
     public List<Location> getRedstoneWireAndRepeater(Cannon cannon)
     {
     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
-    	List<Location> locList = new ArrayList<Location>();
+    	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
     		for (SimpleBlock block : cannonBlocks.getRedstoneWiresAndRepeater())
@@ -469,22 +468,6 @@ public class CannonDesign
     	return false;
     }
 
-	public String getDesignID()
-	{
-		return designID;
-	}
-	public void setDesignID(String designID)
-	{
-		this.designID = designID;
-	}
-	public String getDesignName()
-	{
-		return designName;
-	}
-	public void setDesignName(String designName)
-	{
-		this.designName = designName;
-	}
 	public boolean isSignRequired()
 	{
 		return isSignRequired;
@@ -493,38 +476,7 @@ public class CannonDesign
 	{
 		this.isSignRequired = isSignRequired;
 	}
-	public ItemHolder getGunpowderType()
-	{
-		return gunpowderType;
-	}
-	public void setGunpowderType(ItemHolder gunpowderType)
-	{
-		this.gunpowderType = gunpowderType;
-	}
-	public boolean isAmmoInfiniteForPlayer()
-	{
-		return ammoInfiniteForPlayer;
-	}
-	public void setAmmoInfiniteForPlayer(boolean ammoInfiniteForPlayer)
-	{
-		this.ammoInfiniteForPlayer = ammoInfiniteForPlayer;
-	}
-	public boolean isAmmoInfiniteForRedstone()
-	{
-		return ammoInfiniteForRedstone;
-	}
-	public void setAmmoInfiniteForRedstone(boolean ammoInfiniteForRedstone)
-	{
-		this.ammoInfiniteForRedstone = ammoInfiniteForRedstone;
-	}
-	public boolean isAutoreloadRedstone()
-	{
-		return autoreloadRedstone;
-	}
-	public void setAutoreloadRedstone(boolean autoreloadRedstone)
-	{
-		this.autoreloadRedstone = autoreloadRedstone;
-	}
+
 	/**
 	 * Normal means without overloading stuff
 	 * @return maxLoadableGunpowder
@@ -544,66 +496,7 @@ public class CannonDesign
 		else
             return getMaxLoadableGunpowderNormal();
 	}
-	public void setMaxLoadableGunpowder(int maxLoadableGunpowder)
-	{
-		this.maxLoadableGunpowder = maxLoadableGunpowder;
-	}
-	public double getMultiplierVelocity()
-	{
-		return multiplierVelocity;
-	}
-	public void setMultiplierVelocity(double multiplierVelocity)
-	{
-		this.multiplierVelocity = multiplierVelocity;
-	}
-	public double getSpreadOfCannon()
-	{
-		return spreadOfCannon;
-	}
-	public void setSpreadOfCannon(double spreadOfCannon)
-	{
-		this.spreadOfCannon = spreadOfCannon;
-	}
-	public double getBlastConfusion()
-	{
-		return blastConfusion;
-	}
-	public void setBlastConfusion(double blastConfusion)
-	{
-		this.blastConfusion = blastConfusion;
-	}
-	public double getFuseBurnTime()
-	{
-		return fuseBurnTime;
-	}
-	public void setFuseBurnTime(double fuseBurnTime)
-	{
-		this.fuseBurnTime = fuseBurnTime;
-	}
-	public double getBarrelCooldownTime()
-	{
-		return barrelCooldownTime;
-	}
-	public void setBarrelCooldownTime(double barrelCooldownTime)
-	{
-		this.barrelCooldownTime = barrelCooldownTime;
-	}
-	public BlockFace getDefaultHorizontalFacing()
-	{
-		return defaultHorizontalFacing;
-	}
-	public void setDefaultHorizontalFacing(BlockFace defaultHorizontalFacing)
-	{
-		this.defaultHorizontalFacing = defaultHorizontalFacing;
-	}
-	public double getDefaultVerticalAngle()
-	{
-		return defaultVerticalAngle;
-	}
-	public void setDefaultVerticalAngle(double defaultVerticalAngle)
-	{
-		this.defaultVerticalAngle = defaultVerticalAngle;
-	}
+
 	public double getMaxHorizontalAngleNormal()
 	{
 		return maxHorizontalAngle;
@@ -636,30 +529,7 @@ public class CannonDesign
 	{
 		this.minVerticalAngle = minVerticalAngle;
 	}
-	public double getAngleStepSize()
-	{
-		return angleStepSize;
-	}
-	public void setAngleStepSize(double angleStepSize)
-	{
-		this.angleStepSize = angleStepSize;
-	}
-	public int getAngleUpdateSpeed()
-	{
-		return angleUpdateSpeed;
-	}
-	public void setAngleUpdateSpeed(int angleUpdateSpeed)
-	{
-		this.angleUpdateSpeed = angleUpdateSpeed;
-	}
-	public boolean isHasRecoil()
-	{
-		return hasRecoil;
-	}
-	public void setHasRecoil(boolean hasRecoil)
-	{
-		this.hasRecoil = hasRecoil;
-	}
+
 	public boolean isFrontloader()
 	{
 		return isFrontloader;
@@ -676,154 +546,7 @@ public class CannonDesign
 	{
 		this.isRotatable = isRotatable;
 	}
-	public String getPermissionBuild()
-	{
-		return permissionBuild;
-	}
-	public void setPermissionBuild(String permissionBuild)
-	{
-		this.permissionBuild = permissionBuild;
-	}
-	public String getPermissionLoad()
-	{
-		return permissionLoad;
-	}
-	public void setPermissionLoad(String permissionLoad)
-	{
-		this.permissionLoad = permissionLoad;
-	}
-	public String getPermissionFire()
-	{
-		return permissionFire;
-	}
-	public void setPermissionFire(String permissionFire)
-	{
-		this.permissionFire = permissionFire;
-	}
-	public String getPermissionAdjust()
-	{
-		return permissionAdjust;
-	}
-	public void setPermissionAdjust(String permissionAdjust)
-	{
-		this.permissionAdjust = permissionAdjust;
-	}
-	public String getPermissionAutoaim()
-	{
-		return permissionAutoaim;
-	}
-	public void setPermissionAutoaim(String permissionAutoaim)
-	{
-		this.permissionAutoaim = permissionAutoaim;
-	}
-	public String getPermissionTargetTracking()
-	{
-		return permissionTargetTracking;
-	}
-	public void setPermissionTargetTracking(String permissionTargetTracking)
-	{
-		this.permissionTargetTracking = permissionTargetTracking;
-	}
-	public String getPermissionRedstone()
-	{
-		return permissionRedstone;
-	}
-	public void setPermissionRedstone(String permissionRedstone)
-	{
-		this.permissionRedstone = permissionRedstone;
-	}
-	public String getPermissionAutoreload()
-	{
-		return permissionAutoreload;
-	}
-	public void setPermissionAutoreload(String permissionAutoreload)
-	{
-		this.permissionAutoreload = permissionAutoreload;
-	}
-	public boolean isAccessForOwnerOnly()
-	{
-		return accessForOwnerOnly;
-	}
-	public void setAccessForOwnerOnly(boolean accessForOwnerOnly)
-	{
-		this.accessForOwnerOnly = accessForOwnerOnly;
-	}
-	public List<String> getAllowedProjectiles()
-	{
-		return allowedProjectiles;
-	}
-	public void setAllowedProjectiles(List<String> allowedProjectiles)
-	{
-		this.allowedProjectiles = allowedProjectiles;
-	}
-	public BlockData getSchematicBlockTypeIgnore()
-	{
-		return schematicBlockTypeIgnore;
-	}
-	public void setSchematicBlockTypeIgnore(BlockData schematicBlockTypeIgnore)
-	{
-		this.schematicBlockTypeIgnore = schematicBlockTypeIgnore;
-	}
-	public BlockData getSchematicBlockTypeMuzzle()
-	{
-		return schematicBlockTypeMuzzle;
-	}
-	public void setSchematicBlockTypeMuzzle(BlockData schematicBlockTypeMuzzle)
-	{
-		this.schematicBlockTypeMuzzle = schematicBlockTypeMuzzle;
-	}
-	public BlockData getSchematicBlockTypeRotationCenter()
-	{
-		return schematicBlockTypeRotationCenter;
-	}
-	public void setSchematicBlockTypeRotationCenter(BlockData schematicBlockTypeRotationCenter)
-	{
-		this.schematicBlockTypeRotationCenter = schematicBlockTypeRotationCenter;
-	}
-	public BlockData getSchematicBlockTypeRedstoneTorch()
-	{
-		return schematicBlockTypeRedstoneTorch;
-	}
-	public void setSchematicBlockTypeRedstoneTorch(BlockData schematicBlockTypeRedstoneTorch)
-	{
-		this.schematicBlockTypeRedstoneTorch = schematicBlockTypeRedstoneTorch;
-	}
-	public BlockData getSchematicBlockTypeRedstoneTrigger()
-	{
-		return schematicBlockTypeRedstoneTrigger;
-	}
-	public void setSchematicBlockTypeRedstoneTrigger(BlockData schematicBlockTypeRedstoneTrigger)
-	{
-		this.schematicBlockTypeRedstoneTrigger = schematicBlockTypeRedstoneTrigger;
-	}
-	public BlockData getIngameBlockTypeRedstoneTrigger()
-	{
-		return ingameBlockTypeRedstoneTrigger;
-	}
-	public void setIngameBlockTypeRedstoneTrigger(BlockData ingameBlockTypeRedstoneTrigger)
-	{
-		this.ingameBlockTypeRedstoneTrigger = ingameBlockTypeRedstoneTrigger;
-	}
-	public BlockData getSchematicBlockTypeRightClickTrigger()
-	{
-		return schematicBlockTypeRightClickTrigger;
-	}
-	public void setSchematicBlockTypeRightClickTrigger(BlockData schematicBlockTypeRightClickTrigger)
-	{
-		this.schematicBlockTypeRightClickTrigger = schematicBlockTypeRightClickTrigger;
-	}
-	public BlockData getIngameBlockTypeRightClickTrigger()
-	{
-		return ingameBlockTypeRightClickTrigger;
-	}
-	public void setIngameBlockTypeRightClickTrigger(BlockData ingameBlockTypeRightClickTrigger)
-	{
-		this.ingameBlockTypeRightClickTrigger = ingameBlockTypeRightClickTrigger;
-	}
 
-	public HashMap<BlockFace, CannonBlocks> getCannonBlockMap() {
-		return cannonBlockMap;
-	}
 
 	public void putCannonBlockMap(BlockFace cannonDirection, CannonBlocks blocks) {
 		for (var block : blocks.getAllCannonBlocks()) {
@@ -842,210 +565,6 @@ public class CannonDesign
 	{
 		return "designID:" + designID + " name:" + designName + " blocks:" + getAllCannonBlocks(BlockFace.NORTH).size();
 	}
-
-
-	public BlockData getSchematicBlockTypeChestAndSign()
-	{
-		return schematicBlockTypeChestAndSign;
-	}
-
-
-	public void setSchematicBlockTypeChestAndSign(BlockData schematicBlockTypeChestAndSign)
-	{
-		this.schematicBlockTypeChestAndSign = schematicBlockTypeChestAndSign;
-	}
-
-
-	public BlockData getSchematicBlockTypeRedstoneWireAndRepeater()
-	{
-		return schematicBlockTypeRedstoneWireAndRepeater;
-	}
-
-
-	public void setSchematicBlockTypeRedstoneWireAndRepeater(BlockData schematicBlockTypeRedstoneWireAndRepeater)
-	{
-		this.schematicBlockTypeRedstoneWireAndRepeater = schematicBlockTypeRedstoneWireAndRepeater;
-	}
-
-
-	public BlockData getSchematicBlockTypeFiringIndicator()
-	{
-		return schematicBlockTypeFiringIndicator;
-	}
-
-
-	public void setSchematicBlockTypeFiringIndicator(BlockData schematicBlockTypeFiringIndicator)
-	{
-		this.schematicBlockTypeFiringIndicator = schematicBlockTypeFiringIndicator;
-	}
-
-
-	public String getGunpowderName()
-	{
-		return gunpowderName;
-	}
-
-
-	public void setGunpowderName(String gunpowderName)
-	{
-		this.gunpowderName = gunpowderName;
-	}
-
-
-	public boolean isFiringItemRequired()
-	{
-		return FiringItemRequired;
-	}
-
-
-	public void setFiringItemRequired(boolean firingItemRequired)
-	{
-		FiringItemRequired = firingItemRequired;
-	}
-
-
-	public List<BlockData> getSchematicBlockTypeProtected()
-	{
-		return schematicBlockTypeProtected;
-	}
-
-
-	public void setSchematicBlockTypeProtected(List<BlockData> schematicBlockTypeProtected)
-	{
-		this.schematicBlockTypeProtected = schematicBlockTypeProtected;
-	}
-
-
-	public String getPermissionSpreadMultiplier()
-	{
-		return permissionSpreadMultiplier;
-	}
-
-
-	public void setPermissionSpreadMultiplier(String permissionSpreadMultiplier)
-	{
-		this.permissionSpreadMultiplier = permissionSpreadMultiplier;
-	}
-
-    public boolean isGunpowderConsumption() {
-        return gunpowderConsumption;
-    }
-
-    public void setGunpowderConsumption(boolean gunpowderConsumption) {
-        this.gunpowderConsumption = gunpowderConsumption;
-    }
-
-    public boolean isProjectileConsumption() {
-        return projectileConsumption;
-    }
-
-    public void setProjectileConsumption(boolean projectileConsumption) {
-        this.projectileConsumption = projectileConsumption;
-    }
-
-    public int getMassOfCannon() {
-        return massOfCannon;
-    }
-
-    public void setMassOfCannon(int massOfCannon) {
-        this.massOfCannon = massOfCannon;
-    }
-
-    public boolean isHeatManagementEnabled() {
-        return heatManagementEnabled;
-    }
-
-    public void setHeatManagementEnabled(boolean heatManagementEnabled) {
-        this.heatManagementEnabled = heatManagementEnabled;
-    }
-
-    public double getHeatIncreasePerGunpowder() {
-        return heatIncreasePerGunpowder;
-    }
-
-    public void setHeatIncreasePerGunpowder(double heatIncreasePerGunpowder) {
-        this.heatIncreasePerGunpowder = heatIncreasePerGunpowder;
-    }
-
-    public double getCoolingCoefficient() {
-        return coolingCoefficient;
-    }
-
-    public void setCoolingCoefficient(double coolingCoefficient) {
-        this.coolingCoefficient = coolingCoefficient;
-    }
-
-    public double getWarningTemperature() {
-        return warningTemperature;
-    }
-
-    public void setWarningTemperature(double warningTemperature) {
-        this.warningTemperature = warningTemperature;
-    }
-
-    public double getMaximumTemperature() {
-        return maximumTemperature;
-    }
-
-    public void setMaximumTemperature(double maximumTemperature) {
-        this.maximumTemperature = maximumTemperature;
-    }
-
-    public double getBurnSlowing() {
-        return burnSlowing;
-    }
-
-    public void setBurnSlowing(double burnSlowing) {
-        this.burnSlowing = burnSlowing;
-    }
-
-    public double getBurnDamage() {
-        return burnDamage;
-    }
-
-    public void setBurnDamage(double burnDamage) {
-        this.burnDamage = burnDamage;
-    }
-
-    public double getCriticalTemperature() {
-        return criticalTemperature;
-    }
-
-    public void setCriticalTemperature(double criticalTemperature) {
-        this.criticalTemperature = criticalTemperature;
-    }
-
-    public double getCoolingAmount() {
-        return coolingAmount;
-    }
-
-    public void setCoolingAmount(double coolingAmount) {
-        this.coolingAmount = coolingAmount;
-    }
-
-    public boolean isAutomaticCooling() {
-        return automaticCooling;
-    }
-
-    public void setAutomaticCooling(boolean automaticCooling) {
-        this.automaticCooling = automaticCooling;
-    }
-
-    public List<ItemHolder> getItemCooling() {
-        return itemCooling;
-    }
-
-    public void setItemCooling(List<ItemHolder> itemCooling) {
-        this.itemCooling = itemCooling;
-    }
-
-    public List<ItemHolder> getItemCoolingUsed() {
-        return itemCoolingUsed;
-    }
-
-    public void setItemCoolingUsed(List<ItemHolder> itemCoolingUsed) {
-        this.itemCoolingUsed = itemCoolingUsed;
-    }
 
     /**
      * is this Item a cooling tool to cool down a cannon
@@ -1081,568 +600,15 @@ public class CannonDesign
         return null;
     }
 
-    public boolean isAutomaticTemperatureControl() {
-        return automaticTemperatureControl;
-    }
-
-    public void setAutomaticTemperatureControl(boolean automaticTemperatureControl) {
-        this.automaticTemperatureControl = automaticTemperatureControl;
-    }
-
-    public String getPermissionThermometer() {
-        return permissionThermometer;
-    }
-
-    public void setPermissionThermometer(String permissionThermometer) {
-        this.permissionThermometer = permissionThermometer;
-    }
-
-    public String getPermissionRamrod() {
-        return permissionRamrod;
-    }
-
-    public void setPermissionRamrod(String permissionRamrod) {
-        this.permissionRamrod = permissionRamrod;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getMessageName() {
-        return messageName;
-    }
-
-    public void setMessageName(String messageName) {
-        this.messageName = messageName;
-    }
-
-    public double getSootPerGunpowder() {
-        return sootPerGunpowder;
-    }
-
-    public void setSootPerGunpowder(double sootPerGunpowder) {
-        this.sootPerGunpowder = sootPerGunpowder;
-    }
-
-    public int getProjectilePushing() {
-        return projectilePushing;
-    }
-
-    public void setProjectilePushing(int projectilePushing) {
-        this.projectilePushing = projectilePushing;
-    }
-
-    public double getMaxHorizontalAngleOnShip() {
-        return maxHorizontalAngleOnShip;
-    }
-
-    public void setMaxHorizontalAngleOnShip(double maxHorizontalAngleOnShip) {
-        this.maxHorizontalAngleOnShip = maxHorizontalAngleOnShip;
-    }
-
-    public double getMinHorizontalAngleOnShip() {
-        return minHorizontalAngleOnShip;
-    }
-
-    public void setMinHorizontalAngleOnShip(double minHorizontalAngleOnShip) {
-        this.minHorizontalAngleOnShip = minHorizontalAngleOnShip;
-    }
-
-    public double getMaxVerticalAngleOnShip() {
-        return maxVerticalAngleOnShip;
-    }
-
-    public void setMaxVerticalAngleOnShip(double maxVerticalAngleOnShip) {
-        this.maxVerticalAngleOnShip = maxVerticalAngleOnShip;
-    }
-
-    public double getMinVerticalAngleOnShip() {
-        return minVerticalAngleOnShip;
-    }
-
-    public void setMinVerticalAngleOnShip(double minVerticalAngleOnShip) {
-        this.minVerticalAngleOnShip = minVerticalAngleOnShip;
-    }
-
-    
-    public void setOverloadingExponent(double overloadingExponent)
-    {
-        this.overloadingExponent = overloadingExponent;
-    }
-    
-    public double getOverloadingExponent()
-    {
-        return overloadingExponent;
-    }
-    
-    public void setOverloadingChangeInc(double overloadingChanceInc)
-    {
-        this.overloadingChanceInc = overloadingChanceInc;
-    }
-    
-    public double getOverloadingChangeInc()
-    {
-        return overloadingChanceInc;
-    }
-    
-    public void setOverloadingMaxOverloadableGunpowder(int overloadingMaxOverloadableGunpowder)
-    {
-        this.overloadingMaxOverloadableGunpowder = overloadingMaxOverloadableGunpowder;
-    }
-
-    public int getOverloadingMaxOverloadableGunpowder()
-    {
-        return overloadingMaxOverloadableGunpowder;
-    }
-
-    public void setOverloadingChanceOfExplosionPerGunpowder(double overloadingChanceOfExplosionPerGunpowder)
-    {
-        this.overloadingChanceOfExplosionPerGunpowder = overloadingChanceOfExplosionPerGunpowder;
-    }
-    
-    public double getOverloadingChanceOfExplosionPerGunpowder()
-    {
-        return overloadingChanceOfExplosionPerGunpowder;
-    }
-
-
-	public boolean isOverloadingDependsOfTemperature()
-	{
-		return overloadingDependsOfTemperature;
-	}
-
-
-	public void setOverloadingDependsOfTemperature(boolean overloadingDependsOfTemperature)
-	{
-		this.overloadingDependsOfTemperature = overloadingDependsOfTemperature;
-	}
-
-
-	public int getStartingSoot()
-	{
-		return startingSoot;
-	}
-
-
-	public void setStartingSoot(int startingSoot)
-	{
-		this.startingSoot = startingSoot;
-	}
-
-
-	public boolean isOverloadingRealMode()
-	{
-		return overloadingRealMode;
-	}
-
-
-	public void setOverloadingRealMode(boolean overloadingRealMode)
-	{
-		this.overloadingRealMode = overloadingRealMode;
-	}
-
-
-	public boolean isOverloadingEnabled()
-	{
-		return overloadingEnabled;
-	}
-
-
-	public void setOverloadingEnabled(boolean overloadingEnabled)
-	{
-		this.overloadingEnabled = overloadingEnabled;
-	}
-
-
-	public boolean isLastUserBecomesOwner()
-	{
-		return lastUserBecomesOwner;
-	}
-
-
-	public void setLastUserBecomesOwner(boolean lastUserBecomesOwner)
-	{
-		this.lastUserBecomesOwner = lastUserBecomesOwner;
-	}
-
-    public String getPermissionRename() {
-        return permissionRename;
-    }
-
-    public void setPermissionRename(String permissionRename) {
-        this.permissionRename = permissionRename;
-    }
-
-    public String getPermissionObserver() {
-        return permissionObserver;
-    }
-
-    public void setPermissionObserver(String permissionObserver) {
-        this.permissionObserver = permissionObserver;
-    }
-
-    public double getExplodingLoadedCannons() {
-        return explodingLoadedCannons;
-    }
-
-    public void setExplodingLoadedCannons(double explodingLoadedCannons) {
-        this.explodingLoadedCannons = explodingLoadedCannons;
-    }
-
     public boolean isGunpowderNeeded() {
         return needsGunpowder;
     }
 
-    public void setNeedsGunpowder(boolean needsGunpowder) {
-        this.needsGunpowder = needsGunpowder;
-    }
-
-    public boolean isFireAfterLoading() {
-        return fireAfterLoading;
-    }
-
-    public void setFireAfterLoading(boolean fireAfterLoading) {
-        this.fireAfterLoading = fireAfterLoading;
-    }
-
-    public boolean isPredictorEnabled() {
-        return predictorEnabled;
-    }
-
-    public void setPredictorEnabled(boolean predictorEnabled) {
-        this.predictorEnabled = predictorEnabled;
-    }
-
-    public int getPredictorDelay() {
-        return predictorDelay;
-    }
-
-    public void setPredictorDelay(int predictorDelay) {
-        this.predictorDelay = predictorDelay;
-    }
-
-    public int getPredictorUpdate() {
-        return predictorUpdate;
-    }
-
-    public void setPredictorUpdate(int predictorUpdate) {
-        this.predictorUpdate = predictorUpdate;
-    }
-
-    public SoundHolder getSoundAdjust() {
-        return soundAdjust;
-    }
-
-    public void setSoundAdjust(SoundHolder soundAdjust) {
-        this.soundAdjust = soundAdjust;
-    }
-
-    public SoundHolder getSoundCreate() {
-        return soundCreate;
-    }
-
-    public void setSoundCreate(SoundHolder soundCreate) {
-        this.soundCreate = soundCreate;
-    }
-
-    public SoundHolder getSoundIgnite() {
-        return soundIgnite;
-    }
-
-    public void setSoundIgnite(SoundHolder soundIgnite) {
-        this.soundIgnite = soundIgnite;
-    }
-
-    public SoundHolder getSoundFiring() {
-        return soundFiring;
-    }
-
-    public void setSoundFiring(SoundHolder soundFiring) {
-        this.soundFiring = soundFiring;
-    }
-
-    public SoundHolder getSoundGunpowderLoading() {
-        return soundGunpowderLoading;
-    }
-
-    public void setSoundGunpowderLoading(SoundHolder soundGunpowderLoading) {
-        this.soundGunpowderLoading = soundGunpowderLoading;
-    }
-
-    public SoundHolder getSoundGunpowderOverloading() {
-        return soundGunpowderOverloading;
-    }
-
-    public void setSoundGunpowderOverloading(SoundHolder soundGunpowderOverloading) {
-        this.soundGunpowderOverloading = soundGunpowderOverloading;
-    }
-
-    public SoundHolder getSoundCool() {
-        return soundCool;
-    }
-
-    public void setSoundCool(SoundHolder soundCool) {
-        this.soundCool = soundCool;
-    }
-
-    public SoundHolder getSoundHot() {
-        return soundHot;
-    }
-
-    public void setSoundHot(SoundHolder soundHot) {
-        this.soundHot = soundHot;
-    }
-
-    public SoundHolder getSoundRamrodCleaning() {
-        return soundRamrodCleaning;
-    }
-
-    public void setSoundRamrodCleaning(SoundHolder soundRamrodCleaning) {
-        this.soundRamrodCleaning = soundRamrodCleaning;
-    }
-
-    public SoundHolder getSoundRamrodCleaningDone() {
-        return soundRamrodCleaningDone;
-    }
-
-    public void setSoundRamrodCleaningDone(SoundHolder soundRamrodCleaningDone) {
-        this.soundRamrodCleaningDone = soundRamrodCleaningDone;
-    }
-
-    public SoundHolder getSoundRamrodPushing() {
-        return soundRamrodPushing;
-    }
-
-    public void setSoundRamrodPushing(SoundHolder soundRamrodPushing) {
-        this.soundRamrodPushing = soundRamrodPushing;
-    }
-
-    public SoundHolder getSoundRamrodPushingDone() {
-        return soundRamrodPushingDone;
-    }
-
-    public void setSoundRamrodPushingDone(SoundHolder soundRamrodPushingDone) {
-        this.soundRamrodPushingDone = soundRamrodPushingDone;
-    }
-
-    public SoundHolder getSoundThermometer() {
-        return soundThermometer;
-    }
-
-    public void setSoundThermometer(SoundHolder soundThermometer) {
-        this.soundThermometer = soundThermometer;
-    }
-
-    public SoundHolder getSoundEnableAimingMode() {
-        return soundEnableAimingMode;
-    }
-
-    public void setSoundEnableAimingMode(SoundHolder soundEnableAimingMode) {
-        this.soundEnableAimingMode = soundEnableAimingMode;
-    }
-
-    public SoundHolder getSoundDisableAimingMode() {
-        return soundDisableAimingMode;
-    }
-
-    public void setSoundDisableAimingMode(SoundHolder soundDisableAimingMode) {
-        this.soundDisableAimingMode = soundDisableAimingMode;
-    }
-
-    public SoundHolder getSoundDestroy() {
-        return soundDestroy;
-    }
-
-    public void setSoundDestroy(SoundHolder soundDestroy) {
-        this.soundDestroy = soundDestroy;
-    }
-
-	public boolean isRemoveChargeAfterFiring() {
-		return removeChargeAfterFiring;
+	public void setOverloadingChangeInc(double overloadingChanceInc) {
+		this.overloadingChanceInc = overloadingChanceInc;
 	}
 
-	public void setRemoveChargeAfterFiring(boolean removeChargeAfterFiring) {
-		this.removeChargeAfterFiring = removeChargeAfterFiring;
-	}
-
-	public boolean isAngleUpdateMessage() {
-		return angleUpdateMessage;
-	}
-
-	public void setAngleUpdateMessage(boolean angleUpdateMessage) {
-		this.angleUpdateMessage = angleUpdateMessage;
-	}
-
-	public double getEconomyBuildingCost() {
-		return economyBuildingCost;
-	}
-
-	public void setEconomyBuildingCost(double economyBuildingCost) {
-		this.economyBuildingCost = economyBuildingCost;
-	}
-
-	public double getEconomyDismantlingRefund() {
-		return economyDismantlingRefund;
-	}
-
-	public void setEconomyDismantlingRefund(double economyDismantlingRefund) {
-		this.economyDismantlingRefund = economyDismantlingRefund;
-	}
-
-	public double getEconomyDestructionRefund() {
-		return economyDestructionRefund;
-	}
-
-	public void setEconomyDestructionRefund(double economyDestructionRefund) {
-		this.economyDestructionRefund = economyDestructionRefund;
-	}
-
-	public SoundHolder getSoundDismantle() {
-		return soundDismantle;
-	}
-
-	public void setSoundDismantle(SoundHolder soundDismantle) {
-		this.soundDismantle = soundDismantle;
-	}
-
-	public boolean isSentry() {
-		return sentry;
-	}
-
-	public void setSentry(boolean sentry) {
-		this.sentry = sentry;
-	}
-
-	public int getSentryUpdateTime() {
-		return sentryUpdateTime;
-	}
-
-	public void setSentryUpdateTime(int sentryUpdateTime) {
-		this.sentryUpdateTime = sentryUpdateTime;
-	}
-
-    public int getSentryMaxRange() {
-        return sentryMaxRange;
-    }
-
-    public void setSentryMaxRange(int sentryMaxRange) {
-        this.sentryMaxRange = sentryMaxRange;
-    }
-
-    public int getSentrySwapTime() {
-        return sentrySwapTime;
-    }
-
-    public void setSentrySwapTime(int sentrySwapTime) {
-        this.sentrySwapTime = sentrySwapTime;
-    }
-
-    public int getSentryMinRange() {
-        return sentryMinRange;
-    }
-
-    public void setSentryMinRange(int sentryMinRange) {
-        this.sentryMinRange = sentryMinRange;
-    }
-
-	public boolean isSentryIndirectFire() {
-		return sentryIndirectFire;
-	}
-
-	public void setSentryIndirectFire(boolean sentryIndirectFire) {
-		this.sentryIndirectFire = sentryIndirectFire;
-	}
-
-	public String getPermissionDismantle() {
-		return permissionDismantle;
-	}
-
-	public void setPermissionDismantle(String permissionDismantle) {
-		this.permissionDismantle = permissionDismantle;
-	}
-
-    public double getDismantlingDelay() {
-        return dismantlingDelay;
-    }
-
-    public void setDismantlingDelay(double dismantlingDelay) {
-        this.dismantlingDelay = dismantlingDelay;
-    }
-
-	public double getAngleLargeStepSize() {
-		return angleLargeStepSize;
-	}
-
-	public void setAngleLargeStepSize(double angleLargeStepSize) {
-		this.angleLargeStepSize = angleLargeStepSize;
-	}
-
-	public double getLoadTime() {
-		return loadTime;
-	}
-
-	public void setLoadTime(double loadTime) {
-		this.loadTime = loadTime;
-	}
-
-	public double getSentrySpread() {
-		return sentrySpread;
-	}
-
-	public void setSentrySpread(double sentrySpread) {
-		this.sentrySpread = sentrySpread;
-	}
-
-	public SoundHolder getSoundSelected() {
-		return soundSelected;
-	}
-
-	public void setSoundSelected(SoundHolder soundSelected) {
-		this.soundSelected = soundSelected;
-	}
-
-	public boolean isPreloaded() {
-		return preloaded;
-	}
-
-	public void setPreloaded(boolean preloaded) {
-		this.preloaded = preloaded;
-	}
-
-	public boolean isAutoloadChargeWhenLoadingProjectile() {
-		return autoloadChargeWhenLoadingProjectile;
-	}
-
-	public void setAutoloadChargeWhenLoadingProjectile(boolean autoloadChargeWhenLoadingProjectile) {
-		this.autoloadChargeWhenLoadingProjectile = autoloadChargeWhenLoadingProjectile;
-	}
-
-	public double getFuseBurnTimeRandomness() {
-		return fuseBurnTimeRandomness;
-	}
-
-	public void setFuseBurnTimeRandomness(double fuseBurnTimeRandomness) {
-		this.fuseBurnTimeRandomness = fuseBurnTimeRandomness;
-	}
-
-	public boolean isLinkCannonsEnabled() {
-		return linkCannonsEnabled;
-	}
-
-	public void setLinkCannonsEnabled(boolean linkCannonsEnabled) {
-		this.linkCannonsEnabled = linkCannonsEnabled;
-	}
-
-	public int getLinkCannonsDistance() {
-		return linkCannonsDistance;
-	}
-
-	public void setLinkCannonsDistance(int linkCannonsDistance) {
-		this.linkCannonsDistance = linkCannonsDistance;
+	public double getOverloadingChangeInc() {
+		return overloadingChanceInc;
 	}
 }
