@@ -2141,12 +2141,9 @@ public class Cannon implements ICannon, Rotational {
         return !this.getCannonDesign().isAccessForOwnerOnly() || fcannon.getOwner() == player.getUniqueId();
     }
 
-    /**
-     * If you plan on modifying the firing data directly
-     * remember to call Cannon#hasUpdated if you plan on changing data
-     */
     @Override
     public FiringData getFiringData() {
+        hasUpdated();
         return this.firingData;
     }
 
@@ -2158,6 +2155,7 @@ public class Cannon implements ICannon, Rotational {
 
     @Override
     public AimingData getAimingData() {
+        hasUpdated();
         return this.aimingData;
     }
 
@@ -2169,6 +2167,7 @@ public class Cannon implements ICannon, Rotational {
 
     @Override
     public SentryData getSentryData() {
+        hasUpdated();
         return this.sentryData;
     }
 
@@ -2180,11 +2179,13 @@ public class Cannon implements ICannon, Rotational {
 
     @Override
     public CannonPosition getCannonPosition() {
+        hasUpdated();
         return cannonPosition;
     }
 
     @Override
     public void setCannonPosition(CannonPosition position) {
-        this.hasUpdated();
+        this.cannonPosition = position;
+        hasUpdated();
     }
 }
