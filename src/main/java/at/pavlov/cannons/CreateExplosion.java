@@ -14,6 +14,7 @@ import at.pavlov.cannons.event.ProjectileImpactEvent;
 import at.pavlov.cannons.event.ProjectilePiercingEvent;
 import at.pavlov.cannons.event.CannonDamageEvent;
 import at.pavlov.cannons.multiversion.EntityTypeResolver;
+import at.pavlov.cannons.multiversion.EventResolver;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileProperties;
@@ -24,7 +25,6 @@ import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.cannons.utils.SoundUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
-import org.bukkit.ExplosionResult;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -226,7 +226,7 @@ public class CreateExplosion {
         }
 
         // create bukkit event
-        EntityExplodeEvent event = new EntityExplodeEvent(projectile_entity, impactLoc, piercingEvent.getBlockList(), 1.0f, ExplosionResult.DESTROY);
+        EntityExplodeEvent event = EventResolver.getEntityExplodeEvent(projectile_entity, impactLoc, piercingEvent.getBlockList(), 1.0f);
         this.plugin.getServer().getPluginManager().callEvent(event);
 
         this.plugin.logDebug("was the cannons explode event canceled: " + event.isCancelled());
