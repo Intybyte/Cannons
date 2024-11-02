@@ -370,7 +370,7 @@ public class Cannon implements ICannon, Rotational {
      * @param amountToLoad - number of items which are loaded into the cannon
      * @param player - Player loading the cannon
      */
-    public MessageEnum loadGunpowder(int amountToLoad, Player player) {
+    private MessageEnum getGunpowderMessage(int amountToLoad, Player player) {
         //this cannon does not need gunpowder
         if (!design.isGunpowderNeeded())
             return MessageEnum.ErrorNoGunpowderNeeded;
@@ -459,7 +459,7 @@ public class Cannon implements ICannon, Rotational {
             }
 
             //load the gunpowder
-            returnVal = loadGunpowder(gunpowder, player);
+            returnVal = getGunpowderMessage(gunpowder, player);
         }
 
         // the cannon was loaded with gunpowder - lets get it form the player
