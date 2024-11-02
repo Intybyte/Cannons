@@ -90,17 +90,6 @@ public interface AmmoLoadingDataHolder extends Updatable {
     //endregion
 
     //region Temperature
-    //TODO check original and if not needed remove all these in favour of getTemperature etc
-    @ApiStatus.Internal
-    default double getTempValue() {
-        return getAmmoLoadingData().getTempValue();
-    }
-
-    @ApiStatus.Internal
-    default void setTempValue(double temp) {
-        hasUpdated();
-        getAmmoLoadingData().setTempValue(temp);
-    }
 
     // the tempTimestamp set and getters were fully exposed
     // but there should be no reason to directly edit those
@@ -123,7 +112,7 @@ public interface AmmoLoadingDataHolder extends Updatable {
     double getTemperature();
 
     default double getTemperature(boolean update) {
-        return (update ? this.getTemperature() : this.getTempValue());
+        return (update ? this.getTemperature() : this.getAmmoLoadingData().getTempValue());
     }
     //endregion
 }

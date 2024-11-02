@@ -1636,8 +1636,8 @@ public class Cannon implements ICannon, Rotational {
         double timePassed = (System.currentTimeMillis() - this.getTemperatureTimeStamp()) / 1000.0;
         double decay = Math.exp(-timePassed / design.getCoolingCoefficient());
         double ambient = getAmbientTemperature();
-        double newValue = ambient + (getTempValue() - ambient) * decay;
-        setTempValue(newValue);
+        double newValue = ambient + (ammoLoadingData.getTempValue() - ambient) * decay;
+        ammoLoadingData.setTempValue(newValue);
         setTemperatureTimeStamp(System.currentTimeMillis());
 
         return newValue;
@@ -1650,7 +1650,7 @@ public class Cannon implements ICannon, Rotational {
      */
     public void setTemperature(double temperature) {
         this.setTemperatureTimeStamp(System.currentTimeMillis());
-        this.setTempValue(temperature);
+        ammoLoadingData.setTempValue(temperature);
         this.hasUpdated();
     }
 
@@ -1878,24 +1878,28 @@ public class Cannon implements ICannon, Rotational {
         if (design.isOverloadingEnabled()) {
             double tempInc;
             if (design.isOverloadingDependsOfTemperature())
-                tempInc = getTempValue() / design.getMaximumTemperature();
+                tempInc = ammoLoadingData.getTempValue() / design.getMaximumTemperature();
             else
                 tempInc = 1;
 
-            int saferGunpowder;
-            if (design.isOverloadingRealMode())
-                saferGunpowder = 0;
-            else
-                saferGunpowder = design.getMaxLoadableGunpowderNormal();
-
-            //prevent negative values
-            int gunpowder = ammoLoadingData.getLoadedGunpowder() - saferGunpowder;
-            if (gunpowder < 0)
-                gunpowder = 0;
-            double chance = tempInc * design.getOverloadingChangeInc() * Math.pow(gunpowder * design.getOverloadingChanceOfExplosionPerGunpowder(), design.getOverloadingExponent());
+            double chance = getChance(tempInc);
             return (chance <= 0) ? 0.0 : chance;
         } else
             return 0.0;
+    }
+
+    private double getChance(double tempInc) {
+        int saferGunpowder;
+        if (design.isOverloadingRealMode())
+            saferGunpowder = 0;
+        else
+            saferGunpowder = design.getMaxLoadableGunpowderNormal();
+
+        //prevent negative values
+        int gunpowder = ammoLoadingData.getLoadedGunpowder() - saferGunpowder;
+        if (gunpowder < 0)
+            gunpowder = 0;
+        return tempInc * design.getOverloadingChangeInc() * Math.pow(gunpowder * design.getOverloadingChanceOfExplosionPerGunpowder(), design.getOverloadingExponent());
     }
 
     /**
