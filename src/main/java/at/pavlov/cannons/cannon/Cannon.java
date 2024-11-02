@@ -102,12 +102,6 @@ public class Cannon implements ICannon, Rotational {
     private boolean whitelistUpdated;
 
     private CannonDesign design;
-
-
-    // not saved in the database
-    // redstone handling event. Last player that pressed the firing button is saved in this list for the next redstone event
-    private String firingButtonActivator;
-
     private final Random random = new Random();
 
 
@@ -1551,14 +1545,6 @@ public class Cannon implements ICannon, Rotational {
 
     public boolean sameDesign(Cannon cannon) {
         return design.equals(cannon.getCannonDesign());
-    }
-
-    public String getFiringButtonActivator() {
-        return firingButtonActivator;
-    }
-
-    public void setFiringButtonActivator(String firingButtonActivator) {
-        this.firingButtonActivator = firingButtonActivator;
     }
 
     public void setLastUser(UUID lastUser) {
