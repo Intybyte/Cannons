@@ -60,9 +60,6 @@ public class Cannon implements ICannon, Rotational {
     private CannonPosition cannonPosition = new CannonPosition();
     private AmmoLoadingData ammoLoadingData = new AmmoLoadingData();
 
-    // time it was last aimed
-    private long lastAimed;
-
     private FiringData firingData = new FiringData();
 
     // was the cannon fee paid
@@ -90,8 +87,6 @@ public class Cannon implements ICannon, Rotational {
     private boolean isValid;
     // time point of the last start of the firing sequence (used in combination with isFiring)
     private long lastIgnited;
-    // the player which has used the cannon last, important for firing with redstone button
-    private UUID lastUser;
     // the last player which was added or removed from the whitelist
     private UUID lastWhitelisted;
     // spread multiplier from the last operator of the cannon
@@ -1566,20 +1561,8 @@ public class Cannon implements ICannon, Rotational {
         this.firingButtonActivator = firingButtonActivator;
     }
 
-    public long getLastAimed() {
-        return lastAimed;
-    }
-
-    public void setLastAimed(long lastAimed) {
-        this.lastAimed = lastAimed;
-    }
-
-    public UUID getLastUser() {
-        return lastUser;
-    }
-
     public void setLastUser(UUID lastUser) {
-        this.lastUser = lastUser;
+        this.firingData.setLastUser(lastUser);
         if (design.isLastUserBecomesOwner())
             this.setOwner(lastUser);
     }

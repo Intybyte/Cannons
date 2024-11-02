@@ -4,6 +4,8 @@ import at.pavlov.cannons.cannon.data.FiringData;
 import at.pavlov.cannons.interfaces.Updatable;
 import at.pavlov.cannons.projectile.Projectile;
 
+import java.util.UUID;
+
 //TODO: Separate all "Last" to a cannon state class if this gets too convoluted
 interface FiringDataHolder extends Updatable {
     FiringData getFiringData();
@@ -49,4 +51,8 @@ interface FiringDataHolder extends Updatable {
         getFiringData().setLastLoaded(lastLoaded);
     }
 
+    default UUID getLastUser() {
+        return getFiringData().getLastUser();
+    }
+    void setLastUser(UUID lastUser);
 }

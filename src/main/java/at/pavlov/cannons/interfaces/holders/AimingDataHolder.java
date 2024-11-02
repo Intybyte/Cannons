@@ -104,4 +104,12 @@ public interface AimingDataHolder extends Updatable {
     default void setAimingFinished(boolean aimingFinished) {
         this.getAimingData().setAimingFinished(aimingFinished);
     }
+
+    default long getLastAimed() {
+        return getAimingData().getLastAimed();
+    }
+
+    default void setLastAimed(long lastAimed) {
+        getAimingData().setLastAimed(lastAimed);
+    }
 }

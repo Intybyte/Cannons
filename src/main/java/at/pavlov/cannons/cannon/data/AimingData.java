@@ -17,4 +17,6 @@ import org.jetbrains.annotations.ApiStatus;
     private double aimingYaw;
     // is the cannon aiming at the given direction
     private boolean aimingFinished;
+    // time it was last aimed
+    private long lastAimed;
 }

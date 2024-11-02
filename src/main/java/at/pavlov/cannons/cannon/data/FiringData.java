@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.UUID;
+
 @Setter(onMethod_ = {@ApiStatus.Internal})
 @Data public class FiringData {
     // amount of fired cannonballs with this cannon
@@ -16,5 +18,6 @@ import org.jetbrains.annotations.ApiStatus;
     private long lastFired;
     // it was loaded for the last time
     private long lastLoaded;
-
+    // the player which has used the cannon last, important for firing with redstone button
+    private UUID lastUser;
 }
