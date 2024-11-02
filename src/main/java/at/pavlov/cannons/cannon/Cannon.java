@@ -6,6 +6,7 @@ import at.pavlov.cannons.Enum.CannonRotation;
 import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.data.AimingData;
+import at.pavlov.cannons.cannon.data.AmmoLoadingData;
 import at.pavlov.cannons.cannon.data.CannonPosition;
 import at.pavlov.cannons.cannon.data.SentryData;
 import at.pavlov.cannons.container.ItemHolder;
@@ -57,6 +58,7 @@ public class Cannon implements ICannon, Rotational {
     private String cannonName;
 
     private CannonPosition cannonPosition = new CannonPosition();
+    private AmmoLoadingData ammoLoadingData = new AmmoLoadingData();
 
     // time it was last aimed
     private long lastAimed;
@@ -94,10 +96,6 @@ public class Cannon implements ICannon, Rotational {
     private UUID lastWhitelisted;
     // spread multiplier from the last operator of the cannon
     private double lastPlayerSpreadMultiplier;
-
-    // cannon temperature
-    private double tempValue;
-    private long tempTimestamp;
 
     // time stamp of the player last time inside the aiming mode range (needs a certain time to disable aiming mode)
     private long timestampAimingMode;
@@ -165,10 +163,6 @@ public class Cannon implements ICannon, Rotational {
         firingData.setLastFiredGunpowder(0);
         this.setSoot(design.getStartingSoot());
         this.setProjectilePushed(design.getProjectilePushing());
-
-        // set temperature
-        this.tempValue = 0.0;
-        this.tempTimestamp = 0;
 
         this.sentryData.setTargetMob(true);
         this.sentryData.setTargetPlayer(false);
@@ -281,7 +275,7 @@ public class Cannon implements ICannon, Rotational {
         if (!design.isGunpowderConsumption() || !design.isGunpowderNeeded() || !consumesAmmo) {
             //no ammo consumption - only load if there is less gunpowder then normal in the barrel
             if (getLoadedGunpowder() <= design.getMaxLoadableGunpowderNormal())
-                firingData.setLoadedGunpowder(design.getMaxLoadableGunpowderNormal());
+                ammoLoadingData.setLoadedGunpowder(design.getMaxLoadableGunpowderNormal());
             return null;
         }
 
@@ -299,7 +293,7 @@ public class Cannon implements ICannon, Rotational {
 
         if (gunpowder.getAmount() == 0) {
             //there was enough gunpowder in the chest
-            firingData.setLoadedGunpowder(design.getMaxLoadableGunpowderNormal());
+            ammoLoadingData.setLoadedGunpowder(design.getMaxLoadableGunpowderNormal());
             return null;
         }
 
@@ -731,7 +725,7 @@ public class Cannon implements ICannon, Rotational {
      * removes gunpowder and the projectile. Items are drop at the cannonball firing point
      */
     private void dropCharge() {
-        int loadedGunpowder = firingData.getLoadedGunpowder();
+        int loadedGunpowder = ammoLoadingData.getLoadedGunpowder();
         //drop gunpowder
         if (loadedGunpowder > 0 && design.isGunpowderNeeded()) {
             ItemStack powder = design.getGunpowderType().toItemStack(loadedGunpowder);
@@ -740,7 +734,7 @@ public class Cannon implements ICannon, Rotational {
 
         // drop projectile
         if (isLoaded()) {
-            getWorldBukkit().dropItemNaturally(design.getMuzzle(this), firingData.getLoadedProjectile().getLoadingItem().toItemStack(1));
+            getWorldBukkit().dropItemNaturally(design.getMuzzle(this), ammoLoadingData.getLoadedProjectile().getLoadingItem().toItemStack(1));
         }
         removeCharge();
 
@@ -1265,9 +1259,9 @@ public class Cannon implements ICannon, Rotational {
      * @return firing vector
      */
     public Vector getFiringVector(boolean addSpread, boolean usePlayerSpread) {
-        if (firingData.getLastFiredProjectile() == null && firingData.getLoadedProjectile() == null)
+        if (firingData.getLastFiredProjectile() == null && ammoLoadingData.getLoadedProjectile() == null)
             return new Vector(0, 0, 0);
-        Projectile projectile = firingData.getLoadedProjectile();
+        Projectile projectile = ammoLoadingData.getLoadedProjectile();
         if (projectile == null)
             projectile = firingData.getLastFiredProjectile();
 
@@ -1352,17 +1346,17 @@ public class Cannon implements ICannon, Rotational {
      * @return the velocity of the load projectile, 0 if nothing is loaded
      */
     public double getCannonballVelocity() {
-        if ((firingData.getLoadedProjectile() == null && firingData.getLastFiredProjectile() == null) || design == null)
+        if ((ammoLoadingData.getLoadedProjectile() == null && firingData.getLastFiredProjectile() == null) || design == null)
             return 0.0;
 
         int loadableGunpowder = design.getMaxLoadableGunpowderNormal();
         if (loadableGunpowder <= 0)
             loadableGunpowder = 1;
 
-        if (firingData.getLoadedProjectile() == null)
+        if (ammoLoadingData.getLoadedProjectile() == null)
             return firingData.getLastFiredProjectile().getVelocity() * design.getMultiplierVelocity() * (1 - Math.pow(2, (double) (-4 * firingData.getLastFiredGunpowder()) / loadableGunpowder));
         else
-            return firingData.getLoadedProjectile().getVelocity() * design.getMultiplierVelocity() * (1 - Math.pow(2, (double) (-4 * firingData.getLoadedGunpowder()) / loadableGunpowder));
+            return ammoLoadingData.getLoadedProjectile().getVelocity() * design.getMultiplierVelocity() * (1 - Math.pow(2, (double) (-4 * ammoLoadingData.getLoadedGunpowder()) / loadableGunpowder));
     }
 
     /**
@@ -1473,14 +1467,26 @@ public class Cannon implements ICannon, Rotational {
     //TODO: Add a limit to these methods here
     @Override
     public int getLoadedGunpowder() {
-        if (firingData.getLoadedGunpowder() < design.getMaxLoadableGunpowderNormal() && !design.isGunpowderNeeded())
+        if (ammoLoadingData.getLoadedGunpowder() < design.getMaxLoadableGunpowderNormal() && !design.isGunpowderNeeded())
             design.getMaxLoadableGunpowderNormal();
 
-        return firingData.getLoadedGunpowder();
+        return ammoLoadingData.getLoadedGunpowder();
+    }
+
+    @Override
+    public AmmoLoadingData getAmmoLoadingData() {
+        this.hasUpdated();
+        return ammoLoadingData;
+    }
+
+    @Override
+    public void setAmmoLoadingData(AmmoLoadingData ammoLoadingData) {
+        this.ammoLoadingData = ammoLoadingData;
+        this.hasUpdated();
     }
 
     public void setLoadedGunpowder(int loadedGunpowder) {
-        this.firingData.setLoadedGunpowder(loadedGunpowder);
+        this.ammoLoadingData.setLoadedGunpowder(loadedGunpowder);
         this.hasUpdated();
     }
 
@@ -1627,17 +1633,14 @@ public class Cannon implements ICannon, Rotational {
      */
     public double getTemperature() {
         //barrel temperature - minus ambient temperature + exponential decay
-        double timePassed = (System.currentTimeMillis() - this.tempTimestamp) / 1000.0;
+        double timePassed = (System.currentTimeMillis() - this.getTemperatureTimeStamp()) / 1000.0;
         double decay = Math.exp(-timePassed / design.getCoolingCoefficient());
         double ambient = getAmbientTemperature();
-        tempValue = ambient + (tempValue - ambient) * decay;
-        this.tempTimestamp = System.currentTimeMillis();
+        double newValue = ambient + (getTempValue() - ambient) * decay;
+        setTempValue(newValue);
+        setTemperatureTimeStamp(System.currentTimeMillis());
 
-        return tempValue;
-    }
-
-    public double getTemperature(boolean update) {
-        return (update ? this.getTemperature() : this.tempValue);
+        return newValue;
     }
 
     /**
@@ -1646,17 +1649,8 @@ public class Cannon implements ICannon, Rotational {
      * @param temperature - temperature of the cannon
      */
     public void setTemperature(double temperature) {
-        this.tempTimestamp = System.currentTimeMillis();
-        this.tempValue = temperature;
-        this.hasUpdated();
-    }
-
-    public long getTemperatureTimeStamp() {
-        return tempTimestamp;
-    }
-
-    public void setTemperatureTimeStamp(long temperatureTimeStamp) {
-        this.tempTimestamp = temperatureTimeStamp;
+        this.setTemperatureTimeStamp(System.currentTimeMillis());
+        this.setTempValue(temperature);
         this.hasUpdated();
     }
 
@@ -1884,7 +1878,7 @@ public class Cannon implements ICannon, Rotational {
         if (design.isOverloadingEnabled()) {
             double tempInc;
             if (design.isOverloadingDependsOfTemperature())
-                tempInc = tempValue / design.getMaximumTemperature();
+                tempInc = getTempValue() / design.getMaximumTemperature();
             else
                 tempInc = 1;
 
@@ -1895,7 +1889,7 @@ public class Cannon implements ICannon, Rotational {
                 saferGunpowder = design.getMaxLoadableGunpowderNormal();
 
             //prevent negative values
-            int gunpowder = firingData.getLoadedGunpowder() - saferGunpowder;
+            int gunpowder = ammoLoadingData.getLoadedGunpowder() - saferGunpowder;
             if (gunpowder < 0)
                 gunpowder = 0;
             double chance = tempInc * design.getOverloadingChangeInc() * Math.pow(gunpowder * design.getOverloadingChanceOfExplosionPerGunpowder(), design.getOverloadingExponent());
@@ -2020,8 +2014,8 @@ public class Cannon implements ICannon, Rotational {
     }
 
     public EntityType getProjectileEntityType() {
-        if (firingData.getLoadedProjectile() != null) {
-            return firingData.getLoadedProjectile().getProjectileEntity();
+        if (ammoLoadingData.getLoadedProjectile() != null) {
+            return ammoLoadingData.getLoadedProjectile().getProjectileEntity();
         }
         if (firingData.getLastFiredProjectile() != null) {
             return firingData.getLastFiredProjectile().getProjectileEntity();

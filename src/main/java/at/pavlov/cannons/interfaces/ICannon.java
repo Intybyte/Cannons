@@ -11,14 +11,6 @@ public interface ICannon extends CannonDataHolder {
     void setUID(UUID id);
     UUID getUID();
 
-    //region Temperature Handling
-    void setTemperature(double temp);
-    double getTemperature();
-
-    void setTemperatureTimeStamp(long timeStamp);
-    long getTemperatureTimeStamp();
-    //endregion
-
     void setPaid(boolean paid);
     boolean isPaid();
 }
