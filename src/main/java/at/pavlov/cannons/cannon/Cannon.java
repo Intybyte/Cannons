@@ -1177,7 +1177,6 @@ public class Cannon implements ICannon, Rotational {
             } while (i < 4 && effectLoc.getBlock().getType() != Material.AIR);
 
             effectLoc.getWorld().playEffect(effectLoc, Effect.SMOKE, face);
-            //effectLoc.getWorld().playSound(effectLoc, Sound.FIZZ, 1, 1);
             SoundUtils.playSound(effectLoc, design.getSoundHot());
         }
     }
@@ -1223,7 +1222,6 @@ public class Cannon implements ICannon, Rotational {
         boolean cooled = coolCannon(player);
         if (cooled && effectLoc != null && getTemperature() > design.getWarningTemperature()) {
             effectLoc.getWorld().playEffect(effectLoc, Effect.SMOKE, BlockFace.UP);
-            //effectLoc.getWorld().playSound(effectLoc, Sound.FIZZ, 1, 1);
             SoundUtils.playSound(effectLoc, design.getSoundCool());
         }
         return cooled;
