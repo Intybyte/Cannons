@@ -5,5 +5,6 @@ public interface CannonDataHolder extends
         AimingDataHolder,
         SentryDataHolder,
         CannonPositionHolder,
-        AmmoLoadingDataHolder
+        AmmoLoadingDataHolder,
+        WhitelistDataHolder
 {}

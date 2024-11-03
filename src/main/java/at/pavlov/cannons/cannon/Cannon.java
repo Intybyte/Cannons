@@ -9,6 +9,7 @@ import at.pavlov.cannons.cannon.data.AimingData;
 import at.pavlov.cannons.cannon.data.AmmoLoadingData;
 import at.pavlov.cannons.cannon.data.CannonPosition;
 import at.pavlov.cannons.cannon.data.SentryData;
+import at.pavlov.cannons.cannon.data.WhitelistData;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.cannon.data.FiringData;
@@ -44,7 +45,6 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -66,7 +66,7 @@ public class Cannon implements ICannon, Rotational {
     private boolean paid;
 
     private AimingData aimingData = new AimingData();
-
+    private WhitelistData whitelistData = new WhitelistData();
     private SentryData sentryData = new SentryData();
 
     // cannon operator (can be null), distance to the cannon matters
@@ -78,17 +78,12 @@ public class Cannon implements ICannon, Rotational {
     //<Player name, remove after showing impact>
     private final HashMap<UUID, Boolean> observerMap = new HashMap<>();
 
-    //a sentry cannon will not target a whitelisted player
-    private final HashSet<UUID> whitelist = new HashSet<>();
-
     // player who has build this cannon
     private UUID owner;
     // designID of the cannon, for different types of cannons - not in use
     private boolean isValid;
     // time point of the last start of the firing sequence (used in combination with isFiring)
     private long lastIgnited;
-    // the last player which was added or removed from the whitelist
-    private UUID lastWhitelisted;
     // spread multiplier from the last operator of the cannon
     private double lastPlayerSpreadMultiplier;
 
@@ -99,7 +94,6 @@ public class Cannon implements ICannon, Rotational {
     @Setter
     @Getter
     private boolean updated;
-    private boolean whitelistUpdated;
 
     private CannonDesign design;
     private final Random random = new Random();
@@ -119,7 +113,7 @@ public class Cannon implements ICannon, Rotational {
         this.paid = design.getEconomyBuildingCost() <= 0;
         // set owner in the whitelist
         if (design.getEconomyBuildingCost() <= 0)
-            whitelist.add(owner);
+            whitelistData.add(owner);
 
         //the cannon is not moving
         this.cannonPosition.setVelocity(new Vector(0, 0, 0));
@@ -159,7 +153,6 @@ public class Cannon implements ICannon, Rotational {
 
         this.databaseId = UUID.randomUUID();
         this.updated = true;
-        this.whitelistUpdated = true;
     }
 
 
@@ -1474,11 +1467,6 @@ public class Cannon implements ICannon, Rotational {
         this.hasUpdated();
     }
 
-    public void setLoadedGunpowder(int loadedGunpowder) {
-        this.ammoLoadingData.setLoadedGunpowder(loadedGunpowder);
-        this.hasUpdated();
-    }
-
     /**
      * returns the maximum horizontal angle, depending if the cannon is on a ship or not
      *
@@ -1927,14 +1915,16 @@ public class Cannon implements ICannon, Rotational {
         return entityId != null && this.sentryData.getSentryEntityHistory().contains(entityId);
     }
 
-    public HashSet<UUID> getWhitelist() {
-        return whitelist;
+    @Override
+    public WhitelistData getWhitelistData() {
+        return whitelistData;
     }
 
-    public void addWhitelistPlayer(UUID playerUID) {
-        setLastWhitelisted(playerUID);
-        whitelist.add(playerUID);
-        this.hasWhitelistUpdated();
+    @Override
+    public void setWhitelistData(WhitelistData data) {
+        hasWhitelistUpdated();
+        hasUpdated();
+        whitelistData = data;
     }
 
     public void removeWhitelistPlayer(UUID playerUID) {
@@ -1943,12 +1933,8 @@ public class Cannon implements ICannon, Rotational {
             return;
         }
         setLastWhitelisted(playerUID);
-        whitelist.remove(playerUID);
+        whitelistData.getWhitelist().remove(playerUID);
         this.hasWhitelistUpdated();
-    }
-
-    public boolean isWhitelisted(UUID playerUID) {
-        return whitelist.contains(playerUID);
     }
 
     /**
@@ -1960,15 +1946,6 @@ public class Cannon implements ICannon, Rotational {
     public boolean isOperator(UUID playerUID) {
         return (isWhitelisted(playerUID) || playerUID == owner);
     }
-
-    public UUID getLastWhitelisted() {
-        return lastWhitelisted;
-    }
-
-    public void setLastWhitelisted(UUID lastWhitelisted) {
-        this.lastWhitelisted = lastWhitelisted;
-    }
-
 
     public boolean isPaid() {
         return paid;
@@ -1982,8 +1959,8 @@ public class Cannon implements ICannon, Rotational {
     public void boughtByPlayer(UUID playerID) {
         setPaid(true);
         setOwner(playerID);
-        whitelist.clear();
-        whitelist.add(playerID);
+        whitelistData.clear();
+        whitelistData.add(playerID);
     }
 
     public EntityType getProjectileEntityType() {
@@ -1994,18 +1971,6 @@ public class Cannon implements ICannon, Rotational {
             return firingData.getLastFiredProjectile().getProjectileEntity();
         }
         return EntityType.SNOWBALL;
-    }
-
-    public boolean isWhitelistUpdated() {
-        return whitelistUpdated;
-    }
-
-    public void hasWhitelistUpdated() {
-        this.whitelistUpdated = true;
-    }
-
-    public void setWhitelistUpdated(boolean whitelistUpdated) {
-        this.whitelistUpdated = whitelistUpdated;
     }
 
     public UUID getCannonOperator() {
