@@ -53,8 +53,6 @@ public class Cannon implements ICannon, Rotational {
     // Database id - is -1 until stored in the database. Then it is the id in the
     // database
     private UUID databaseId;
-
-    private String designID;
     private String cannonName;
 
     private CannonPosition cannonPosition = new CannonPosition();
@@ -102,7 +100,6 @@ public class Cannon implements ICannon, Rotational {
     public Cannon(CannonDesign design, UUID world, Vector cannonOffset, BlockFace cannonDirection, UUID owner) {
 
         this.design = design;
-        this.designID = design.getDesignID();
         this.cannonPosition.setWorld(world);
         this.cannonPosition.setOffset(cannonOffset);
         this.cannonPosition.setCannonDirection(cannonDirection);
@@ -1373,7 +1370,7 @@ public class Cannon implements ICannon, Rotational {
      * @return result
      */
     public boolean equals(CannonDesign cannonDesign) {
-        return designID.equals(cannonDesign.getDesignID());
+        return design.getDesignID().equals(cannonDesign.getDesignID());
     }
 
     /**
@@ -1429,11 +1426,11 @@ public class Cannon implements ICannon, Rotational {
     }
 
     public String getDesignID() {
-        return designID;
+        return design.getDesignID();
     }
 
     public void setDesignID(String designID) {
-        this.designID = designID;
+        this.design = DesignStorage.getInstance().getDesign(designID);
         this.hasUpdated();
     }
 
