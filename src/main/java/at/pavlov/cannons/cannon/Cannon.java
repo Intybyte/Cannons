@@ -1425,15 +1425,6 @@ public class Cannon implements ICannon, Rotational {
         this.hasUpdated();
     }
 
-    public String getDesignID() {
-        return design.getDesignID();
-    }
-
-    public void setDesignID(String designID) {
-        this.design = DesignStorage.getInstance().getDesign(designID);
-        this.hasUpdated();
-    }
-
     public String getCannonName() {
         return cannonName;
     }
@@ -1526,10 +1517,6 @@ public class Cannon implements ICannon, Rotational {
 
     public CannonDesign getCannonDesign() {
         return this.design;
-    }
-
-    public boolean sameDesign(Cannon cannon) {
-        return design.equals(cannon.getCannonDesign());
     }
 
     public void setLastUser(UUID lastUser) {
