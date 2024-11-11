@@ -9,6 +9,7 @@ import at.pavlov.cannons.cannon.data.AimingData;
 import at.pavlov.cannons.cannon.data.AmmoLoadingData;
 import at.pavlov.cannons.cannon.data.CannonMainData;
 import at.pavlov.cannons.cannon.data.CannonPosition;
+import at.pavlov.cannons.cannon.data.LinkingData;
 import at.pavlov.cannons.cannon.data.SentryData;
 import at.pavlov.cannons.cannon.data.WhitelistData;
 import at.pavlov.cannons.container.ItemHolder;
@@ -61,13 +62,7 @@ public class Cannon implements ICannon, Rotational {
     private SentryData sentryData = new SentryData();
 
     private WhitelistData whitelistData = new WhitelistData();
-
-
-    // cannon operator (can be null), distance to the cannon matters
-    private UUID cannonOperator;
-    // linked cannon operator is controling cannon via a master cannon.
-    private boolean masterCannon;
-
+    private LinkingData linkingData = new LinkingData();
     //observer will see the impact of the target predictor
     //<Player name, remove after showing impact>
     private final HashMap<UUID, Boolean> observerMap = new HashMap<>();
@@ -1873,34 +1868,6 @@ public class Cannon implements ICannon, Rotational {
         return EntityType.SNOWBALL;
     }
 
-    public UUID getCannonOperator() {
-        return cannonOperator;
-    }
-
-    public void setCannonOperator(UUID cannonOperator) {
-        this.cannonOperator = cannonOperator;
-    }
-
-
-    /**
-     * checks it this cannon has a cannon operator (linked or master)
-     *
-     * @return true if the cannon has a cannon operator
-     */
-    public boolean hasCannonOperator() {
-        return this.cannonOperator != null;
-    }
-
-    /**
-     * add the player as cannon operator for this cannon as master cannon
-     *
-     * @param player player will be added as cannon operator
-     * @return message for the player
-     */
-    public MessageEnum addCannonOperator(Player player) {
-        return addCannonOperator(player, true);
-    }
-
     /**
      * add the player as cannon operator for this cannon, if
      *
@@ -1920,45 +1887,9 @@ public class Cannon implements ICannon, Rotational {
             return MessageEnum.ErrorNotTheOwner;
 
         //there might already be a player controlling the cannon
-        this.cannonOperator = player.getUniqueId();
-        this.masterCannon = masterCannon;
+        this.setCannonOperator(player.getUniqueId());
+        this.setMasterCannon(masterCannon);
         return MessageEnum.AimingModeEnabled;
-    }
-
-    /**
-     * removes the player as observer
-     *
-     * @return message for the player
-     */
-    public MessageEnum removeCannonOperator() {
-        this.cannonOperator = null;
-        this.masterCannon = true;
-        return MessageEnum.AimingModeDisabled;
-    }
-
-    /**
-     * is the given Player listed as observer for this cannons
-     *
-     * @param player player to test
-     * @return true is player is listed as cannon operator
-     */
-    public boolean isCannonOperator(Player player) {
-        if (this.cannonOperator == null)
-            return false;
-
-        return this.cannonOperator.equals(player.getUniqueId());
-    }
-
-    public boolean hasLinkedOperator() {
-        return this.cannonOperator != null;
-    }
-
-    public boolean isMasterCannon() {
-        return masterCannon;
-    }
-
-    public void setMasterCannon(boolean masterCannon) {
-        this.masterCannon = masterCannon;
     }
 
     @Override
@@ -2019,5 +1950,16 @@ public class Cannon implements ICannon, Rotational {
     public void setCannonMainData(CannonMainData data) {
         hasUpdated();
         this.mainData = data;
+    }
+
+    @Override
+    public LinkingData getLinkingData() {
+        return linkingData;
+    }
+
+    @Override
+    public void setLinkingData(LinkingData data) {
+        hasUpdated();
+        this.linkingData = data;
     }
 }

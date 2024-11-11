@@ -8,5 +8,6 @@ public interface CannonDataHolder extends
         AmmoLoadingDataHolder,
         WhitelistDataHolder,
         CannonDesignHolder,
-        CannonMainDataHolder
+        CannonMainDataHolder,
+        LinkingDataHolder
 {}
