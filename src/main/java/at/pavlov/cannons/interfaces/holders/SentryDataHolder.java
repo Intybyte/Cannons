@@ -20,8 +20,21 @@ public interface SentryDataHolder extends Updatable {
 
     /**
      * Set this as new sentry target and add it to the list of targeted entities
+     *
+     * @param sentryTarget
      */
-    void setSentryEntity(UUID sentryTarget);
+    default void setSentryEntity(UUID sentryTarget) {
+        getSentryData().setSentryEntity(sentryTarget);
+        if (sentryTarget == null) {
+            return;
+        }
+        setSentryTargetingTime(System.currentTimeMillis());
+        var history = getSentryData().getSentryEntityHistory();
+        //store only 5
+        if (history.size() > 5)
+            history.removeFirst();
+        history.add(sentryTarget);
+    }
     //endregion
 
     //region Sentry Timestamps
@@ -118,5 +131,15 @@ public interface SentryDataHolder extends Updatable {
 
     default void setSentryHomedAfterFiring(boolean sentryHomedAfterFiring) {
         getSentryData().setSentryHomedAfterFiring(sentryHomedAfterFiring);
+    }
+
+    /**
+     * was this entity targeted in the last time
+     *
+     * @param entityId ID of the entity
+     * @return true if it was target
+     */
+    default boolean wasSentryTarget(UUID entityId) {
+        return entityId != null && getSentryData().getSentryEntityHistory().contains(entityId);
     }
 }

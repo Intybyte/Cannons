@@ -11,7 +11,11 @@ public interface CannonDesignHolder extends Updatable {
     CannonDesign getCannonDesign();
 
     default boolean sameDesign(Cannon cannon) {
-        return getCannonDesign().equals(cannon.getCannonDesign());
+        return sameDesign(cannon.getCannonDesign());
+    }
+
+    default boolean sameDesign(CannonDesign cannonDesign) {
+        return getCannonDesign().equals(cannonDesign);
     }
 
     default String getDesignID() {

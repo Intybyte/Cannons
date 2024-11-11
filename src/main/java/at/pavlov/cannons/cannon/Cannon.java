@@ -1333,7 +1333,7 @@ public class Cannon implements ICannon, Rotational {
      * @return result
      */
     public boolean equals(CannonDesign cannonDesign) {
-        return design.getDesignID().equals(cannonDesign.getDesignID());
+        return this.sameDesign(cannonDesign);
     }
 
     /**
@@ -1351,22 +1351,6 @@ public class Cannon implements ICannon, Rotational {
     @Override
     public int hashCode() {
         return getCannonMainData().getDatabaseId().hashCode();
-    }
-
-    /**
-     * get bukkit world
-     *
-     * @return
-     */
-    public World getWorldBukkit() {
-        if (this.getWorld() == null) {
-            return null;
-        }
-        World bukkitWorld = Bukkit.getWorld(this.getWorld());
-        if (bukkitWorld == null)
-            Cannons.logger().info("Can't find world: " + getWorld());
-        return Bukkit.getWorld(this.getWorld());
-        // return new Location(bukkitWorld, )
     }
 
     @Override
@@ -1736,17 +1720,18 @@ public class Cannon implements ICannon, Rotational {
      * @return chance of explosion
      */
     public double getOverloadingExplosionChance() {
-        if (design.isOverloadingEnabled()) {
-            double tempInc;
-            if (design.isOverloadingDependsOfTemperature())
-                tempInc = ammoLoadingData.getTempValue() / design.getMaximumTemperature();
-            else
-                tempInc = 1;
-
-            double chance = getChance(tempInc);
-            return (chance <= 0) ? 0.0 : chance;
-        } else
+        if (!design.isOverloadingEnabled()) {
             return 0.0;
+        }
+
+        double tempInc;
+        if (design.isOverloadingDependsOfTemperature())
+            tempInc = ammoLoadingData.getTempValue() / design.getMaximumTemperature();
+        else
+            tempInc = 1;
+
+        double chance = getChance(tempInc);
+        return (chance <= 0) ? 0.0 : chance;
     }
 
     private double getChance(double tempInc) {
@@ -1789,34 +1774,6 @@ public class Cannon implements ICannon, Rotational {
     public boolean isChunkLoaded() {
         Chunk chunk = getLocation().getChunk();
         return chunk.isLoaded();
-    }
-
-    /**
-     * Set this as new sentry target and add it to the list of targeted entities
-     *
-     * @param sentryTarget
-     */
-    public void setSentryEntity(UUID sentryTarget) {
-        this.sentryData.setSentryEntity(sentryTarget);
-        if (sentryTarget == null) {
-            return;
-        }
-        setSentryTargetingTime(System.currentTimeMillis());
-        var history = sentryData.getSentryEntityHistory();
-        //store only 5
-        if (history.size() > 5)
-            history.remove(0);
-        history.add(sentryTarget);
-    }
-
-    /**
-     * was this entity targeted in the last time
-     *
-     * @param entityId ID of the entity
-     * @return true if it was target
-     */
-    public boolean wasSentryTarget(UUID entityId) {
-        return entityId != null && this.sentryData.getSentryEntityHistory().contains(entityId);
     }
 
     @Override
