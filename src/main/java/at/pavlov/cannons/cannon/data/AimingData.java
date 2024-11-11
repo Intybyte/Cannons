@@ -13,10 +13,10 @@ import org.jetbrains.annotations.ApiStatus;
     private double additionalHorizontalAngle;
     private double additionalVerticalAngle;
     // sentry aiming angles the cannon tries to reach
-    private double aimingPitch;
-    private double aimingYaw;
+    private double aimingPitch = 0.0;
+    private double aimingYaw = 0.0;
     // is the cannon aiming at the given direction
-    private boolean aimingFinished;
+    private boolean aimingFinished = false;
     // time it was last aimed
     private long lastAimed;
 }

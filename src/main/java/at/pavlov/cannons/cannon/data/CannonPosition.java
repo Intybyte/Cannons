@@ -1,15 +1,19 @@
 package at.pavlov.cannons.cannon.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data public class CannonPosition {
     // direction the cannon is facing
     private BlockFace cannonDirection;
-    // the location is describe by the offset of the cannon and the design
+    // the location is described by the offset of the cannon and the design
     private Vector offset;
     // world of the cannon
     private UUID world;

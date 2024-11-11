@@ -14,9 +14,9 @@ import java.util.UUID;
     // store older targets, so we do not target the same all the time
     private ArrayList<UUID> sentryEntityHistory;
     // how long this entity is targeted by this cannon
-    private long sentryTargetingTime;
+    private long sentryTargetingTime = 0;
     // last time loading was tried and failed. Wait some time before trying again
-    private long sentryLastLoadingFailed;
+    private long sentryLastLoadingFailed = 0;
     // last time firing failed. Wait some time before trying again
     private long sentryLastFiringFailed;
     // return to default angles after firing

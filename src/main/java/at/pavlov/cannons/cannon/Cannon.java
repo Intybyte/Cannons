@@ -52,7 +52,7 @@ import java.util.UUID;
 
 public class Cannon implements ICannon, Rotational {
 
-    private CannonPosition cannonPosition = new CannonPosition();
+    private CannonPosition cannonPosition;
     private AmmoLoadingData ammoLoadingData = new AmmoLoadingData();
 
     private FiringData firingData = new FiringData();
@@ -82,47 +82,34 @@ public class Cannon implements ICannon, Rotational {
 
     private CannonDesign design;
     private final Random random = new Random();
+    private final static Vector noVelocity = new Vector(0,0,0);
 
 
     public Cannon(CannonDesign design, UUID world, Vector cannonOffset, BlockFace cannonDirection, UUID owner) {
 
         this.design = design;
-        this.cannonPosition.setWorld(world);
-        this.cannonPosition.setOffset(cannonOffset);
-        this.cannonPosition.setCannonDirection(cannonDirection);
-        this.mainData = new CannonMainData( UUID.randomUUID(),null, design.getEconomyBuildingCost() <= 0 /*ignore if there is no fee*/, owner, true);
+        this.cannonPosition = new CannonPosition(cannonDirection, cannonOffset, world, false, noVelocity.clone());
+        boolean feePresent = design.getEconomyBuildingCost() <= 0;
+        this.mainData = new CannonMainData( UUID.randomUUID(),null, feePresent, owner, true);
 
         // set owner in the whitelist
-        if (design.getEconomyBuildingCost() <= 0)
+        if (feePresent)
             whitelistData.add(owner);
-
-        //the cannon is not moving
-        this.cannonPosition.setVelocity(new Vector(0, 0, 0));
 
         this.sentryData.setSentryEntity(null);
         this.sentryData.setSentryEntityHistory(new ArrayList<>());
-        this.sentryData.setSentryTargetingTime(0);
-        this.sentryData.setSentryLastLoadingFailed(0);
 
         this.aimingData.setHorizontalAngle(getHomeHorizontalAngle());
         this.aimingData.setVerticalAngle(getHomeVerticalAngle());
 
-        this.aimingData.setAimingPitch(0.0);
-        this.aimingData.setAimingYaw(0.0);
-        this.aimingData.setAimingFinished(false);
-
         this.lastPlayerSpreadMultiplier = 1.0;
 
         // reset
-        if (!design.isGunpowderNeeded() || design.isPreloaded())
-            // this cannon will start loaded
-            this.setLoadedGunpowder(design.getMaxLoadableGunpowderNormal());
-        else
-            this.setLoadedGunpowder(0);
-        if (design.isPreloaded())
-            this.setLoadedProjectile(this.getDefaultProjectile(this));
-        else
-            this.setLoadedProjectile(null);
+        int defaultLoadedGunpowder = !design.isGunpowderNeeded() || design.isPreloaded() ? design.getMaxLoadableGunpowderNormal() : 0;
+        this.ammoLoadingData.setLoadedGunpowder(defaultLoadedGunpowder);
+
+        Projectile defaultLoadedProjectile = design.isPreloaded() ? this.getDefaultProjectile(this) : null;
+        this.ammoLoadingData.setLoadedProjectile(defaultLoadedProjectile);
         firingData.setLastFiredProjectile(null);
         firingData.setLastFiredGunpowder(0);
         this.setSoot(design.getStartingSoot());
@@ -142,7 +129,7 @@ public class Cannon implements ICannon, Rotational {
      * @return location of the cannon
      */
     public Location getLocation() {
-        return design.getAllCannonBlocks(this).get(0);
+        return design.getAllCannonBlocks(this).getFirst();
     }
 
     /**
@@ -1220,7 +1207,7 @@ public class Cannon implements ICannon, Rotational {
      */
     public Vector getFiringVector(boolean addSpread, boolean usePlayerSpread) {
         if (firingData.getLastFiredProjectile() == null && ammoLoadingData.getLoadedProjectile() == null)
-            return new Vector(0, 0, 0);
+            return noVelocity.clone();
         Projectile projectile = ammoLoadingData.getLoadedProjectile();
         if (projectile == null)
             projectile = firingData.getLastFiredProjectile();
@@ -1980,10 +1967,6 @@ public class Cannon implements ICannon, Rotational {
 
     public void setTimestampAimingMode(long timestampAimingMode) {
         this.timestampAimingMode = timestampAimingMode;
-    }
-
-    public boolean isAccessLinkingAllowed(Cannon fcannon, Player player) {
-        return !this.getCannonDesign().isAccessForOwnerOnly() || fcannon.getOwner() == player.getUniqueId();
     }
 
     @Override
