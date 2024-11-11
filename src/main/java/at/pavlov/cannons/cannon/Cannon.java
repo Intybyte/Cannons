@@ -7,6 +7,7 @@ import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.data.AimingData;
 import at.pavlov.cannons.cannon.data.AmmoLoadingData;
+import at.pavlov.cannons.cannon.data.CannonMainData;
 import at.pavlov.cannons.cannon.data.CannonPosition;
 import at.pavlov.cannons.cannon.data.SentryData;
 import at.pavlov.cannons.cannon.data.WhitelistData;
@@ -50,19 +51,12 @@ import java.util.Random;
 import java.util.UUID;
 
 public class Cannon implements ICannon, Rotational {
-    // Database id - is -1 until stored in the database. Then it is the id in the
-    // database
-    private UUID databaseId;
-    private String cannonName;
 
     private CannonPosition cannonPosition = new CannonPosition();
     private AmmoLoadingData ammoLoadingData = new AmmoLoadingData();
 
     private FiringData firingData = new FiringData();
-
-    // was the cannon fee paid
-    private boolean paid;
-
+    private CannonMainData mainData;
     private AimingData aimingData = new AimingData();
     private WhitelistData whitelistData = new WhitelistData();
     private SentryData sentryData = new SentryData();
@@ -75,11 +69,6 @@ public class Cannon implements ICannon, Rotational {
     //observer will see the impact of the target predictor
     //<Player name, remove after showing impact>
     private final HashMap<UUID, Boolean> observerMap = new HashMap<>();
-
-    // player who has build this cannon
-    private UUID owner;
-    // designID of the cannon, for different types of cannons - not in use
-    private boolean isValid;
     // spread multiplier from the last operator of the cannon
     private double lastPlayerSpreadMultiplier;
 
@@ -101,11 +90,8 @@ public class Cannon implements ICannon, Rotational {
         this.cannonPosition.setWorld(world);
         this.cannonPosition.setOffset(cannonOffset);
         this.cannonPosition.setCannonDirection(cannonDirection);
-        this.owner = owner;
-        this.isValid = true;
-        this.cannonName = null;
-        // ignore if there is no fee
-        this.paid = design.getEconomyBuildingCost() <= 0;
+        this.mainData = new CannonMainData( UUID.randomUUID(),null, design.getEconomyBuildingCost() <= 0 /*ignore if there is no fee*/, owner, true);
+
         // set owner in the whitelist
         if (design.getEconomyBuildingCost() <= 0)
             whitelistData.add(owner);
@@ -146,7 +132,6 @@ public class Cannon implements ICannon, Rotational {
         this.sentryData.setTargetPlayer(false);
         this.sentryData.setTargetCannon(false);
 
-        this.databaseId = UUID.randomUUID();
         this.updated = true;
     }
 
@@ -738,7 +723,7 @@ public class Cannon implements ICannon, Rotational {
      */
     public MessageEnum destroyCannon(boolean breakBlocks, boolean canExplode, BreakCause cause) {
         // update cannon signs the last time
-        isValid = false;
+        setValid(false);
 
         //fire and an event that this cannon is destroyed
         CannonDestroyedEvent destroyedEvent = new CannonDestroyedEvent(this, cause, breakBlocks, canExplode);
@@ -1375,8 +1360,7 @@ public class Cannon implements ICannon, Rotational {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Cannon) {
-            Cannon obj2 = (Cannon) obj;
+        if (obj instanceof ICannon obj2) {
             return this.getUID().equals(obj2.getUID());
         }
         return false;
@@ -1384,7 +1368,7 @@ public class Cannon implements ICannon, Rotational {
 
     @Override
     public int hashCode() {
-        return databaseId.hashCode();
+        return getCannonMainData().getDatabaseId().hashCode();
     }
 
     /**
@@ -1403,10 +1387,6 @@ public class Cannon implements ICannon, Rotational {
         // return new Location(bukkitWorld, )
     }
 
-    public UUID getUID() {
-        return databaseId;
-    }
-
     @Override
     public boolean sameType(ICannon cannon) {
         if (!(cannon instanceof Cannon blockCannon)) {
@@ -1414,20 +1394,6 @@ public class Cannon implements ICannon, Rotational {
         }
 
         return blockCannon.getCannonDesign().equals(this.design);
-    }
-
-    public void setUID(UUID ID) {
-        this.databaseId = ID;
-        this.hasUpdated();
-    }
-
-    public String getCannonName() {
-        return cannonName;
-    }
-
-    public void setCannonName(String name) {
-        this.cannonName = name;
-        this.hasUpdated();
     }
 
     //TODO: Add a limit to these methods here
@@ -1485,25 +1451,6 @@ public class Cannon implements ICannon, Rotational {
      */
     public double getMinVerticalAngle() {
         return (isOnShip()) ? design.getMinVerticalAngleOnShip() : design.getMinVerticalAngleNormal();
-    }
-
-
-    public UUID getOwner() {
-        return owner;
-    }
-
-    public void setOwner(UUID owner) {
-        this.owner = owner;
-        this.hasUpdated();
-    }
-
-    public boolean isValid() {
-        return isValid;
-    }
-
-    public void setValid(boolean isValid) {
-        this.isValid = isValid;
-        this.hasUpdated();
     }
 
     public void setCannonDesign(CannonDesign design) {
@@ -1903,7 +1850,7 @@ public class Cannon implements ICannon, Rotational {
     }
 
     public void removeWhitelistPlayer(UUID playerUID) {
-        if (playerUID == owner) {
+        if (playerUID == getOwner()) {
             Cannons.getPlugin().logDebug("can't remove Owner from Whitelist");
             return;
         }
@@ -1919,16 +1866,7 @@ public class Cannon implements ICannon, Rotational {
      * @return
      */
     public boolean isOperator(UUID playerUID) {
-        return (isWhitelisted(playerUID) || playerUID == owner);
-    }
-
-    public boolean isPaid() {
-        return paid;
-    }
-
-    public void setPaid(boolean paid) {
-        this.paid = paid;
-        this.hasUpdated();
+        return (isWhitelisted(playerUID) || playerUID == getOwner());
     }
 
     public void boughtByPlayer(UUID playerID) {
@@ -2094,5 +2032,17 @@ public class Cannon implements ICannon, Rotational {
     public void setCannonPosition(CannonPosition position) {
         this.cannonPosition = position;
         hasUpdated();
+    }
+
+    @Override
+    public CannonMainData getCannonMainData() {
+        hasUpdated();
+        return mainData;
+    }
+
+    @Override
+    public void setCannonMainData(CannonMainData data) {
+        hasUpdated();
+        this.mainData = data;
     }
 }
