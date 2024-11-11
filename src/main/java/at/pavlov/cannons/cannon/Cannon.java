@@ -409,26 +409,20 @@ public class Cannon implements ICannon, Rotational {
         // the cannon was loaded with gunpowder - lets get it form the player
         final boolean checkGunpowder = design.isGunpowderConsumption() && !design.isAmmoInfiniteForPlayer();
         switch (returnVal) {
-            case loadGunpowder:
-            case loadGunpowderNormalLimit: {
+            case loadGunpowder, loadGunpowderNormalLimit -> {
                 SoundUtils.playSound(getMuzzle(), design.getSoundGunpowderLoading());
                 if (checkGunpowder) {
                     InventoryManagement.removeItem(player.getInventory(), design.getGunpowderType().toItemStack(gunpowder));
                 }
-                break;
             }
-            case loadOverloadedGunpowder: {
+            case loadOverloadedGunpowder -> {
                 SoundUtils.playSound(getMuzzle(), design.getSoundGunpowderOverloading());
                 if (checkGunpowder)
                     InventoryManagement.takeFromPlayerHand(player, gunpowder);
-                break;
             }
-            default: {
-                SoundUtils.playErrorSound(getMuzzle());
-            }
+            default -> SoundUtils.playErrorSound(getMuzzle());
         }
         return returnVal;
-
     }
 
     /**
@@ -485,7 +479,7 @@ public class Cannon implements ICannon, Rotational {
      */
     public Projectile getDefaultProjectile(Cannon cannon) {
         if (!this.getCannonDesign().getAllowedProjectiles().isEmpty())
-            return ProjectileStorage.getProjectile(cannon, this.getCannonDesign().getAllowedProjectiles().get(0));
+            return ProjectileStorage.getProjectile(cannon, this.getCannonDesign().getAllowedProjectiles().getFirst());
         return null;
     }
 
@@ -620,29 +614,20 @@ public class Cannon implements ICannon, Rotational {
         MessageEnum message = useRamRodInternal(player);
 
         if (message == null) {
+            return null;
+        }
+
+        if (message.isError()) {
+            SoundUtils.playErrorSound(getMuzzle());
             return message;
         }
 
-        if (message.isError()) SoundUtils.playErrorSound(getMuzzle());
-        else switch (message) {
-            case RamrodCleaning: {
-                SoundUtils.playSound(getMuzzle(), design.getSoundRamrodCleaning());
-                break;
-            }
-            case RamrodCleaningDone: {
-                SoundUtils.playSound(getMuzzle(), design.getSoundRamrodCleaningDone());
-                break;
-            }
-            case RamrodPushingProjectile: {
-                SoundUtils.playSound(getMuzzle(), design.getSoundRamrodPushing());
-                break;
-            }
-            case RamrodPushingProjectileDone: {
-                SoundUtils.playSound(getMuzzle(), design.getSoundRamrodPushingDone());
-                break;
-            }
-            default:
-                SoundUtils.playErrorSound(getMuzzle());
+        switch (message) {
+            case RamrodCleaning -> SoundUtils.playSound(getMuzzle(), design.getSoundRamrodCleaning());
+            case RamrodCleaningDone -> SoundUtils.playSound(getMuzzle(), design.getSoundRamrodCleaningDone());
+            case RamrodPushingProjectile -> SoundUtils.playSound(getMuzzle(), design.getSoundRamrodPushing());
+            case RamrodPushingProjectileDone -> SoundUtils.playSound(getMuzzle(), design.getSoundRamrodPushingDone());
+            default -> SoundUtils.playErrorSound(getMuzzle());
         }
         return message;
     }
@@ -978,7 +963,7 @@ public class Cannon implements ICannon, Rotational {
      * @return - first block of the cannon
      */
     public Location getFirstCannonBlock() {
-        return design.getAllCannonBlocks(getCannonDirection()).get(0).toLocation(getWorldBukkit(), getOffset());
+        return design.getAllCannonBlocks(getCannonDirection()).getFirst().toLocation(getWorldBukkit(), getOffset());
 
     }
 
