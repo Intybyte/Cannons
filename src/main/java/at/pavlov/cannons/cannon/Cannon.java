@@ -82,6 +82,7 @@ public class Cannon implements ICannon, Rotational {
 
     private CannonDesign design;
     private final Random random = new Random();
+    //TODO make a vector util class and add this there
     private final static Vector noVelocity = new Vector(0,0,0);
 
 
