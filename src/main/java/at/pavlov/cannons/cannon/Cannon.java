@@ -72,9 +72,6 @@ public class Cannon implements ICannon, Rotational {
     // spread multiplier from the last operator of the cannon
     private double lastPlayerSpreadMultiplier;
 
-    // time stamp of the player last time inside the aiming mode range (needs a certain time to disable aiming mode)
-    private long timestampAimingMode;
-
     // has the cannon entry changed since it was last saved in the database
     @Setter
     @Getter
@@ -1960,14 +1957,6 @@ public class Cannon implements ICannon, Rotational {
 
     public void setMasterCannon(boolean masterCannon) {
         this.masterCannon = masterCannon;
-    }
-
-    public long getTimestampAimingMode() {
-        return timestampAimingMode;
-    }
-
-    public void setTimestampAimingMode(long timestampAimingMode) {
-        this.timestampAimingMode = timestampAimingMode;
     }
 
     @Override

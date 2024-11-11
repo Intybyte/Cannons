@@ -19,4 +19,6 @@ import org.jetbrains.annotations.ApiStatus;
     private boolean aimingFinished = false;
     // time it was last aimed
     private long lastAimed;
+    // time stamp of the player last time inside the aiming mode range (needs a certain time to disable aiming mode)
+    private long timestampAimingMode;
 }

@@ -112,4 +112,12 @@ public interface AimingDataHolder extends Updatable {
     default void setLastAimed(long lastAimed) {
         getAimingData().setLastAimed(lastAimed);
     }
+
+    default long getTimestampAimingMode() {
+        return getAimingData().getTimestampAimingMode();
+    }
+
+    default void setTimestampAimingMode(long timestampAimingMode) {
+        getAimingData().setTimestampAimingMode(timestampAimingMode);
+    }
 }
