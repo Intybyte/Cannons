@@ -2,6 +2,7 @@ package at.pavlov.cannons.interfaces.functionalities;
 
 import at.pavlov.cannons.interfaces.holders.AimingDataHolder;
 import at.pavlov.cannons.interfaces.holders.AmmoLoadingDataHolder;
+import at.pavlov.cannons.interfaces.holders.AngleDataHolder;
 import at.pavlov.cannons.interfaces.holders.CannonDesignHolder;
 import at.pavlov.cannons.interfaces.holders.CannonMainDataHolder;
 import at.pavlov.cannons.interfaces.holders.CannonPositionHolder;
@@ -19,5 +20,6 @@ public interface CannonDataHolder extends
         WhitelistDataHolder,
         CannonDesignHolder,
         CannonMainDataHolder,
-        LinkingDataHolder
+        LinkingDataHolder,
+        AngleDataHolder
 {}

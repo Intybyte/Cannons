@@ -7,6 +7,7 @@ import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.data.AimingData;
 import at.pavlov.cannons.cannon.data.AmmoLoadingData;
+import at.pavlov.cannons.cannon.data.AngleData;
 import at.pavlov.cannons.cannon.data.CannonMainData;
 import at.pavlov.cannons.cannon.data.CannonPosition;
 import at.pavlov.cannons.cannon.data.LinkingData;
@@ -59,6 +60,8 @@ public class Cannon implements ICannon, Rotational {
     private AmmoLoadingData ammoLoadingData = new AmmoLoadingData();
     private FiringData firingData = new FiringData();
     private AimingData aimingData = new AimingData();
+    private AngleData angleData = new AngleData();
+
     private SentryData sentryData = new SentryData();
 
     private WhitelistData whitelistData = new WhitelistData();
@@ -94,8 +97,8 @@ public class Cannon implements ICannon, Rotational {
         this.sentryData.setSentryEntity(null);
         this.sentryData.setSentryEntityHistory(new ArrayList<>());
 
-        this.aimingData.setHorizontalAngle(getHomeHorizontalAngle());
-        this.aimingData.setVerticalAngle(getHomeVerticalAngle());
+        this.angleData.setHorizontalAngle(getHomeHorizontalAngle());
+        this.angleData.setVerticalAngle(getHomeVerticalAngle());
 
         this.lastPlayerSpreadMultiplier = 1.0;
 
@@ -1599,18 +1602,6 @@ public class Cannon implements ICannon, Rotational {
         return -vertical - design.getDefaultVerticalAngle() - this.getAdditionalVerticalAngle();
     }
 
-    public double getMaxVerticalPitch() {
-        return verticalAngleToPitch(getMaxVerticalAngle());
-    }
-
-    public double getMinVerticalPitch() {
-        return verticalAngleToPitch(getMinVerticalAngle());
-    }
-
-    public double getVerticalPitch() {
-        return verticalAngleToPitch(getVerticalAngle());
-    }
-
     public double horizontalAngleToYaw(double horizontal) {
         double yaw = horizontal + this.getHorizontalAngle() + CannonsUtil.directionToYaw(getCannonDirection());
 
@@ -1620,18 +1611,6 @@ public class Cannon implements ICannon, Rotational {
         while (yaw > 180)
             yaw -= 360;
         return yaw;
-    }
-
-    public double getMaxHorizontalYaw() {
-        return horizontalAngleToYaw(getMaxHorizontalAngle());
-    }
-
-    public double getMinHorizontalYaw() {
-        return horizontalAngleToYaw(getMinHorizontalAngle());
-    }
-
-    public double getHorizontalYaw() {
-        return horizontalAngleToYaw(getHorizontalAngle());
     }
 
     public HashMap<UUID, Boolean> getObserverMap() {
@@ -1903,5 +1882,16 @@ public class Cannon implements ICannon, Rotational {
     public void setLinkingData(LinkingData data) {
         hasUpdated();
         this.linkingData = data;
+    }
+
+    @Override
+    public AngleData getAngleData() {
+        return angleData;
+    }
+
+    @Override
+    public void setAngleData(AngleData angleData) {
+        hasUpdated();
+        this.angleData = angleData;
     }
 }
