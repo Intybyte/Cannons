@@ -7,7 +7,7 @@ import at.pavlov.cannons.projectile.Projectile;
 import java.util.UUID;
 
 //TODO: Separate all "Last" to a cannon state class if this gets too convoluted
-interface FiringDataHolder extends Updatable {
+public interface FiringDataHolder extends Updatable {
     FiringData getFiringData();
     void setFiringData(FiringData firingData);
 
