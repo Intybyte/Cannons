@@ -80,8 +80,6 @@ public class Cannon implements ICannon, Rotational {
     private UUID owner;
     // designID of the cannon, for different types of cannons - not in use
     private boolean isValid;
-    // time point of the last start of the firing sequence (used in combination with isFiring)
-    private long lastIgnited;
     // spread multiplier from the last operator of the cannon
     private double lastPlayerSpreadMultiplier;
 
@@ -1531,7 +1529,7 @@ public class Cannon implements ICannon, Rotational {
         if (projectile != null)
             delayTime += (long) (((projectile.getAutomaticFiringMagazineSize() - 1) * projectile.getAutomaticFiringDelay()) * 1000.0);
 
-        return (lastIgnited + delayTime) >= System.currentTimeMillis();
+        return (getLastIgnited() + delayTime) >= System.currentTimeMillis();
     }
 
     public boolean finishedFiringAndLoading() {
@@ -1542,12 +1540,7 @@ public class Cannon implements ICannon, Rotational {
         if (projectile != null)
             delayTime += (long) (((projectile.getAutomaticFiringMagazineSize() - 1) * projectile.getAutomaticFiringDelay() + design.getLoadTime()) * 1000.0);
 
-        return (lastIgnited + delayTime) < System.currentTimeMillis();
-    }
-
-    public void setFiring() {
-        lastIgnited = System.currentTimeMillis();
-        this.hasUpdated();
+        return (getLastIgnited() + delayTime) < System.currentTimeMillis();
     }
 
     public boolean isLoading() {

@@ -20,4 +20,6 @@ import java.util.UUID;
     private long lastLoaded;
     // the player which has used the cannon last, important for firing with redstone button
     private UUID lastUser;
+    // time point of the last start of the firing sequence (used in combination with isFiring)
+    private long lastIgnited;
 }

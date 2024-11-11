@@ -55,4 +55,17 @@ interface FiringDataHolder extends Updatable {
         return getFiringData().getLastUser();
     }
     void setLastUser(UUID lastUser);
+
+    boolean isFiring();
+
+    boolean finishedFiringAndLoading();
+
+    default void setFiring() {
+        getFiringData().setLastIgnited(System.currentTimeMillis());
+        this.hasUpdated();
+    }
+
+    default long getLastIgnited() {
+        return getFiringData().getLastIgnited();
+    }
 }
