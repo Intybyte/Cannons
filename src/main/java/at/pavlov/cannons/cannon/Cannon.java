@@ -52,14 +52,16 @@ import java.util.UUID;
 
 public class Cannon implements ICannon, Rotational {
 
-    private CannonPosition cannonPosition;
-    private AmmoLoadingData ammoLoadingData = new AmmoLoadingData();
-
-    private FiringData firingData = new FiringData();
     private CannonMainData mainData;
+    private CannonPosition cannonPosition;
+
+    private AmmoLoadingData ammoLoadingData = new AmmoLoadingData();
+    private FiringData firingData = new FiringData();
     private AimingData aimingData = new AimingData();
-    private WhitelistData whitelistData = new WhitelistData();
     private SentryData sentryData = new SentryData();
+
+    private WhitelistData whitelistData = new WhitelistData();
+
 
     // cannon operator (can be null), distance to the cannon matters
     private UUID cannonOperator;
