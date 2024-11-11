@@ -20,7 +20,7 @@ import at.pavlov.cannons.event.CannonGunpowderLoadEvent;
 import at.pavlov.cannons.event.CannonPreLoadEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.interfaces.ICannon;
-import at.pavlov.cannons.interfaces.Rotational;
+import at.pavlov.cannons.interfaces.functionalities.Rotational;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonsUtil;

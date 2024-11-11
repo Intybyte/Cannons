@@ -2,7 +2,7 @@ package at.pavlov.cannons.interfaces.holders;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.data.CannonPosition;
-import at.pavlov.cannons.interfaces.Updatable;
+import at.pavlov.cannons.interfaces.functionalities.Updatable;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;

@@ -1,4 +1,4 @@
-package at.pavlov.cannons.interfaces;
+package at.pavlov.cannons.interfaces.functionalities;
 
 import at.pavlov.cannons.Enum.CannonRotation;
 import org.bukkit.util.Vector;
