@@ -4,10 +4,13 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.data.CannonPosition;
 import at.pavlov.cannons.interfaces.functionalities.Updatable;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface CannonPositionHolder extends Updatable {
@@ -82,4 +85,8 @@ public interface CannonPositionHolder extends Updatable {
         getOffset().add(moved);
         this.hasUpdated();
     }
+
+    Location getLocation();
+
+    Location getMuzzle();
 }
