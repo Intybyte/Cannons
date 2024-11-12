@@ -121,7 +121,7 @@ public interface AmmoLoadingDataHolder extends Updatable {
 
     boolean barrelTooHot();
     boolean isOverheatedAfterFiring();
-    boolean automaticCoolingFromChest();
+    boolean automaticCooling();
     //endregion
 
     /**
