@@ -636,15 +636,6 @@ public class Cannon implements ICannon, Rotational {
     }
 
     /**
-     * is cannon loaded return true
-     *
-     * @return - true if the cannon is loaded with a projectile and gunpowder
-     */
-    public boolean isLoaded() {
-        return isProjectileLoaded() && isGunpowderLoaded() && !isLoading();
-    }
-
-    /**
      * returns true if the cannon has at least 1 gunpowder loaded
      *
      * @return true if loaded with gunpowder
@@ -1225,10 +1216,7 @@ public class Cannon implements ICannon, Rotational {
      * @return vector the cannon is aiming
      */
     public Vector getAimingVector() {
-        double multi = getCannonballVelocity();
-        if (multi < 0.1)
-            multi = 0.1;
-
+        double multi = Math.max(getCannonballVelocity(), 0.1);
         return CannonsUtil.directionToVector(getTotalHorizontalAngle() + CannonsUtil.directionToYaw(getCannonDirection()), -getTotalVerticalAngle(), multi);
     }
 
@@ -1238,10 +1226,7 @@ public class Cannon implements ICannon, Rotational {
      * @return targeting vector
      */
     public Vector getTargetVector() {
-        double multi = getCannonballVelocity();
-        if (multi < 0.1)
-            multi = 0.1;
-
+        double multi = Math.max(getCannonballVelocity(), 0.1);
         return CannonsUtil.directionToVector(getAimingYaw(), getAimingPitch(), multi);
     }
 
@@ -1357,18 +1342,6 @@ public class Cannon implements ICannon, Rotational {
             design.getMaxLoadableGunpowderNormal();
 
         return ammoLoadingData.getLoadedGunpowder();
-    }
-
-    @Override
-    public AmmoLoadingData getAmmoLoadingData() {
-        this.hasUpdated();
-        return ammoLoadingData;
-    }
-
-    @Override
-    public void setAmmoLoadingData(AmmoLoadingData ammoLoadingData) {
-        this.ammoLoadingData = ammoLoadingData;
-        this.hasUpdated();
     }
 
     /**
@@ -1893,5 +1866,17 @@ public class Cannon implements ICannon, Rotational {
     public void setAngleData(AngleData angleData) {
         hasUpdated();
         this.angleData = angleData;
+    }
+
+    @Override
+    public AmmoLoadingData getAmmoLoadingData() {
+        this.hasUpdated();
+        return ammoLoadingData;
+    }
+
+    @Override
+    public void setAmmoLoadingData(AmmoLoadingData ammoLoadingData) {
+        this.ammoLoadingData = ammoLoadingData;
+        this.hasUpdated();
     }
 }

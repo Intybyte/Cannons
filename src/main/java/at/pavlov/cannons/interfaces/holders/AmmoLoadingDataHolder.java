@@ -1,8 +1,10 @@
 package at.pavlov.cannons.interfaces.holders;
 
+import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.data.AmmoLoadingData;
 import at.pavlov.cannons.interfaces.functionalities.Updatable;
 import at.pavlov.cannons.projectile.Projectile;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 
 public interface AmmoLoadingDataHolder extends Updatable {
@@ -41,6 +43,8 @@ public interface AmmoLoadingDataHolder extends Updatable {
         return getAmmoLoadingData().getLoadedGunpowder();
     }
     boolean isGunpowderLoaded();
+
+    boolean isLoading();
     //endregion
 
     //region Loaded Projectile
@@ -114,5 +118,21 @@ public interface AmmoLoadingDataHolder extends Updatable {
     default double getTemperature(boolean update) {
         return (update ? this.getTemperature() : this.getAmmoLoadingData().getTempValue());
     }
+
+    boolean barrelTooHot();
+    boolean isOverheatedAfterFiring();
+    boolean automaticCoolingFromChest();
     //endregion
+
+    /**
+     * is cannon loaded return true
+     *
+     * @return - true if the cannon is loaded with a projectile and gunpowder
+     */
+    default boolean isLoaded() {
+        return isProjectileLoaded() && isGunpowderLoaded() && !isLoading();
+    }
+
+    MessageEnum loadProjectile(Projectile projectile, Player player);
+    MessageEnum loadGunpowder(Player player);
 }
