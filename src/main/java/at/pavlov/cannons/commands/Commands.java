@@ -50,7 +50,6 @@ public class Commands extends BaseCommand {
     public static void onReload(CommandSender sender) {
         Config config = Cannons.getPlugin().getMyConfig();
         config.loadConfig();
-        DesignStorage.getInstance().loadCannonDesigns();
         sendMessage(sender, ChatColor.GREEN + tag + "Config loaded");
     }
 
