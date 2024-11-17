@@ -706,10 +706,10 @@ public class Cannon implements ICannon, Rotational {
             if (world != null)
                 //todo fix overheating
                 world.createExplosion(getRandomBarrelBlock(), (float) power);
-        }
-        // drop charge
-        else
+        } else {
+            // drop charge
             dropCharge();
+        }
 
         // return message
         return switch (cause) {

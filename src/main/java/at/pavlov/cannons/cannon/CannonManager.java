@@ -7,6 +7,7 @@ import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
+import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.LoadWhitelistTask;
 import at.pavlov.cannons.event.CannonAfterCreateEvent;
 import at.pavlov.cannons.event.CannonBeforeCreateEvent;
@@ -32,7 +33,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 
 
 public class CannonManager {
@@ -399,17 +403,7 @@ public class CannonManager {
 
     //please nobody call this
     public void claimCannonsInBox(Location center, UUID owner, int size) {
-        try {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    getCannonInBox(center, owner, size);
-                }
-            }.runTaskAsynchronously(Cannons.getPlugin());
-        } catch (Exception e) {
-            Bukkit.getLogger().severe(e.getClass().getName());
-            e.printStackTrace();
-        }
+        CompletableFuture.supplyAsync(() -> getCannonInBox(center, owner, size), AsyncTaskManager.executor);
     }
 
     public void dismantleCannonsInBox(Location center, int size) {
@@ -517,6 +511,7 @@ public class CannonManager {
      *
      * @param cannonBlock - one block of the cannon
      * @param owner       - the owner of the cannon (important for message notification). Can't be null
+     * @param silent      - if true the message and sounds won't be fire to the player
      * @return the cannon at this location
      */
     public Cannon getCannon(Location cannonBlock, UUID owner, boolean silent) {
@@ -560,12 +555,61 @@ public class CannonManager {
         if (message == MessageEnum.CannonCreated && (cannon.getCannonDesign().isSignRequired() && !cannon.hasCannonSign()))
             message = MessageEnum.ErrorMissingSign;
 
-        Cannon created = startCannonCreation(cannon, message, player, owner, silent);
-        plugin.logDebug("Time to find cannon: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime) / 1000000.0) + "ms");
-        return created;
+        assert player != null;
+
+        Cannon created;
+        if (Bukkit.isPrimaryThread()) {
+            if (!fireCannonBeforeCreateEvent(cannon, message, player, silent))
+                return null;
+
+            created = startCannonCreation(cannon, message, player, owner, silent);
+
+            CannonAfterCreateEvent caceEvent = new CannonAfterCreateEvent(cannon, player.getUniqueId());
+            Bukkit.getServer().getPluginManager().callEvent(caceEvent);
+
+            plugin.logDebug("Time to find cannon: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime) / 1000000.0) + "ms");
+            return created;
+        }
+
+        return cannonCreationAsync(cannon, message, player, silent, startTime);
     }
 
-    private Cannon startCannonCreation(Cannon cannon, MessageEnum message, Player player, UUID owner, boolean silent) {
+    private Cannon cannonCreationAsync(Cannon cannon, MessageEnum message, Player player, boolean silent, long startTime) {
+        final Executor executor = Bukkit.getScheduler().getMainThreadExecutor(Cannons.getPlugin());
+
+        CompletableFuture<Boolean> beforeCreateEvent = CompletableFuture
+                .supplyAsync(() -> !fireCannonBeforeCreateEvent(cannon, message, player, silent)
+                        , executor);
+
+        if (beforeCreateEvent.join())
+            return null;
+
+
+        plugin.logDebug("a new cannon was created by " + cannon.getOwner());
+        createCannon(cannon, true);
+
+        CompletableFuture<Void> executeSound = CompletableFuture
+                .runAsync( () -> {
+                            if (!silent) {
+                                userMessages.sendMessage(message, player.getUniqueId(), cannon);
+                                SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundCreate());
+                            }
+                        }, executor);
+
+        executeSound.join();
+
+        CompletableFuture<Void> afterCreateEvent = CompletableFuture.runAsync(() -> {
+            CannonAfterCreateEvent caceEvent = new CannonAfterCreateEvent(cannon, player.getUniqueId());
+            Bukkit.getServer().getPluginManager().callEvent(caceEvent);
+        }, executor);
+
+        afterCreateEvent.join();
+
+        plugin.logDebug("Time to find cannon: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime) / 1000000.0) + "ms");
+        return cannon;
+    }
+
+    private boolean fireCannonBeforeCreateEvent(Cannon cannon, MessageEnum message, Player player, boolean silent) {
         plugin.logDebug("CannonBeforeCreateEvent Cannon: " + cannon + "message: " + message + " player: " + player);
         plugin.logDebug("player.getUniqueId(): " + player.getUniqueId());
 
@@ -573,17 +617,21 @@ public class CannonManager {
         Bukkit.getServer().getPluginManager().callEvent(cbceEvent);
 
         //add cannon to the list if everything was fine and return the cannon
-        if (cbceEvent.isCancelled() || cbceEvent.getMessage() == null || cbceEvent.getMessage() != MessageEnum.CannonCreated) {
-            //send messages
-            if (!silent) {
-                userMessages.sendMessage(message, player, cannon);
-                SoundUtils.playErrorSound(cannon.getMuzzle());
-            }
-
-            plugin.logDebug("Creating a cannon event was canceled: " + message);
-            return null;
+        if (!cbceEvent.isCancelled() && cbceEvent.getMessage() != null && cbceEvent.getMessage() == MessageEnum.CannonCreated) {
+            return true;
         }
 
+        //send messages
+        if (!silent) {
+            userMessages.sendMessage(message, player, cannon);
+            SoundUtils.playErrorSound(cannon.getMuzzle());
+        }
+
+        plugin.logDebug("Creating a cannon event was canceled: " + message);
+        return false;
+    }
+
+    private Cannon startCannonCreation(Cannon cannon, MessageEnum message, Player player, UUID owner, boolean silent) {
         plugin.logDebug("a new cannon was created by " + cannon.getOwner());
         createCannon(cannon, true);
 
@@ -593,8 +641,6 @@ public class CannonManager {
             SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundCreate());
         }
 
-        CannonAfterCreateEvent caceEvent = new CannonAfterCreateEvent(cannon, player.getUniqueId());
-        Bukkit.getServer().getPluginManager().callEvent(caceEvent);
         return cannon;
     }
 

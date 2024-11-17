@@ -17,7 +17,7 @@ public class PersistenceDatabase
 		plugin = _plugin;
 	}
 
-	public void createTables(){
+	public void createTables() {
 		CreateTableTask createTableTask = new CreateTableTask();
 		createTableTask.run();
 	}
@@ -27,8 +27,7 @@ public class PersistenceDatabase
      *
      * @return true if loading was successful
      */
-	public void loadCannons()
-	{
+	public void loadCannons() {
 	    if (!plugin.hasConnection()) {
             plugin.logSevere("No connection to database");
             return;
@@ -39,7 +38,7 @@ public class PersistenceDatabase
 	    task.runTaskAsynchronously(plugin);
 	}
 
-	public void saveAllCannons(boolean async){
+	public void saveAllCannons(boolean async) {
 		if (!plugin.hasConnection()) {
 			plugin.logSevere("No connection to database");
 			return;
