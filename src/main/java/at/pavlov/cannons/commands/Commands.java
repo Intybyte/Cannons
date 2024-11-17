@@ -2,6 +2,7 @@ package at.pavlov.cannons.commands;
 
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.Enum.BreakCause;
 import at.pavlov.cannons.Enum.CommandList;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.Enum.SelectCannon;
@@ -11,6 +12,7 @@ import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
+import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
 @CommandAlias("cannons")
 @SuppressWarnings("unused")
@@ -411,19 +414,53 @@ public class Commands extends BaseCommand {
     @CommandPermission("cannons.player.claim")
     public static void onClaim(Player player, @Default("20") int size) {
         Cannons plugin = Cannons.getPlugin();
+        CannonManager cannonManager = plugin.getCannonManager();
         UserMessages userMessages = plugin.getMyConfig().getUserMessages();
 
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsStarted, player);
-        plugin.getCannonManager().claimCannonsInBox(player.getLocation(), player, size);
+        CompletableFuture.runAsync(() -> {
+            cannonManager.fetchCannonInBox(player.getLocation(), player.getUniqueId(), size);
+            AsyncTaskManager.fireSyncRunnable( () ->
+                    userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player));
+        }, AsyncTaskManager.executor);
+    }
+
+    @Subcommand("resetarea")
+    @CommandPermission("cannons.admin.reload")
+    public static void onResetArea(Player player, @Default("20") int size) {
+        Cannons plugin = Cannons.getPlugin();
+        PersistenceDatabase persistenceDatabase = plugin.getPersistenceDatabase();
+        CannonManager cannonManager = plugin.getCannonManager();
+        UserMessages userMessages = plugin.getMyConfig().getUserMessages();
+
+        CompletableFuture.runAsync(() -> {
+            final HashSet<Cannon> cannonList = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
+
+            AsyncTaskManager.fireSyncRunnable( () -> {
+                cannonList.forEach(cannon -> {
+                    persistenceDatabase.deleteCannon(cannon.getUID());
+                    cannonManager.removeCannon(cannon, false, false, BreakCause.Other);
+                });
+                //make CannonReseted area
+                player.sendMessage("N: " + cannonList.size() + " cannons nearby have been deleted");
+            });
+        }, AsyncTaskManager.executor);
+
     }
 
     @Subcommand("dismantleArea")
     @CommandPermission("cannons.admin.reload")
     public static void onDismantleArea(Player player, @Default("20") int size) {
         Cannons plugin = Cannons.getPlugin();
+        CannonManager cannonManager = plugin.getCannonManager();
 
         player.sendMessage("Dismantling started");
-        plugin.getCannonManager().dismantleCannonsInBox(player, player.getLocation(), size);
+        CompletableFuture.runAsync(() -> {
+            var cannonHashSet = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
+            AsyncTaskManager.fireSyncRunnable( () ->
+                    cannonHashSet
+                            .forEach(cannon -> cannonManager.dismantleCannon(cannon, player)));
+        }, AsyncTaskManager.executor);
     }
 
     @Subcommand("scanArea")

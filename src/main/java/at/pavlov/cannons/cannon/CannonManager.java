@@ -169,8 +169,9 @@ public class CannonManager {
             plugin.logDebug("Dismantling," + cannon.getCannonDesign().getSoundDismantle().toString());
             SoundUtils.playSound(cannon.getRandomBarrelBlock(), cannon.getCannonDesign().getSoundDismantle());
             delay = (long) (cannon.getCannonDesign().getDismantlingDelay() * 20.0);
-        } else
+        } else {
             SoundUtils.playSound(cannon.getRandomBarrelBlock(), cannon.getCannonDesign().getSoundDestroy());
+        }
 
         //delay the remove task, so it fits to the sound
         RemoveTaskWrapper task = new RemoveTaskWrapper(cannon, breakCannon, canExplode, cause, removeEntry, ignoreInvalid);
@@ -179,23 +180,21 @@ public class CannonManager {
                 RemoveTaskWrapper task = (RemoveTaskWrapper) object;
                 Cannon cannon = task.getCannon();
                 BreakCause cause = task.getCause();
+                UUID owner = cannon.getOwner();
 
                 // send message to the owner
                 Player player = null;
-                if (cannon.getOwner() != null) {
-                    player = Bukkit.getPlayer(cannon.getOwner());
-                }
+                if (owner != null) {
+                    player = Bukkit.getPlayer(owner);
 
-                if (cannon.getOwner() != null) {
-                    OfflinePlayer offplayer = Bukkit.getOfflinePlayer(cannon.getOwner());
-                    if (offplayer != null && offplayer.hasPlayedBefore() && plugin.getEconomy() != null) {
-                        // return message
+                    OfflinePlayer offplayer = Bukkit.getOfflinePlayer(owner);
+                    // return message
+                    if (offplayer.hasPlayedBefore() && plugin.getEconomy() != null && cannon.isPaid()) {
                         double funds = switch (cause) {
                             case Other, Dismantling -> cannon.getCannonDesign().getEconomyDismantlingRefund();
                             default -> cannon.getCannonDesign().getEconomyDestructionRefund();
                         };
-                        if (cannon.isPaid())
-                            plugin.getEconomy().depositPlayer(offplayer, funds);
+                        plugin.getEconomy().depositPlayer(offplayer, funds);
                     }
                 }
 
@@ -396,15 +395,6 @@ public class CannonManager {
         }
 
         return list;
-    }
-
-    //please nobody call this
-    public void claimCannonsInBox(Location center, Player player, int size) {
-        CompletableFuture.runAsync(() -> {
-            this.fetchCannonInBox(center, player.getUniqueId(), size);
-            AsyncTaskManager.fireSyncRunnable( () ->
-                    userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player));
-        }, AsyncTaskManager.executor);
     }
 
     public void dismantleCannonsInBox(Player player, Location center, int size) {
