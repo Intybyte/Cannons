@@ -98,9 +98,8 @@ public final class Cannons extends JavaPlugin
 
 	public void onEnable()
 	{
-
-		this.config = new Config(this);
 		DesignStorage.initialize(this);
+		this.config = new Config(this);
 		ProjectileManager.initialize(this);
 		CannonSelector.initialize(this);
 
