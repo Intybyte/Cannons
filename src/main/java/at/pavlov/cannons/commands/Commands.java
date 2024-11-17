@@ -415,7 +415,6 @@ public class Commands extends BaseCommand {
 
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsStarted, player);
         plugin.getCannonManager().claimCannonsInBox(player.getLocation(), player, size);
-        userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player);
     }
 
     @Subcommand("dismantleArea")
