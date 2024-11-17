@@ -414,7 +414,7 @@ public class Commands extends BaseCommand {
         UserMessages userMessages = plugin.getMyConfig().getUserMessages();
 
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsStarted, player);
-        plugin.getCannonManager().claimCannonsInBox(player.getLocation(), player.getUniqueId(), size);
+        plugin.getCannonManager().claimCannonsInBox(player.getLocation(), player, size);
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player);
     }
 
@@ -424,8 +424,7 @@ public class Commands extends BaseCommand {
         Cannons plugin = Cannons.getPlugin();
 
         player.sendMessage("Dismantling started");
-        plugin.getCannonManager().dismantleCannonsInBox(player.getLocation(), size);
-        player.sendMessage("Dismantling finished");
+        plugin.getCannonManager().dismantleCannonsInBox(player, player.getLocation(), size);
     }
 
     @Subcommand("scanArea")

@@ -378,9 +378,9 @@ public class CannonManager {
                 continue;
             }
 
-            Location newLoc = cannon.getCannonDesign().getBarrelBlocks(cannon).get(0);
+            Location newLoc = cannon.getCannonDesign().getBarrelBlocks(cannon).getFirst();
             Vector box = newLoc.subtract(center).toVector();
-            if (cannon.getWorld().equals(center.getWorld().getUID()) && Math.abs(box.getX()) < lengthX / 2 && Math.abs(box.getY()) < lengthY / 2 && Math.abs(box.getZ()) < lengthZ / 2)
+            if (Math.abs(box.getX()) < lengthX / 2 && Math.abs(box.getY()) < lengthY / 2 && Math.abs(box.getZ()) < lengthZ / 2)
                 newCannonList.add(cannon);
         }
         return newCannonList;
@@ -402,25 +402,26 @@ public class CannonManager {
     }
 
     //please nobody call this
-    public void claimCannonsInBox(Location center, UUID owner, int size) {
-        CompletableFuture.supplyAsync(() -> getCannonInBox(center, owner, size), AsyncTaskManager.executor);
+    public void claimCannonsInBox(Location center, Player player, int size) {
+        CompletableFuture.runAsync(() -> {
+            CannonManager.getCannonsInBox(center, size, size, size);
+            CompletableFuture.runAsync( () ->
+                    userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player))
+                    .join();
+        }, AsyncTaskManager.executor);
     }
 
-    public void dismantleCannonsInBox(Location center, int size) {
-        try {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    var cannonList = CannonManager.getCannonsInBox(center, size, size, size);
-                    cannonList.forEach( it ->
-                            it.destroyCannon(false, false, BreakCause.Dismantling)
-                    );
-                }
-            }.runTaskAsynchronously(Cannons.getPlugin());
-        } catch (Exception e) {
-            Bukkit.getLogger().severe(e.getClass().getName());
-            e.printStackTrace();
-        }
+    public void dismantleCannonsInBox(Player player, Location center, int size) {
+        CompletableFuture.runAsync(() -> {
+            var cannonHashSet = CannonManager.getCannonsInBox(center, size, size, size);
+            CompletableFuture.runAsync( () -> {
+                    cannonHashSet
+                        .forEach(cannon -> cannon.destroyCannon(false, false, BreakCause.Dismantling));
+
+                    player.sendMessage("Dismantling finished");
+                }, AsyncTaskManager.bukkit)
+                    .join();
+            }, AsyncTaskManager.executor);
     }
 
 
@@ -575,11 +576,10 @@ public class CannonManager {
     }
 
     private Cannon cannonCreationAsync(Cannon cannon, MessageEnum message, Player player, boolean silent, long startTime) {
-        final Executor executor = Bukkit.getScheduler().getMainThreadExecutor(Cannons.getPlugin());
 
         CompletableFuture<Boolean> beforeCreateEvent = CompletableFuture
                 .supplyAsync(() -> !fireCannonBeforeCreateEvent(cannon, message, player, silent)
-                        , executor);
+                        , AsyncTaskManager.bukkit);
 
         if (beforeCreateEvent.join())
             return null;
@@ -594,14 +594,14 @@ public class CannonManager {
                                 userMessages.sendMessage(message, player.getUniqueId(), cannon);
                                 SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundCreate());
                             }
-                        }, executor);
+                        }, AsyncTaskManager.bukkit);
 
         executeSound.join();
 
         CompletableFuture<Void> afterCreateEvent = CompletableFuture.runAsync(() -> {
             CannonAfterCreateEvent caceEvent = new CannonAfterCreateEvent(cannon, player.getUniqueId());
             Bukkit.getServer().getPluginManager().callEvent(caceEvent);
-        }, executor);
+        }, AsyncTaskManager.bukkit);
 
         afterCreateEvent.join();
 
