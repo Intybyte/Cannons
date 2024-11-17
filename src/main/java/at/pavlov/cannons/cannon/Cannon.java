@@ -1592,6 +1592,7 @@ public class Cannon implements ICannon, Rotational {
         return yaw;
     }
 
+    @Override
     public HashMap<UUID, Boolean> getObserverMap() {
         return observerMap;
     }
@@ -1612,49 +1613,9 @@ public class Cannon implements ICannon, Rotational {
 
         //the player might have an entry which allows unlimited observing (e.g. observer)
         //removeAfterShowing == true is weaker
-        if (observerMap.get(player.getUniqueId()) == null || observerMap.get(player.getUniqueId()))
+        if (observerMap.get(player.getUniqueId()) != Boolean.FALSE)
             observerMap.put(player.getUniqueId(), removeAfterShowing);
         return MessageEnum.CannonObserverAdded;
-    }
-
-    /**
-     * removes the player as observer
-     *
-     * @param player player will be removed as observer
-     * @return message for the player
-     */
-    public MessageEnum removeObserver(Player player) {
-        Validate.notNull(player, "player must not be null");
-
-        observerMap.remove(player.getUniqueId());
-        return MessageEnum.CannonObserverRemoved;
-    }
-
-    /**
-     * is the given Player listed as observer for this cannons
-     *
-     * @param player player to test
-     * @return true is player is listed as observer
-     */
-    public boolean isObserver(Player player) {
-        return this.observerMap.containsKey(player.getUniqueId());
-    }
-
-    /**
-     * toogles the player as observer for this cannon
-     *
-     * @param player             player will be added as observer
-     * @param removeAfterShowing if true, the observer only works once
-     * @return message for the player
-     */
-    public MessageEnum toggleObserver(Player player, boolean removeAfterShowing) {
-        Validate.notNull(player, "player must not be null");
-
-        if (observerMap.containsKey(player.getUniqueId()))
-            return removeObserver(player);
-        else
-            return addObserver(player, removeAfterShowing);
-
     }
 
     /**
