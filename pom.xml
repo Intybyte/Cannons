@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <cannon.version>3.1.1</cannon.version>
+        <cannon.version>3.1.2</cannon.version>
     </properties>
 
     <groupId>at.pavlov</groupId>
