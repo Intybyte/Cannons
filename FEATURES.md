@@ -2,7 +2,10 @@ New features/fixes:
 ---------------
 - 1.20.6 + Support
 - Upgraded to Java 14 language level
+- Requires Java 21
 - Added Netherite and newer armor protection support
+- Simplified Chinese Translation by [SnowCutieOwO](https://github.com/SnowCutieOwO)
+- New area commands
 
 Optimizations:
 ---------------
@@ -14,7 +17,7 @@ Optimizations:
 - Aiming shot simulation Optimization
 - Simulating aim is less resource expensive (after testing, this feature requires about 50% less CPU usage)
 - `CannonAPI#getCannon` should now not create massive lag when there are a lot of designs
-- `/cannons claim` won't actually crash your server anymore, and it is executed on a separate thread
+- `/cannons claim` and commands executed in a radius won't deadlock your server anymore, and it is executed on a separate thread
 
 API Changes/New Events:
 --------------
