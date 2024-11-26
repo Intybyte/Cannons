@@ -1,0 +1,156 @@
+Error:
+  FiringInProgress: 'RED [Cannons] CANNON 正准备开火. 快躲开.'
+  LoadingInProgress: 'RED [Cannons] CANNON 正在装填弹药.'
+  BarrelTooHot: 'RED [Cannons] 炮筒过热需要冷却.'
+  NotCleaned: 'RED [Cannons] 炮筒需要在再次发射前至少清理一次.'
+  NoGunpowder: 'RED [Cannons] 缺少火药. 请将其填入炮筒.'
+  NoGunpowderNeeded: 'RED [Cannons] 该 CANNON 无需火药.'
+  NoProjectile: 'RED [Cannons] 尚未装填弹药. 请填入炮弹!'
+  NoGunpowderInChest: 'RED [Cannons] 箱子内的火药不足以装填大炮.'
+  NoProjectileInChest: 'RED [Cannons] 箱子中没有炮弹.'
+  NoFlintAndSteel: 'RED [Cannons] 你需要使用打火石才可开炮.'
+  NotPushed: 'RED [Cannons] 请在开火前使用木棍将其装入炮膛.'
+  MaximumGunpowderLoaded: 'YELLOW [Cannons] 已装入 GOLD GUNPOWDERkg YELLOW 火药, 不能再装入更多了.'
+  ProjectileAlreadyLoaded: 'YELLOW [Cannons] 炮弹 GOLD PROJECTILE YELLOW 和 GOLD GUNPOWDER YELLOW 火药已载入. 请在把自己炸飞之前开火.'
+  CannonBuiltLimit: 'RED [Cannons] 你不能制造超过 GOLD LIMIT YELLOW 门大炮'
+  NotTheOwner: 'RED [Cannons] 这个 CANNON 已被锁定, 只能由其拥有者使用'
+  DismantlingNotOwner: 'RED [Cannons] 只有拥有者才可拆除这门大炮.'
+  MissingSign: 'RED [Cannons] 这个 CANNON 需要贴上告示牌才可操作.'
+  NoMoney: 'RED [Cannons] 你需要花费 BUILD_COSTS 才可以搭建大炮.'
+  NotPaid: "RED [Cannons] 大炮尚未付费. 请输入命令 GOLD '/cannons buy' RED 来花费 GOLD BUILD_COSTS 购买 RED CANNON"
+  AlreadyPaid: 'RED [Cannons] 已支付大炮相关费用'
+  PlayerNotFound: 'RED [Cannons] 玩家不存在.'
+  Generic: 'RED [Cannons] 遇到错误.'
+
+
+Aiming:
+  EnableAimingMode: 'GREEN [Cannons] 正在进入瞄准模式. 按住 SHIFT 瞄准.'
+  DisableAimingMode: 'RED [Cannons] 正在退出瞄准模式'
+  TooFarForAimingMode: 'YELLOW [Cannons] 你需要离 CANNON 更近一些才可进入瞄准模式'
+  SettingCombinedAngle: 'YELLOW [Cannons] 新角度 h: GOLD HDEGREE 度 YELLOW, v: GOLD VDEGREE 度'
+  SettingVerticalAngleUp: 'YELLOW [Cannons] 正在将垂直角抬升至 GOLD VDEGREE 度'
+  SettingVerticalAngleDown: 'YELLOW [Cannons] 正在将垂直角降低至 GOLD VDEGREE 度'
+  SettingHorizontalAngleRight: 'YELLOW [Cannons] 正在朝 GOLD 右 YELLOW 转动 HDEGREE 度'
+  SettingHorizontalAngleLeft: 'YELLOW [Cannons] 正在朝 GOLD 左 YELLOW 转动 HDEGREE 度'
+
+
+Commands:
+  SelectCannon: 'YELLOW [Cannons] 请点击大炮.'
+  SelectBlock: 'YELLOW [Cannons] 请点击方块.'
+  SelectCanceled: 'RED [Cannons] 选择已取消.'
+  CannonNotFound: 'RED [Cannons] 未找到大炮.'
+  NoSentryWhitelist: 'RED [Cannons] 白名单仅对 Sentry 插件的 NPC 有效.'
+  AddedWhitelist: 'GREEN [Cannons] 已将 LASTWHITELISTED 添加至 CANNON 的白名单'
+  RemovedWhitelist: 'GREEN [Cannons] 已将 LASTWHITELISTED 从 CANNON 的白名单移出'
+  RemovedWhitelistOwner: 'YELLOW [Cannons] 无法将 CANNON 的拥有者从白名单中移出'
+  ToggledTargetMob: 'GOLD [Cannons] 将 Sentry 插件的目标实体修改为: TARGET_MOB'
+  ToggledTargetPlayer: 'GOLD [Cannons] 将 Sentry 插件的目标玩家实体修改为: TARGET_PLAYER'
+  ToggledTargetCannon: 'GOLD [Cannons] 将 Sentry 插件的目标大炮修改为: TARGET_CANNON'
+  ToggledTargetOther: 'GOLD [Cannons] 将 Sentry 插件的其他目标修改为: TARGET_OTHER'
+  BuyCannon: 'YELLOW [Cannons] 点击购买大炮. 购买所需的价格从你的账户中支出'
+  PaidCannon: 'GREEN [Cannons] 已支付费用. GOLD BUILD_COSTS GREEN 已从你的账户中支出.'
+  ClaimCannonsStarted: 'YELLOW [Cannons] 正在自动认领附近的大炮. 这可能会花上点时间.'
+  ClaimCannonsFinished: 'GREEN [Cannons] 成功自动认领了附近的所有大炮.'
+
+
+Load:  
+  Projectile: 'YELLOW [Cannons] 炮弹 GOLD PROJECTILE YELLOW 已装填.'
+  Gunpowder: 'YELLOW [Cannons] GOLD GUNPOWDERkg YELLOW/GOLD MAX_GUNPOWDERkg YELLOW 火药已装填.'
+  GunpowderAndProjectile: 'YELLOW [Cannons] GOLD GUNPOWDERkg YELLOW 火药及炮弹 GOLD PROJECTILE YELLOW 已装填.'
+  loadGunpowderNormalLimit: 'YELLOW [Cannons] GOLD 已装入最大量火药 (MAX_GUNPOWDERkg). 装入更多可能导致炸膛'
+  OverloadedGunpowder: 'YELLOW [Cannons] RED GUNPOWDERkg YELLOW/GOLD MAX_GUNPOWDERkg YELLOW 火药已装填.'
+
+
+Cannon:
+  Fire: 'YELLOW [Cannons] 开炮!'
+  Created: 'GREEN [Cannons] 你搭建了 GOLD CANNON'
+  Destroyed: 'RED [Cannons] 你的大炮已被摧毁'
+  Dismantled: 'GREEN [Cannons] 你的大炮已被拆除'
+  Reseted: 'GREEN [Cannons] 所有 GOLD PLAYER GREEN 拥有的大炮已从数据库中抹除'
+  ObserverAdded: 'GREEN [Cannons] 你已被添加为 GOLD CANNON_NAME GREEN的观察手.'
+  ObserverRemoved: 'RED [Cannons] 你不再是 GOLD CANNON_NAME GREEN的观察手了.'
+  Info: 'NEWLINE YELLOW ========== Cannons Information ==========
+    NEWLINE YELLOW 名称: GOLD CANNON_NAME
+    NEWLINE YELLOW 类型: GOLD CANNON
+    NEWLINE YELLOW 信息: GOLD DESCRIPTION
+    NEWLINE YELLOW 拥有者: GOLD OWNER
+    NEWLINE YELLOW 装药量: GOLD GUNPOWDERkg YELLOW of GOLD MAX_GUNPOWDERkg
+    NEWLINE YELLOW 弹药: GOLD PROJECTILE
+    NEWLINE YELLOW 炮灰: GOLD SOOT
+    NEWLINE YELLOW 指向 H/V: GOLD HDEGREE YELLOW / GOLD VDEGREE
+    -SENTRY-INFORMATION-
+    NEWLINE YELLOW 目标实体: TARGET_MOB
+    NEWLINE YELLOW 目标玩家: TARGET_PLAYER
+    NEWLINE YELLOW 目标大炮: TARGET_CANNON
+    NEWLINE YELLOW 其他目标: TARGET_OTHER
+    NEWLINE YELLOW 白名单': WHITELIST'
+  RenameSuccess: 'GREEN [Cannons] 你将大炮重命名为 GOLD CANNON_NAME.'
+  RenameFail: 'RED [Cannons] 已存在相同名称的大炮.'
+
+
+Projectile:
+  Explosion: 'GREEN [Cannons] 距离 GOLD IMPACT_DISTANCEm GREEN 与 GOLD IMPACT_Ym GREEN 高度内存在阻挡'
+  Canceled: 'YELLOW [Cannons] 位于 GOLD IMPACT_X, IMPACT_Y, IMPACT_Z YELLOW 的方块为炮弹经过路线, 但此地被其他插件保护'
+
+
+HeatManagement:
+  Burn: 'YELLOW [Cannons] 你摸到了滚烫的 CANNON, 你的手指被烫伤了'
+  Cooling: 'GREEN [Cannons] CANNON 已经冷却'
+  Info: 'YELLOW [Cannons] CANNON 的温度为 GOLD CANNON_TEMP / MAX_TEMP YELLOW. 炸膛几率: GOLD EXPLOSION_CHANCE YELLOW%'
+  Critical: 'YELLOW [Cannons] CANNON 已经达到 CANNON_TEMPC 的临界温度'
+  Overheated: 'RED [Cannons] CANNON 因过热炸膛'
+
+
+Ramrod:
+  Cleaning: 'YELLOW [Cannons] 正在清理大炮. 还需清理 GOLD SOOT_LEFT YELLOW 次.'
+  CleaningDone: 'GREEN [Cannons] 炮筒已经足够干净.'
+  PushingProjectile: 'YELLOW [Cannons] 已推入弹药. 还需推 GOLD PUSHING_LEFT YELLOW 次.'
+  PushingProjectileDone: 'GREEN [Cannons] 已装载弹药. CANNON 可以开火'
+
+
+ImitatedEffects:
+  Enabled: 'GREEN [Cannons] 模拟效果已启用'
+  Disabled: 'RED [Cannons] 模拟效果已禁用'
+
+
+Permission:
+  ErrorRedstone: 'RED [Cannons] 你不能使用红石控制这个.'
+  ErrorBuild: 'RED [Cannons] 你没有权限建造 CANNON.'
+  ErrorDismantle: 'RED [Cannons] 你没有权限破坏 CANNON.'
+  ErrorRename: 'RED [Cannons] 你没有权限重命名 CANNON.'
+  ErrorFire: 'RED [Cannons] 你不知道如何使用 CANNON.'
+  ErrorLoad: 'RED [Cannons] 你没有权限为 CANNON 装填弹药.'
+  ErrorAdjust: 'RED [Cannons] 你不知道如何调整 CANNON.'
+  ErrorAutoaim: 'RED [Cannons] 你不知道如何使用自动瞄准.'
+  ErrorObserver: 'RED [Cannons] 你没有权限成为 CANNON_NAME 的观察手.'
+  ErrorProjectile: 'RED [Cannons] 你没有权限装载这个弹药.'
+  ErrorThermometer: 'RED [Cannons] 你没有权限查看温度.'
+  ErrorRamrod: 'RED [Cannons] 你没有权限发射大炮.'
+
+
+Death:
+  message1: 'RED PLAYER 被 SHOOTER 的 CANNON 干掉了'
+  message2: 'RED SHOOTER 使用 CANNON 炸飞了 PLAYER'
+  message3: 'RED PLAYER 被 SHOOTER 的 CBALL 击中'
+
+
+Help:
+  Text: 'NEWLINE YELLOW 大炮插件
+    NEWLINE GOLD /cannons build YELLOW - 建造大炮教程
+    NEWLINE GOLD /cannons fire YELLOW - 装填与发射教程
+    NEWLINE GOLD /cannons adjust YELLOW - 瞄准教程
+    NEWLINE GOLD /cannons commands YELLOW - 显示所有可用命令'
+  Build: 'NEWLINE GOLD 如何建造大炮:
+    NEWLINE YELLOW 若要建造炮管, 请横着摆放三块黑色羊毛.
+    NEWLINE YELLOW 在羊毛的末端放上两个按钮.
+    NEWLINE YELLOW 在炮口的另一端放上火把.
+    NEWLINE YELLOW 点击检查大炮, 如果搭建正确, 则此时大炮会显示信息.'
+  Fire: 'NEWLINE GOLD 如何装填与开火: 
+    NEWLINE YELLOW 1) 手持火药右键大炮将其装入, 并重复多次.
+    NEWLINE YELLOW 2) 手持炮弹装入 (如圆石).
+    NEWLINE YELLOW 3) 完成后右键火把.'
+  Adjust: 'NEWLINE GOLD 没瞄准? 教你如何命中目标:
+    NEWLINE YELLOW 空手右键可抬升角度.
+    NEWLINE YELLOW 蹲下右键则会降低角度.
+    NEWLINE YELLOW 在炮身上端点击调整的是垂直角度.
+    NEWLINE YELLOW 在炮身两侧点击调整的是水平角度.'
