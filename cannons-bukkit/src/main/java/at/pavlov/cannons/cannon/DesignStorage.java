@@ -366,8 +366,15 @@ public class DesignStorage
 	}
 
 	private Clipboard loadSchematic(String schematicFile) {
-		File f = new File(getPath() + schematicFile);
+		String schematicPath = getPath() + schematicFile;
+		File f = new File(schematicPath);
 		ClipboardFormat format = ClipboardFormats.findByFile(f);
+
+		if(format == null) {
+			plugin.logSevere("Error while loading schematic " + schematicPath + " : Format not found");
+			return null;
+		}
+
 		try (Closer closer = Closer.create()) {
 			FileInputStream fis = closer.register(new FileInputStream(f));
 			BufferedInputStream bis = closer.register(new BufferedInputStream(fis));
@@ -375,7 +382,7 @@ public class DesignStorage
 
 			return reader.read();
 		} catch (IOException e) {
-			plugin.logSevere("Error while loading schematic " + getPath() + schematicFile + " :" + e  + "; does file exist: " + f.exists());
+			plugin.logSevere("Error while loading schematic " + schematicPath + " : IO Error");
 			return null;
 		}
 	}
@@ -392,7 +399,6 @@ public class DesignStorage
         Clipboard cc = loadSchematic(schematicFile);
 		//failed to load schematic
 		if (cc == null) {
-			plugin.logSevere("Failed to loading schematic");
 			return false;
 		}
 
