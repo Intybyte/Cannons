@@ -70,7 +70,7 @@
     <dependencies>
         <dependency>
             <groupId>at.pavlov</groupId>
-            <artifactId>internal-api</artifactId>
+            <artifactId>api-internal</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
