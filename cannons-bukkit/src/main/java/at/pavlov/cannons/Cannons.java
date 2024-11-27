@@ -11,6 +11,7 @@ import at.pavlov.cannons.commands.Commands;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.dao.PersistenceDatabase;
+import at.pavlov.cannons.hooks.VaultHook;
 import at.pavlov.cannons.listener.*;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
@@ -18,6 +19,8 @@ import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.scheduler.ProjectileObserver;
 import at.pavlov.cannons.utils.CannonSelector;
+import at.pavlov.internal.HookManager;
+import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -53,7 +56,8 @@ public final class Cannons extends JavaPlugin
     private FakeBlockHandler fakeBlockHandler;
 
     private CannonsAPI cannonsAPI;
-    private Economy economy;
+	@Getter
+    private HookManager hookManager;
 	
 	//Listener
     private BlockListener blockListener;
@@ -94,6 +98,7 @@ public final class Cannons extends JavaPlugin
 			}
 		}
 		logger.info(getLogPrefix() + "Cannons plugin v" + getPluginDescription().getVersion() + " has been disabled");
+		hookManager.disableHooks();
 	}
 
 	public void onEnable()
@@ -128,8 +133,11 @@ public final class Cannons extends JavaPlugin
 		this.entityListener = new EntityListener(this);
         RedstoneListener redstoneListener = new RedstoneListener(this);
 
-		setupEconomy();
+		hookManager = new HookManager();
 
+		VaultHook vaultHook = new VaultHook(this);
+
+		hookManager.registerHook(VaultHook.class, vaultHook);
         long startTime = System.nanoTime();
 
 
@@ -201,29 +209,6 @@ public final class Cannons extends JavaPlugin
 		var cannonsCommandManager = new CannonsCommandManager(this);
 		cannonsCommandManager.registerCommand(new Commands());
 	}
-
-	private void setupEconomy() {
-		if (config.isEconomyDisabled()) {
-			economy = null;
-			return;
-		}
-
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-			economy = null;
-            return;
-        }
-
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-			economy = null;
-            return;
-        }
-
-        economy = rsp.getProvider();
-	}
-
-
-
 
 	// set up ebean database
 	private void openConnection() throws SQLException, ClassNotFoundException
@@ -427,7 +412,7 @@ public final class Cannons extends JavaPlugin
     }
 
     public Economy getEconomy(){
-        return this.economy;
+        return this.hookManager.getHook(VaultHook.class).hook();
     }
 
 	public String getCannonDatabase() {
