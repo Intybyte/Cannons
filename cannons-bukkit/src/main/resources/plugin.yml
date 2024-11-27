@@ -3,7 +3,7 @@ main: at.pavlov.cannons.Cannons
 api-version: 1.13
 version: ${version}
 depend: [WorldEdit]
-softdepend: [Vault]
+softdepend: [Vault, Movecraft, Movecraft-Combat]
 authors: [DerPavlov, Vaan1310]
 description: Fire block build cannons and smash your enemies
 

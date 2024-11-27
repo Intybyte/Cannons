@@ -11,6 +11,7 @@ import at.pavlov.cannons.commands.Commands;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.dao.PersistenceDatabase;
+import at.pavlov.cannons.hooks.MovecraftHook;
 import at.pavlov.cannons.hooks.VaultHook;
 import at.pavlov.cannons.listener.*;
 import at.pavlov.cannons.projectile.Projectile;
@@ -134,9 +135,14 @@ public final class Cannons extends JavaPlugin
 
 		hookManager = new HookManager();
 
+		logDebug("Loading VaultHook");
 		VaultHook vaultHook = new VaultHook(this);
-
 		hookManager.registerHook(VaultHook.class, vaultHook);
+
+		logDebug("Loading MovecraftHook");
+		MovecraftHook movecraftHook = new MovecraftHook(this);
+		hookManager.registerHook(MovecraftHook.class, movecraftHook);
+
         long startTime = System.nanoTime();
 
 

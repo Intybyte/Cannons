@@ -33,7 +33,10 @@ public class Config
 	private boolean debugMode;
     private boolean relayExplosionEvent;
     private int claimEdgeLength;
+
+    //hooks
     private boolean economyDisabled;
+    private boolean movecraftDamageTracking;
 	
 	//build limits
     private boolean buildLimitEnabled;
@@ -116,7 +119,8 @@ public class Config
 		
 		//general
 		setDebugMode(config.getBoolean("general.debugMode", false));
-        setEconomyDisabled(config.getBoolean("economy.disabled", false));
+        setEconomyDisabled(config.getBoolean("hooks.economyDisabled", false));
+        setMovecraftDamageTracking(config.getBoolean("hooks.movecraftDamageTracking", false));
         setRelayExplosionEvent(config.getBoolean("general.relayExplosionEvent", false));
         setClaimEdgeLength(config.getInt("general.claimEdgeLength", 60));
         ArmorCalculationUtil.setMagicValue(config.getDouble("general.armorEffectiveness", 0.04));

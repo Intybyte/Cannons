@@ -5,8 +5,6 @@ general:
   relayExplosionEvent: false
   #size of the box of the claim cannon command
   claimEdgeLength: 60
-  # don't use economy features of Vault
-  economyDisabled: false
   # this checks every time you place a block if the near blocks form a cannon
   # sometimes you might need this disabled, and just create a cannon using the
   # relative command
@@ -15,6 +13,12 @@ general:
   # meaning the most protection you can get is 80%, if you put this value at 0.05 or above player
   # can be completely immune to cannon shots
   armorEffectiveness: 0.04
+
+hooks:
+  # don't use economy features of Vault
+  economyDisabled: false
+  # Enable tracking and recording of Cannons projectiles
+  movecraftDamageTracking: true
 
 
 cannonLimits:
