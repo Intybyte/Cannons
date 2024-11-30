@@ -8,5 +8,5 @@ public interface Hook<H> {
 
     void onEnable();
     void onDisable();
-    Class<? extends Hook> getTypeClass();
+    Class<? extends Hook<?>> getTypeClass();
 }

@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HookManager {
-    private final Map<Class<? extends Hook>, Hook> hooks = new HashMap<>();
+    private final Map<Class<? extends Hook<?>>, Hook<?>> hooks = new HashMap<>();
 
-    public boolean isRegistered(Class<? extends Hook> type) {
+    public boolean isRegistered(Class<? extends Hook<?>> type) {
         if (this.hooks.containsKey(type)) {
             return true;
         }
 
-        for (Class<? extends Hook> clazz : hooks.keySet()) {
+        for (Class<? extends Hook<?>> clazz : hooks.keySet()) {
             if (type.isAssignableFrom(clazz)) {
                 return true;
             }
@@ -20,13 +20,13 @@ public class HookManager {
         return false;
     }
 
-    public <T extends Hook> T getHook(Class<T> type) {
+    public <T extends Hook<?>> T getHook(Class<T> type) {
         Hook hook = this.hooks.get(type);
         if (hook != null) {
             return type.cast(hook);
         }
 
-        for (Class<? extends Hook> clazz : hooks.keySet()) {
+        for (Class<? extends Hook<?>> clazz : hooks.keySet()) {
             if (type.isAssignableFrom(clazz)) {
                 hook = hooks.get(clazz);
             }
@@ -38,13 +38,13 @@ public class HookManager {
         return type.cast(hook);
     }
 
-    public void registerHook(Class<? extends Hook> type, Hook hook) {
+    public void registerHook(Hook<?> hook) {
         hook.onEnable();
-        this.hooks.put(type, hook);
+        this.hooks.put(hook.getTypeClass(), hook);
     }
 
     public void disableHooks() {
-        for (Hook hook : hooks.values()) {
+        for (Hook<?> hook : hooks.values()) {
             hook.onDisable();
         }
     }

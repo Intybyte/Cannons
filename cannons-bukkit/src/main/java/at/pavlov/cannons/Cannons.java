@@ -137,11 +137,11 @@ public final class Cannons extends JavaPlugin
 
 		logDebug("Loading VaultHook");
 		VaultHook vaultHook = new VaultHook(this);
-		hookManager.registerHook(VaultHook.class, vaultHook);
+		hookManager.registerHook(vaultHook);
 
 		logDebug("Loading MovecraftHook");
 		MovecraftHook movecraftHook = new MovecraftHook(this);
-		hookManager.registerHook(MovecraftHook.class, movecraftHook);
+		hookManager.registerHook( movecraftHook);
 
         long startTime = System.nanoTime();
 
