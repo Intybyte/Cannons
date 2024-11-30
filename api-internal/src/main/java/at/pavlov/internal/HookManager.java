@@ -21,7 +21,7 @@ public class HookManager {
     }
 
     public <T extends Hook<?>> T getHook(Class<T> type) {
-        Hook hook = this.hooks.get(type);
+        Hook<?> hook = this.hooks.get(type);
         if (hook != null) {
             return type.cast(hook);
         }
