@@ -183,15 +183,15 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>at.pavlov.cannons</shadedPattern>
+                            <shadedPattern>at.pavlov.cannons.shaded</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.commands</pattern>
-                            <shadedPattern>me.vaan.acf</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>at.pavlov.cannons.shaded.acf</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.locales</pattern>
-                            <shadedPattern>me.vaan.locales</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>at.pavlov.cannons.shaded.locales</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
