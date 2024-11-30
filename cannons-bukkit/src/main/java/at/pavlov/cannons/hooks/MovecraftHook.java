@@ -55,7 +55,7 @@ public class MovecraftHook extends BukkitHook<Movecraft> {
     }
 
     @Override
-    public Class<? extends Hook> getTypeClass() {
+    public Class<? extends Hook<?>> getTypeClass() {
         return MovecraftHook.class;
     }
 }
