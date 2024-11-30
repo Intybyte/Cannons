@@ -1,9 +1,6 @@
 package at.pavlov.cannons.hooks;
 
-import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.internal.Hook;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -15,6 +12,7 @@ import java.util.Locale;
 
 public class PlaceholderAPIHook extends PlaceholderExpansion implements Hook<Void> {
     private final Cannons plugin;
+    private boolean working = false;
 
     public PlaceholderAPIHook(Cannons plugin) {
         this.plugin = plugin;
@@ -29,12 +27,18 @@ public class PlaceholderAPIHook extends PlaceholderExpansion implements Hook<Voi
     public void onEnable() {
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             this.register();
+            working = true;
         }
     }
 
     @Override
     public void onDisable() {
 
+    }
+
+    @Override
+    public boolean working() {
+        return working;
     }
 
     @Override

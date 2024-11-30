@@ -6,7 +6,7 @@ import at.pavlov.internal.Hook;
 abstract public class BukkitHook<P> implements Hook<P> {
 
     protected Cannons plugin;
-    protected P hook;
+    protected P hook = null;
 
     public BukkitHook(Cannons plugin) {
         this.plugin = plugin;
