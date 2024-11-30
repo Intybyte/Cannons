@@ -12,6 +12,7 @@ import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.hooks.MovecraftHook;
+import at.pavlov.cannons.hooks.PlaceholderAPIHook;
 import at.pavlov.cannons.hooks.VaultHook;
 import at.pavlov.cannons.listener.*;
 import at.pavlov.cannons.projectile.Projectile;
@@ -133,6 +134,7 @@ public final class Cannons extends JavaPlugin
 		this.entityListener = new EntityListener(this);
         RedstoneListener redstoneListener = new RedstoneListener(this);
 
+		long startTime = System.currentTimeMillis();
 		hookManager = new HookManager();
 
 		logDebug("Loading VaultHook");
@@ -141,9 +143,15 @@ public final class Cannons extends JavaPlugin
 
 		logDebug("Loading MovecraftHook");
 		MovecraftHook movecraftHook = new MovecraftHook(this);
-		hookManager.registerHook( movecraftHook);
+		hookManager.registerHook(movecraftHook);
 
-        long startTime = System.nanoTime();
+		logDebug("Loading PlaceholderAPIHook");
+		PlaceholderAPIHook placeholderAPIHook = new PlaceholderAPIHook(this);
+		hookManager.registerHook(placeholderAPIHook);
+
+		logDebug("Time to enable hooks: " + new DecimalFormat("0.00").format(System.currentTimeMillis() - startTime) + "ms");
+
+		startTime = System.nanoTime();
 
 
 		//load some global variables
