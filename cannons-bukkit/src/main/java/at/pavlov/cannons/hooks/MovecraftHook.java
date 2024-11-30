@@ -9,6 +9,7 @@ import at.pavlov.internal.Hook;
 import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 
 public class MovecraftHook extends BukkitHook<Movecraft> {
     public MovecraftHook(Cannons plugin) {
@@ -17,7 +18,8 @@ public class MovecraftHook extends BukkitHook<Movecraft> {
 
     @Override
     public void onEnable() {
-        Plugin movecraftPlugin = plugin.getServer().getPluginManager().getPlugin("Movecraft");
+        PluginManager pluginManager = plugin.getServer().getPluginManager();
+        Plugin movecraftPlugin = pluginManager.getPlugin("Movecraft");
         if (movecraftPlugin == null || !movecraftPlugin.isEnabled()) {
             plugin.logDebug("Movecraft not found or disabled");
             return;
@@ -30,10 +32,9 @@ public class MovecraftHook extends BukkitHook<Movecraft> {
 
         hook = movecraft;
 
-        var pluginManager = plugin.getServer().getPluginManager();
         if (plugin.getMyConfig().isMovecraftDamageTracking()) {
             // Load Movecraft-Combat plugin
-            Plugin mcc = plugin.getServer().getPluginManager().getPlugin("Movecraft-Combat");
+            Plugin mcc = pluginManager.getPlugin("Movecraft-Combat");
             if (mcc instanceof MovecraftCombat) {
                 plugin.logInfo("Movecraft-Combat found");
                 pluginManager.registerEvents(new ProjectileImpactListener(), plugin);
