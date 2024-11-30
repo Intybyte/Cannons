@@ -8,6 +8,7 @@ import at.pavlov.cannons.movecraft.listener.TranslationListener;
 import at.pavlov.internal.Hook;
 import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.combat.MovecraftCombat;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
@@ -51,7 +52,10 @@ public class MovecraftHook extends BukkitHook<Movecraft> {
 
     @Override
     public void onDisable() {
-
+        HandlerList.unregisterAll(new ProjectileImpactListener());
+        HandlerList.unregisterAll(new CraftDetectListener());
+        HandlerList.unregisterAll(new TranslationListener());
+        HandlerList.unregisterAll(new RotationListener());
     }
 
     @Override

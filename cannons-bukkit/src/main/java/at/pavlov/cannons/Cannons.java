@@ -208,6 +208,17 @@ public final class Cannons extends JavaPlugin
 				t = t.getCause();
 			}
 		}
+
+		Bukkit.getScheduler().runTaskLater(this, () -> {
+            if (!pm.isPluginEnabled("Movecraft-Cannons")) {
+                return;
+            }
+
+            logSevere("Movecraft-Cannons found, disabling hook." +
+                    " You don't need to add Movecraft-Cannons anymore as Movecraft support is now embedded," +
+                    " we suggest you stop using it as in the future it might stop work properly.");
+            movecraftHook.onDisable();
+        }, 1L);
     }
 
 	private void initializeCommands() {
