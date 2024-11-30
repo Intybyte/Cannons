@@ -1,5 +1,6 @@
 package at.pavlov.cannons.hooks;
 
+import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
@@ -57,17 +58,15 @@ public class PlaceholderAPIHook extends PlaceholderExpansion implements Hook<Voi
     }
 
     @Override
+    public boolean persist() {
+        return true;
+    }
+
+    @Override
     public String onRequest(OfflinePlayer player, @NotNull String params) {
         if (player == null) return null;
 
-        var cannonList = CannonManager.getCannonList().values();
-        if (cannonList.isEmpty()) return null;
-
-        Cannon operated = cannonList.stream()
-                .filter(cannon -> cannon.getCannonOperator() == player.getUniqueId())
-                .findFirst()
-                .orElse(null);
-
+        var operated = plugin.getAiming().getCannonInAimingMode(player.getPlayer());
         if (operated == null) return null;
 
         return switch (params) {

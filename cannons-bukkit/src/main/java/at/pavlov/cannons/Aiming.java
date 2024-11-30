@@ -386,7 +386,19 @@ public class Aiming {
         if (player == null)
             return null;
         //return the cannon of the player if he is in aiming mode
-        return CannonManager.getCannon(inAimingMode.get(player.getUniqueId()));
+        return getCannonInAimingMode(player.getUniqueId());
+    }
+    /**
+     * returns the cannon of the player if he is in aiming mode
+     *
+     * @param player the player who is in aiming mode
+     * @return the cannon which is in aiming mode by the given player
+     */
+    public Cannon getCannonInAimingMode(UUID player) {
+        if (player == null)
+            return null;
+        //return the cannon of the player if he is in aiming mode
+        return CannonManager.getCannon(inAimingMode.get(player));
     }
 
 
