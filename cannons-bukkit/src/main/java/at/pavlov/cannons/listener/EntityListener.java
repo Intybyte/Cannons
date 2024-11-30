@@ -5,7 +5,6 @@ import at.pavlov.cannons.Enum.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
