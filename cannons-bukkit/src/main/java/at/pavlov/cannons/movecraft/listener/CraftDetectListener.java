@@ -1,6 +1,5 @@
 package at.pavlov.cannons.movecraft.listener;
 
-import at.pavlov.cannons.API.CannonsAPI;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.movecraft.type.MaxCannonsEntry;

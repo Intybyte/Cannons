@@ -695,6 +695,7 @@ public class CreateExplosion {
         // if (cannonball.getProjectileEntity()==null)
         // return 0.0;
 
+        plugin.logDebug("Start directHit calculation");
         if (!(target instanceof LivingEntity living)) {
             return 0.0;
         }

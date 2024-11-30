@@ -207,6 +207,7 @@ public class Config
 		projectileStorage.loadProjectiles();
         cannonManager.updateCannons();
 		userMessage.loadLanguage();
+        plugin.setDebugMode(debugMode);
 	}
 
     public UserMessages getUserMessages() {
