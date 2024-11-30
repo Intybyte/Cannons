@@ -6,34 +6,57 @@ import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.movecraft.type.MaxCannonsEntry;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PlayerCraft;
+import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.events.CraftDetectEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import static at.pavlov.cannons.movecraft.type.MaxCannonsProperty.MAX_CANNONS;
 
 public class CraftDetectListener implements Listener {
-    private static final CannonsAPI cannonAPI = Cannons.getPlugin().getCannonsAPI();
+    private static final Set<CraftType> notifyError = new HashSet<>();
+    private static final Cannons cannon = Cannons.getPlugin();
 
     @EventHandler
     public void onCraftDetect(CraftDetectEvent e) {
         Craft craft = e.getCraft();
+        CraftType type = craft.getType();
+        if (notifyError.contains(type))
+            return;
+
         if (!(craft instanceof PlayerCraft))
             return;
 
-        var objectProperty = craft.getType().getObjectProperty(MAX_CANNONS);
-        if (!(objectProperty instanceof Set<?> maxCannons))
-            throw new IllegalStateException("MAX_CANNONS must be a set.");
+        Object objectProperty;
+        Set<?> maxCannons;
+        try {
+            objectProperty = craft.getType().getObjectProperty(MAX_CANNONS);
+            if (objectProperty instanceof Set<?> objects) {
+                maxCannons = objects;
+            } else {
+                throw new IllegalStateException("MAX_CANNONS must be a set.");
+            }
+        } catch (IllegalStateException exception) {
+            notifyError.add(type);
+            cannon.logSevere(
+                "Failed to get max_cannons property from craft " +
+                type.getStringProperty(CraftType.NAME) +
+                " max_cannons won't be applied. - Cause: " +
+                e.getFailMessage()
+            );
+            return;
+        }
 
         if (maxCannons.isEmpty())
             return; // Return if empty set to improve performance
 
         // Sum up counts of each cannon design
-        Set<Cannon> cannons = cannonAPI.getCannons(craft);
+        Set<Cannon> cannons = cannon.getCannonsAPI().getCannons(craft);
         Map<String, Integer> cannonCount = new HashMap<>();
         for (var cannon : cannons) {
             String design = cannon.getCannonDesign().getDesignName().toLowerCase();
