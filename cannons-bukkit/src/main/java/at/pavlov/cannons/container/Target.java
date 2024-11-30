@@ -18,15 +18,26 @@ public record Target(
         Vector velocity
 ) {
 
+    public static TargetType entityToTarget(Entity entity) {
+        if (entity instanceof Player) {
+            return TargetType.PLAYER;
+        }
+
+        if (entity instanceof Monster) {
+            return TargetType.MONSTER;
+        }
+
+        if (entity instanceof Animals) {
+            return TargetType.ANIMAL;
+        }
+
+        return TargetType.OTHER;
+    }
+
     public Target(Entity entity) {
         this(
             entity.getName(),
-            switch (entity) {
-                case Player player -> TargetType.PLAYER;
-                case Monster monster -> TargetType.MONSTER;
-                case Animals animals -> TargetType.ANIMAL;
-                default -> TargetType.OTHER;
-            },
+            entityToTarget(entity),
             entity.getType(),
             entity.getUniqueId(),
             entity.getLocation().clone(),
