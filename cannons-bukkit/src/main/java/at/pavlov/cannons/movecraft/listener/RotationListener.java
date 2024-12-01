@@ -15,11 +15,8 @@ import java.util.Set;
 public class RotationListener implements Listener {
     private static final CannonsAPI cannonsAPI = Cannons.getPlugin().getCannonsAPI();
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void rotateListener(CraftRotateEvent e) {
-        if (e.isCancelled())
-            return;
-
         Craft craft = e.getCraft();
 
         Set<Cannon> cannons = cannonsAPI.getCannons(craft);

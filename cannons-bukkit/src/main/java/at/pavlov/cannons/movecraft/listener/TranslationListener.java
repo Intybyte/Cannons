@@ -17,11 +17,8 @@ import java.util.Set;
 public class TranslationListener implements Listener {
     private static final CannonsAPI cannonsAPI = Cannons.getPlugin().getCannonsAPI();
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void translateListener(CraftTranslateEvent e) {
-        if (e.isCancelled())
-            return;
-
         Vector v = delta(e);
         if (v == null)
             return;

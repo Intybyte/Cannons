@@ -16,7 +16,7 @@ import org.bukkit.event.Listener;
 import java.util.UUID;
 
 public class ProjectileImpactListener implements Listener {
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void impactListener(ProjectileImpactEvent e) {
         Craft craft = MathUtils.fastNearestCraftToLoc(CraftManager.getInstance().getCrafts(), e.getImpactLocation());
         if (!(craft instanceof PlayerCraft playerCraft))
