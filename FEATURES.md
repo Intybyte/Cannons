@@ -1,23 +1,29 @@
 New features/fixes:
 ---------------
 - 1.20.6 + Support
-- Upgraded to Java 14 language level
-- Requires Java 21
+- Requires Java 17
 - Added Netherite and newer armor protection support
 - Simplified Chinese Translation by [SnowCutieOwO](https://github.com/SnowCutieOwO)
 - New area commands
+
+Hooks:
+---------------
+- Vault hook to buy cannons (was there even before fork)
+- Movecraft-Cannons support is now integrated
+- PlaceholderAPI hook
 
 Optimizations:
 ---------------
 - Better FlyingProjectile lookup
 - UserMessage Optimization
 - Some CannonManager Optimization
-- Random Optimization (Original created a random number generator every time it needed to be used, now each object has its own Random)
+- RNG Optimization (Original created a random number generator every time it needed to be used, now each object has its own Random)
 - Distance optimization by using `Location#distanceSquared()` over `Location#distance` when possible
 - Aiming shot simulation Optimization
 - Simulating aim is less resource expensive (after testing, this feature requires about 50% less CPU usage)
 - `CannonAPI#getCannon` should now not create massive lag when there are a lot of designs
 - `/cannons claim` and commands executed in a radius won't deadlock your server anymore, and it is executed on a separate thread
+- Calculating if a specific location is part of a cannon is way faster (some users stated it was up to x6 faster)
 
 API Changes/New Events:
 --------------
