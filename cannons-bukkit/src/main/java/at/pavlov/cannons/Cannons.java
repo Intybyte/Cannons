@@ -21,10 +21,12 @@ import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.scheduler.ProjectileObserver;
 import at.pavlov.cannons.utils.CannonSelector;
+import at.pavlov.internal.Hook;
 import at.pavlov.internal.HookManager;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -40,6 +42,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -193,6 +197,18 @@ public final class Cannons extends JavaPlugin
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> persistenceDatabase.saveAllCannons(true), 6000L, 6000L);
 
 			Metrics metrics = new Metrics(this, 23139);
+			metrics.addCustomChart(
+					new AdvancedPie("hooks", () -> {
+
+						Map<String, Integer> result = new HashMap<>();
+						for (Hook<?> hook : hookManager.hookMap().values()) {
+							final int status = hook.working() ? 1 : 0;
+							result.put(hook.getTypeClass().getName(), status);
+						}
+
+						return result;
+					})
+			);
 
             logDebug("Time to enable cannons: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
 

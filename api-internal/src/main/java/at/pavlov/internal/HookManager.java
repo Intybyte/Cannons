@@ -1,10 +1,18 @@
 package at.pavlov.internal;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class HookManager {
     private final Map<Class<? extends Hook<?>>, Hook<?>> hooks = new HashMap<>();
+
+    /**
+     * @return A defensive copy of the hook map
+     */
+    public Map<Class<? extends Hook<?>>, Hook<?>> hookMap() {
+        return Collections.unmodifiableMap(hooks);
+    }
 
     public boolean isRegistered(Class<? extends Hook<?>> type) {
         if (this.hooks.containsKey(type)) {
