@@ -16,16 +16,17 @@ public class MaxCannonsProperty {
     public static NamespacedKey MAX_CANNONS = new NamespacedKey("movecraft-cannons", "max_cannons");
 
     private static @NotNull Pair<Boolean, ? extends Number> parseLimit(@NotNull Object input) {
-        if (input instanceof String str) {
-            if (!str.contains(NUMERIC_PREFIX)) {
-                return new Pair<>(false, Double.valueOf(str));
-            }
-
-            String[] parts = str.split(NUMERIC_PREFIX);
-            int val = Integer.parseInt(parts[1]);
-            return new Pair<>(true, val);
+        if (!(input instanceof String str)) {
+            return new Pair<>(false, (double) input);
         }
-        return new Pair<>(false, (double) input);
+
+        if (!str.contains(NUMERIC_PREFIX)) {
+            return new Pair<>(false, Double.valueOf(str));
+        }
+
+        String[] parts = str.split(NUMERIC_PREFIX);
+        int val = Integer.parseInt(parts[1]);
+        return new Pair<>(true, val);
     }
 
     public static void register() {
