@@ -2,7 +2,7 @@ package at.pavlov.internal;
 
 public interface Hook<H> {
     H hook();
-    default boolean working() {
+    default boolean active() {
         return hook() != null;
     }
 

@@ -50,7 +50,7 @@ public class HookManager {
      * @return true if at least one hook in the manager is working
      */
     public boolean isActive() {
-        return hooks.values().stream().anyMatch(Hook::working);
+        return hooks.values().stream().anyMatch(Hook::active);
     }
 
     public void registerHook(Hook<?> hook) {

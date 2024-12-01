@@ -37,7 +37,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion implements Hook<Voi
     }
 
     @Override
-    public boolean working() {
+    public boolean active() {
         return working;
     }
 
