@@ -201,6 +201,11 @@ public final class Cannons extends JavaPlugin
 					new AdvancedPie("hooks", () -> {
 
 						Map<String, Integer> result = new HashMap<>();
+						if (!hookManager.isActive()) {
+							result.put("None", 1);
+							return result;
+						}
+
 						for (Hook<?> hook : hookManager.hookMap().values()) {
 							final int status = hook.working() ? 1 : 0;
 							result.put(hook.getTypeClass().getName(), status);

@@ -46,6 +46,13 @@ public class HookManager {
         return type.cast(hook);
     }
 
+    /**
+     * @return true if at least one hook in the manager is working
+     */
+    public boolean isActive() {
+        return hooks.values().stream().anyMatch(Hook::working);
+    }
+
     public void registerHook(Hook<?> hook) {
         hook.onEnable();
         this.hooks.put(hook.getTypeClass(), hook);
