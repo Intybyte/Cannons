@@ -21,9 +21,8 @@ Optimizations:
 - Distance optimization by using `Location#distanceSquared()` over `Location#distance` when possible
 - Aiming shot simulation Optimization
 - Simulating aim is less resource expensive (after testing, this feature requires about 50% less CPU usage)
-- `CannonAPI#getCannon` should now not create massive lag when there are a lot of designs
+- `CannonAPI#getCannon` should now not create massive lag when there are a lot of designs, and is way faster (some owners stated it was up to x6 faster)
 - `/cannons claim` and commands executed in a radius won't deadlock your server anymore, and it is executed on a separate thread
-- Calculating if a specific location is part of a cannon is way faster (some users stated it was up to x6 faster)
 
 API Changes/New Events:
 --------------
