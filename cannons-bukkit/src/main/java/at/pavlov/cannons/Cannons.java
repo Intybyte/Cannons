@@ -146,9 +146,11 @@ public final class Cannons extends JavaPlugin
 		vaultHook = new VaultHook(this);
 		hookManager.registerHook(vaultHook);
 
-		logDebug("Loading MovecraftHook");
-		MovecraftHook movecraftHook = new MovecraftHook(this);
-		hookManager.registerHook(movecraftHook);
+		if (config.isMovecraftEnabled()) {
+			logDebug("Loading MovecraftHook");
+			MovecraftHook movecraftHook = new MovecraftHook(this);
+			hookManager.registerHook(movecraftHook);
+		}
 
 		logDebug("Loading PlaceholderAPIHook");
 		PlaceholderAPIHook placeholderAPIHook = new PlaceholderAPIHook(this);
@@ -244,10 +246,15 @@ public final class Cannons extends JavaPlugin
                 return;
             }
 
+			if (!hookManager.isRegistered(MovecraftHook.class)) {
+				return;
+			}
+
             logSevere("Movecraft-Cannons found, disabling hook." +
                     " You don't need to add Movecraft-Cannons anymore as Movecraft support is now embedded," +
                     " we suggest you stop using it as in the future it might stop work properly.");
-            movecraftHook.onDisable();
+
+			hookManager.getHook(MovecraftHook.class).onDisable();
         }, 1L);
     }
 

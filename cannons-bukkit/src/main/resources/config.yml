@@ -15,10 +15,11 @@ general:
   armorEffectiveness: 0.04
 
 hooks:
-  # don't use economy features of Vault
-  economyDisabled: false
-  # Enable tracking and recording of Cannons projectiles
-  movecraftDamageTracking: true
+  vault:
+    enabled: true
+  movecraft:
+    enabled: true
+    damageTracking: true
 
 
 cannonLimits:

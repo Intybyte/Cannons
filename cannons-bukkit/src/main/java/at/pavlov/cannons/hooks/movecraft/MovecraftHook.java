@@ -21,6 +21,10 @@ public class MovecraftHook extends BukkitHook<Movecraft> {
 
     @Override
     public void onEnable() {
+        if (plugin.getConfig().getBoolean("")) {
+            return;
+        }
+
         PluginManager pluginManager = plugin.getServer().getPluginManager();
         Plugin movecraftPlugin = pluginManager.getPlugin("Movecraft");
         if (movecraftPlugin == null || !movecraftPlugin.isEnabled()) {
