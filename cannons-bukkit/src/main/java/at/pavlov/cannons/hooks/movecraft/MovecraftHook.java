@@ -1,11 +1,12 @@
-package at.pavlov.cannons.hooks;
+package at.pavlov.cannons.hooks.movecraft;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.movecraft.listener.CraftDetectListener;
-import at.pavlov.cannons.movecraft.listener.ProjectileImpactListener;
-import at.pavlov.cannons.movecraft.listener.RotationListener;
-import at.pavlov.cannons.movecraft.listener.TranslationListener;
-import at.pavlov.cannons.movecraft.type.MaxCannonsProperty;
+import at.pavlov.cannons.hooks.BukkitHook;
+import at.pavlov.cannons.hooks.movecraft.listener.CraftDetectListener;
+import at.pavlov.cannons.hooks.movecraft.listener.ProjectileImpactListener;
+import at.pavlov.cannons.hooks.movecraft.listener.RotationListener;
+import at.pavlov.cannons.hooks.movecraft.listener.TranslationListener;
+import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsProperty;
 import at.pavlov.internal.Hook;
 import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.combat.MovecraftCombat;

@@ -1,8 +1,8 @@
-package at.pavlov.cannons.movecraft.listener;
+package at.pavlov.cannons.hooks.movecraft.listener;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.movecraft.type.MaxCannonsEntry;
+import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsEntry;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.craft.type.CraftType;
@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static at.pavlov.cannons.movecraft.type.MaxCannonsProperty.MAX_CANNONS;
+import static at.pavlov.cannons.hooks.movecraft.type.MaxCannonsProperty.MAX_CANNONS;
 
 public class CraftDetectListener implements Listener {
     private static final Set<CraftType> notifyError = new HashSet<>();

@@ -1,4 +1,4 @@
-package at.pavlov.cannons.movecraft.type;
+package at.pavlov.cannons.hooks.movecraft.type;
 
 import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.craft.type.TypeData;

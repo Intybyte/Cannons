@@ -11,7 +11,7 @@ import at.pavlov.cannons.commands.Commands;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.dao.PersistenceDatabase;
-import at.pavlov.cannons.hooks.MovecraftHook;
+import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
 import at.pavlov.cannons.hooks.PlaceholderAPIHook;
 import at.pavlov.cannons.hooks.VaultHook;
 import at.pavlov.cannons.listener.*;

@@ -1,4 +1,4 @@
-package at.pavlov.cannons.movecraft.type;
+package at.pavlov.cannons.hooks.movecraft.type;
 
 import lombok.Getter;
 import net.countercraft.movecraft.util.Pair;

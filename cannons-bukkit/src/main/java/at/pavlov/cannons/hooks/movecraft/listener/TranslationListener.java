@@ -1,4 +1,4 @@
-package at.pavlov.cannons.movecraft.listener;
+package at.pavlov.cannons.hooks.movecraft.listener;
 
 import at.pavlov.cannons.API.CannonsAPI;
 import at.pavlov.cannons.Cannons;
