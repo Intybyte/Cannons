@@ -1,7 +1,6 @@
-package at.pavlov.cannons.hooks.movecraft.listener;
+package at.pavlov.cannons.hooks.movecraftcombat;
 
 import at.pavlov.cannons.event.ProjectileImpactEvent;
-import at.pavlov.cannons.hooks.movecraft.damagetype.ProjectileImpactDamage;
 import net.countercraft.movecraft.combat.features.tracking.DamageRecord;
 import net.countercraft.movecraft.combat.features.tracking.events.CraftDamagedByEvent;
 import net.countercraft.movecraft.craft.Craft;

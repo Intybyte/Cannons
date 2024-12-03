@@ -39,7 +39,7 @@ public class Config
 
     //movecraft
     private boolean movecraftEnabled;
-    private boolean movecraftDamageTracking;
+    private boolean movecraftCannonEnabled;
     //endregion
 	
 	//build limits
@@ -127,7 +127,7 @@ public class Config
         //hooks
         setEconomyDisabled(!config.getBoolean("hooks.vault.enabled", true));
         setMovecraftEnabled(config.getBoolean("hooks.movecraft.enabled", true));
-        setMovecraftDamageTracking(config.getBoolean("hooks.movecraft.damageTracking", true));
+        setMovecraftCannonEnabled(config.getBoolean("hooks.movecraftCombat.enabled", true));
 
         setRelayExplosionEvent(config.getBoolean("general.relayExplosionEvent", false));
         setClaimEdgeLength(config.getInt("general.claimEdgeLength", 60));

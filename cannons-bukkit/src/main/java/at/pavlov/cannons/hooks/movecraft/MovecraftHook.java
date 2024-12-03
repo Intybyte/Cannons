@@ -3,13 +3,11 @@ package at.pavlov.cannons.hooks.movecraft;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.hooks.BukkitHook;
 import at.pavlov.cannons.hooks.movecraft.listener.CraftDetectListener;
-import at.pavlov.cannons.hooks.movecraft.listener.ProjectileImpactListener;
 import at.pavlov.cannons.hooks.movecraft.listener.RotationListener;
 import at.pavlov.cannons.hooks.movecraft.listener.TranslationListener;
 import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsProperty;
 import at.pavlov.internal.Hook;
 import net.countercraft.movecraft.Movecraft;
-import net.countercraft.movecraft.combat.MovecraftCombat;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -21,7 +19,7 @@ public class MovecraftHook extends BukkitHook<Movecraft> {
 
     @Override
     public void onEnable() {
-        if (plugin.getConfig().getBoolean("")) {
+        if (!plugin.getMyConfig().isMovecraftEnabled()) {
             return;
         }
 
@@ -40,18 +38,6 @@ public class MovecraftHook extends BukkitHook<Movecraft> {
         hook = movecraft;
 
         MaxCannonsProperty.register();
-        if (plugin.getMyConfig().isMovecraftDamageTracking()) {
-            // Load Movecraft-Combat plugin
-            Plugin mcc = pluginManager.getPlugin("Movecraft-Combat");
-            if (mcc instanceof MovecraftCombat) {
-                plugin.logInfo("Movecraft-Combat found");
-                pluginManager.registerEvents(new ProjectileImpactListener(), plugin);
-            } else {
-                plugin.logInfo("Movecraft-Combat plugin not found!");
-            }
-        }
-
-
         pluginManager.registerEvents(new CraftDetectListener(), plugin);
         pluginManager.registerEvents(new TranslationListener(), plugin);
         pluginManager.registerEvents(new RotationListener(), plugin);
@@ -59,7 +45,6 @@ public class MovecraftHook extends BukkitHook<Movecraft> {
 
     @Override
     public void onDisable() {
-        HandlerList.unregisterAll(new ProjectileImpactListener());
         HandlerList.unregisterAll(new CraftDetectListener());
         HandlerList.unregisterAll(new TranslationListener());
         HandlerList.unregisterAll(new RotationListener());

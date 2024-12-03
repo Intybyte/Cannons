@@ -19,7 +19,8 @@ hooks:
     enabled: true
   movecraft:
     enabled: true
-    damageTracking: true
+  movecraftCombat:
+    enabled: true
 
 
 cannonLimits:

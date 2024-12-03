@@ -14,6 +14,7 @@ import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
 import at.pavlov.cannons.hooks.PlaceholderAPIHook;
 import at.pavlov.cannons.hooks.VaultHook;
+import at.pavlov.cannons.hooks.movecraftcombat.MovecraftCombatHook;
 import at.pavlov.cannons.listener.*;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
@@ -24,6 +25,7 @@ import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.internal.Hook;
 import at.pavlov.internal.HookManager;
 import lombok.Getter;
+import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
@@ -146,11 +148,13 @@ public final class Cannons extends JavaPlugin
 		vaultHook = new VaultHook(this);
 		hookManager.registerHook(vaultHook);
 
-		if (config.isMovecraftEnabled()) {
-			logDebug("Loading MovecraftHook");
-			MovecraftHook movecraftHook = new MovecraftHook(this);
-			hookManager.registerHook(movecraftHook);
-		}
+		logDebug("Loading MovecraftHook");
+		MovecraftHook movecraftHook = new MovecraftHook(this);
+		hookManager.registerHook(movecraftHook);
+
+		logDebug("Loading MovecraftCombatHook");
+		MovecraftCombatHook movecraftCombatHook = new MovecraftCombatHook(this);
+		hookManager.registerHook(movecraftCombatHook);
 
 		logDebug("Loading PlaceholderAPIHook");
 		PlaceholderAPIHook placeholderAPIHook = new PlaceholderAPIHook(this);
@@ -254,7 +258,10 @@ public final class Cannons extends JavaPlugin
                     " You don't need to add Movecraft-Cannons anymore as Movecraft support is now embedded," +
                     " we suggest you stop using it as in the future it might stop work properly.");
 
-			hookManager.getHook(MovecraftHook.class).onDisable();
+			if (hookManager.isRegistered(MovecraftCombatHook.class)) {
+
+			}
+			movecraftHook.onDisable();
         }, 1L);
     }
 

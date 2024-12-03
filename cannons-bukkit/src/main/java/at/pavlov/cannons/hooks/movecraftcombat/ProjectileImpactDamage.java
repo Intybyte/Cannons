@@ -1,4 +1,4 @@
-package at.pavlov.cannons.hooks.movecraft.damagetype;
+package at.pavlov.cannons.hooks.movecraftcombat;
 
 import net.countercraft.movecraft.combat.features.tracking.types.Type;
 
