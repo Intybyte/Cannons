@@ -13,7 +13,7 @@ import java.util.Set;
 import static net.countercraft.movecraft.craft.type.TypeData.NUMERIC_PREFIX;
 
 public class MaxCannonsProperty {
-    public static NamespacedKey MAX_CANNONS = new NamespacedKey("movecraft-cannons", "max_cannons");
+    public static NamespacedKey MAX_CANNONS = new NamespacedKey("cannons-revamped", "max_cannons");
 
     private static @NotNull Pair<Boolean, ? extends Number> parseLimit(@NotNull Object input) {
         if (!(input instanceof String str)) {
