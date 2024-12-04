@@ -1,51 +1,18 @@
-package at.pavlov.cannons.hooks;
+package at.pavlov.cannons.hooks.papi;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.container.ItemHolder;
-import at.pavlov.internal.Hook;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public class PlaceholderAPIHook extends PlaceholderExpansion implements Hook<Void> {
+public class CannonsPAPIExpansion extends PlaceholderExpansion {
     private final Cannons plugin;
-    private boolean working = false;
 
-    public PlaceholderAPIHook(Cannons plugin) {
-        this.plugin = plugin;
-    }
-
-    @Override
-    public Void hook() {
-        return null;
-    }
-
-    @Override
-    public void onEnable() {
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            this.register();
-            working = true;
-            plugin.logInfo(ChatColor.GREEN + enabledMessage());
-        }
-    }
-
-    @Override
-    public void onDisable() {
-
-    }
-
-    @Override
-    public boolean active() {
-        return working;
-    }
-
-    @Override
-    public Class<? extends Hook<?>> getTypeClass() {
-        return PlaceholderAPIHook.class;
+    public CannonsPAPIExpansion(Cannons cannons) {
+        this.plugin = cannons;
     }
 
     @Override
