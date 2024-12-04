@@ -85,9 +85,19 @@ public final class Cannons extends JavaPlugin
 
 	public void onLoad() {
 		//must be done in onLoad because "movecraft"
+		this.config = new Config(this);
+
+		if (!config.isMovecraftEnabled()) {
+			return;
+		}
+
 		try {
-			MaxCannonsProperty.register();
-		} catch (Exception ignored) {}
+			Class.forName("net.countercraft.movecraft.craft.type.property.Property");
+		} catch (Exception ignored) {
+			return;
+		}
+
+		MaxCannonsProperty.register();
 	}
 
 	public void onDisable() {
@@ -118,9 +128,13 @@ public final class Cannons extends JavaPlugin
 	public void onEnable()
 	{
 		DesignStorage.initialize(this);
-		this.config = new Config(this);
 		ProjectileManager.initialize(this);
 		CannonSelector.initialize(this);
+
+		DesignStorage.getInstance().loadCannonDesigns();
+		config.getProjectileStorage().loadProjectiles();
+		config.getCannonManager().updateCannons();
+		config.getUserMessage().loadLanguage();
 
 		pm = getServer().getPluginManager();
 		if (!checkWorldEdit())

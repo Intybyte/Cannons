@@ -211,10 +211,7 @@ public class Config
         setCancelItems(ParseUtils.toItemHolderList(config.getStringList("cancelEventForLoadingItem")));
 	
 		//load other configs
-        DesignStorage.getInstance().loadCannonDesigns();
-		projectileStorage.loadProjectiles();
-        cannonManager.updateCannons();
-		userMessage.loadLanguage();
+
         plugin.setDebugMode(debugMode);
 	}
 
