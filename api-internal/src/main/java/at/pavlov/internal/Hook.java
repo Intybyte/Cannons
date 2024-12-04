@@ -11,6 +11,6 @@ public interface Hook<H> {
     Class<? extends Hook<?>> getTypeClass();
 
     default String enabledMessage() {
-        return getTypeClass().getName() + " Enabled.";
+        return getTypeClass().getSimpleName() + " Enabled.";
     }
 }
