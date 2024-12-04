@@ -3,6 +3,7 @@ package at.pavlov.cannons.hooks;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.internal.Hook;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class VaultHook extends BukkitHook<Economy> {
@@ -30,7 +31,7 @@ public class VaultHook extends BukkitHook<Economy> {
         }
 
         hook = rsp.getProvider();
-        plugin.logInfo("§a" + enabledMessage());
+        plugin.logInfo(ChatColor.GREEN  + enabledMessage());
     }
 
     @Override

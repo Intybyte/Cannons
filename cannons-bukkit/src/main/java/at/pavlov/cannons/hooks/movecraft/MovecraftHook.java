@@ -8,6 +8,7 @@ import at.pavlov.cannons.hooks.movecraft.listener.TranslationListener;
 import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsProperty;
 import at.pavlov.internal.Hook;
 import net.countercraft.movecraft.Movecraft;
+import org.bukkit.ChatColor;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -41,7 +42,7 @@ public class MovecraftHook extends BukkitHook<Movecraft> {
         pluginManager.registerEvents(new CraftDetectListener(), plugin);
         pluginManager.registerEvents(new TranslationListener(), plugin);
         pluginManager.registerEvents(new RotationListener(), plugin);
-        plugin.logInfo("§a" + enabledMessage());
+        plugin.logInfo(ChatColor.GREEN + enabledMessage());
     }
 
     @Override

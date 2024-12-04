@@ -5,6 +5,7 @@ import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.internal.Hook;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +29,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion implements Hook<Voi
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             this.register();
             working = true;
-            plugin.logInfo("§a" + enabledMessage());
+            plugin.logInfo(ChatColor.GREEN + enabledMessage());
         }
     }
 
