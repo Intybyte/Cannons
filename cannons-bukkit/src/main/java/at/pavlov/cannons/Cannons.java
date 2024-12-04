@@ -14,6 +14,7 @@ import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
 import at.pavlov.cannons.hooks.PlaceholderAPIHook;
 import at.pavlov.cannons.hooks.VaultHook;
+import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsProperty;
 import at.pavlov.cannons.hooks.movecraftcombat.MovecraftCombatHook;
 import at.pavlov.cannons.listener.*;
 import at.pavlov.cannons.projectile.Projectile;
@@ -25,7 +26,6 @@ import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.internal.Hook;
 import at.pavlov.internal.HookManager;
 import lombok.Getter;
-import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
@@ -83,8 +83,14 @@ public final class Cannons extends JavaPlugin
         return (Cannons) Bukkit.getPluginManager().getPlugin("Cannons");
     }
 
-	public void onDisable()
-	{
+	public void onLoad() {
+		//must be done in onLoad because "movecraft"
+		try {
+			MaxCannonsProperty.register();
+		} catch (Exception ignored) {}
+	}
+
+	public void onDisable() {
 		getServer().getScheduler().cancelTasks(this);
 
 		// save database on shutdown

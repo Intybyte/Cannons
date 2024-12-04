@@ -31,26 +31,7 @@ public class CraftDetectListener implements Listener {
         if (!(craft instanceof PlayerCraft))
             return;
 
-        Object objectProperty;
-        Set<?> maxCannons;
-        try {
-            objectProperty = craft.getType().getObjectProperty(MAX_CANNONS);
-            if (objectProperty instanceof Set<?> objects) {
-                maxCannons = objects;
-            } else {
-                throw new IllegalStateException("MAX_CANNONS must be a set.");
-            }
-        } catch (IllegalStateException exception) {
-            notifyError.add(type);
-            cannon.logSevere(
-                "Failed to get max_cannons property from craft " +
-                type.getStringProperty(CraftType.NAME) +
-                " max_cannons won't be applied. - Cause: " +
-                e.getFailMessage()
-            );
-            return;
-        }
-
+        Set<?> maxCannons = getCannonProperty(type);
         if (maxCannons.isEmpty())
             return; // Return if empty set to improve performance
 
@@ -61,12 +42,13 @@ public class CraftDetectListener implements Listener {
             String design = cannon.getCannonDesign().getDesignName().toLowerCase();
             cannonCount.compute(design, (key, value) -> (value == null) ? 1 : value + 1);
         }
+        printCannonCount(cannonCount);
 
         // Check designs against maxCannons
         int size = craft.getOrigBlockCount();
         for (var entry : maxCannons) {
             if (!(entry instanceof MaxCannonsEntry max))
-                throw new IllegalStateException("MAX_CANNONS must be a set of MaxCannonsEntry.");
+                throw new IllegalStateException("maxCannons must be a set of MaxCannonsEntry.");
 
             var cannonName = max.getName();
             var count = cannonCount.get(cannonName.toLowerCase());
@@ -80,6 +62,32 @@ public class CraftDetectListener implements Listener {
                 e.setFailMessage("Detection Failed! You have too many cannons of the following type on this craft: "
                         + cannonName + ": " + error);
             });
+        }
+    }
+
+    private void printCannonCount(Map<String, Integer> cannonCount) {
+        for (var entry : cannonCount.entrySet()) {
+            cannon.logDebug("Cannon found: " + entry.getKey() + " | " + entry.getValue());
+        }
+    }
+
+    private Set<MaxCannonsEntry> getCannonProperty(CraftType type) {
+        try {
+            Object objectProperty = type.getObjectProperty(MAX_CANNONS);
+            if (objectProperty instanceof Set<?> property) {
+                return (Set<MaxCannonsEntry>) property;
+            } else {
+                throw new IllegalStateException("maxCannons must be a set.");
+            }
+        } catch (Exception exception) {
+            notifyError.add(type);
+            cannon.logSevere(
+                    "Failed to get maxCannons property from craft " +
+                            type.getStringProperty(CraftType.NAME) +
+                            " maxCannons won't be applied. - Cause: " +
+                            exception.getMessage()
+            );
+            return Set.of();
         }
     }
 }

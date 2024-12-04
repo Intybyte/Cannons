@@ -38,7 +38,6 @@ public class MovecraftHook extends BukkitHook<Movecraft> {
 
         hook = movecraft;
 
-        MaxCannonsProperty.register();
         pluginManager.registerEvents(new CraftDetectListener(), plugin);
         pluginManager.registerEvents(new TranslationListener(), plugin);
         pluginManager.registerEvents(new RotationListener(), plugin);
