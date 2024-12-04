@@ -60,7 +60,9 @@ public class HookManager {
 
     public void disableHooks() {
         for (Hook<?> hook : hooks.values()) {
-            hook.onDisable();
+            if (hook.active()) {
+                hook.onDisable();
+            }
         }
     }
 }
