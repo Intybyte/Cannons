@@ -5,6 +5,8 @@
 
     <properties>
         <cannon.version>3.1.2</cannon.version>
+        <java.target>17</java.target>
+        <java.source>17</java.source>
     </properties>
 
     <groupId>at.pavlov</groupId>
@@ -15,6 +17,7 @@
 
 
     <modules>
+        <module>api-internal</module>
         <module>cannons-bukkit</module>
     </modules>
 </project>

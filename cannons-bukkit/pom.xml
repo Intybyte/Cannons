@@ -40,20 +40,16 @@
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>fawe-repo</id>
-            <url>https://ci.athion.net/job/FastAsyncWorldEdit-1.13/ws/mvn</url>
-        </repository>
-        <repository>
             <id>CodeMC</id>
             <url>https://repo.codemc.org/repository/maven-public</url>
+        </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/releases/</url>
         </repository>
         <repository>
             <id>vault-repo</id>
@@ -63,9 +59,24 @@
             <id>aikar</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
         </repository>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/apdevteam/movecraft</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>at.pavlov</groupId>
+            <artifactId>api-internal</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -106,6 +117,24 @@
             <version>1.18.32</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.countercraft</groupId>
+            <artifactId>movecraft</artifactId>
+            <version>8.0.0_beta-5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.countercraft.movecraft.combat</groupId>
+            <artifactId>movecraft-combat</artifactId>
+            <version>2.0.0_beta-6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.6</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -132,8 +161,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <source>${java.source}</source>
+                    <target>${java.target}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -164,15 +193,15 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>at.pavlov.cannons</shadedPattern>
+                            <shadedPattern>at.pavlov.cannons.shaded</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.commands</pattern>
-                            <shadedPattern>me.vaan.acf</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>at.pavlov.cannons.shaded.acf</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.locales</pattern>
-                            <shadedPattern>me.vaan.locales</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>at.pavlov.cannons.shaded.locales</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

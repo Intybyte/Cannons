@@ -33,7 +33,14 @@ public class Config
 	private boolean debugMode;
     private boolean relayExplosionEvent;
     private int claimEdgeLength;
+
+    //region hooks
     private boolean economyDisabled;
+
+    //movecraft
+    private boolean movecraftEnabled;
+    private boolean movecraftCannonEnabled;
+    //endregion
 	
 	//build limits
     private boolean buildLimitEnabled;
@@ -116,7 +123,12 @@ public class Config
 		
 		//general
 		setDebugMode(config.getBoolean("general.debugMode", false));
-        setEconomyDisabled(config.getBoolean("economy.disabled", false));
+
+        //hooks
+        setEconomyDisabled(!config.getBoolean("hooks.vault.enabled", true));
+        setMovecraftEnabled(config.getBoolean("hooks.movecraft.enabled", true));
+        setMovecraftCannonEnabled(config.getBoolean("hooks.movecraftCombat.enabled", true));
+
         setRelayExplosionEvent(config.getBoolean("general.relayExplosionEvent", false));
         setClaimEdgeLength(config.getInt("general.claimEdgeLength", 60));
         ArmorCalculationUtil.setMagicValue(config.getDouble("general.armorEffectiveness", 0.04));
@@ -203,6 +215,7 @@ public class Config
 		projectileStorage.loadProjectiles();
         cannonManager.updateCannons();
 		userMessage.loadLanguage();
+        plugin.setDebugMode(debugMode);
 	}
 
     public UserMessages getUserMessages() {

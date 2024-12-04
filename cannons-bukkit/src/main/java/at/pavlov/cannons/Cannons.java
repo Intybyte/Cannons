@@ -11,6 +11,11 @@ import at.pavlov.cannons.commands.Commands;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.dao.PersistenceDatabase;
+import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
+import at.pavlov.cannons.hooks.PlaceholderAPIHook;
+import at.pavlov.cannons.hooks.VaultHook;
+import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsProperty;
+import at.pavlov.cannons.hooks.movecraftcombat.MovecraftCombatHook;
 import at.pavlov.cannons.listener.*;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
@@ -18,8 +23,12 @@ import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.scheduler.ProjectileObserver;
 import at.pavlov.cannons.utils.CannonSelector;
+import at.pavlov.internal.Hook;
+import at.pavlov.internal.HookManager;
+import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -28,7 +37,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
@@ -36,6 +44,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -53,7 +63,9 @@ public final class Cannons extends JavaPlugin
     private FakeBlockHandler fakeBlockHandler;
 
     private CannonsAPI cannonsAPI;
-    private Economy economy;
+	@Getter
+    private HookManager hookManager;
+	private VaultHook vaultHook;
 	
 	//Listener
     private BlockListener blockListener;
@@ -71,8 +83,14 @@ public final class Cannons extends JavaPlugin
         return (Cannons) Bukkit.getPluginManager().getPlugin("Cannons");
     }
 
-	public void onDisable()
-	{
+	public void onLoad() {
+		//must be done in onLoad because "movecraft"
+		try {
+			MaxCannonsProperty.register();
+		} catch (Exception ignored) {}
+	}
+
+	public void onDisable() {
 		getServer().getScheduler().cancelTasks(this);
 
 		// save database on shutdown
@@ -94,6 +112,7 @@ public final class Cannons extends JavaPlugin
 			}
 		}
 		logger.info(getLogPrefix() + "Cannons plugin v" + getPluginDescription().getVersion() + " has been disabled");
+		hookManager.disableHooks();
 	}
 
 	public void onEnable()
@@ -128,9 +147,28 @@ public final class Cannons extends JavaPlugin
 		this.entityListener = new EntityListener(this);
         RedstoneListener redstoneListener = new RedstoneListener(this);
 
-		setupEconomy();
+		long startTime = System.currentTimeMillis();
+		hookManager = new HookManager();
 
-        long startTime = System.nanoTime();
+		logDebug("Loading VaultHook");
+		vaultHook = new VaultHook(this);
+		hookManager.registerHook(vaultHook);
+
+		logDebug("Loading MovecraftHook");
+		MovecraftHook movecraftHook = new MovecraftHook(this);
+		hookManager.registerHook(movecraftHook);
+
+		logDebug("Loading MovecraftCombatHook");
+		MovecraftCombatHook movecraftCombatHook = new MovecraftCombatHook(this);
+		hookManager.registerHook(movecraftCombatHook);
+
+		logDebug("Loading PlaceholderAPIHook");
+		PlaceholderAPIHook placeholderAPIHook = new PlaceholderAPIHook(this);
+		hookManager.registerHook(placeholderAPIHook);
+
+		logDebug("Time to enable hooks: " + new DecimalFormat("0.00").format(System.currentTimeMillis() - startTime) + "ms");
+
+		startTime = System.nanoTime();
 
 
 		//load some global variables
@@ -171,6 +209,23 @@ public final class Cannons extends JavaPlugin
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> persistenceDatabase.saveAllCannons(true), 6000L, 6000L);
 
 			Metrics metrics = new Metrics(this, 23139);
+			metrics.addCustomChart(
+					new AdvancedPie("hooks", () -> {
+
+						Map<String, Integer> result = new HashMap<>();
+						if (!hookManager.isActive()) {
+							result.put("None", 1);
+							return result;
+						}
+
+						for (Hook<?> hook : hookManager.hookMap().values()) {
+							final int status = hook.active() ? 1 : 0;
+							result.put(hook.getTypeClass().getName(), status);
+						}
+
+						return result;
+					})
+			);
 
             logDebug("Time to enable cannons: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
 
@@ -195,35 +250,31 @@ public final class Cannons extends JavaPlugin
 				t = t.getCause();
 			}
 		}
+
+		Bukkit.getScheduler().runTaskLater(this, () -> {
+            if (!pm.isPluginEnabled("Movecraft-Cannons")) {
+                return;
+            }
+
+			if (!hookManager.isRegistered(MovecraftHook.class)) {
+				return;
+			}
+
+            logSevere("Movecraft-Cannons found, disabling hook." +
+                    " You don't need to add Movecraft-Cannons anymore as Movecraft support is now embedded," +
+                    " we suggest you stop using it as in the future it might stop work properly.");
+
+			if (hookManager.isRegistered(MovecraftCombatHook.class)) {
+
+			}
+			movecraftHook.onDisable();
+        }, 1L);
     }
 
 	private void initializeCommands() {
 		var cannonsCommandManager = new CannonsCommandManager(this);
 		cannonsCommandManager.registerCommand(new Commands());
 	}
-
-	private void setupEconomy() {
-		if (config.isEconomyDisabled()) {
-			economy = null;
-			return;
-		}
-
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-			economy = null;
-            return;
-        }
-
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-			economy = null;
-            return;
-        }
-
-        economy = rsp.getProvider();
-	}
-
-
-
 
 	// set up ebean database
 	private void openConnection() throws SQLException, ClassNotFoundException
@@ -427,7 +478,7 @@ public final class Cannons extends JavaPlugin
     }
 
     public Economy getEconomy(){
-        return this.economy;
+        return vaultHook.hook();
     }
 
 	public String getCannonDatabase() {

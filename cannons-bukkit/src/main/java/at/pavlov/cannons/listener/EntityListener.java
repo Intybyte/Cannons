@@ -3,8 +3,8 @@ package at.pavlov.cannons.listener;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.projectile.ProjectileManager;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,11 +38,14 @@ public class EntityListener implements Listener
      * @param event
      */
 	@EventHandler
-	public void onProjectileHitEntity(EntityDamageByEntityEvent event) {
-		Entity er = event.getDamager();
-		if(event.getDamager() != null && er instanceof Projectile p) {
-            plugin.getProjectileManager().directHitProjectile(p, event.getEntity());
+	public void onProjectileHitEntity(ProjectileHitEvent event) {
+		ProjectileManager pm = ProjectileManager.getInstance();
+		Projectile p = event.getEntity();
+		if(p.getShooter() != null) {
+			pm.directHitProjectile(p, event.getHitEntity());
 		}
+
+		pm.detonateProjectile(p);
 	}
 
     /**
@@ -59,17 +62,6 @@ public class EntityListener implements Listener
         }
     }
 
-	/**
-	 * Cannon snowball hits the ground
-	 * 
-	 * @param event
-	 */
-	@EventHandler
-	public void ProjectileHit(ProjectileHitEvent event)
-	{
-        plugin.getProjectileManager().detonateProjectile(event.getEntity());
-	}
-	
 	/**
 	 * handles the explosion event. Protects the buttons and torches of a cannon, because they break easily
 	 * @param event

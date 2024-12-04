@@ -6,11 +6,17 @@ import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
+import net.countercraft.movecraft.MovecraftLocation;
+import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.craft.PilotedCraft;
+import net.countercraft.movecraft.craft.SubCraft;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class CannonsAPI {
@@ -112,6 +118,47 @@ public class CannonsAPI {
     public HashSet<Cannon> getCannons(List<Location> locations, UUID playerUID)
     {
         return plugin.getCannonManager().getCannons(locations, playerUID, true);
+    }
+
+    /**
+     * In case you want to use Movecraft + Cannons
+     * use this method to get all the cannons that are present on a craft
+     *
+     * @param craft Movecraft craft to scan for cannons
+     * @return cannons presents on craft
+     */
+    public Set<Cannon> getCannons(Craft craft) {
+        List<Location> shipLocations = new ArrayList<>();
+        for (MovecraftLocation loc : craft.getHitBox()) {
+            shipLocations.add(loc.toBukkit(craft.getWorld()));
+        }
+        return this.getCannons(shipLocations, getPlayerFromCraft(craft), true);
+    }
+
+    /**
+     * This method tries to get the player that is piloting the craft, or if the craft
+     * is a subcraft, the pilot of the parent craft.
+     *
+     * @param craft Movecraft craft to search for its pilot
+     * @return UUID of the pilot
+     */
+    public UUID getPlayerFromCraft(Craft craft) {
+        if (craft instanceof PilotedCraft pilotedCraft) {
+            // If this is a piloted craft, return the pilot's UUID
+            return pilotedCraft.getPilot().getUniqueId();
+        }
+
+        if (craft instanceof SubCraft subCraft) {
+            // If this is a subcraft, look for a parent
+            Craft parent = subCraft.getParent();
+            if (parent != null) {
+                // If the parent is not null, recursively check it for a UUID
+                return getPlayerFromCraft(parent);
+            }
+        }
+
+        // Return null if all else fails
+        return null;
     }
 
     /**

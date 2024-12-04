@@ -1329,7 +1329,7 @@ public class Cannon implements ICannon, Rotational {
 
     @Override
     public int hashCode() {
-        return getCannonMainData().getDatabaseId().hashCode();
+        return mainData.getDatabaseId().hashCode();
     }
 
     @Override
@@ -1755,83 +1755,85 @@ public class Cannon implements ICannon, Rotational {
 
     @Override
     public FiringData getFiringData() {
-        hasUpdated();
+        this.hasUpdated();
         return this.firingData;
     }
 
     @Override
     public void setFiringData(FiringData firingData) {
+        this.hasUpdated();
         this.firingData = firingData;
-        hasUpdated();
     }
 
     @Override
     public AimingData getAimingData() {
-        hasUpdated();
+        this.hasUpdated();
         return this.aimingData;
     }
 
     @Override
     public void setAimingData(AimingData aimingData) {
+        this.hasUpdated();
         this.aimingData = aimingData;
-        hasUpdated();
     }
 
     @Override
     public SentryData getSentryData() {
-        hasUpdated();
+        this.hasUpdated();
         return this.sentryData;
     }
 
     @Override
     public void setSentryData(SentryData sentryData) {
+        this.hasUpdated();
         this.sentryData = sentryData;
-        hasUpdated();
     }
 
     @Override
     public CannonPosition getCannonPosition() {
-        hasUpdated();
+        this.hasUpdated();
         return cannonPosition;
     }
 
     @Override
     public void setCannonPosition(CannonPosition position) {
-        this.cannonPosition = position;
-        hasUpdated();
+        this.hasUpdated();
+        this.cannonPosition = position;        
     }
 
     @Override
     public CannonMainData getCannonMainData() {
-        hasUpdated();
+        this.hasUpdated();
         return mainData;
     }
 
     @Override
     public void setCannonMainData(CannonMainData data) {
-        hasUpdated();
+        this.hasUpdated();
         this.mainData = data;
     }
 
     @Override
     public LinkingData getLinkingData() {
+        this.hasUpdated();
         return linkingData;
     }
 
     @Override
     public void setLinkingData(LinkingData data) {
-        hasUpdated();
+        this.hasUpdated();
         this.linkingData = data;
     }
 
     @Override
     public AngleData getAngleData() {
+        this.hasUpdated();
         return angleData;
     }
 
     @Override
     public void setAngleData(AngleData angleData) {
-        hasUpdated();
+        this.hasUpdated();
         this.angleData = angleData;
     }
 
@@ -1843,7 +1845,7 @@ public class Cannon implements ICannon, Rotational {
 
     @Override
     public void setAmmoLoadingData(AmmoLoadingData ammoLoadingData) {
-        this.ammoLoadingData = ammoLoadingData;
         this.hasUpdated();
+        this.ammoLoadingData = ammoLoadingData;
     }
 }

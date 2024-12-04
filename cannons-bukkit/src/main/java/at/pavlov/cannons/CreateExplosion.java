@@ -300,133 +300,111 @@ public class CreateExplosion {
         // TNT
         var entityData = entityHolder.getData();
 
-        switch (entity) {
-            case TNTPrimed tnt -> {
-                try {
-                    int fusetime = ParseUtils.parseInt(entityData.get(EntityDataType.FUSE_TIME),
-                            tnt.getFuseTicks());
-                    int fuseTicks = (int) (fusetime * (1 + r.nextGaussian() / 3.0));
-                    this.plugin.logDebug("reset TNT fuse ticks to: " + fuseTicks + " fusetime " + fusetime);
-                    tnt.setFuseTicks(fuseTicks);
-                } catch (Exception e) {
-                    logConvertingError(cannonball.getProjectile().getProjectileId(), e);
-                }
+        if (entity instanceof TNTPrimed tnt) {
+            try {
+                int fusetime = ParseUtils.parseInt(entityData.get(EntityDataType.FUSE_TIME),
+                        tnt.getFuseTicks());
+                int fuseTicks = (int) (fusetime * (1 + r.nextGaussian() / 3.0));
+                this.plugin.logDebug("reset TNT fuse ticks to: " + fuseTicks + " fusetime " + fusetime);
+                tnt.setFuseTicks(fuseTicks);
+            } catch (Exception e) {
+                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
             }
+        } else if (entity instanceof AreaEffectCloud cloud) {
+            try {
+                cloud.setReapplicationDelay(
+                        ParseUtils.parseInt(entityData.get(EntityDataType.REAPPLICATION_DELAY),
+                                cloud.getReapplicationDelay()));
+                cloud.setRadius(ParseUtils.parseFloat(entityData.get(EntityDataType.RADIUS),
+                        cloud.getRadius()));
+                cloud.setRadiusPerTick(ParseUtils.parseFloat(
+                        entityData.get(EntityDataType.RADIUS_PER_TICK), cloud.getRadiusPerTick()));
+                cloud.setRadiusOnUse(ParseUtils.parseFloat(
+                        entityData.get(EntityDataType.RADIUS_ON_USE), cloud.getRadiusOnUse()));
+                cloud.setDuration(ParseUtils.parseInt(entityData.get(EntityDataType.DURATION),
+                        cloud.getDuration()));
+                cloud.setDurationOnUse((int) ParseUtils.parseFloat(
+                        entityData.get(EntityDataType.RADIUS_ON_USE), cloud.getDurationOnUse()));
+                cloud.setWaitTime(ParseUtils.parseInt(entityData.get(EntityDataType.WAIT_TIME),
+                        cloud.getWaitTime()));
+                cloud.setColor(
+                        ParseUtils.parseColor(entityData.get(EntityDataType.COLOR), Color.WHITE));
+                cloud.setBasePotionData(ParseUtils.parsePotionData(
+                        entityData.get(EntityDataType.POTION_EFFECT), cloud.getBasePotionData()));
+                cloud.setParticle(ParseUtils.parseParticle(entityData.get(EntityDataType.PARTICLE), Particle.ASH));
+                cloud.setSource(cannonball.getSource());
 
-            case AreaEffectCloud cloud -> {
-                try {
-                    // PARTICLE ("Particle"),
-                    // EFFECTS ("Effects"),
-                    cloud.setReapplicationDelay(
-                            ParseUtils.parseInt(entityData.get(EntityDataType.REAPPLICATION_DELAY),
-                                    cloud.getReapplicationDelay()));
-                    cloud.setRadius(ParseUtils.parseFloat(entityData.get(EntityDataType.RADIUS),
-                            cloud.getRadius()));
-                    cloud.setRadiusPerTick(ParseUtils.parseFloat(
-                            entityData.get(EntityDataType.RADIUS_PER_TICK), cloud.getRadiusPerTick()));
-                    cloud.setRadiusOnUse(ParseUtils.parseFloat(
-                            entityData.get(EntityDataType.RADIUS_ON_USE), cloud.getRadiusOnUse()));
-                    cloud.setDuration(ParseUtils.parseInt(entityData.get(EntityDataType.DURATION),
-                            cloud.getDuration()));
-                    cloud.setDurationOnUse((int) ParseUtils.parseFloat(
-                            entityData.get(EntityDataType.RADIUS_ON_USE), cloud.getDurationOnUse()));
-                    cloud.setWaitTime(ParseUtils.parseInt(entityData.get(EntityDataType.WAIT_TIME),
-                            cloud.getWaitTime()));
-                    cloud.setColor(
-                            ParseUtils.parseColor(entityData.get(EntityDataType.COLOR), Color.WHITE));
-                    cloud.setBasePotionData(ParseUtils.parsePotionData(
-                            entityData.get(EntityDataType.POTION_EFFECT), cloud.getBasePotionData()));
-                    cloud.setParticle(ParseUtils.parseParticle(entityData.get(EntityDataType.PARTICLE), Particle.ASH));
-                    cloud.setSource(cannonball.getSource());
-
-                    plugin.logDebug("spawn AREA_OF_EFFECT_CLOUD " + cloud);
-                    for (PotionEffect effect : entityHolder.getPotionEffects()) {
-                        plugin.logDebug("add potion effect " + effect);
-                        cloud.addCustomEffect(effect, true);
-                    }
-                } catch (Exception e) {
-                    logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                plugin.logDebug("spawn AREA_OF_EFFECT_CLOUD " + cloud);
+                for (PotionEffect effect : entityHolder.getPotionEffects()) {
+                    plugin.logDebug("add potion effect " + effect);
+                    cloud.addCustomEffect(effect, true);
                 }
+            } catch (Exception e) {
+                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
             }
-
-            case SpectralArrow arrow -> {
-                // SpectralArrow
-                try {
-                    arrow.setGlowingTicks(ParseUtils.parseInt(entityData.get(EntityDataType.DURATION),
-                            arrow.getGlowingTicks()));
-                } catch (Exception e) {
-                    logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+        } else if (entity instanceof SpectralArrow arrow) {
+            try {
+                arrow.setGlowingTicks(ParseUtils.parseInt(entityData.get(EntityDataType.DURATION),
+                        arrow.getGlowingTicks()));
+            } catch (Exception e) {
+                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+            }
+        } else if (entity instanceof Arrow arrow) {
+            try {
+                arrow.setBasePotionData(ParseUtils.parsePotionData(
+                        entityData.get(EntityDataType.POTION_EFFECT), arrow.getBasePotionData()));
+                plugin.logDebug("spawn TIPPER_ARROW " + arrow);
+                for (PotionEffect effect : entityHolder.getPotionEffects()) {
+                    plugin.logDebug("add potion effect " + effect);
+                    arrow.addCustomEffect(effect, true);
                 }
+            } catch (Exception e) {
+                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
             }
-
-            case Arrow arrow -> {
-                // TippedArrow
-                try {
-                    arrow.setBasePotionData(ParseUtils.parsePotionData(
-                            entityData.get(EntityDataType.POTION_EFFECT), arrow.getBasePotionData()));
-                    plugin.logDebug("spawn TIPPER_ARROW " + arrow);
-                    for (PotionEffect effect : entityHolder.getPotionEffects()) {
-                        plugin.logDebug("add potion effect " + effect);
-                        arrow.addCustomEffect(effect, true);
-                    }
-                } catch (Exception e) {
-                    logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+        } else if (entity instanceof LivingEntity living) {
+            try {
+                EntityEquipment equipment = living.getEquipment();
+                if (equipment != null) {
+                    equipment.setBoots((ParseUtils.parseItemstack(
+                            entityData.get(EntityDataType.BOOTS_ARMOR_ITEM), equipment.getBoots())));
+                    equipment.setChestplate((ParseUtils.parseItemstack(
+                            entityData.get(EntityDataType.CHESTPLATE_ARMOR_ITEM),
+                            equipment.getChestplate())));
+                    equipment.setHelmet((ParseUtils.parseItemstack(
+                            entityData.get(EntityDataType.HELMET_ARMOR_ITEM), equipment.getHelmet())));
+                    equipment.setLeggings((ParseUtils.parseItemstack(
+                            entityData.get(EntityDataType.LEGGINGS_ARMOR_ITEM),
+                            equipment.getLeggings())));
+                    equipment.setItemInMainHand(
+                            (ParseUtils.parseItemstack(entityData.get(EntityDataType.MAIN_HAND_ITEM),
+                                    equipment.getItemInMainHand())));
+                    equipment.setItemInOffHand(
+                            (ParseUtils.parseItemstack(entityData.get(EntityDataType.OFF_HAND_ITEM),
+                                    equipment.getItemInOffHand())));
                 }
+            } catch (Exception e) {
+                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
             }
+        } else if (entity instanceof ThrownPotion pentity) {
+            try {
+                ItemStack potion = new ItemStack(pentity.getItem().getType());
+                PotionMeta meta = (PotionMeta) potion.getItemMeta();
+                meta.setBasePotionData(ParseUtils.parsePotionData(
+                        entityData.get(EntityDataType.POTION_EFFECT), meta.getBasePotionData()));
 
-            case LivingEntity living -> {
-                try {
-                    EntityEquipment equipment = living.getEquipment();
-                    if (equipment != null) {
-                        equipment.setBoots((ParseUtils.parseItemstack(
-                                entityData.get(EntityDataType.BOOTS_ARMOR_ITEM), equipment.getBoots())));
-                        equipment.setChestplate((ParseUtils.parseItemstack(
-                                entityData.get(EntityDataType.CHESTPLATE_ARMOR_ITEM),
-                                equipment.getChestplate())));
-                        equipment.setHelmet((ParseUtils.parseItemstack(
-                                entityData.get(EntityDataType.HELMET_ARMOR_ITEM), equipment.getHelmet())));
-                        equipment.setLeggings((ParseUtils.parseItemstack(
-                                entityData.get(EntityDataType.LEGGINGS_ARMOR_ITEM),
-                                equipment.getLeggings())));
-                        equipment.setItemInMainHand(
-                                (ParseUtils.parseItemstack(entityData.get(EntityDataType.MAIN_HAND_ITEM),
-                                        equipment.getItemInMainHand())));
-                        equipment.setItemInOffHand(
-                                (ParseUtils.parseItemstack(entityData.get(EntityDataType.OFF_HAND_ITEM),
-                                        equipment.getItemInOffHand())));
-                    }
-                } catch (Exception e) {
-                    logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                plugin.logDebug("spawn THROWN_POTION " + pentity);
+                for (PotionEffect effect : entityHolder.getPotionEffects()) {
+                    plugin.logDebug("add potion effect " + effect);
+                    meta.addCustomEffect(effect, true);
                 }
-            }
 
-            case ThrownPotion pentity -> {
-                // ThrownPotion
-                try {
-                    ItemStack potion = new ItemStack(pentity.getItem().getType());
-                    PotionMeta meta = (PotionMeta) potion.getItemMeta();
-                    meta.setBasePotionData(ParseUtils.parsePotionData(
-                            entityData.get(EntityDataType.POTION_EFFECT), meta.getBasePotionData()));
+                potion.setItemMeta(meta);
 
-                    plugin.logDebug("spawn THROWN_POTION " + pentity);
-                    for (PotionEffect effect : entityHolder.getPotionEffects()) {
-                        plugin.logDebug("add potion effect " + effect);
-                        meta.addCustomEffect(effect, true);
-                    }
-
-                    potion.setItemMeta(meta);
-
-                    pentity.setItem(potion);
-                } catch (Exception e) {
-                    logConvertingError(cannonball.getProjectile().getProjectileId(), e);
-                }
-            }
-
-            default -> {
-                return;
+                pentity.setItem(potion);
+            } catch (Exception e) {
+                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
             }
         }
-
     }
     
     private void logConvertingError(String id, Exception e) {
@@ -717,6 +695,7 @@ public class CreateExplosion {
         // if (cannonball.getProjectileEntity()==null)
         // return 0.0;
 
+        plugin.logDebug("Start directHit calculation");
         if (!(target instanceof LivingEntity living)) {
             return 0.0;
         }
