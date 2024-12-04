@@ -10,7 +10,7 @@ Hooks:
 ---------------
 - Vault hook to buy cannons (was there even before fork)
 - Movecraft-Cannons support is now integrated
-- PlaceholderAPI hook
+- [PlaceholderAPI](./PLACEHOLDERS.md) hook
 
 Optimizations:
 ---------------
