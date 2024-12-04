@@ -9,4 +9,8 @@ public interface Hook<H> {
     void onEnable();
     void onDisable();
     Class<? extends Hook<?>> getTypeClass();
+
+    default String enabledMessage() {
+        return getTypeClass().getName() + " Enabled.";
+    }
 }
