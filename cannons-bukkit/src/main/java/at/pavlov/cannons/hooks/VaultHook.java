@@ -30,6 +30,7 @@ public class VaultHook extends BukkitHook<Economy> {
         }
 
         hook = rsp.getProvider();
+        plugin.logInfo("§a" + enabledMessage());
     }
 
     @Override

@@ -41,6 +41,7 @@ public class MovecraftHook extends BukkitHook<Movecraft> {
         pluginManager.registerEvents(new CraftDetectListener(), plugin);
         pluginManager.registerEvents(new TranslationListener(), plugin);
         pluginManager.registerEvents(new RotationListener(), plugin);
+        plugin.logInfo("§a" + enabledMessage());
     }
 
     @Override

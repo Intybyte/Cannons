@@ -28,6 +28,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion implements Hook<Voi
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             this.register();
             working = true;
+            plugin.logInfo("§a" + enabledMessage());
         }
     }
 

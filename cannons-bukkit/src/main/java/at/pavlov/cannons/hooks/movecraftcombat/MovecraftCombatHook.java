@@ -25,6 +25,7 @@ public class MovecraftCombatHook extends BukkitHook<MovecraftCombat> {
 
         hook = MovecraftCombat.getInstance();
         pluginManager.registerEvents(new ProjectileImpactListener(), plugin);
+        plugin.logInfo("§a" + enabledMessage());
     }
 
     @Override
