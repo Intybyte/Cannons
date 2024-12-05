@@ -58,7 +58,6 @@ public final class Cannons extends JavaPlugin
 
     private Config config;
 	private FireCannon fireCannon;
-	private CreateExplosion explosion;
 	private Aiming aiming;
     private ProjectileObserver observer;
     private FakeBlockHandler fakeBlockHandler;
@@ -152,7 +151,7 @@ public final class Cannons extends JavaPlugin
 		CannonManager.getInstance().updateCannons();
 		UserMessages.getInstance().loadLanguage();
 
-		this.explosion = new CreateExplosion(this);
+		CreateExplosion.initialize(this);
 		this.fireCannon = new FireCannon(this);
 		this.aiming = new Aiming(this);
 		this.observer = new ProjectileObserver(this);
@@ -396,9 +395,10 @@ public final class Cannons extends JavaPlugin
 		return fireCannon;
 	}
 
+	@Deprecated(forRemoval = true)
 	public CreateExplosion getExplosion()
 	{
-		return explosion;
+		return CreateExplosion.getInstance();
 	}
 
 	public Aiming getAiming()

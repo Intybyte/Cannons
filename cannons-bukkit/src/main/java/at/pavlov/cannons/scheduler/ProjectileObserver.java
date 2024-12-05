@@ -1,6 +1,7 @@
 package at.pavlov.cannons.scheduler;
 
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.Enum.FakeBlockType;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
@@ -201,7 +202,7 @@ public class ProjectileObserver {
         {
             cannonball.revertUpdate();
             cannonball.teleportToPrediction(projectile_entity);
-            plugin.getExplosion().detonate(cannonball, projectile_entity);
+            CreateExplosion.getInstance().detonate(cannonball, projectile_entity);
             projectile_entity.remove();
             return true;
         }

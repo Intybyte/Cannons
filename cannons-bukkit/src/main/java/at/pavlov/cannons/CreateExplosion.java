@@ -25,6 +25,7 @@ import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.cannons.utils.SoundUtils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -81,9 +82,20 @@ public class CreateExplosion {
 
     private final Random r = new Random();
 
-    public CreateExplosion(Cannons plugin) {
+    @Getter
+    private static CreateExplosion instance = null;
+
+    private CreateExplosion(Cannons plugin) {
         this.plugin = plugin;
         this.config = plugin.getMyConfig();
+    }
+
+    public static void initialize(Cannons plugin) {
+        if (instance != null) {
+            return;
+        }
+
+        instance = new CreateExplosion(plugin);
     }
 
     /**

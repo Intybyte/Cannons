@@ -2,6 +2,7 @@ package at.pavlov.cannons.listener;
 
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.FireCannon;
@@ -67,14 +68,15 @@ public class PlayerListener implements Listener
     public void PlayerDeath(PlayerDeathEvent event)
     {
         UUID killedUID = event.getEntity().getUniqueId();
-        if (plugin.getExplosion().wasAffectedByCannons(event.getEntity())){
+        var explosion = CreateExplosion.getInstance();
+        if (explosion.wasAffectedByCannons(event.getEntity())){
             //DeathCause cause = plugin.getExplosion().getDeathCause(killedUID);
-            plugin.getExplosion().removeKilledPlayer(killedUID);
+            explosion.removeKilledPlayer(killedUID);
 
 //            if (cause.getShooterUID() != null)
 //                shooter = Bukkit.getPlayer(cause.getShooterUID());
 //            Cannon cannon = plugin.getCannon(cause.getCannonUID());
-            FlyingProjectile c = plugin.getExplosion().getCurrentCannonball();
+            FlyingProjectile c = explosion.getCurrentCannonball();
             Cannon cannon = CannonManager.getCannon(c.getCannonUID());
             String message = userMessages.getDeathMessage(killedUID, c.getShooterUID(), cannon, c.getProjectile());
             if (message != null && !message.equals(" "))
