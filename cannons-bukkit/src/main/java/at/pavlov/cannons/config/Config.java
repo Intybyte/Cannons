@@ -26,9 +26,7 @@ import java.util.List;
  * 
  */
 
-@Data
-public class Config
-{
+@Data public class Config {
 	//general
 	private boolean debugMode;
     private boolean relayExplosionEvent;
@@ -101,20 +99,16 @@ public class Config
 
     private final UserMessages userMessage;
 	private final Cannons plugin;
-    private final ProjectileStorage projectileStorage;
     private final CannonManager cannonManager;
 
-	public Config(Cannons plugin)
-	{
+	public Config(Cannons plugin) {
 		this.plugin = plugin;
 		userMessage = new UserMessages(this.plugin);
-		projectileStorage = new ProjectileStorage(this.plugin);
         cannonManager = new CannonManager(plugin, userMessage, this);
         this.loadConfig();
 	}
 
-	public void loadConfig()
-	{
+	public void loadConfig()  {
 		// copy the default config to the disk if it does not exist
 		plugin.saveDefaultConfig();
         plugin.reloadConfig();

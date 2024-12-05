@@ -128,11 +128,12 @@ public final class Cannons extends JavaPlugin
 	public void onEnable()
 	{
 		DesignStorage.initialize(this);
+		ProjectileStorage.initialize(this);
 		ProjectileManager.initialize(this);
 		CannonSelector.initialize(this);
 
 		DesignStorage.getInstance().loadCannonDesigns();
-		config.getProjectileStorage().loadProjectiles();
+		ProjectileStorage.getInstance().loadProjectiles();
 		config.getCannonManager().updateCannons();
 		config.getUserMessage().loadLanguage();
 
@@ -430,9 +431,10 @@ public final class Cannons extends JavaPlugin
 		return getDesignStorage().getDesign(designId);
 	}
 
+	@Deprecated(forRemoval = true)
 	public ProjectileStorage getProjectileStorage()
 	{
-		return this.config.getProjectileStorage();
+		return ProjectileStorage.getInstance();
 	}
 
 	public Projectile getProjectile(Cannon cannon, ItemHolder materialHolder)
