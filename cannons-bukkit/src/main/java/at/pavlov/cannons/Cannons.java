@@ -9,6 +9,7 @@ import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.commands.CannonsCommandManager;
 import at.pavlov.cannons.commands.Commands;
 import at.pavlov.cannons.config.Config;
+import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
@@ -85,7 +86,10 @@ public final class Cannons extends JavaPlugin
 
 	public void onLoad() {
 		//must be done in onLoad because "movecraft"
-		this.config = new Config(this);
+		UserMessages.initialize(this);
+		Config.initialize(this);
+		CannonManager.initialize(this);
+		this.config = Config.getInstance();
 
 		if (!config.isMovecraftEnabled()) {
 			return;
@@ -135,7 +139,7 @@ public final class Cannons extends JavaPlugin
 		DesignStorage.getInstance().loadCannonDesigns();
 		ProjectileStorage.getInstance().loadProjectiles();
 		config.getCannonManager().updateCannons();
-		config.getUserMessage().loadLanguage();
+		config.getUserMessages().loadLanguage();
 
 		pm = getServer().getPluginManager();
 		if (!checkWorldEdit())

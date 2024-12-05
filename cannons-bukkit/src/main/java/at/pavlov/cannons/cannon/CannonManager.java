@@ -15,6 +15,7 @@ import at.pavlov.cannons.event.CannonRenameEvent;
 import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.dao.wrappers.RemoveTaskWrapper;
 import at.pavlov.cannons.utils.SoundUtils;
+import lombok.Getter;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -45,10 +46,21 @@ public class CannonManager {
     private final Config config;
     private static final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.SOUTH, BlockFace.NORTH, BlockFace.WEST };
 
-    public CannonManager(Cannons cannons, UserMessages userMessages, Config config) {
-        this.userMessages = userMessages;
-        this.config = config;
+    @Getter
+    private static CannonManager instance = null;
+
+    private CannonManager(Cannons cannons) {
+        this.userMessages = UserMessages.getInstance();
+        this.config = Config.getInstance();
         this.plugin = cannons;
+    }
+
+    public static void initialize(Cannons cannons) {
+        if (instance != null) {
+            return;
+        }
+
+        instance = new CannonManager(cannons);
     }
 
     /**
