@@ -82,7 +82,7 @@ public class CreateExplosion {
     private final Random r = new Random();
 
     // ################### Constructor ############################################
-    public CreateExplosion(Cannons plugin, Config config) {
+    public CreateExplosion(Cannons plugin) {
         this.plugin = plugin;
         this.config = plugin.getMyConfig();
     }

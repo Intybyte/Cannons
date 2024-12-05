@@ -44,9 +44,9 @@ public class FireCannon {
     private final Random random = new Random();
 
 
-    public FireCannon(Cannons plugin, Config config) {
+    public FireCannon(Cannons plugin) {
         this.plugin = plugin;
-        this.config = config;
+        this.config = Config.getInstance();
     }
 
 

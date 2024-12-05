@@ -136,13 +136,8 @@ public final class Cannons extends JavaPlugin
 		ProjectileManager.initialize(this);
 		CannonSelector.initialize(this);
 
-		DesignStorage.getInstance().loadCannonDesigns();
-		ProjectileStorage.getInstance().loadProjectiles();
-		CannonManager.getInstance().updateCannons();
-		UserMessages.getInstance().loadLanguage();
-
 		pm = getServer().getPluginManager();
-		if (!checkWorldEdit())
+		if (!pm.isPluginEnabled("WorldEdit"))
 		{
 			//no worldEdit has been loaded. Disable plugin
 			this.logSevere(ChatColor.RED + "Please install WorldEdit, else Cannons can't load.");
@@ -152,8 +147,13 @@ public final class Cannons extends JavaPlugin
 			return;
 		}
 
-		this.explosion = new CreateExplosion(this, config);
-		this.fireCannon = new FireCannon(this, config);
+		DesignStorage.getInstance().loadCannonDesigns();
+		ProjectileStorage.getInstance().loadProjectiles();
+		CannonManager.getInstance().updateCannons();
+		UserMessages.getInstance().loadLanguage();
+
+		this.explosion = new CreateExplosion(this);
+		this.fireCannon = new FireCannon(this);
 		this.aiming = new Aiming(this);
 		this.observer = new ProjectileObserver(this);
 		this.fakeBlockHandler = new FakeBlockHandler(this);
@@ -375,16 +375,6 @@ public final class Cannons extends JavaPlugin
 	{
 		return this.getDescription();
 	}
-	
-	/**
-	 * checks if WorldEdit is running
-	 * @return true is WorldEdit is running
-	 */
-	private boolean checkWorldEdit()
-	{
-		Plugin plug = pm.getPlugin("WorldEdit");
-        return plug != null;
-    }
 
     public Connection getConnection(){
 		return this.connection;
