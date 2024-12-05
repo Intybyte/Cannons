@@ -292,7 +292,7 @@ public final class Cannons extends JavaPlugin
 
 	private void initializeCommands() {
 		var cannonsCommandManager = new CannonsCommandManager(this);
-		cannonsCommandManager.registerCommand(new Commands());
+		cannonsCommandManager.registerCommand(new Commands(this));
 	}
 
 	// set up ebean database

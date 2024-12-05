@@ -70,7 +70,7 @@ public class Aiming {
     public Aiming(Cannons plugin) {
         this.plugin = plugin;
         this.config = plugin.getMyConfig();
-        this.userMessages = plugin.getMyConfig().getUserMessages();
+        this.userMessages = UserMessages.getInstance();
     }
 
     private Scoreboard getScoreboard() {

@@ -40,19 +40,34 @@ import java.util.concurrent.CompletableFuture;
 public class Commands extends BaseCommand {
     private static final String tag = "[Cannons] ";
 
+    private static Cannons cannons;
+    private static Config myConfig;
+    private static DesignStorage designStorage;
+    private static UserMessages userMessages;
+    private static PersistenceDatabase persistenceDatabase;
+    private static CannonManager cannonManager;
+    private static CannonSelector cannonSelector;
+
+    public Commands(Cannons plugin) {
+        cannons = plugin;
+        myConfig = cannons.getMyConfig();
+        designStorage = DesignStorage.getInstance();
+        userMessages = UserMessages.getInstance();
+        cannonManager = CannonManager.getInstance();
+        persistenceDatabase = cannons.getPersistenceDatabase();
+        cannonSelector = CannonSelector.getInstance();
+    }
+
     @HelpCommand
     @CommandPermission("cannons.player.command")
     public static void onHelpCommand(Player sender) {
-        Cannons plugin = Cannons.getPlugin();
-        UserMessages userMessages = plugin.getMyConfig().getUserMessages();
         userMessages.sendMessage(MessageEnum.HelpText, sender);
     }
 
     @Subcommand("reload")
     @CommandPermission("cannons.admin.reload")
     public static void onReload(CommandSender sender) {
-        Config config = Cannons.getPlugin().getMyConfig();
-        config.loadConfig();
+        myConfig.loadConfig();
         sendMessage(sender, ChatColor.GREEN + tag + "Config loaded");
     }
 
@@ -60,7 +75,7 @@ public class Commands extends BaseCommand {
     @CommandPermission("cannons.admin.reload")
     public static void onSave(CommandSender sender) {
         // save database
-        Cannons.getPlugin().getPersistenceDatabase().saveAllCannons(true);
+        persistenceDatabase.saveAllCannons(true);
         sendMessage(sender, ChatColor.GREEN + "Cannons database saved ");
     }
 
@@ -68,7 +83,7 @@ public class Commands extends BaseCommand {
     @CommandPermission("cannons.admin.reload")
     public static void onLoad(CommandSender sender) {
         // load database
-        Cannons.getPlugin().getPersistenceDatabase().loadCannons();
+        persistenceDatabase.loadCannons();
         sendMessage(sender, ChatColor.GREEN + "Cannons database loaded ");
     }
 
@@ -80,17 +95,13 @@ public class Commands extends BaseCommand {
         OfflinePlayer offall = CannonsUtil.getOfflinePlayer("all");
         OfflinePlayer offallplayers = CannonsUtil.getOfflinePlayer("all_players");
 
-        Cannons plugin = Cannons.getPlugin();
-        UserMessages userMessages = plugin.getMyConfig().getUserMessages();
-        PersistenceDatabase persistenceDatabase = plugin.getPersistenceDatabase();
-
         if (arg.equals("all") &&
                 (offall == null || !offall.hasPlayedBefore()) ||
                 arg.equals("all_players") &&
                         (offallplayers == null || !offallplayers.hasPlayedBefore())) {
             //remove all cannons
             persistenceDatabase.deleteAllCannons();
-            plugin.getCannonManager().deleteAllCannons();
+            cannonManager.deleteAllCannons();
             sendMessage(sender, ChatColor.GREEN + "All cannons have been deleted");
             return;
         }
@@ -102,7 +113,7 @@ public class Commands extends BaseCommand {
             return;
         }
 
-        boolean b1 = plugin.getCannonManager().deleteCannons(offplayer.getUniqueId());
+        boolean b1 = cannonManager.deleteCannons(offplayer.getUniqueId());
         persistenceDatabase.deleteCannons(offplayer.getUniqueId());
         if (b1) {
             //there was an entry in the list
@@ -147,13 +158,13 @@ public class Commands extends BaseCommand {
     public static void onCreate(Player player, String arg) {
         Cannons plugin = Cannons.getPlugin();
         //check if the design name is valid
-        if (!plugin.getDesignStorage().hasDesign(arg)) {
-            sendMessage(player, ChatColor.RED + tag + "Design not found Available designs are: " + StringUtils.join(plugin.getDesignStorage().getDesignIds(), ", "));
+        if (!designStorage.hasDesign(arg)) {
+            sendMessage(player, ChatColor.RED + tag + "Design not found Available designs are: " + StringUtils.join(designStorage.getDesignIds(), ", "));
             return;
         }
 
         sendMessage(player, ChatColor.GREEN + tag + "Create design: " + ChatColor.GOLD + arg);
-        CannonDesign cannonDesign = plugin.getDesignStorage().getDesign(arg);
+        CannonDesign cannonDesign = designStorage.getDesign(arg);
 
         Cannon cannon = new Cannon(cannonDesign, player.getWorld().getUID(), player.getLocation().toVector(), BlockFace.NORTH, player.getUniqueId());
         //createCannon(cannon);
@@ -203,21 +214,18 @@ public class Commands extends BaseCommand {
     @Subcommand("build")
     @CommandPermission("cannons.player.command")
     public static void onBuild(Player player) {
-        var userMessages = Cannons.getPlugin().getMyConfig().getUserMessages();
         userMessages.sendMessage(MessageEnum.HelpBuild, player);
     }
 
     @Subcommand("fire")
     @CommandPermission("cannons.player.command")
     public static void onFire(Player player) {
-        var userMessages = Cannons.getPlugin().getMyConfig().getUserMessages();
         userMessages.sendMessage(MessageEnum.HelpFire, player);
     }
 
     @Subcommand("adjust")
     @CommandPermission("cannons.player.command")
     public static void onAdjust(Player player) {
-        var userMessages = Cannons.getPlugin().getMyConfig().getUserMessages();
         userMessages.sendMessage(MessageEnum.HelpAdjust, player);
     }
 
@@ -233,9 +241,8 @@ public class Commands extends BaseCommand {
     public static void onImitate(Player player, @Optional String arg) {
         Cannons plugin = Cannons.getPlugin();
         Aiming aiming = plugin.getAiming();
-        Config config = plugin.getMyConfig();
 
-        if (!config.isImitatedAimingEnabled()) {
+        if (!myConfig.isImitatedAimingEnabled()) {
             return;
         }
 
@@ -253,8 +260,7 @@ public class Commands extends BaseCommand {
     @Subcommand("buy")
     @CommandPermission("cannons.player.build")
     public static void onBuy(Player player) {
-        CannonSelector selector = CannonSelector.getInstance();
-        selector.toggleBuyCannon(player, SelectCannon.BUY_CANNON);
+        cannonSelector.toggleBuyCannon(player, SelectCannon.BUY_CANNON);
     }
 
     @Subcommand("rename")
@@ -267,15 +273,13 @@ public class Commands extends BaseCommand {
         }
 
         //selection done by a string '/cannons rename OLD NEW'
-        Cannons plugin = Cannons.getPlugin();
-        UserMessages userMessages = plugin.getMyConfig().getUserMessages();
         Cannon cannon = CannonManager.getCannon(args[0]);
         if (cannon == null) {
             sendMessage(player, ChatColor.RED + "Cannon not found");
             return;
         }
 
-        MessageEnum message = plugin.getCannonManager().renameCannon(player, cannon, args[1]);
+        MessageEnum message = cannonManager.renameCannon(player, cannon, args[1]);
         userMessages.sendMessage(message, player, cannon);
     }
 
@@ -283,18 +287,13 @@ public class Commands extends BaseCommand {
     @Syntax("<off|disable|CANNON_NAME>")
     @CommandPermission("cannons.player.observer")
     public static void onObserver(Player player, String[] args) {
-        CannonSelector selector = CannonSelector.getInstance();
-
         if (args.length < 1) {
-            selector.toggleCannonSelector(player, SelectCannon.OBSERVER);
+            cannonSelector.toggleCannonSelector(player, SelectCannon.OBSERVER);
             return;
         }
 
-        Cannons plugin = Cannons.getPlugin();
-        UserMessages userMessages = plugin.getMyConfig().getUserMessages();
-
         if (args[0].equalsIgnoreCase("off") || args[0].equalsIgnoreCase("disable") || args[0].equalsIgnoreCase("remove"))
-            plugin.getAiming().removeObserverForAllCannons(player);
+            cannons.getAiming().removeObserverForAllCannons(player);
         else {
             //selection done by a string '/cannons observer CANNON_NAME'
             Cannon cannon = CannonManager.getCannon(args[0]);
@@ -319,11 +318,9 @@ public class Commands extends BaseCommand {
         @Subcommand("add")
         public static void onAdd(Player player, String subject) {
             OfflinePlayer offPlayer = CannonsUtil.getOfflinePlayer(subject);
-            CannonSelector selector = CannonSelector.getInstance();
-            UserMessages userMessages = Cannons.getPlugin().getMyConfig().getUserMessages();
 
             if (offPlayer != null && offPlayer.hasPlayedBefore())
-                selector.toggleCannonSelector(player, SelectCannon.WHITELIST_ADD, offPlayer);
+                cannonSelector.toggleCannonSelector(player, SelectCannon.WHITELIST_ADD, offPlayer);
             else
                 userMessages.sendMessage(MessageEnum.ErrorPlayerNotFound, player);
         }
@@ -331,11 +328,9 @@ public class Commands extends BaseCommand {
         @Subcommand("remove")
         public static void onRemove(Player player, String subject) {
             OfflinePlayer offPlayer = CannonsUtil.getOfflinePlayer(subject);
-            CannonSelector selector = CannonSelector.getInstance();
-            UserMessages userMessages = Cannons.getPlugin().getMyConfig().getUserMessages();
 
             if (offPlayer != null && offPlayer.hasPlayedBefore()) {
-                selector.toggleCannonSelector(player, SelectCannon.WHITELIST_REMOVE, offPlayer);
+                cannonSelector.toggleCannonSelector(player, SelectCannon.WHITELIST_REMOVE, offPlayer);
             } else
                 userMessages.sendMessage(MessageEnum.ErrorPlayerNotFound, player);
         }
@@ -346,31 +341,29 @@ public class Commands extends BaseCommand {
     @Syntax("[mob|player|cannon|other] <true|false> <range>")
     @CommandCompletion("mob|player|cannon|other true|false range")
     public static void onTarget(Player player, SelectCannon selectCannon, @Default("false") boolean choice, @Default("0") int length) {
-        CannonSelector selector = CannonSelector.getInstance();
-        selector.putTarget(player.getUniqueId(), choice);
+        cannonSelector.putTarget(player.getUniqueId(), choice);
 
         if (length > 0)
             selectCannonsInBox(player, selectCannon, length);
         else
-            selector.toggleCannonSelector(player, selectCannon);
+            cannonSelector.toggleCannonSelector(player, selectCannon);
     }
 
     @Subcommand("info")
     @CommandPermission("cannons.player.info")
     public static void onInfo(Player player) {
-        CannonSelector.getInstance().toggleCannonSelector(player, SelectCannon.INFO);
+        cannonSelector.toggleCannonSelector(player, SelectCannon.INFO);
     }
 
     @Subcommand("dismantle")
     @CommandPermission("cannons.player.dismantle|cannons.admin.dismantle")
     public static void onDismantle(Player player) {
-        CannonSelector.getInstance().toggleCannonSelector(player, SelectCannon.DISMANTLE);
+        cannonSelector.toggleCannonSelector(player, SelectCannon.DISMANTLE);
     }
 
     @Subcommand("listme")
     @CommandPermission("cannons.player.list")
     public static void onMyList(Player player) {
-        CannonManager cannonManager = Cannons.getPlugin().getCannonManager();
         sendMessage(player, ChatColor.GREEN + "Cannon list for " + ChatColor.GOLD + player.getName() + ChatColor.GREEN + ":");
         for (Cannon cannon : CannonManager.getCannonList().values()) {
             if (cannon.getOwner() != null && cannon.getOwner().equals(player.getUniqueId()))
@@ -395,29 +388,22 @@ public class Commands extends BaseCommand {
     @Subcommand("resetme")
     @CommandPermission("cannons.player.reset")
     public static void onResetMe(Player player) {
-        Cannons plugin = Cannons.getPlugin();
-        PersistenceDatabase persistenceDatabase = plugin.getPersistenceDatabase();
-        UserMessages userMessages = plugin.getMyConfig().getUserMessages();
-
         persistenceDatabase.deleteCannons(player.getUniqueId());
-        plugin.getCannonManager().deleteCannons(player.getUniqueId());
+        cannonManager.deleteCannons(player.getUniqueId());
         userMessages.sendMessage(MessageEnum.CannonsReseted, player);
     }
 
     @Subcommand("blockdata")
     @CommandPermission("cannons.player.blockdata")
     public static void onBlockData(Player player) {
-        CannonSelector.getInstance().toggleCannonSelector(player, SelectCannon.BLOCK_DATA);
+        cannonSelector.toggleCannonSelector(player, SelectCannon.BLOCK_DATA);
     }
 
     @Subcommand("claim")
     @CommandPermission("cannons.player.claim")
     public static void onClaim(Player player, @Default("20") int size) {
-        Cannons plugin = Cannons.getPlugin();
-        CannonManager cannonManager = plugin.getCannonManager();
-        UserMessages userMessages = plugin.getMyConfig().getUserMessages();
-
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsStarted, player);
+
         CompletableFuture.runAsync(() -> {
             cannonManager.fetchCannonInBox(player.getLocation(), player.getUniqueId(), size);
             AsyncTaskManager.fireSyncRunnable( () ->
@@ -428,10 +414,6 @@ public class Commands extends BaseCommand {
     @Subcommand("resetarea")
     @CommandPermission("cannons.admin.reload")
     public static void onResetArea(Player player, @Default("20") int size) {
-        Cannons plugin = Cannons.getPlugin();
-        PersistenceDatabase persistenceDatabase = plugin.getPersistenceDatabase();
-        CannonManager cannonManager = plugin.getCannonManager();
-        UserMessages userMessages = plugin.getMyConfig().getUserMessages();
 
         CompletableFuture.runAsync(() -> {
             final HashSet<Cannon> cannonList = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
@@ -451,10 +433,8 @@ public class Commands extends BaseCommand {
     @Subcommand("dismantleArea")
     @CommandPermission("cannons.admin.reload")
     public static void onDismantleArea(Player player, @Default("20") int size) {
-        Cannons plugin = Cannons.getPlugin();
-        CannonManager cannonManager = plugin.getCannonManager();
-
         player.sendMessage("Dismantling started");
+
         CompletableFuture.runAsync(() -> {
             var cannonHashSet = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
             AsyncTaskManager.fireSyncRunnable( () ->
@@ -466,15 +446,13 @@ public class Commands extends BaseCommand {
     @Subcommand("scanArea")
     @CommandPermission("cannons.admin.reload")
     public static void scanArea(Player player, @Default("20") int size) {
-        Cannons plugin = Cannons.getPlugin();
         int found = CannonManager.getCannonsInBox(player.getLocation(), size , size, size).size();
         player.sendMessage("Cannons found: " + found);
     }
 
     @Subcommand("version")
     public static void onVersion(Player player) {
-        Cannons plugin = Cannons.getPlugin();
-        PluginDescriptionFile descriptionFile = plugin.getPluginDescription();
+        PluginDescriptionFile descriptionFile = cannons.getPluginDescription();
         sendMessage(player, "Cannons plugin v" + descriptionFile.getVersion() + " is running");
         List<String> authors = descriptionFile.getAuthors();
         sendMessage(player, "Authors: " + String.join(",", authors));
@@ -488,15 +466,14 @@ public class Commands extends BaseCommand {
             player = (Player) sender;
         }
 
-        Cannons plugin = Cannons.getPlugin();
-
         if (args.length >= 1) {
             return;
         }
 
         //console command
         if (player == null) {
-            plugin.logInfo("Cannons plugin v" + plugin.getPluginDescription().getVersion() + " is running");
+            String version = cannons.getPluginDescription().getVersion();
+            cannons.logInfo("Cannons plugin v" + version + " is running");
         }
     }
 
@@ -529,15 +506,14 @@ public class Commands extends BaseCommand {
         if (length > 1000)
             length = 1000;
 
-        CannonSelector selector = CannonSelector.getInstance();
         boolean choice = true;
         //buffer the selection because it will be reset after every cannon
-        if (selector.containsTarget(player.getUniqueId()))
-            choice = selector.getTarget(player.getUniqueId());
+        if (cannonSelector.containsTarget(player.getUniqueId()))
+            choice = cannonSelector.getTarget(player.getUniqueId());
 
         HashSet<Cannon> list = CannonManager.getCannonsInBox(player.getLocation(), length, length, length);
         for (Cannon cannon : list) {
-            selector.setSelectedCannon(player, cannon, cmd, choice);
+            cannonSelector.setSelectedCannon(player, cannon, cmd, choice);
         }
     }
 
@@ -554,11 +530,7 @@ public class Commands extends BaseCommand {
         //request permission
         boolean hasPerm = player.hasPermission(permission);
         //add some color
-        String perm;
-        if (hasPerm)
-            perm = ChatColor.GREEN + "TRUE";
-        else
-            perm = ChatColor.RED + "FALSE";
+        String perm = hasPerm ? ChatColor.GREEN + "TRUE" : ChatColor.RED + "FALSE";
         sendMessage(sender, ChatColor.YELLOW + permission + ": " + perm);
     }
 
@@ -571,7 +543,6 @@ public class Commands extends BaseCommand {
      */
     private static void displayAllPermissions(CommandSender sender, Player permPlayer) {
         sendMessage(sender, ChatColor.GREEN + "Permissions for " + ChatColor.GOLD + permPlayer.getName() + ChatColor.GREEN + ":");
-        Cannons plugin = Cannons.getPlugin();
         displayPermission(sender, permPlayer, "cannons.player.command");
         displayPermission(sender, permPlayer, "cannons.player.info");
         displayPermission(sender, permPlayer, "cannons.player.help");
@@ -595,13 +566,13 @@ public class Commands extends BaseCommand {
         displayPermission(sender, permPlayer, "cannons.projectile.default");
         displayPermission(sender, permPlayer, "cannons.limit.limitA");
         displayPermission(sender, permPlayer, "cannons.limit.limitB");
-        int newBuildlimit = plugin.getCannonManager().getNewBuildLimit(permPlayer);
+        int newBuildlimit = cannonManager.getNewBuildLimit(permPlayer);
         if (newBuildlimit == Integer.MAX_VALUE)
             sendMessage(sender, ChatColor.YELLOW + "no Permission cannons.limit.x (with 0<=x<=100)");
         else
             displayPermission(sender, permPlayer, "cannons.limit." + newBuildlimit);
-        int numberCannons = plugin.getCannonManager().getNumberOfCannons(permPlayer.getUniqueId());
-        int maxCannons = plugin.getCannonManager().getCannonBuiltLimit(permPlayer);
+        int numberCannons = cannonManager.getNumberOfCannons(permPlayer.getUniqueId());
+        int maxCannons = cannonManager.getCannonBuiltLimit(permPlayer);
         if (maxCannons == Integer.MAX_VALUE)
             sendMessage(sender, ChatColor.YELLOW + "Built cannons: " + ChatColor.GOLD + numberCannons);
         else
