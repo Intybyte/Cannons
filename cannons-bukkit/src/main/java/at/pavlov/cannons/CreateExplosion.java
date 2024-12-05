@@ -9,10 +9,11 @@ import at.pavlov.cannons.container.DeathCause;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
 import at.pavlov.cannons.container.SpawnMaterialHolder;
+import at.pavlov.cannons.dao.DelayedTask;
+import at.pavlov.cannons.event.CannonDamageEvent;
 import at.pavlov.cannons.event.CannonsEntityDeathEvent;
 import at.pavlov.cannons.event.ProjectileImpactEvent;
 import at.pavlov.cannons.event.ProjectilePiercingEvent;
-import at.pavlov.cannons.event.CannonDamageEvent;
 import at.pavlov.cannons.multiversion.EntityTypeResolver;
 import at.pavlov.cannons.multiversion.EventResolver;
 import at.pavlov.cannons.projectile.FlyingProjectile;
@@ -22,7 +23,6 @@ import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
-import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.cannons.utils.SoundUtils;
 import org.bukkit.Bukkit;
@@ -81,14 +81,13 @@ public class CreateExplosion {
 
     private final Random r = new Random();
 
-    // ################### Constructor ############################################
     public CreateExplosion(Cannons plugin) {
         this.plugin = plugin;
         this.config = plugin.getMyConfig();
     }
 
     /**
-     * Breaks a obsidian/water/lava blocks if the projectile has superbreaker
+     * Breaks obsidian/water/lava blocks if the projectile has superbreaker
      *
      * @param block
      * @param blocklist
@@ -99,7 +98,7 @@ public class CreateExplosion {
     private boolean breakBlock(Block block, List<Block> blocklist, Boolean superBreaker, Boolean blockDamage) {
         BlockData destroyedBlock = block.getBlockData();
 
-        // air is not an block to break, so ignore it
+        // air is not a block to break, so ignore it
         if (destroyedBlock.getMaterial().equals(Material.AIR)) {
             return true;
         }
@@ -137,8 +136,6 @@ public class CreateExplosion {
             blocklist.add(block);
         }
         return true;
-
-        // air can be destroyed
     }
 
     /**
@@ -408,7 +405,7 @@ public class CreateExplosion {
             }
         }
     }
-    
+
     private void logConvertingError(String id, Exception e) {
         this.plugin.logSevere("error while converting entity data for " + id + " occurred: " + e);
         e.printStackTrace();
