@@ -473,10 +473,11 @@ public final class Cannons extends JavaPlugin
     {
 		UserMessages.getInstance().sendImpactMessage(player, impact, canceled);
     }
-	
+
+	@Deprecated(forRemoval = true)
 	public void createCannon(Cannon cannon, boolean saveToDatabase)
 	{
-		this.getCannonManager().createCannon(cannon, saveToDatabase);
+		CannonManager.getInstance().createCannon(cannon, saveToDatabase);
 	}
 
     public ProjectileObserver getProjectileObserver() {

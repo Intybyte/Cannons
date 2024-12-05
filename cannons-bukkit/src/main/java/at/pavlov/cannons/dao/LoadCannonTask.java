@@ -3,6 +3,7 @@ package at.pavlov.cannons.dao;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonDesign;
+import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.CreateCannon;
 import org.bukkit.Bukkit;
@@ -39,7 +40,7 @@ public class LoadCannonTask extends BukkitRunnable{
             while (rs.next()) {
                 UUID cannon_id = UUID.fromString(rs.getString("id"));
                 //check if cannon design exists
-                CannonDesign design = Cannons.getPlugin().getCannonDesign(rs.getString("design_id"));
+                CannonDesign design = DesignStorage.getInstance().getDesign(rs.getString("design_id"));
                 if (design == null) {
                     Cannons.getPlugin().logDebug("Design " + rs.getString("design_id") + " not found in plugin/designs");
                     invalid.add(cannon_id);

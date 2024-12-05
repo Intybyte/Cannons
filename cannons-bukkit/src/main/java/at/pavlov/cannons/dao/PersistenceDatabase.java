@@ -2,6 +2,7 @@ package at.pavlov.cannons.dao;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.cannon.CannonManager;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -32,7 +33,7 @@ public class PersistenceDatabase
             plugin.logSevere("No connection to database");
             return;
         }
-		plugin.getCannonManager().clearCannonList();
+		CannonManager.getInstance().clearCannonList();
 
 	    LoadCannonTask task = new LoadCannonTask();
 	    task.runTaskAsynchronously(plugin);

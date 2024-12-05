@@ -3,6 +3,7 @@ package at.pavlov.cannons.config;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.utils.CannonsUtil;
 import lombok.Getter;
@@ -283,7 +284,7 @@ public class UserMessages {
 
         //check limit only if needed
         if (message.contains("LIMIT"))
-            message = message.replace("LIMIT", Integer.toString(plugin.getCannonManager().getNumberOfCannons(player.getUniqueId())));
+            message = message.replace("LIMIT", Integer.toString(CannonManager.getInstance().getNumberOfCannons(player.getUniqueId())));
 
         return message;
     }

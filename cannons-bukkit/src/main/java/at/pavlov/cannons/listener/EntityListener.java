@@ -3,6 +3,7 @@ package at.pavlov.cannons.listener;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Projectile;
@@ -17,10 +18,11 @@ import java.util.UUID;
 public class EntityListener implements Listener
 {
 	private final Cannons plugin;
+	private final CannonManager cannonManager;
 	
-	public EntityListener(Cannons plugin)
-	{
+	public EntityListener(Cannons plugin) {
 		this.plugin = plugin;
+		this.cannonManager = CannonManager.getInstance();
 	}
 
 	/**
@@ -87,7 +89,7 @@ public class EntityListener implements Listener
 
         // first search if a barrel block was destroyed.
         for (Block block : blocklist) {
-            Cannon cannon = plugin.getCannonManager().getCannon(block.getLocation(), null);
+            Cannon cannon = cannonManager.getCannon(block.getLocation(), null);
 
             // if it is a cannon block
             if (cannon == null) {
@@ -103,7 +105,7 @@ public class EntityListener implements Listener
         //iterate again and remove all block of intact cannons
         for (int i = 0; i < blocklist.size(); i++) {
             Block block = blocklist.get(i);
-            Cannon cannon = plugin.getCannonManager().getCannon(block.getLocation(), null);
+            Cannon cannon = cannonManager.getCannon(block.getLocation(), null);
 
             // if it is a cannon block and the cannon is not destroyed (see above)
             if (cannon == null || remove.contains(cannon.getUID())) {
@@ -117,6 +119,6 @@ public class EntityListener implements Listener
 
         //now remove all invalid cannons
         for (UUID id : remove)
-            plugin.getCannonManager().removeCannon(id, false, true, BreakCause.Explosion);
+			cannonManager.removeCannon(id, false, true, BreakCause.Explosion);
     }
 }

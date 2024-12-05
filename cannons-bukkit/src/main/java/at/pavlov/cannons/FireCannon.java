@@ -371,7 +371,7 @@ public class FireCannon {
 
         //check if the temperature exceeds the limit and overloading
         if (cannon.checkHeatManagement() || cannon.isExplodedDueOverloading()) {
-            plugin.getCannonManager().removeCannon(cannon, true, true, BreakCause.Overheating);
+            CannonManager.getInstance().removeCannon(cannon, true, true, BreakCause.Overheating);
             return;
         }
 

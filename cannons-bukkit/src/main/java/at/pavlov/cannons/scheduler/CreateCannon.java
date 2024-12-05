@@ -3,6 +3,7 @@ package at.pavlov.cannons.scheduler;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.cannon.CannonManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class CreateCannon extends BukkitRunnable {
@@ -19,6 +20,6 @@ public class CreateCannon extends BukkitRunnable {
 
     @Override
     public void run() {
-        plugin.getCannonManager().createCannon(cannon, saveToDatabase);
+        CannonManager.getInstance().createCannon(cannon, saveToDatabase);
     }
 }
