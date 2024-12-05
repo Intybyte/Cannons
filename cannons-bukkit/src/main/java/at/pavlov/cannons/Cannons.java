@@ -150,9 +150,9 @@ public final class Cannons extends JavaPlugin
 		UserMessages.getInstance().loadLanguage();
 
 		CreateExplosion.initialize(this);
-		this.fireCannon = new FireCannon(this); //probably more fitting to be a util class than a singleton
+		this.fireCannon = new FireCannon(this); //probably more fitting to be a util class
 		Aiming.initialize(this);
-		this.observer = new ProjectileObserver(this);
+		this.observer = new ProjectileObserver(this); //this is just a scheduler wrapper
 		this.fakeBlockHandler = new FakeBlockHandler(this);
 		this.cannonsAPI = new CannonsAPI(this);
 

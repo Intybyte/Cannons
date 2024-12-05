@@ -2,6 +2,7 @@ package at.pavlov.cannons.scheduler;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.FakeBlockType;
+import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.container.FakeBlockEntry;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
@@ -66,18 +67,18 @@ public class FakeBlockHandler {
                 continue;
             }
 
-            if (next.isExpired())
-            {
-                //send real block to player
-                Location loc = next.getLocation();
-                if (loc != null)
-                {
-                    player.sendBlockChange(loc, loc.getBlock().getBlockData());
-                    // plugin.logDebug("expired fake block: " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", " + next.getType().toString());
-                }
-                //remove this entry
-                iter.remove();
+            if (!next.isExpired()) {
+                continue;
             }
+            //send real block to player
+            Location loc = next.getLocation();
+            if (loc != null)
+            {
+                player.sendBlockChange(loc, loc.getBlock().getBlockData());
+                // plugin.logDebug("expired fake block: " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", " + next.getType().toString());
+            }
+            //remove this entry
+            iter.remove();
         }
     }
 
@@ -90,22 +91,24 @@ public class FakeBlockHandler {
         while(iter.hasNext())
         {
             FakeBlockEntry next = iter.next();
+            final long start = next.getStartTime();
+            final FakeBlockType type = next.getType();
             //if older and if the type matches
-            if (next.getStartTime() < (lastAiming - 50) && (next.getType() == FakeBlockType.AIMING)
-                    || next.getStartTime() < (lastImpactPredictor - 50) && (next.getType() == FakeBlockType.IMPACT_PREDICTOR))
-            {
-                //send real block to player
-                Player player = next.getPlayerBukkit();
-                Location loc = next.getLocation();
-                if (player != null && loc != null)
-                {
-                    player.sendBlockChange(loc, loc.getBlock().getBlockData());
-                }
-
-                //remove this entry
-                iter.remove();
-                //plugin.logDebug("remove older fake entry: " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", " + next.getType().toString() + " stime " + next.getStartTime());
+            if ((start >= (lastImpactPredictor - 50) || (type != FakeBlockType.IMPACT_PREDICTOR))
+                    && (start >= (lastAiming - 50) || (type != FakeBlockType.AIMING))) {
+                continue;
             }
+            //send real block to player
+            Player player = next.getPlayerBukkit();
+            Location loc = next.getLocation();
+            if (player != null && loc != null)
+            {
+                player.sendBlockChange(loc, loc.getBlock().getBlockData());
+            }
+
+            //remove this entry
+            iter.remove();
+            //plugin.logDebug("remove older fake entry: " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", " + next.getType().toString() + " stime " + next.getStartTime());
         }
     }
 
@@ -218,10 +221,8 @@ public class FakeBlockHandler {
             return false;
 
         double dist = player.getLocation().distance(loc);
-        if (dist > plugin.getMyConfig().getImitatedBlockMinimumDistance() &&
-            dist < plugin.getMyConfig().getImitatedBlockMaximumDistance())
-            return true;
-        return false;
+        Config config = plugin.getMyConfig();
+        return config.getImitatedBlockMinimumDistance() < dist && dist < config.getImitatedBlockMaximumDistance();
     }
 
     /**
@@ -236,9 +237,7 @@ public class FakeBlockHandler {
             return false;
 
         double dist = player.getLocation().distance(loc);
-        if (dist < plugin.getMyConfig().getImitatedBlockMaximumDistance())
-            return true;
-        return false;
+        return dist < plugin.getMyConfig().getImitatedBlockMaximumDistance();
     }
 
 }
