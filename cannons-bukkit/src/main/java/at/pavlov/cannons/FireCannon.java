@@ -290,7 +290,7 @@ public class FireCannon {
                 //charge is only removed in the last round fired
                 boolean lastRound = i == (projectile.getAutomaticFiringMagazineSize() - 1);
                 double randomess = 1. + design.getFuseBurnTimeRandomness() * random.nextDouble();
-                Long delayTime = (long) (randomess * design.getFuseBurnTime() * 20.0 + i * projectile.getAutomaticFiringDelay() * 20.0);
+                long delayTime = (long) (randomess * design.getFuseBurnTime() * 20.0 + i * projectile.getAutomaticFiringDelay() * 20.0);
                 FireTaskWrapper fireTask = new FireTaskWrapper(cannon, playerUid, lastRound, projectileCause);
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new DelayedTask(fireTask) {
                     public void run(Object object) {
@@ -343,7 +343,7 @@ public class FireCannon {
             cannon.setTemperature(cannon.getTemperature() + design.getHeatIncreasePerGunpowder() / projectile.getAutomaticFiringMagazineSize() * cannon.getLoadedGunpowder());
         //automatic cool down
         if (design.isAutomaticCooling())
-            cannon.automaticCoolingFromChest();
+            cannon.automaticCooling();
 
         //for each bullet, but at least once
         for (int i = 0; i < Math.max(projectile.getNumberOfBullets(), 1); i++) {

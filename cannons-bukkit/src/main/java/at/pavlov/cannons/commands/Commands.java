@@ -156,7 +156,6 @@ public class Commands extends BaseCommand {
     @Syntax("[DESIGN]")
     @CommandPermission("cannons.admin.create")
     public static void onCreate(Player player, String arg) {
-        Cannons plugin = Cannons.getPlugin();
         //check if the design name is valid
         if (!designStorage.hasDesign(arg)) {
             sendMessage(player, ChatColor.RED + tag + "Design not found Available designs are: " + StringUtils.join(designStorage.getDesignIds(), ", "));
@@ -308,7 +307,7 @@ public class Commands extends BaseCommand {
 
     @Subcommand("whitelist")
     @CommandPermission("cannons.player.whitelist")
-    public class onWhitelist extends BaseCommand {
+    public static class onWhitelist extends BaseCommand {
 
         @Default
         public static void help(Player player) {
