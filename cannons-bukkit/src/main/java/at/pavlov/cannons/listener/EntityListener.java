@@ -1,5 +1,6 @@
 package at.pavlov.cannons.listener;
 
+import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
@@ -31,7 +32,7 @@ public class EntityListener implements Listener
 	 */
 	@EventHandler
 	public void onEntiyDeathEvent(EntityDeathEvent event) {
-		plugin.getAiming().removeTarget(event.getEntity());
+		Aiming.getInstance().removeTarget(event.getEntity());
 	}
 
 

@@ -1,5 +1,6 @@
 package at.pavlov.cannons.cannon;
 
+import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.BreakCause;
 import at.pavlov.cannons.Enum.MessageEnum;
@@ -220,9 +221,9 @@ public class CannonManager {
                 cannonNameMap.remove(cannon.getCannonName());
                 //remove sentry
                 if (cannon.getCannonDesign().isSentry())
-                    plugin.getAiming().removeSentryCannon(cannon.getUID());
+                    Aiming.getInstance().removeSentryCannon(cannon.getUID());
                 //remove all entries for this cannon in the aiming class
-                plugin.getAiming().removeCannon(cannon);
+                Aiming.getInstance().removeCannon(cannon);
 
                 //remove entry
                 if (task.removeEntry())
@@ -332,7 +333,7 @@ public class CannonManager {
         //add cannon name to the list
         cannonNameMap.put(cannon.getCannonName(), cannon.getUID());
         if (cannon.getCannonDesign().isSentry())
-            plugin.getAiming().addSentryCannon(cannon.getUID());
+            Aiming.getInstance().addSentryCannon(cannon.getUID());
 
         if (saveToDatabase) {
             plugin.getPersistenceDatabase().saveCannon(cannon);

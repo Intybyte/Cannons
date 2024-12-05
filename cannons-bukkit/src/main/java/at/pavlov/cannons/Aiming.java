@@ -20,6 +20,7 @@ import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -62,16 +63,21 @@ public class Aiming {
 
     private final Random random = new Random();
 
+    @Getter
+    private static Aiming instance = null;
 
-    /**
-     * Constructor
-     *
-     * @param plugin Cannons main class
-     */
-    public Aiming(Cannons plugin) {
+    private Aiming(Cannons plugin) {
         this.plugin = plugin;
         this.config = plugin.getMyConfig();
         this.userMessages = UserMessages.getInstance();
+    }
+
+    public static void initialize(Cannons plugin) {
+        if (instance != null) {
+            return;
+        }
+
+        instance = new Aiming(plugin);
     }
 
     private Scoreboard getScoreboard() {
@@ -183,12 +189,12 @@ public class Aiming {
             if (design.isAngleUpdateMessage())
                 return message;
 
-			return null;
+            return null;
         }
 
-		//set homing finished flag
-		if (isSentry)
-			cannon.setSentryHomedAfterFiring(true);
+        //set homing finished flag
+        if (isSentry)
+            cannon.setSentryHomedAfterFiring(true);
         //no change in angle
         return null;
     }
@@ -258,7 +264,7 @@ public class Aiming {
                 if (cannon.getHorizontalAngle() < minHoriz)
                     cannon.setHorizontalAngle(minHoriz);
 
-				cannon.setHorizontalAngle(cannon.getHorizontalAngle() + step);
+                cannon.setHorizontalAngle(cannon.getHorizontalAngle() + step);
                 return true;
             }
         } else if (cannon.getHorizontalAngle() - step >= minHoriz - 0.001) { //left
@@ -305,7 +311,7 @@ public class Aiming {
         Location cannonLoc = cannon.getLocation();
         Location playerLoc = null;
 
-        if(player != null) {
+        if (player != null) {
             playerLoc = player.getLocation();
         }
 
@@ -389,6 +395,7 @@ public class Aiming {
         //return the cannon of the player if he is in aiming mode
         return getCannonInAimingMode(player.getUniqueId());
     }
+
     /**
      * returns the cannon of the player if he is in aiming mode
      *
@@ -469,12 +476,12 @@ public class Aiming {
             if (handleAutoamingFineadjusting(playerInRange, player, cannon))
                 return;
 
-			//leave aiming Mode but wait a second first
-			if ((System.currentTimeMillis() - cannon.getTimestampAimingMode()) > 1000) {
-				userMessages.sendMessage(MessageEnum.AimingModeTooFarAway, player);
-				MessageEnum message = disableAimingMode(player);
-				userMessages.sendMessage(message, player, cannon);
-			}
+            //leave aiming Mode but wait a second first
+            if ((System.currentTimeMillis() - cannon.getTimestampAimingMode()) > 1000) {
+                userMessages.sendMessage(MessageEnum.AimingModeTooFarAway, player);
+                MessageEnum message = disableAimingMode(player);
+                userMessages.sendMessage(message, player, cannon);
+            }
 
         }
     }
@@ -632,7 +639,7 @@ public class Aiming {
 
         HashMap<UUID, Target> targets = CannonsUtil.getNearbyTargets(cannon.getMuzzle(), design.getSentryMinRange(), design.getSentryMaxRange());
         //old target - is this still valid?
-        if (isOldTargetValid(cannon,targets))
+        if (isOldTargetValid(cannon, targets))
             return;
 
         // find a suitable target

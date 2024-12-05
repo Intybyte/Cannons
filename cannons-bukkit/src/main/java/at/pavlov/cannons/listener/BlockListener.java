@@ -1,6 +1,7 @@
 package at.pavlov.cannons.listener;
 
 
+import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
@@ -163,8 +164,8 @@ public class BlockListener implements Listener {
             //you can't break your own cannon in aiming mode
             //breaking cannon while player is in selection (command) mode is not allowed
             Cannon aimingCannon = null;
-            if (plugin.getAiming().isInAimingMode(event.getPlayer().getUniqueId()))
-                aimingCannon = plugin.getAiming().getCannonInAimingMode(event.getPlayer());
+            if (Aiming.getInstance().isInAimingMode(event.getPlayer().getUniqueId()))
+                aimingCannon = Aiming.getInstance().getCannonInAimingMode(event.getPlayer());
 
             if (cannon.isDestructibleBlock(location) && (aimingCannon == null || !cannon.equals(aimingCannon)) && !CannonSelector.getInstance().isSelectingMode(event.getPlayer())) {
                 cannonManager.removeCannon(cannon, false, true, BreakCause.PlayerBreak);

@@ -35,7 +35,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,7 +57,6 @@ public final class Cannons extends JavaPlugin
 
     private Config config;
 	private FireCannon fireCannon;
-	private Aiming aiming;
     private ProjectileObserver observer;
     private FakeBlockHandler fakeBlockHandler;
 
@@ -152,8 +150,8 @@ public final class Cannons extends JavaPlugin
 		UserMessages.getInstance().loadLanguage();
 
 		CreateExplosion.initialize(this);
-		this.fireCannon = new FireCannon(this);
-		this.aiming = new Aiming(this);
+		this.fireCannon = new FireCannon(this); //probably more fitting to be a util class than a singleton
+		Aiming.initialize(this);
 		this.observer = new ProjectileObserver(this);
 		this.fakeBlockHandler = new FakeBlockHandler(this);
 		this.cannonsAPI = new CannonsAPI(this);
@@ -218,7 +216,7 @@ public final class Cannons extends JavaPlugin
 
 
 			// setting up Aiming Mode Task
-			aiming.initAimingMode();
+			Aiming.getInstance().initAimingMode();
             // setting up the Teleporter
             observer.setupScheduler();
             fakeBlockHandler.setupScheduler();
@@ -401,9 +399,10 @@ public final class Cannons extends JavaPlugin
 		return CreateExplosion.getInstance();
 	}
 
+	@Deprecated(forRemoval = true)
 	public Aiming getAiming()
 	{
-		return aiming;
+		return Aiming.getInstance();
 	}
 
 	public PlayerListener getPlayerListener()

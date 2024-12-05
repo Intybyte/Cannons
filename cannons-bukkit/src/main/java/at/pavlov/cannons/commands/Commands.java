@@ -238,8 +238,7 @@ public class Commands extends BaseCommand {
     @CommandCompletion("true|enable|false|disable")
     @CommandPermission("cannons.player.command")
     public static void onImitate(Player player, @Optional String arg) {
-        Cannons plugin = Cannons.getPlugin();
-        Aiming aiming = plugin.getAiming();
+        Aiming aiming = Aiming.getInstance();
 
         if (!myConfig.isImitatedAimingEnabled()) {
             return;
@@ -292,7 +291,7 @@ public class Commands extends BaseCommand {
         }
 
         if (args[0].equalsIgnoreCase("off") || args[0].equalsIgnoreCase("disable") || args[0].equalsIgnoreCase("remove"))
-            cannons.getAiming().removeObserverForAllCannons(player);
+            Aiming.getInstance().removeObserverForAllCannons(player);
         else {
             //selection done by a string '/cannons observer CANNON_NAME'
             Cannon cannon = CannonManager.getCannon(args[0]);

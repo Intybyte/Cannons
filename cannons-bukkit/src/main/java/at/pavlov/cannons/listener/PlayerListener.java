@@ -60,7 +60,7 @@ public class PlayerListener implements Listener
         this.userMessages = UserMessages.getInstance();
         this.cannonManager = CannonManager.getInstance();
         this.fireCannon = this.plugin.getFireCannon();
-        this.aiming = this.plugin.getAiming();
+        this.aiming = Aiming.getInstance();
         this.selector = CannonSelector.getInstance();
     }
 
