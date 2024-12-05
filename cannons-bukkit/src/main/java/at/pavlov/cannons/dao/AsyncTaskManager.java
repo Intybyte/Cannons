@@ -29,14 +29,14 @@ public class AsyncTaskManager {
     }
 
     public final ExecutorService async;
-    public final Executor bukkit = Bukkit.getScheduler().getMainThreadExecutor(Cannons.getPlugin());
+    public final Executor main = Bukkit.getScheduler().getMainThreadExecutor(Cannons.getPlugin());
 
     public void fireSyncRunnable(Runnable runnable) {
 
         if (Bukkit.isPrimaryThread()) {
             runnable.run();
         } else {
-            CompletableFuture.runAsync(runnable, bukkit).join();
+            CompletableFuture.runAsync(runnable, main).join();
         }
     }
 
@@ -44,7 +44,7 @@ public class AsyncTaskManager {
         if (Bukkit.isPrimaryThread()) {
             return supplier.get();
         } else {
-            return CompletableFuture.supplyAsync(supplier, bukkit).join();
+            return CompletableFuture.supplyAsync(supplier, main).join();
         }
     }
 }
