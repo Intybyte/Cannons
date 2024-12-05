@@ -5,6 +5,7 @@ import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.utils.CannonsUtil;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,8 +36,19 @@ public class UserMessages {
 
     private final Random random = new Random();
 
-    public UserMessages(Cannons plugin) {
+    @Getter
+    private static UserMessages instance = null;
+
+    private UserMessages(Cannons plugin) {
         this.plugin = plugin;
+    }
+
+    public static void initialize(Cannons plugin) {
+        if (instance != null) {
+            return;
+        }
+
+        instance = new UserMessages(plugin);
     }
 
     public void loadLanguage() {
