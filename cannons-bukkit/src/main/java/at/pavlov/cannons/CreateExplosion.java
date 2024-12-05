@@ -18,6 +18,7 @@ import at.pavlov.cannons.multiversion.EventResolver;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileProperties;
+import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.dao.DelayedTask;
@@ -1136,7 +1137,7 @@ public class CreateExplosion {
                 Location impactLoc = cannonball.getImpactLocation();
 
                 for (String strProj : projectile.getSpawnProjectiles()) {
-                    Projectile newProjectiles = CreateExplosion.this.plugin.getProjectileStorage().getByName(strProj);
+                    Projectile newProjectiles = ProjectileStorage.getInstance().getByName(strProj);
                     if (newProjectiles == null) {
                         CreateExplosion.this.plugin.logSevere(
                                 "Can't use spawnProjectile " + strProj + " because Projectile does not exist");

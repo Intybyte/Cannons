@@ -85,7 +85,7 @@ public final class Cannons extends JavaPlugin
     }
 
 	public void onLoad() {
-		//must be done in onLoad because "movecraft"
+		// must be done in onLoad because "movecraft"
 		UserMessages.initialize(this);
 		Config.initialize(this);
 		CannonManager.initialize(this);
@@ -138,8 +138,8 @@ public final class Cannons extends JavaPlugin
 
 		DesignStorage.getInstance().loadCannonDesigns();
 		ProjectileStorage.getInstance().loadProjectiles();
-		config.getCannonManager().updateCannons();
-		config.getUserMessages().loadLanguage();
+		CannonManager.getInstance().updateCannons();
+		UserMessages.getInstance().loadLanguage();
 
 		pm = getServer().getPluginManager();
 		if (!checkWorldEdit())
@@ -395,9 +395,10 @@ public final class Cannons extends JavaPlugin
 		return persistenceDatabase;
 	}
 
+	@Deprecated(forRemoval = true)
 	public CannonManager getCannonManager()
 	{
-		return this.config.getCannonManager();
+		return CannonManager.getInstance();
 	}
 
 	public FireCannon getFireCannon()
@@ -420,16 +421,18 @@ public final class Cannons extends JavaPlugin
 		return playerListener;
 	}
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public DesignStorage getDesignStorage() {
 		return DesignStorage.getInstance();
 	}
-	
+
+	@Deprecated(forRemoval = true)
 	public CannonDesign getCannonDesign(Cannon cannon)
 	{
 		return getDesignStorage().getDesign(cannon);
 	}
-	
+
+	@Deprecated(forRemoval = true)
 	public CannonDesign getCannonDesign(String designId)
 	{
 		return getDesignStorage().getDesign(designId);
@@ -463,12 +466,12 @@ public final class Cannons extends JavaPlugin
 	
 	public void sendMessage(Player player, Cannon cannon, MessageEnum message)
 	{
-		this.config.getUserMessages().sendMessage(message, player, cannon);
+		UserMessages.getInstance().sendMessage(message, player, cannon);
 	}
 
     public void sendImpactMessage(Player player, Location impact, boolean canceled)
     {
-        this.config.getUserMessages().sendImpactMessage(player, impact, canceled);
+		UserMessages.getInstance().sendImpactMessage(player, impact, canceled);
     }
 	
 	public void createCannon(Cannon cannon, boolean saveToDatabase)
