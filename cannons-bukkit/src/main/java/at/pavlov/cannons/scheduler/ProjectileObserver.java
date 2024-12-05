@@ -127,7 +127,7 @@ public class ProjectileObserver {
             double distance = pl.distanceSquared(loc);
 
             if(distance <= maxDist * maxDist)
-                plugin.getFakeBlockHandler().imitatedSphere(p, loc, 1, Bukkit.createBlockData(liquid.getType()), FakeBlockType.WATER_SPLASH, 1.0);
+                FakeBlockHandler.getInstance().imitatedSphere(p, loc, 1, Bukkit.createBlockData(liquid.getType()), FakeBlockType.WATER_SPLASH, 1.0);
 
         }
         SoundUtils.imitateSound(loc, sound, maxSoundDist, maxVol);
@@ -246,7 +246,7 @@ public class ProjectileObserver {
             double distance = pl.distance(newLoc);
 
             if (distance <= maxDist)
-                plugin.getFakeBlockHandler().imitatedSphere(p, newLoc, 0, proj.getSmokeTrailMaterial(), FakeBlockType.SMOKE_TRAIL, smokeDuration);
+                FakeBlockHandler.getInstance().imitatedSphere(p, newLoc, 0, proj.getSmokeTrailMaterial(), FakeBlockType.SMOKE_TRAIL, smokeDuration);
 
         }
 

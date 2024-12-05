@@ -306,7 +306,7 @@ public class Commands extends BaseCommand {
 
     @Subcommand("whitelist")
     @CommandPermission("cannons.player.whitelist")
-    public static class onWhitelist extends BaseCommand {
+    public class onWhitelist extends BaseCommand {
 
         @Default
         public static void help(Player player) {

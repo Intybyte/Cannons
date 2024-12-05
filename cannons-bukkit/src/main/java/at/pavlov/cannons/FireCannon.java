@@ -19,6 +19,7 @@ import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
+import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.SoundUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -442,8 +443,8 @@ public class FireCannon {
 
         for (Player name : players) {
             //make smoke and fire effects for large distance
-            plugin.getFakeBlockHandler().imitateLine(name, loc, aimingVector, 0, 1, config.getImitatedFireMaterial(), FakeBlockType.MUZZLE_FIRE, duration);
-            plugin.getFakeBlockHandler().imitatedSphere(name, loc.clone().add(aimingVector.clone().normalize()), 2, config.getImitatedSmokeMaterial(), FakeBlockType.MUZZLE_FIRE, duration);
+            FakeBlockHandler.getInstance().imitateLine(name, loc, aimingVector, 0, 1, config.getImitatedFireMaterial(), FakeBlockType.MUZZLE_FIRE, duration);
+            FakeBlockHandler.getInstance().imitatedSphere(name, loc.clone().add(aimingVector.clone().normalize()), 2, config.getImitatedSmokeMaterial(), FakeBlockType.MUZZLE_FIRE, duration);
         }
     }
 

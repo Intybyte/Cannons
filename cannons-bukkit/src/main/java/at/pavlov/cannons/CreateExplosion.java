@@ -21,6 +21,7 @@ import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.projectile.ProjectileStorage;
+import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
@@ -1253,7 +1254,7 @@ public class CreateExplosion {
             Location pl = p.getLocation();
             double distance = pl.distanceSquared(impactLoc);
             if (minDist * minDist <= distance && distance <= maxDist * maxDist) {
-                this.plugin.getFakeBlockHandler().imitatedSphere(p, impactLoc, r, mat, FakeBlockType.EXPLOSION, delay);
+                FakeBlockHandler.getInstance().imitatedSphere(p, impactLoc, r, mat, FakeBlockType.EXPLOSION, delay);
             }
         }
     }

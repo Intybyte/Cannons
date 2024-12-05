@@ -18,6 +18,7 @@ import at.pavlov.cannons.event.CannonLinkAimingEvent;
 import at.pavlov.cannons.event.CannonTargetEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
 import lombok.Getter;
@@ -1168,7 +1169,7 @@ public class Aiming {
 
         // Imitation of angle
         if (config.isImitatedAimingEnabled() && isImitatingEnabled(player.getUniqueId())) {
-            plugin.getFakeBlockHandler().imitateLine(player, cannon.getMuzzle(), cannon.getAimingVector(), 0,
+            FakeBlockHandler.getInstance().imitateLine(player, cannon.getMuzzle(), cannon.getAimingVector(), 0,
                     config.getImitatedAimingLineLength(), config.getImitatedAimingMaterial(), FakeBlockType.AIMING, config.getImitatedAimingTime());
         }
     }
@@ -1308,8 +1309,8 @@ public class Aiming {
                 Map.Entry<UUID, Boolean> nextName = entry.next();
                 Player player = Bukkit.getPlayer(nextName.getKey());
                 //show impact to the player
-                if (player != null && impact != null && plugin.getFakeBlockHandler().belowMaxLimit(player, impact)) {
-                    plugin.getFakeBlockHandler().imitatedSphere(player, impact, 1, config.getImitatedPredictorMaterial(), FakeBlockType.IMPACT_PREDICTOR, config.getImitatedPredictorTime());
+                if (player != null && impact != null && FakeBlockHandler.getInstance().belowMaxLimit(player, impact)) {
+                    FakeBlockHandler.getInstance().imitatedSphere(player, impact, 1, config.getImitatedPredictorMaterial(), FakeBlockType.IMPACT_PREDICTOR, config.getImitatedPredictorTime());
                 }
                 //remove entry if there removeEntry enabled, or player is offline
                 if (nextName.getValue() || player == null) {
@@ -1329,7 +1330,7 @@ public class Aiming {
      */
     public Location impactPredictor(Cannon cannon, Player player) {
         Location surface = impactPredictor(cannon);
-        plugin.getFakeBlockHandler().imitatedSphere(player, surface, 1, config.getImitatedPredictorMaterial(), FakeBlockType.IMPACT_PREDICTOR, config.getImitatedPredictorTime());
+        FakeBlockHandler.getInstance().imitatedSphere(player, surface, 1, config.getImitatedPredictorMaterial(), FakeBlockType.IMPACT_PREDICTOR, config.getImitatedPredictorTime());
         return surface;
     }
 
