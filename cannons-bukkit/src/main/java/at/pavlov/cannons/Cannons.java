@@ -58,7 +58,6 @@ public final class Cannons extends JavaPlugin
     private Config config;
 	private FireCannon fireCannon;
     private ProjectileObserver observer;
-    private FakeBlockHandler fakeBlockHandler;
 
     private CannonsAPI cannonsAPI;
 	@Getter
@@ -153,7 +152,7 @@ public final class Cannons extends JavaPlugin
 		this.fireCannon = new FireCannon(this); //probably more fitting to be a util class
 		Aiming.initialize(this);
 		this.observer = new ProjectileObserver(this); //this is just a scheduler wrapper
-		this.fakeBlockHandler = new FakeBlockHandler(this);
+		FakeBlockHandler.initialize(this);
 		this.cannonsAPI = new CannonsAPI(this);
 
 		this.persistenceDatabase = new PersistenceDatabase(this);
@@ -219,7 +218,7 @@ public final class Cannons extends JavaPlugin
 			Aiming.getInstance().initAimingMode();
             // setting up the Teleporter
             observer.setupScheduler();
-            fakeBlockHandler.setupScheduler();
+            FakeBlockHandler.getInstance().setupScheduler();
 
 			// save cannons
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> persistenceDatabase.saveAllCannons(true), 6000L, 6000L);
@@ -486,8 +485,9 @@ public final class Cannons extends JavaPlugin
         return blockListener;
     }
 
+	@Deprecated(forRemoval = true)
     public FakeBlockHandler getFakeBlockHandler() {
-        return fakeBlockHandler;
+        return FakeBlockHandler.getInstance();
     }
 
     public Economy getEconomy(){
