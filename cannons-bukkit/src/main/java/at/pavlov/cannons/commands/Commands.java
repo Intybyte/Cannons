@@ -402,21 +402,23 @@ public class Commands extends BaseCommand {
     public static void onClaim(Player player, @Default("20") int size) {
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsStarted, player);
 
+        var taskManager = AsyncTaskManager.get();
         CompletableFuture.runAsync(() -> {
             cannonManager.fetchCannonInBox(player.getLocation(), player.getUniqueId(), size);
-            AsyncTaskManager.fireSyncRunnable( () ->
+            taskManager.fireSyncRunnable( () ->
                     userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player));
-        }, AsyncTaskManager.executor);
+        }, taskManager.async);
     }
 
     @Subcommand("resetarea")
     @CommandPermission("cannons.admin.reload")
     public static void onResetArea(Player player, @Default("20") int size) {
 
+        var taskManager = AsyncTaskManager.get();
         CompletableFuture.runAsync(() -> {
             final HashSet<Cannon> cannonList = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
 
-            AsyncTaskManager.fireSyncRunnable( () -> {
+            taskManager.fireSyncRunnable( () -> {
                 cannonList.forEach(cannon -> {
                     persistenceDatabase.deleteCannon(cannon.getUID());
                     cannonManager.removeCannon(cannon, false, false, BreakCause.Other);
@@ -424,7 +426,7 @@ public class Commands extends BaseCommand {
                 //make CannonReseted area
                 player.sendMessage("N: " + cannonList.size() + " cannons nearby have been deleted");
             });
-        }, AsyncTaskManager.executor);
+        }, taskManager.async);
 
     }
 
@@ -433,12 +435,13 @@ public class Commands extends BaseCommand {
     public static void onDismantleArea(Player player, @Default("20") int size) {
         player.sendMessage("Dismantling started");
 
+        var taskManager = AsyncTaskManager.get();
         CompletableFuture.runAsync(() -> {
             var cannonHashSet = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
-            AsyncTaskManager.fireSyncRunnable( () ->
+            taskManager.fireSyncRunnable( () ->
                     cannonHashSet
                             .forEach(cannon -> cannonManager.dismantleCannon(cannon, player)));
-        }, AsyncTaskManager.executor);
+        }, taskManager.async);
     }
 
     @Subcommand("scanArea")

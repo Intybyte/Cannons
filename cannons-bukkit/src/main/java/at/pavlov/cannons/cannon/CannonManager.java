@@ -411,12 +411,13 @@ public class CannonManager {
     }
 
     public void dismantleCannonsInBox(Player player, Location center, int size) {
+        var taskManager = AsyncTaskManager.get();
         CompletableFuture.runAsync(() -> {
             var cannonHashSet = getCannonsInBox(center, size, size, size);
-            AsyncTaskManager.fireSyncRunnable( () ->
+            taskManager.fireSyncRunnable( () ->
                     cannonHashSet
                         .forEach(cannon -> dismantleCannon(cannon, player)));
-            }, AsyncTaskManager.executor);
+            }, taskManager.async);
     }
 
 
@@ -559,7 +560,8 @@ public class CannonManager {
         startCannonCreation(cannon, message, owner, silent);
 
         Cannon finalCannon = cannon;
-        AsyncTaskManager.fireSyncRunnable(() -> {
+        var taskManager = AsyncTaskManager.get();
+        taskManager.fireSyncRunnable(() -> {
             CannonAfterCreateEvent caceEvent = new CannonAfterCreateEvent(finalCannon, player.getUniqueId());
             Bukkit.getServer().getPluginManager().callEvent(caceEvent);
         });
@@ -573,7 +575,8 @@ public class CannonManager {
         plugin.logDebug("CannonBeforeCreateEvent Cannon: " + cannon + "message: " + message + " player: " + player);
         plugin.logDebug("player.getUniqueId(): " + player.getUniqueId());
 
-        CannonBeforeCreateEvent cbceEvent = AsyncTaskManager.fireSyncSupplier(() -> {
+        var taskManager = AsyncTaskManager.get();
+        CannonBeforeCreateEvent cbceEvent = taskManager.fireSyncSupplier(() -> {
             CannonBeforeCreateEvent event = new CannonBeforeCreateEvent(cannon, message, player.getUniqueId());
             Bukkit.getServer().getPluginManager().callEvent(event);
             return event;
@@ -586,7 +589,7 @@ public class CannonManager {
 
         //send messages
         if (!silent) {
-            AsyncTaskManager.fireSyncRunnable(() -> {
+            taskManager.fireSyncRunnable(() -> {
                 userMessages.sendMessage(message, player, cannon);
                 SoundUtils.playErrorSound(cannon.getMuzzle());
             });
@@ -601,8 +604,9 @@ public class CannonManager {
         createCannon(cannon, true);
 
         //send messages
+        var taskManager = AsyncTaskManager.get();
         if (!silent) {
-            AsyncTaskManager.fireSyncRunnable(() -> {
+            taskManager.fireSyncRunnable(() -> {
                 userMessages.sendMessage(message, owner, cannon);
                 SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundCreate());
             });

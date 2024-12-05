@@ -1,6 +1,7 @@
 package at.pavlov.cannons.dao;
 
 import at.pavlov.cannons.Cannons;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 
 import java.util.concurrent.CompletableFuture;
@@ -10,10 +11,27 @@ import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 public class AsyncTaskManager {
-    public static final ExecutorService executor = Executors.newFixedThreadPool(2);
-    public static final Executor bukkit = Bukkit.getScheduler().getMainThreadExecutor(Cannons.getPlugin());
+    protected static AsyncTaskManager instance;
+    @Setter
+    protected static int threadCount = 2;
 
-    public static void fireSyncRunnable(Runnable runnable) {
+    private AsyncTaskManager() {
+        async =  Executors.newFixedThreadPool(threadCount);
+    }
+
+    public static AsyncTaskManager get() {
+        if (instance != null) {
+            return instance;
+        }
+
+        instance = new AsyncTaskManager();
+        return instance;
+    }
+
+    public final ExecutorService async;
+    public final Executor bukkit = Bukkit.getScheduler().getMainThreadExecutor(Cannons.getPlugin());
+
+    public void fireSyncRunnable(Runnable runnable) {
 
         if (Bukkit.isPrimaryThread()) {
             runnable.run();
@@ -22,7 +40,7 @@ public class AsyncTaskManager {
         }
     }
 
-    public static <T> T fireSyncSupplier(Supplier<T> supplier) {
+    public <T> T fireSyncSupplier(Supplier<T> supplier) {
         if (Bukkit.isPrimaryThread()) {
             return supplier.get();
         } else {
