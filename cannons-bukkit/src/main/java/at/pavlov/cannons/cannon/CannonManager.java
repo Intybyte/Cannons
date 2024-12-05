@@ -636,7 +636,7 @@ public class CannonManager {
             return null;
 
         World world = cannonBlock.getWorld();
-        var designList = plugin.getDesignStorage().getCannonDesignList();
+        var designList = DesignStorage.getInstance().getCannonDesignList();
         designList = designList.stream().filter(it -> it.isAllowedMaterial(block.getType())).toList();
 
         // check all cannon design if this block is part of the design
@@ -683,7 +683,7 @@ public class CannonManager {
     }
 
     public boolean isValidCannonBlock(Block block) {
-        return block != null && plugin.getDesignStorage().isCannonBlockMaterial(block.getType());
+        return block != null && DesignStorage.getInstance().isCannonBlockMaterial(block.getType());
     }
 
     /**
@@ -863,7 +863,7 @@ public class CannonManager {
      */
     public void updateCannons() {
         for (Cannon cannon : cannonList.values()) {
-            cannon.setCannonDesign(plugin.getCannonDesign(cannon));
+            cannon.setCannonDesign(DesignStorage.getInstance().getDesign(cannon));
             if (cannon.getLoadedProjectile() != null) {
                 ItemHolder item = cannon.getLoadedProjectile().getLoadingItem();
                 cannon.setLoadedProjectile(plugin.getProjectile(cannon, item));

@@ -36,7 +36,7 @@ import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 @CommandAlias("cannons")
-@SuppressWarnings("unused")
+@SuppressWarnings("deprecation")
 public class Commands extends BaseCommand {
     private static final String tag = "[Cannons] ";
 

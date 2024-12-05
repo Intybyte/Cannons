@@ -9,6 +9,7 @@ import at.pavlov.cannons.aim.GunAnglesWrapper;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
+import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.container.MovingObject;
@@ -417,7 +418,7 @@ public class Aiming {
             return false;
 
         //check if player is far away from the cannon
-        CannonDesign design = plugin.getCannonDesign(cannon);
+        CannonDesign design = DesignStorage.getInstance().getDesign(cannon);
         //go to trigger location
         Location locCannon = design.getFiringTrigger(cannon);
         //if there is no trigger - set the muzzle a location

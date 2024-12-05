@@ -46,7 +46,7 @@ public class ProjectileStorage
 	 * @return list of all projectiles names
 	 */
 	public static ArrayList<String> getProjectileIds(){
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		for (Projectile proj : projectileList){
 			list.add(proj.getProjectileId());
 		}
@@ -133,7 +133,7 @@ public class ProjectileStorage
 		ArrayList<String> projectileFileList = getProjectilesFiles();
 
 		// stop if there are no files found
-		if (projectileFileList == null || projectileFileList.size() == 0)
+		if (projectileFileList == null || projectileFileList.isEmpty())
 			return;
 
 		for (String file : projectileFileList)
@@ -153,7 +153,7 @@ public class ProjectileStorage
 	 */
 	private ArrayList<String> getProjectilesFiles()
 	{
-		ArrayList<String> projectileList = new ArrayList<String>();
+		ArrayList<String> projectileList = new ArrayList<>();
 
 		try
 		{

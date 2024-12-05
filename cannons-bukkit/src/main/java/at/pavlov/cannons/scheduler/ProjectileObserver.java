@@ -218,7 +218,7 @@ public class ProjectileObserver {
      */
     private void updateSmokeTrail(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
         Projectile proj = cannonball.getProjectile();
-        int maxDist = (int) plugin.getMyConfig().getImitatedBlockMaximumDistance();
+        int maxDist = plugin.getMyConfig().getImitatedBlockMaximumDistance();
         double smokeDist = proj.getSmokeTrailDistance()*(0.5 + random.nextDouble());
         double smokeDuration = proj.getSmokeTrailDuration()*(0.5 + random.nextGaussian());
 

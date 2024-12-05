@@ -64,7 +64,7 @@ public class DesignStorage
 	 * @return list of all cannon design names
 	 */
 	public ArrayList<String> getDesignIds(){
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		for (CannonDesign design : cannonDesignList){
 			list.add(design.getDesignID());
 		}

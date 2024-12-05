@@ -169,13 +169,8 @@ public class CannonSelector {
             return;
 
         SelectCannon cmd = cannonSelector.get(player.getUniqueId());
-        if (cmd != null) {
-            switch (cmd) {
-                case BLOCK_DATA: {
-                    player.sendMessage(block.getBlockData().getAsString());
-                    break;
-                }
-            }
+        if (cmd == SelectCannon.BLOCK_DATA) {
+            player.sendMessage(block.getBlockData().getAsString());
         }
         cannonSelector.remove(player.getUniqueId());
     }
