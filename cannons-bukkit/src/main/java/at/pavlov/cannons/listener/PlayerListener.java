@@ -13,6 +13,7 @@ import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.multiversion.PotionTypeResolver;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.CannonsUtil;
@@ -55,8 +56,8 @@ public class PlayerListener implements Listener
     {
         this.plugin = plugin;
         this.config = this.plugin.getMyConfig();
-        this.userMessages = this.plugin.getMyConfig().getUserMessages();
-        this.cannonManager = this.plugin.getCannonManager();
+        this.userMessages = UserMessages.getInstance();
+        this.cannonManager = CannonManager.getInstance();
         this.fireCannon = this.plugin.getFireCannon();
         this.aiming = this.plugin.getAiming();
         this.selector = CannonSelector.getInstance();
@@ -289,7 +290,7 @@ public class PlayerListener implements Listener
         else if(event.getAction().equals(Action.LEFT_CLICK_AIR)) //|| event.getAction().equals(Action.LEFT_CLICK_BLOCK))
         {
             //check if the player is passenger of a projectile, if so he can teleport back by left clicking
-            CannonsUtil.teleportBack(plugin.getProjectileManager().getAttachedProjectile(event.getPlayer()));
+            CannonsUtil.teleportBack(ProjectileManager.getInstance().getAttachedProjectile(event.getPlayer()));
         	aiming.aimingMode(event.getPlayer(), null, true);
         }
     }

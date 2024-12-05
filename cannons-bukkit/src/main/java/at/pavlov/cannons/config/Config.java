@@ -3,10 +3,8 @@ package at.pavlov.cannons.config;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.CannonManager;
-import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.multiversion.ParticleResolver;
-import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;

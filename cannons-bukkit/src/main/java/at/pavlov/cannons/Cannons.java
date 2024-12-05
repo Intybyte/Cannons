@@ -483,7 +483,7 @@ public final class Cannons extends JavaPlugin
         return observer;
     }
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
     public ProjectileManager getProjectileManager(){
         return ProjectileManager.getInstance();
     }

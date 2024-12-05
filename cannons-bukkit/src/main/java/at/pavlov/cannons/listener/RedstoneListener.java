@@ -25,8 +25,8 @@ public class RedstoneListener implements Listener {
 
     public RedstoneListener(Cannons plugin) {
         this.plugin = plugin;
-        this.userMessages = this.plugin.getMyConfig().getUserMessages();
-        this.cannonManager = this.plugin.getCannonManager();
+        this.userMessages = UserMessages.getInstance();
+        this.cannonManager = CannonManager.getInstance();
         this.fireCannon = this.plugin.getFireCannon();
     }
 

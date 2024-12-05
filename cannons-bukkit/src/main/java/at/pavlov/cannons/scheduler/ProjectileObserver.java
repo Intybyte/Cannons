@@ -6,6 +6,7 @@ import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
@@ -43,7 +44,9 @@ public class ProjectileObserver {
         //changing angles for aiming mode
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             //get projectiles
-            Iterator<Map.Entry<UUID,FlyingProjectile>> iter = plugin.getProjectileManager().getFlyingProjectiles().entrySet().iterator();
+            Iterator<Map.Entry<UUID,FlyingProjectile>> iter = ProjectileManager
+                    .getInstance()
+                    .getFlyingProjectiles().entrySet().iterator();
             while(iter.hasNext()) {
                 FlyingProjectile cannonball = iter.next().getValue();
                 org.bukkit.entity.Projectile projectile_entity = cannonball.getProjectileEntity();

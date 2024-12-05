@@ -17,6 +17,7 @@ import at.pavlov.cannons.multiversion.EntityTypeResolver;
 import at.pavlov.cannons.multiversion.EventResolver;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
@@ -1110,7 +1111,7 @@ public class CreateExplosion {
                 vectdeflect.setY(-vectdeflect.getY());
                 CreateExplosion.this.plugin.logDebug("Deflect projectile: " + vectdeflect);
 
-                CreateExplosion.this.plugin.getProjectileManager().spawnProjectile(projectile,
+                ProjectileManager.getInstance().spawnProjectile(projectile,
                         cannonball.getShooterUID(), cannonball.getSource(), cannonball.getPlayerlocation(),
                         impactLoc.clone(), vectdeflect, cannonball.getCannonUID(), ProjectileCause.DeflectedProjectile);
             }
@@ -1151,7 +1152,7 @@ public class CreateExplosion {
                         // don't spawn the projectile in the center
                         Location spawnLoc = impactLoc.clone().add(vect.clone().normalize().multiply(3.0));
 
-                        CreateExplosion.this.plugin.getProjectileManager().spawnProjectile(newProjectiles,
+                        ProjectileManager.getInstance().spawnProjectile(newProjectiles,
                                 cannonball.getShooterUID(), cannonball.getSource(), null, spawnLoc, vect,
                                 cannonball.getCannonUID(), ProjectileCause.SpawnedProjectile);
                     }

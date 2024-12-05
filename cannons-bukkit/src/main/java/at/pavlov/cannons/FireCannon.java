@@ -15,6 +15,7 @@ import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.multiversion.ParticleResolver;
 import at.pavlov.cannons.multiversion.PotionTypeResolver;
 import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
@@ -355,7 +356,7 @@ public class FireCannon {
 
             Vector vect = cannon.getFiringVector(true, true);
 
-            org.bukkit.entity.Projectile projectileEntity = plugin.getProjectileManager().spawnProjectile(projectile, shooter, source, playerLoc, firingLoc, vect, cannon.getUID(), projectileCause);
+            org.bukkit.entity.Projectile projectileEntity = ProjectileManager.getInstance().spawnProjectile(projectile, shooter, source, playerLoc, firingLoc, vect, cannon.getUID(), projectileCause);
 
             if (i == 0 && projectile.hasProperty(ProjectileProperties.SHOOTER_AS_PASSENGER) && onlinePlayer != null)
                 projectileEntity.setPassenger(onlinePlayer);
