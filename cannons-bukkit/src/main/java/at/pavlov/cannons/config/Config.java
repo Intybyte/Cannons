@@ -3,14 +3,13 @@ package at.pavlov.cannons.config;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.CannonManager;
-import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.multiversion.ParticleResolver;
-import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
 import lombok.Data;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.block.data.BlockData;
@@ -26,9 +25,7 @@ import java.util.List;
  * 
  */
 
-@Data
-public class Config
-{
+@Data public class Config {
 	//general
 	private boolean debugMode;
     private boolean relayExplosionEvent;
@@ -99,22 +96,24 @@ public class Config
     //cancelEventForLoadingItem
     private List<ItemHolder> cancelItems = new ArrayList<>();
 
-    private final UserMessages userMessage;
 	private final Cannons plugin;
-    private final ProjectileStorage projectileStorage;
-    private final CannonManager cannonManager;
+    @Getter
+    private static Config instance = null;
 
-	public Config(Cannons plugin)
-	{
+	private Config(Cannons plugin) {
 		this.plugin = plugin;
-		userMessage = new UserMessages(this.plugin);
-		projectileStorage = new ProjectileStorage(this.plugin);
-        cannonManager = new CannonManager(plugin, userMessage, this);
         this.loadConfig();
 	}
 
-	public void loadConfig()
-	{
+    public static void initialize(Cannons plugin) {
+        if (instance != null) {
+            return;
+        }
+
+        instance = new Config(plugin);
+    }
+
+	public void loadConfig()  {
 		// copy the default config to the disk if it does not exist
 		plugin.saveDefaultConfig();
         plugin.reloadConfig();
@@ -215,8 +214,14 @@ public class Config
         plugin.setDebugMode(debugMode);
 	}
 
+    @Deprecated(forRemoval = true)
     public UserMessages getUserMessages() {
-        return userMessage;
+        return UserMessages.getInstance();
+    }
+
+    @Deprecated(forRemoval = true)
+    public CannonManager getCannonManager() {
+        return CannonManager.getInstance();
     }
 
     public boolean isCancelItem(ItemStack item) {

@@ -9,6 +9,7 @@ import at.pavlov.cannons.aim.GunAnglesWrapper;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
+import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.container.MovingObject;
@@ -17,8 +18,10 @@ import at.pavlov.cannons.event.CannonLinkAimingEvent;
 import at.pavlov.cannons.event.CannonTargetEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -61,16 +64,21 @@ public class Aiming {
 
     private final Random random = new Random();
 
+    @Getter
+    private static Aiming instance = null;
 
-    /**
-     * Constructor
-     *
-     * @param plugin Cannons main class
-     */
-    public Aiming(Cannons plugin) {
+    private Aiming(Cannons plugin) {
         this.plugin = plugin;
         this.config = plugin.getMyConfig();
-        this.userMessages = plugin.getMyConfig().getUserMessages();
+        this.userMessages = UserMessages.getInstance();
+    }
+
+    public static void initialize(Cannons plugin) {
+        if (instance != null) {
+            return;
+        }
+
+        instance = new Aiming(plugin);
     }
 
     private Scoreboard getScoreboard() {
@@ -182,12 +190,12 @@ public class Aiming {
             if (design.isAngleUpdateMessage())
                 return message;
 
-			return null;
+            return null;
         }
 
-		//set homing finished flag
-		if (isSentry)
-			cannon.setSentryHomedAfterFiring(true);
+        //set homing finished flag
+        if (isSentry)
+            cannon.setSentryHomedAfterFiring(true);
         //no change in angle
         return null;
     }
@@ -257,7 +265,7 @@ public class Aiming {
                 if (cannon.getHorizontalAngle() < minHoriz)
                     cannon.setHorizontalAngle(minHoriz);
 
-				cannon.setHorizontalAngle(cannon.getHorizontalAngle() + step);
+                cannon.setHorizontalAngle(cannon.getHorizontalAngle() + step);
                 return true;
             }
         } else if (cannon.getHorizontalAngle() - step >= minHoriz - 0.001) { //left
@@ -304,7 +312,7 @@ public class Aiming {
         Location cannonLoc = cannon.getLocation();
         Location playerLoc = null;
 
-        if(player != null) {
+        if (player != null) {
             playerLoc = player.getLocation();
         }
 
@@ -388,6 +396,7 @@ public class Aiming {
         //return the cannon of the player if he is in aiming mode
         return getCannonInAimingMode(player.getUniqueId());
     }
+
     /**
      * returns the cannon of the player if he is in aiming mode
      *
@@ -417,7 +426,7 @@ public class Aiming {
             return false;
 
         //check if player is far away from the cannon
-        CannonDesign design = plugin.getCannonDesign(cannon);
+        CannonDesign design = DesignStorage.getInstance().getDesign(cannon);
         //go to trigger location
         Location locCannon = design.getFiringTrigger(cannon);
         //if there is no trigger - set the muzzle a location
@@ -468,12 +477,12 @@ public class Aiming {
             if (handleAutoamingFineadjusting(playerInRange, player, cannon))
                 return;
 
-			//leave aiming Mode but wait a second first
-			if ((System.currentTimeMillis() - cannon.getTimestampAimingMode()) > 1000) {
-				userMessages.sendMessage(MessageEnum.AimingModeTooFarAway, player);
-				MessageEnum message = disableAimingMode(player);
-				userMessages.sendMessage(message, player, cannon);
-			}
+            //leave aiming Mode but wait a second first
+            if ((System.currentTimeMillis() - cannon.getTimestampAimingMode()) > 1000) {
+                userMessages.sendMessage(MessageEnum.AimingModeTooFarAway, player);
+                MessageEnum message = disableAimingMode(player);
+                userMessages.sendMessage(message, player, cannon);
+            }
 
         }
     }
@@ -631,7 +640,7 @@ public class Aiming {
 
         HashMap<UUID, Target> targets = CannonsUtil.getNearbyTargets(cannon.getMuzzle(), design.getSentryMinRange(), design.getSentryMaxRange());
         //old target - is this still valid?
-        if (isOldTargetValid(cannon,targets))
+        if (isOldTargetValid(cannon, targets))
             return;
 
         // find a suitable target
@@ -1160,7 +1169,7 @@ public class Aiming {
 
         // Imitation of angle
         if (config.isImitatedAimingEnabled() && isImitatingEnabled(player.getUniqueId())) {
-            plugin.getFakeBlockHandler().imitateLine(player, cannon.getMuzzle(), cannon.getAimingVector(), 0,
+            FakeBlockHandler.getInstance().imitateLine(player, cannon.getMuzzle(), cannon.getAimingVector(), 0,
                     config.getImitatedAimingLineLength(), config.getImitatedAimingMaterial(), FakeBlockType.AIMING, config.getImitatedAimingTime());
         }
     }
@@ -1300,8 +1309,8 @@ public class Aiming {
                 Map.Entry<UUID, Boolean> nextName = entry.next();
                 Player player = Bukkit.getPlayer(nextName.getKey());
                 //show impact to the player
-                if (player != null && impact != null && plugin.getFakeBlockHandler().belowMaxLimit(player, impact)) {
-                    plugin.getFakeBlockHandler().imitatedSphere(player, impact, 1, config.getImitatedPredictorMaterial(), FakeBlockType.IMPACT_PREDICTOR, config.getImitatedPredictorTime());
+                if (player != null && impact != null && FakeBlockHandler.getInstance().belowMaxLimit(player, impact)) {
+                    FakeBlockHandler.getInstance().imitatedSphere(player, impact, 1, config.getImitatedPredictorMaterial(), FakeBlockType.IMPACT_PREDICTOR, config.getImitatedPredictorTime());
                 }
                 //remove entry if there removeEntry enabled, or player is offline
                 if (nextName.getValue() || player == null) {
@@ -1321,7 +1330,7 @@ public class Aiming {
      */
     public Location impactPredictor(Cannon cannon, Player player) {
         Location surface = impactPredictor(cannon);
-        plugin.getFakeBlockHandler().imitatedSphere(player, surface, 1, config.getImitatedPredictorMaterial(), FakeBlockType.IMPACT_PREDICTOR, config.getImitatedPredictorTime());
+        FakeBlockHandler.getInstance().imitatedSphere(player, surface, 1, config.getImitatedPredictorMaterial(), FakeBlockType.IMPACT_PREDICTOR, config.getImitatedPredictorTime());
         return surface;
     }
 

@@ -1,11 +1,13 @@
 package at.pavlov.cannons.scheduler;
 
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.Enum.FakeBlockType;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
@@ -43,7 +45,9 @@ public class ProjectileObserver {
         //changing angles for aiming mode
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             //get projectiles
-            Iterator<Map.Entry<UUID,FlyingProjectile>> iter = plugin.getProjectileManager().getFlyingProjectiles().entrySet().iterator();
+            Iterator<Map.Entry<UUID,FlyingProjectile>> iter = ProjectileManager
+                    .getInstance()
+                    .getFlyingProjectiles().entrySet().iterator();
             while(iter.hasNext()) {
                 FlyingProjectile cannonball = iter.next().getValue();
                 org.bukkit.entity.Projectile projectile_entity = cannonball.getProjectileEntity();
@@ -123,7 +127,7 @@ public class ProjectileObserver {
             double distance = pl.distanceSquared(loc);
 
             if(distance <= maxDist * maxDist)
-                plugin.getFakeBlockHandler().imitatedSphere(p, loc, 1, Bukkit.createBlockData(liquid.getType()), FakeBlockType.WATER_SPLASH, 1.0);
+                FakeBlockHandler.getInstance().imitatedSphere(p, loc, 1, Bukkit.createBlockData(liquid.getType()), FakeBlockType.WATER_SPLASH, 1.0);
 
         }
         SoundUtils.imitateSound(loc, sound, maxSoundDist, maxVol);
@@ -198,7 +202,7 @@ public class ProjectileObserver {
         {
             cannonball.revertUpdate();
             cannonball.teleportToPrediction(projectile_entity);
-            plugin.getExplosion().detonate(cannonball, projectile_entity);
+            CreateExplosion.getInstance().detonate(cannonball, projectile_entity);
             projectile_entity.remove();
             return true;
         }
@@ -215,7 +219,7 @@ public class ProjectileObserver {
      */
     private void updateSmokeTrail(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
         Projectile proj = cannonball.getProjectile();
-        int maxDist = (int) plugin.getMyConfig().getImitatedBlockMaximumDistance();
+        int maxDist = plugin.getMyConfig().getImitatedBlockMaximumDistance();
         double smokeDist = proj.getSmokeTrailDistance()*(0.5 + random.nextDouble());
         double smokeDuration = proj.getSmokeTrailDuration()*(0.5 + random.nextGaussian());
 
@@ -242,7 +246,7 @@ public class ProjectileObserver {
             double distance = pl.distance(newLoc);
 
             if (distance <= maxDist)
-                plugin.getFakeBlockHandler().imitatedSphere(p, newLoc, 0, proj.getSmokeTrailMaterial(), FakeBlockType.SMOKE_TRAIL, smokeDuration);
+                FakeBlockHandler.getInstance().imitatedSphere(p, newLoc, 0, proj.getSmokeTrailMaterial(), FakeBlockType.SMOKE_TRAIL, smokeDuration);
 
         }
 

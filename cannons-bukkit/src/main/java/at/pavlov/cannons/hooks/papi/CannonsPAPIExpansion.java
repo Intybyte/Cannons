@@ -1,5 +1,6 @@
 package at.pavlov.cannons.hooks.papi;
 
+import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.container.ItemHolder;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -39,7 +40,7 @@ public class CannonsPAPIExpansion extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, @NotNull String params) {
         if (player == null) return null;
 
-        var operated = plugin.getAiming().getCannonInAimingMode(player.getPlayer());
+        var operated = Aiming.getInstance().getCannonInAimingMode(player.getPlayer());
         if (operated == null) return null;
 
         return switch (params) {

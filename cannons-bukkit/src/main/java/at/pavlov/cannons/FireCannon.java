@@ -15,9 +15,11 @@ import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.multiversion.ParticleResolver;
 import at.pavlov.cannons.multiversion.PotionTypeResolver;
 import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
+import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.SoundUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -43,9 +45,9 @@ public class FireCannon {
     private final Random random = new Random();
 
 
-    public FireCannon(Cannons plugin, Config config) {
+    public FireCannon(Cannons plugin) {
         this.plugin = plugin;
-        this.config = config;
+        this.config = Config.getInstance();
     }
 
 
@@ -289,7 +291,7 @@ public class FireCannon {
                 //charge is only removed in the last round fired
                 boolean lastRound = i == (projectile.getAutomaticFiringMagazineSize() - 1);
                 double randomess = 1. + design.getFuseBurnTimeRandomness() * random.nextDouble();
-                Long delayTime = (long) (randomess * design.getFuseBurnTime() * 20.0 + i * projectile.getAutomaticFiringDelay() * 20.0);
+                long delayTime = (long) (randomess * design.getFuseBurnTime() * 20.0 + i * projectile.getAutomaticFiringDelay() * 20.0);
                 FireTaskWrapper fireTask = new FireTaskWrapper(cannon, playerUid, lastRound, projectileCause);
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new DelayedTask(fireTask) {
                     public void run(Object object) {
@@ -342,7 +344,7 @@ public class FireCannon {
             cannon.setTemperature(cannon.getTemperature() + design.getHeatIncreasePerGunpowder() / projectile.getAutomaticFiringMagazineSize() * cannon.getLoadedGunpowder());
         //automatic cool down
         if (design.isAutomaticCooling())
-            cannon.automaticCoolingFromChest();
+            cannon.automaticCooling();
 
         //for each bullet, but at least once
         for (int i = 0; i < Math.max(projectile.getNumberOfBullets(), 1); i++) {
@@ -355,7 +357,7 @@ public class FireCannon {
 
             Vector vect = cannon.getFiringVector(true, true);
 
-            org.bukkit.entity.Projectile projectileEntity = plugin.getProjectileManager().spawnProjectile(projectile, shooter, source, playerLoc, firingLoc, vect, cannon.getUID(), projectileCause);
+            org.bukkit.entity.Projectile projectileEntity = ProjectileManager.getInstance().spawnProjectile(projectile, shooter, source, playerLoc, firingLoc, vect, cannon.getUID(), projectileCause);
 
             if (i == 0 && projectile.hasProperty(ProjectileProperties.SHOOTER_AS_PASSENGER) && onlinePlayer != null)
                 projectileEntity.setPassenger(onlinePlayer);
@@ -370,7 +372,7 @@ public class FireCannon {
 
         //check if the temperature exceeds the limit and overloading
         if (cannon.checkHeatManagement() || cannon.isExplodedDueOverloading()) {
-            plugin.getCannonManager().removeCannon(cannon, true, true, BreakCause.Overheating);
+            CannonManager.getInstance().removeCannon(cannon, true, true, BreakCause.Overheating);
             return;
         }
 
@@ -441,8 +443,8 @@ public class FireCannon {
 
         for (Player name : players) {
             //make smoke and fire effects for large distance
-            plugin.getFakeBlockHandler().imitateLine(name, loc, aimingVector, 0, 1, config.getImitatedFireMaterial(), FakeBlockType.MUZZLE_FIRE, duration);
-            plugin.getFakeBlockHandler().imitatedSphere(name, loc.clone().add(aimingVector.clone().normalize()), 2, config.getImitatedSmokeMaterial(), FakeBlockType.MUZZLE_FIRE, duration);
+            FakeBlockHandler.getInstance().imitateLine(name, loc, aimingVector, 0, 1, config.getImitatedFireMaterial(), FakeBlockType.MUZZLE_FIRE, duration);
+            FakeBlockHandler.getInstance().imitatedSphere(name, loc.clone().add(aimingVector.clone().normalize()), 2, config.getImitatedSmokeMaterial(), FakeBlockType.MUZZLE_FIRE, duration);
         }
     }
 

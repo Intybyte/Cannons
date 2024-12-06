@@ -9,6 +9,7 @@ import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.commands.CannonsCommandManager;
 import at.pavlov.cannons.commands.Commands;
 import at.pavlov.cannons.config.Config;
+import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
@@ -34,7 +35,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,10 +57,7 @@ public final class Cannons extends JavaPlugin
 
     private Config config;
 	private FireCannon fireCannon;
-	private CreateExplosion explosion;
-	private Aiming aiming;
     private ProjectileObserver observer;
-    private FakeBlockHandler fakeBlockHandler;
 
     private CannonsAPI cannonsAPI;
 	@Getter
@@ -84,8 +81,11 @@ public final class Cannons extends JavaPlugin
     }
 
 	public void onLoad() {
-		//must be done in onLoad because "movecraft"
-		this.config = new Config(this);
+		// must be done in onLoad because "movecraft"
+		UserMessages.initialize(this);
+		Config.initialize(this);
+		CannonManager.initialize(this);
+		this.config = Config.getInstance();
 
 		if (!config.isMovecraftEnabled()) {
 			return;
@@ -128,16 +128,12 @@ public final class Cannons extends JavaPlugin
 	public void onEnable()
 	{
 		DesignStorage.initialize(this);
+		ProjectileStorage.initialize(this);
 		ProjectileManager.initialize(this);
 		CannonSelector.initialize(this);
 
-		DesignStorage.getInstance().loadCannonDesigns();
-		config.getProjectileStorage().loadProjectiles();
-		config.getCannonManager().updateCannons();
-		config.getUserMessage().loadLanguage();
-
 		pm = getServer().getPluginManager();
-		if (!checkWorldEdit())
+		if (!pm.isPluginEnabled("WorldEdit"))
 		{
 			//no worldEdit has been loaded. Disable plugin
 			this.logSevere(ChatColor.RED + "Please install WorldEdit, else Cannons can't load.");
@@ -147,11 +143,16 @@ public final class Cannons extends JavaPlugin
 			return;
 		}
 
-		this.explosion = new CreateExplosion(this, config);
-		this.fireCannon = new FireCannon(this, config);
-		this.aiming = new Aiming(this);
-		this.observer = new ProjectileObserver(this);
-		this.fakeBlockHandler = new FakeBlockHandler(this);
+		DesignStorage.getInstance().loadCannonDesigns();
+		ProjectileStorage.getInstance().loadProjectiles();
+		CannonManager.getInstance().updateCannons();
+		UserMessages.getInstance().loadLanguage();
+
+		CreateExplosion.initialize(this);
+		this.fireCannon = new FireCannon(this); //probably more fitting to be a util class
+		Aiming.initialize(this);
+		this.observer = new ProjectileObserver(this); //this is just a scheduler wrapper
+		FakeBlockHandler.initialize(this);
 		this.cannonsAPI = new CannonsAPI(this);
 
 		this.persistenceDatabase = new PersistenceDatabase(this);
@@ -214,10 +215,10 @@ public final class Cannons extends JavaPlugin
 
 
 			// setting up Aiming Mode Task
-			aiming.initAimingMode();
+			Aiming.getInstance().initAimingMode();
             // setting up the Teleporter
             observer.setupScheduler();
-            fakeBlockHandler.setupScheduler();
+            FakeBlockHandler.getInstance().setupScheduler();
 
 			// save cannons
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> persistenceDatabase.saveAllCannons(true), 6000L, 6000L);
@@ -287,7 +288,7 @@ public final class Cannons extends JavaPlugin
 
 	private void initializeCommands() {
 		var cannonsCommandManager = new CannonsCommandManager(this);
-		cannonsCommandManager.registerCommand(new Commands());
+		cannonsCommandManager.registerCommand(new Commands(this));
 	}
 
 	// set up ebean database
@@ -370,16 +371,6 @@ public final class Cannons extends JavaPlugin
 	{
 		return this.getDescription();
 	}
-	
-	/**
-	 * checks if WorldEdit is running
-	 * @return true is WorldEdit is running
-	 */
-	private boolean checkWorldEdit()
-	{
-		Plugin plug = pm.getPlugin("WorldEdit");
-        return plug != null;
-    }
 
     public Connection getConnection(){
 		return this.connection;
@@ -390,9 +381,10 @@ public final class Cannons extends JavaPlugin
 		return persistenceDatabase;
 	}
 
+	@Deprecated(forRemoval = true)
 	public CannonManager getCannonManager()
 	{
-		return this.config.getCannonManager();
+		return CannonManager.getInstance();
 	}
 
 	public FireCannon getFireCannon()
@@ -400,14 +392,16 @@ public final class Cannons extends JavaPlugin
 		return fireCannon;
 	}
 
+	@Deprecated(forRemoval = true)
 	public CreateExplosion getExplosion()
 	{
-		return explosion;
+		return CreateExplosion.getInstance();
 	}
 
+	@Deprecated(forRemoval = true)
 	public Aiming getAiming()
 	{
-		return aiming;
+		return Aiming.getInstance();
 	}
 
 	public PlayerListener getPlayerListener()
@@ -415,24 +409,27 @@ public final class Cannons extends JavaPlugin
 		return playerListener;
 	}
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public DesignStorage getDesignStorage() {
 		return DesignStorage.getInstance();
 	}
-	
+
+	@Deprecated(forRemoval = true)
 	public CannonDesign getCannonDesign(Cannon cannon)
 	{
 		return getDesignStorage().getDesign(cannon);
 	}
-	
+
+	@Deprecated(forRemoval = true)
 	public CannonDesign getCannonDesign(String designId)
 	{
 		return getDesignStorage().getDesign(designId);
 	}
 
+	@Deprecated(forRemoval = true)
 	public ProjectileStorage getProjectileStorage()
 	{
-		return this.config.getProjectileStorage();
+		return ProjectileStorage.getInstance();
 	}
 
 	public Projectile getProjectile(Cannon cannon, ItemHolder materialHolder)
@@ -457,24 +454,25 @@ public final class Cannons extends JavaPlugin
 	
 	public void sendMessage(Player player, Cannon cannon, MessageEnum message)
 	{
-		this.config.getUserMessages().sendMessage(message, player, cannon);
+		UserMessages.getInstance().sendMessage(message, player, cannon);
 	}
 
     public void sendImpactMessage(Player player, Location impact, boolean canceled)
     {
-        this.config.getUserMessages().sendImpactMessage(player, impact, canceled);
+		UserMessages.getInstance().sendImpactMessage(player, impact, canceled);
     }
-	
+
+	@Deprecated(forRemoval = true)
 	public void createCannon(Cannon cannon, boolean saveToDatabase)
 	{
-		this.getCannonManager().createCannon(cannon, saveToDatabase);
+		CannonManager.getInstance().createCannon(cannon, saveToDatabase);
 	}
 
     public ProjectileObserver getProjectileObserver() {
         return observer;
     }
 
-	@Deprecated
+	@Deprecated(forRemoval = true)
     public ProjectileManager getProjectileManager(){
         return ProjectileManager.getInstance();
     }
@@ -487,8 +485,9 @@ public final class Cannons extends JavaPlugin
         return blockListener;
     }
 
+	@Deprecated(forRemoval = true)
     public FakeBlockHandler getFakeBlockHandler() {
-        return fakeBlockHandler;
+        return FakeBlockHandler.getInstance();
     }
 
     public Economy getEconomy(){

@@ -4,7 +4,9 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.Enum.SelectCannon;
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.UserMessages;
+import lombok.Getter;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class CannonSelector {
+    @Getter
     private static CannonSelector instance = null;
 
     private final HashMap<UUID, SelectCannon> cannonSelector = new HashMap<>();
@@ -26,16 +29,12 @@ public class CannonSelector {
     private final Cannons plugin;
 
     private CannonSelector(Cannons plugin) {
-        this.userMessages = plugin.getMyConfig().getUserMessages();
+        this.userMessages = UserMessages.getInstance();
         this.plugin = plugin;
     }
 
     public static void initialize(Cannons plugin) {
         instance = new CannonSelector(plugin);
-    }
-
-    public static CannonSelector getInstance() {
-        return instance;
     }
 
     /**
@@ -170,13 +169,8 @@ public class CannonSelector {
             return;
 
         SelectCannon cmd = cannonSelector.get(player.getUniqueId());
-        if (cmd != null) {
-            switch (cmd) {
-                case BLOCK_DATA: {
-                    player.sendMessage(block.getBlockData().getAsString());
-                    break;
-                }
-            }
+        if (cmd == SelectCannon.BLOCK_DATA) {
+            player.sendMessage(block.getBlockData().getAsString());
         }
         cannonSelector.remove(player.getUniqueId());
     }
@@ -218,7 +212,7 @@ public class CannonSelector {
                 break;
             }
             case DISMANTLE: {
-                plugin.getCannonManager().dismantleCannon(cannon, player);
+                CannonManager.getInstance().dismantleCannon(cannon, player);
                 break;
             }
             case WHITELIST_ADD: {

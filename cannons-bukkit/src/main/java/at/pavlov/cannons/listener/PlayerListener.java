@@ -2,6 +2,7 @@ package at.pavlov.cannons.listener;
 
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.FireCannon;
@@ -13,6 +14,7 @@ import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.multiversion.PotionTypeResolver;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.CannonsUtil;
@@ -55,10 +57,10 @@ public class PlayerListener implements Listener
     {
         this.plugin = plugin;
         this.config = this.plugin.getMyConfig();
-        this.userMessages = this.plugin.getMyConfig().getUserMessages();
-        this.cannonManager = this.plugin.getCannonManager();
+        this.userMessages = UserMessages.getInstance();
+        this.cannonManager = CannonManager.getInstance();
         this.fireCannon = this.plugin.getFireCannon();
-        this.aiming = this.plugin.getAiming();
+        this.aiming = Aiming.getInstance();
         this.selector = CannonSelector.getInstance();
     }
 
@@ -66,14 +68,15 @@ public class PlayerListener implements Listener
     public void PlayerDeath(PlayerDeathEvent event)
     {
         UUID killedUID = event.getEntity().getUniqueId();
-        if (plugin.getExplosion().wasAffectedByCannons(event.getEntity())){
+        var explosion = CreateExplosion.getInstance();
+        if (explosion.wasAffectedByCannons(event.getEntity())){
             //DeathCause cause = plugin.getExplosion().getDeathCause(killedUID);
-            plugin.getExplosion().removeKilledPlayer(killedUID);
+            explosion.removeKilledPlayer(killedUID);
 
 //            if (cause.getShooterUID() != null)
 //                shooter = Bukkit.getPlayer(cause.getShooterUID());
 //            Cannon cannon = plugin.getCannon(cause.getCannonUID());
-            FlyingProjectile c = plugin.getExplosion().getCurrentCannonball();
+            FlyingProjectile c = explosion.getCurrentCannonball();
             Cannon cannon = CannonManager.getCannon(c.getCannonUID());
             String message = userMessages.getDeathMessage(killedUID, c.getShooterUID(), cannon, c.getProjectile());
             if (message != null && !message.equals(" "))
@@ -289,7 +292,7 @@ public class PlayerListener implements Listener
         else if(event.getAction().equals(Action.LEFT_CLICK_AIR)) //|| event.getAction().equals(Action.LEFT_CLICK_BLOCK))
         {
             //check if the player is passenger of a projectile, if so he can teleport back by left clicking
-            CannonsUtil.teleportBack(plugin.getProjectileManager().getAttachedProjectile(event.getPlayer()));
+            CannonsUtil.teleportBack(ProjectileManager.getInstance().getAttachedProjectile(event.getPlayer()));
         	aiming.aimingMode(event.getPlayer(), null, true);
         }
     }

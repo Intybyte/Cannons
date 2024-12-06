@@ -17,6 +17,7 @@ import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.util.io.Closer;
 import com.sk89q.worldedit.world.block.BlockState;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -37,7 +38,8 @@ import java.util.List;
 public class DesignStorage
 {
 
-	private static DesignStorage instance = null;
+	@Getter
+    private static DesignStorage instance = null;
 
 	private final List<CannonDesign> cannonDesignList;
 	private final Cannons plugin;
@@ -51,11 +53,7 @@ public class DesignStorage
 		instance.loadCannonDesigns();
 	}
 
-	public static DesignStorage getInstance() {
-		return instance;
-	}
-
-	private DesignStorage(Cannons cannons)  {
+    private DesignStorage(Cannons cannons)  {
 		plugin = cannons;
 		cannonDesignList = new ArrayList<>();
 		cannonBlockMaterials = new ArrayList<>();
@@ -66,7 +64,7 @@ public class DesignStorage
 	 * @return list of all cannon design names
 	 */
 	public ArrayList<String> getDesignIds(){
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		for (CannonDesign design : cannonDesignList){
 			list.add(design.getDesignID());
 		}

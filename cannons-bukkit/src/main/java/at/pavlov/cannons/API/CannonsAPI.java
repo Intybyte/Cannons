@@ -70,7 +70,7 @@ public class CannonsAPI {
      */
     public Cannon getCannon(Location location, UUID playerUID)
     {
-        return plugin.getCannonManager().getCannon(location, playerUID);
+        return CannonManager.getInstance().getCannon(location, playerUID);
     }
 
     /**
@@ -106,7 +106,7 @@ public class CannonsAPI {
      */
     public HashSet<Cannon> getCannons(List<Location> locations, UUID playerUID, boolean silent)
     {
-        return plugin.getCannonManager().getCannons(locations, playerUID, silent);
+        return CannonManager.getInstance().getCannons(locations, playerUID, silent);
     }
 
     /**
@@ -117,7 +117,7 @@ public class CannonsAPI {
      */
     public HashSet<Cannon> getCannons(List<Location> locations, UUID playerUID)
     {
-        return plugin.getCannonManager().getCannons(locations, playerUID, true);
+        return CannonManager.getInstance().getCannons(locations, playerUID, true);
     }
 
     /**
@@ -186,7 +186,7 @@ public class CannonsAPI {
      */
     public void removeCannon(UUID uid, boolean breakCannon, boolean canExplode, BreakCause cause)
     {
-        plugin.getCannonManager().removeCannon(uid, breakCannon, canExplode, cause, true);
+        CannonManager.getInstance().removeCannon(uid, breakCannon, canExplode, cause, true);
     }
 
 

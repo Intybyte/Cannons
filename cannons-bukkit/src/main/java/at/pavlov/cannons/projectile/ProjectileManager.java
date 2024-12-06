@@ -1,6 +1,7 @@
 package at.pavlov.cannons.projectile;
 
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.dao.DelayedTask;
 import org.apache.commons.lang3.Validate;
@@ -110,7 +111,7 @@ public class ProjectileManager
                     org.bukkit.entity.Projectile projectile_entity = fproj.getProjectileEntity();
                     //the projectile might be null
                     if (projectile_entity != null) {
-                        plugin.getExplosion().detonate(cannonball, projectile_entity);
+                        CreateExplosion.getInstance().detonate(cannonball, projectile_entity);
                         projectile_entity.remove();
                     }
                     flyingProjectilesMap.remove(cannonball.getUID());
@@ -131,7 +132,7 @@ public class ProjectileManager
         FlyingProjectile fproj = flyingProjectilesMap.get(projectile.getUniqueId());
         if (fproj!=null)
         {
-            plugin.getExplosion().detonate(fproj, (org.bukkit.entity.Projectile) projectile);
+            CreateExplosion.getInstance().detonate(fproj, (org.bukkit.entity.Projectile) projectile);
             projectile.remove();
             flyingProjectilesMap.remove(fproj.getUID());
         }
@@ -153,7 +154,7 @@ public class ProjectileManager
         org.bukkit.entity.Projectile projectile_entity = fproj.getProjectileEntity();
         if (!fproj.hasDetonated() && cannonball.isValid()) {
             fproj.setHasDetonated(true);
-            plugin.getExplosion().directHit(fproj, projectile_entity, target);
+            CreateExplosion.getInstance().directHit(fproj, projectile_entity, target);
             projectile_entity.remove();
         }
 

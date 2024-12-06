@@ -1,5 +1,6 @@
 package at.pavlov.cannons.cannon;
 
+import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.BreakCause;
 import at.pavlov.cannons.Enum.MessageEnum;
@@ -15,6 +16,7 @@ import at.pavlov.cannons.event.CannonRenameEvent;
 import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.dao.wrappers.RemoveTaskWrapper;
 import at.pavlov.cannons.utils.SoundUtils;
+import lombok.Getter;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -45,10 +47,21 @@ public class CannonManager {
     private final Config config;
     private static final BlockFace[] blockFaces = { BlockFace.EAST, BlockFace.SOUTH, BlockFace.NORTH, BlockFace.WEST };
 
-    public CannonManager(Cannons cannons, UserMessages userMessages, Config config) {
-        this.userMessages = userMessages;
-        this.config = config;
+    @Getter
+    private static CannonManager instance = null;
+
+    private CannonManager(Cannons cannons) {
+        this.userMessages = UserMessages.getInstance();
+        this.config = Config.getInstance();
         this.plugin = cannons;
+    }
+
+    public static void initialize(Cannons cannons) {
+        if (instance != null) {
+            return;
+        }
+
+        instance = new CannonManager(cannons);
     }
 
     /**
@@ -208,9 +221,9 @@ public class CannonManager {
                 cannonNameMap.remove(cannon.getCannonName());
                 //remove sentry
                 if (cannon.getCannonDesign().isSentry())
-                    plugin.getAiming().removeSentryCannon(cannon.getUID());
+                    Aiming.getInstance().removeSentryCannon(cannon.getUID());
                 //remove all entries for this cannon in the aiming class
-                plugin.getAiming().removeCannon(cannon);
+                Aiming.getInstance().removeCannon(cannon);
 
                 //remove entry
                 if (task.removeEntry())
@@ -320,7 +333,7 @@ public class CannonManager {
         //add cannon name to the list
         cannonNameMap.put(cannon.getCannonName(), cannon.getUID());
         if (cannon.getCannonDesign().isSentry())
-            plugin.getAiming().addSentryCannon(cannon.getUID());
+            Aiming.getInstance().addSentryCannon(cannon.getUID());
 
         if (saveToDatabase) {
             plugin.getPersistenceDatabase().saveCannon(cannon);
@@ -398,12 +411,13 @@ public class CannonManager {
     }
 
     public void dismantleCannonsInBox(Player player, Location center, int size) {
+        var taskManager = AsyncTaskManager.get();
         CompletableFuture.runAsync(() -> {
             var cannonHashSet = getCannonsInBox(center, size, size, size);
-            AsyncTaskManager.fireSyncRunnable( () ->
+            taskManager.fireSyncRunnable( () ->
                     cannonHashSet
                         .forEach(cannon -> dismantleCannon(cannon, player)));
-            }, AsyncTaskManager.executor);
+            }, taskManager.async);
     }
 
 
@@ -546,7 +560,8 @@ public class CannonManager {
         startCannonCreation(cannon, message, owner, silent);
 
         Cannon finalCannon = cannon;
-        AsyncTaskManager.fireSyncRunnable(() -> {
+        var taskManager = AsyncTaskManager.get();
+        taskManager.fireSyncRunnable(() -> {
             CannonAfterCreateEvent caceEvent = new CannonAfterCreateEvent(finalCannon, player.getUniqueId());
             Bukkit.getServer().getPluginManager().callEvent(caceEvent);
         });
@@ -560,7 +575,8 @@ public class CannonManager {
         plugin.logDebug("CannonBeforeCreateEvent Cannon: " + cannon + "message: " + message + " player: " + player);
         plugin.logDebug("player.getUniqueId(): " + player.getUniqueId());
 
-        CannonBeforeCreateEvent cbceEvent = AsyncTaskManager.fireSyncSupplier(() -> {
+        var taskManager = AsyncTaskManager.get();
+        CannonBeforeCreateEvent cbceEvent = taskManager.fireSyncSupplier(() -> {
             CannonBeforeCreateEvent event = new CannonBeforeCreateEvent(cannon, message, player.getUniqueId());
             Bukkit.getServer().getPluginManager().callEvent(event);
             return event;
@@ -573,7 +589,7 @@ public class CannonManager {
 
         //send messages
         if (!silent) {
-            AsyncTaskManager.fireSyncRunnable(() -> {
+            taskManager.fireSyncRunnable(() -> {
                 userMessages.sendMessage(message, player, cannon);
                 SoundUtils.playErrorSound(cannon.getMuzzle());
             });
@@ -588,8 +604,9 @@ public class CannonManager {
         createCannon(cannon, true);
 
         //send messages
+        var taskManager = AsyncTaskManager.get();
         if (!silent) {
-            AsyncTaskManager.fireSyncRunnable(() -> {
+            taskManager.fireSyncRunnable(() -> {
                 userMessages.sendMessage(message, owner, cannon);
                 SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundCreate());
             });
@@ -624,7 +641,7 @@ public class CannonManager {
             return null;
 
         World world = cannonBlock.getWorld();
-        var designList = plugin.getDesignStorage().getCannonDesignList();
+        var designList = DesignStorage.getInstance().getCannonDesignList();
         designList = designList.stream().filter(it -> it.isAllowedMaterial(block.getType())).toList();
 
         // check all cannon design if this block is part of the design
@@ -671,7 +688,7 @@ public class CannonManager {
     }
 
     public boolean isValidCannonBlock(Block block) {
-        return block != null && plugin.getDesignStorage().isCannonBlockMaterial(block.getType());
+        return block != null && DesignStorage.getInstance().isCannonBlockMaterial(block.getType());
     }
 
     /**
@@ -851,7 +868,7 @@ public class CannonManager {
      */
     public void updateCannons() {
         for (Cannon cannon : cannonList.values()) {
-            cannon.setCannonDesign(plugin.getCannonDesign(cannon));
+            cannon.setCannonDesign(DesignStorage.getInstance().getDesign(cannon));
             if (cannon.getLoadedProjectile() != null) {
                 ItemHolder item = cannon.getLoadedProjectile().getLoadingItem();
                 cannon.setLoadedProjectile(plugin.getProjectile(cannon, item));
