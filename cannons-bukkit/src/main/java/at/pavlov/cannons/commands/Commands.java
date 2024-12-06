@@ -88,7 +88,7 @@ public class Commands extends BaseCommand {
     }
 
     @Subcommand("reset")
-    @Syntax("[all|all_players|PLAYER")
+    @Syntax("[all|all_players|PLAYER]")
     @CommandPermission("cannons.admin.reset")
     public static void onReset(CommandSender sender, String arg) {
         //try first if there is no player "all" or "all_players"
