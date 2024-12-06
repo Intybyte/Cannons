@@ -9,6 +9,7 @@ import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.Config;
+import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.event.CannonFireEvent;
 import at.pavlov.cannons.event.CannonLinkFiringEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
@@ -285,6 +286,7 @@ public class FireCannon {
 
         }
 
+        var scheduler = AsyncTaskManager.get().scheduler;
         try {
             //set up delayed task with automatic firing. Several bullets with time delay for one loaded projectile
             for (int i = 0; i < projectile.getAutomaticFiringMagazineSize(); i++) {
@@ -293,14 +295,16 @@ public class FireCannon {
                 double randomess = 1. + design.getFuseBurnTimeRandomness() * random.nextDouble();
                 long delayTime = (long) (randomess * design.getFuseBurnTime() * 20.0 + i * projectile.getAutomaticFiringDelay() * 20.0);
                 FireTaskWrapper fireTask = new FireTaskWrapper(cannon, playerUid, lastRound, projectileCause);
-                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new DelayedTask(fireTask) {
+                scheduler.runTaskLater(cannon.getLocation(), new DelayedTask(fireTask) {
                     public void run(Object object) {
                         FireTaskWrapper fireTask = (FireTaskWrapper) object;
                         fireTask(fireTask.getCannon(), fireTask.getPlayer(), fireTask.isRemoveCharge(), projectileCause);
                     }
                 }, delayTime);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return message;
     }
