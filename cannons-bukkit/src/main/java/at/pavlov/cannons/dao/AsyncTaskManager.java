@@ -1,6 +1,8 @@
 package at.pavlov.cannons.dao;
 
 import at.pavlov.cannons.Cannons;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 
@@ -15,21 +17,27 @@ public class AsyncTaskManager {
     @Setter
     protected static int threadCount = 2;
 
-    private AsyncTaskManager() {
-        async =  Executors.newFixedThreadPool(threadCount);
+    private AsyncTaskManager(Cannons cannons) {
+        async = Executors.newFixedThreadPool(threadCount);
+        scheduler = UniversalScheduler.getScheduler(cannons);
+        main = scheduler::runTask;
     }
 
     public static AsyncTaskManager get() {
-        if (instance != null) {
-            return instance;
-        }
-
-        instance = new AsyncTaskManager();
         return instance;
     }
 
+    public static void initialize(Cannons cannons) {
+        if (instance != null) {
+            return;
+        }
+
+        instance = new AsyncTaskManager(cannons);
+    }
+
     public final ExecutorService async;
-    public final Executor main = Bukkit.getScheduler().getMainThreadExecutor(Cannons.getPlugin());
+    public final TaskScheduler scheduler;
+    public final Executor main;
 
     public void fireSyncRunnable(Runnable runnable) {
 
