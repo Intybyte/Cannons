@@ -405,8 +405,9 @@ public class Commands extends BaseCommand {
         var taskManager = AsyncTaskManager.get();
         CompletableFuture.runAsync(() -> {
             cannonManager.fetchCannonInBox(player.getLocation(), player.getUniqueId(), size);
-            taskManager.fireSyncRunnable( () ->
-                    userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player));
+            taskManager.scheduler.runTask(player, () -> {
+                userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player);
+            });
         }, taskManager.async);
     }
 
@@ -418,12 +419,14 @@ public class Commands extends BaseCommand {
         CompletableFuture.runAsync(() -> {
             final HashSet<Cannon> cannonList = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
 
-            taskManager.fireSyncRunnable( () -> {
-                cannonList.forEach(cannon -> {
+            for (Cannon cannon : cannonList) {
+                taskManager.scheduler.runTask(cannon.getLocation(), () -> {
                     persistenceDatabase.deleteCannon(cannon.getUID());
                     cannonManager.removeCannon(cannon, false, false, BreakCause.Other);
                 });
-                //make CannonReseted area
+            }
+
+            taskManager.scheduler.runTask(player, () -> {
                 player.sendMessage("N: " + cannonList.size() + " cannons nearby have been deleted");
             });
         }, taskManager.async);
@@ -438,9 +441,10 @@ public class Commands extends BaseCommand {
         var taskManager = AsyncTaskManager.get();
         CompletableFuture.runAsync(() -> {
             var cannonHashSet = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
-            taskManager.fireSyncRunnable( () ->
-                    cannonHashSet
-                            .forEach(cannon -> cannonManager.dismantleCannon(cannon, player)));
+            for (Cannon cannon : cannonHashSet) {
+                var location = cannon.getLocation();
+                taskManager.scheduler.runTask(location, () -> cannonManager.dismantleCannon(cannon, player));
+            }
         }, taskManager.async);
     }
 

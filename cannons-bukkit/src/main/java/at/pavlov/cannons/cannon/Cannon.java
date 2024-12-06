@@ -127,7 +127,7 @@ public class Cannon implements ICannon, Rotational {
      * @return location of the cannon
      */
     public Location getLocation() {
-        return design.getAllCannonBlocks(this).getFirst();
+        return design.getAllCannonBlocks(this).get(0);
     }
 
     /**
@@ -488,7 +488,7 @@ public class Cannon implements ICannon, Rotational {
      */
     public Projectile getDefaultProjectile(Cannon cannon) {
         if (!this.getCannonDesign().getAllowedProjectiles().isEmpty())
-            return ProjectileStorage.getProjectile(cannon, this.getCannonDesign().getAllowedProjectiles().getFirst());
+            return ProjectileStorage.getProjectile(cannon, this.getCannonDesign().getAllowedProjectiles().get(0));
         return null;
     }
 
@@ -963,7 +963,7 @@ public class Cannon implements ICannon, Rotational {
      * @return - first block of the cannon
      */
     public Location getFirstCannonBlock() {
-        return design.getAllCannonBlocks(getCannonDirection()).getFirst().toLocation(getWorldBukkit(), getOffset());
+        return design.getAllCannonBlocks(getCannonDirection()).get(0).toLocation(getWorldBukkit(), getOffset());
 
     }
 

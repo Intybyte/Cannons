@@ -88,6 +88,7 @@ public final class Cannons extends JavaPlugin
 
 	public void onLoad() {
 		// must be done in onLoad because "movecraft"
+		AsyncTaskManager.initialize(this);
 		UserMessages.initialize(this);
 		Config.initialize(this);
 		CannonManager.initialize(this);
