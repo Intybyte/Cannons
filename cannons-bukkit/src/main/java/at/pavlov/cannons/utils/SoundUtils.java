@@ -2,6 +2,7 @@ package at.pavlov.cannons.utils;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.container.SoundHolder;
+import at.pavlov.cannons.dao.AsyncTaskManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -74,7 +75,7 @@ public class SoundUtils {
             return;
 
         world.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 0.25f, 0.75f);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Cannons.getPlugin(), () ->
+        AsyncTaskManager.get().scheduler.runTaskLater(location, () ->
                 world.playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING, 0.25f, 0.1f), 3);
     }
 
