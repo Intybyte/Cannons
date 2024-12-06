@@ -125,7 +125,6 @@ public class FakeBlockHandler {
         if (loc == null || player == null)
             return;
 
-        LinkedList<BlockState> updates = new LinkedList<>();
         for (int x = -r; x <= r; x++) {
             for (int y = -r; y <= r; y++) {
                 for (int z = -r; z <= r; z++) {
@@ -134,15 +133,13 @@ public class FakeBlockHandler {
                         continue;
                     }
 
-                    var block = sendBlockChangeToPlayer(player, newL, blockData, type, duration);
+                    var block = processBlockData(player, newL, blockData, type, duration);
                     if (block != null) {
-                        updates.add(block);
+                        player.sendBlockChange(newL, block);
                     }
                 }
             }
         }
-
-        player.sendBlockChanges(updates);
     }
 
     /**
@@ -159,14 +156,13 @@ public class FakeBlockHandler {
             return;
 
         BlockIterator iter = new BlockIterator(loc.getWorld(), loc.toVector(), direction, offset, length);
-        LinkedList<BlockState> updateList = new LinkedList<>();
         while (iter.hasNext()) {
-            var block = sendBlockChangeToPlayer(player, iter.next().getLocation(), blockData, type, duration);
-            if (block != null)
-                updateList.add(block);
+            Location location = iter.next().getLocation();
+            var block = processBlockData(player, location, blockData, type, duration);
+            if (block != null) {
+                player.sendBlockChange(location, block);
+            }
         }
-
-        player.sendBlockChanges(updateList);
     }
 
     /**
@@ -177,7 +173,7 @@ public class FakeBlockHandler {
      * @param blockData type of the block
      * @param duration  how long to remove the block in [s]
      */
-    private BlockState sendBlockChangeToPlayer(final Player player, final Location loc, BlockData blockData, FakeBlockType type, double duration) {
+    private BlockData processBlockData(final Player player, final Location loc, BlockData blockData, FakeBlockType type, double duration) {
         //only show block in air
         if (!loc.getBlock().isEmpty()) {
             return null;
@@ -208,7 +204,7 @@ public class FakeBlockHandler {
         if (type == FakeBlockType.AIMING)
             lastAiming = System.currentTimeMillis();
 
-        return blockData.createBlockState().copy(loc);
+        return blockData;
     }
 
     /**
