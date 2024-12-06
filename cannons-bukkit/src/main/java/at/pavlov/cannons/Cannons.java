@@ -11,6 +11,7 @@ import at.pavlov.cannons.commands.Commands;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.container.ItemHolder;
+import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
 import at.pavlov.cannons.hooks.papi.PlaceholderAPIHook;
@@ -26,6 +27,7 @@ import at.pavlov.cannons.scheduler.ProjectileObserver;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.internal.Hook;
 import at.pavlov.internal.HookManager;
+import at.pavlov.internal.ModrinthUpdateChecker;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
@@ -72,6 +74,10 @@ public final class Cannons extends JavaPlugin
     // database
 	private PersistenceDatabase persistenceDatabase;
 	private Connection connection = null;
+	@Getter
+	private volatile Boolean isLatest;
+	@Getter
+	private ModrinthUpdateChecker updateChecker;
 
 	private final String cannonDatabase = "cannonlist_2_4_6";
 	private final String whitelistDatabase = "whitelist_2_4_6";
@@ -87,6 +93,8 @@ public final class Cannons extends JavaPlugin
 		CannonManager.initialize(this);
 		this.config = Config.getInstance();
 
+		initUpdater();
+
 		if (!config.isMovecraftEnabled()) {
 			return;
 		}
@@ -98,6 +106,17 @@ public final class Cannons extends JavaPlugin
 		}
 
 		MaxCannonsProperty.register();
+	}
+
+	private void initUpdater() {
+		var taskManager = AsyncTaskManager.get();
+		updateChecker = new ModrinthUpdateChecker(this.getLogger());
+		taskManager.async.submit( () -> {
+			isLatest = updateChecker.isLatest(this
+					.getPluginDescription()
+					.getVersion()
+			);
+		});
 	}
 
 	public void onDisable() {
@@ -193,6 +212,7 @@ public final class Cannons extends JavaPlugin
 			pm.registerEvents(playerListener, this);
 			pm.registerEvents(entityListener, this);
 			pm.registerEvents(redstoneListener, this);
+			pm.registerEvents(new UpdateNotifier(this), this);
 			//call command executer
 			initializeCommands();
 
