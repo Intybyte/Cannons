@@ -6,6 +6,7 @@ import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.container.FakeBlockEntry;
 import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
@@ -125,6 +126,7 @@ public class FakeBlockHandler {
         if (loc == null || player == null)
             return;
 
+        Config config = Cannons.getPlugin().getMyConfig();
         for (int x = -r; x <= r; x++) {
             for (int y = -r; y <= r; y++) {
                 for (int z = -r; z <= r; z++) {
@@ -133,9 +135,13 @@ public class FakeBlockHandler {
                         continue;
                     }
 
-                    var block = processBlockData(player, newL, blockData, type, duration);
-                    if (block != null) {
-                        player.sendBlockChange(newL, block);
+                    if (config.isImitatedAimingParticleEnabled()) {
+                        processParticle(newL, type);
+                    } else {
+                        var block = processBlockData(player, newL, blockData, type, duration);
+                        if (block != null) {
+                            player.sendBlockChange(newL, block);
+                        }
                     }
                 }
             }
@@ -156,11 +162,16 @@ public class FakeBlockHandler {
             return;
 
         BlockIterator iter = new BlockIterator(loc.getWorld(), loc.toVector(), direction, offset, length);
+        Config config = Cannons.getPlugin().getMyConfig();
         while (iter.hasNext()) {
             Location location = iter.next().getLocation();
-            var block = processBlockData(player, location, blockData, type, duration);
-            if (block != null) {
-                player.sendBlockChange(location, block);
+            if (config.isImitatedAimingParticleEnabled()) {
+                processParticle(location, type);
+            } else {
+                var block = processBlockData(player, location, blockData, type, duration);
+                if (block != null) {
+                    player.sendBlockChange(location, block);
+                }
             }
         }
     }
@@ -205,6 +216,14 @@ public class FakeBlockHandler {
             lastAiming = System.currentTimeMillis();
 
         return blockData;
+    }
+
+    private void processParticle(final Location location, FakeBlockType type) {
+        if (type == FakeBlockType.IMPACT_PREDICTOR)
+            lastImpactPredictor = System.currentTimeMillis();
+        if (type == FakeBlockType.AIMING)
+            lastAiming = System.currentTimeMillis();
+        location.getWorld().spawnParticle(Particle.WAX_ON, location, 20, 0, 0, 0, 2.5);
     }
 
     /**

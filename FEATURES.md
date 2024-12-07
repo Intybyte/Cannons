@@ -5,6 +5,7 @@ New features/fixes:
 - Added Netherite and newer armor protection support
 - Simplified Chinese Translation by [SnowCutieOwO](https://github.com/SnowCutieOwO)
 - New area commands
+- Mohist compatibility (kind of, you need to use particle aiming)
 
 Hooks:
 ---------------
