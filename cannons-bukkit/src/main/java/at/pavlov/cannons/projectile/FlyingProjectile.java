@@ -109,10 +109,7 @@ public class FlyingProjectile
         if(projectile_entity!=null)
         {
             Block block = projectile_entity.getLocation().getBlock();
-            if (block != null)
-            {
-                return block.isLiquid();
-            }
+            return block.isLiquid();
         }
         return false;
     }
@@ -122,21 +119,13 @@ public class FlyingProjectile
     }
 
     /**
-     * if the projectile has entered the water surface
-     * @return true if the projectile has entered the water surface
-     */
-    public boolean isWaterSurface(org.bukkit.entity.Projectile projectile_entity){
-        return !wasInWater&&isInWaterCheck(projectile_entity);
-    }
-
-    /**
      * returns if the projectile has entered the water surface and updates also inWater
      * @return true if the projectile has entered water
      */
     public boolean updateWaterSurfaceCheck(org.bukkit.entity.Projectile projectile_entity)
     {
-        boolean isSurface = isWaterSurface(projectile_entity);
         inWater = isInWaterCheck(projectile_entity);
+        boolean isSurface = !wasInWater && inWater;
         wasInWater = inWater;
         return isSurface;
     }

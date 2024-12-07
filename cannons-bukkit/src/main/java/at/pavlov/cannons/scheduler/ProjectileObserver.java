@@ -19,10 +19,9 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 
 public class ProjectileObserver {
@@ -45,41 +44,54 @@ public class ProjectileObserver {
     public void setupScheduler()
     {
         //changing angles for aiming mode
-        AsyncTaskManager.get().scheduler.runTaskTimer(() -> {
+        var taskManager = AsyncTaskManager.get();
+        taskManager.scheduler.runTaskTimer(() -> {
             //get projectiles
-            Iterator<Map.Entry<UUID,FlyingProjectile>> iter = ProjectileManager
+            var projectiles = ProjectileManager
                     .getInstance()
-                    .getFlyingProjectiles().entrySet().iterator();
-            while(iter.hasNext()) {
-                FlyingProjectile cannonball = iter.next().getValue();
+                    .getFlyingProjectiles();
+
+            for(var entry : projectiles.entrySet()) {
+                FlyingProjectile cannonball = entry.getValue();
                 org.bukkit.entity.Projectile projectile_entity = cannonball.getProjectileEntity();
 
-                if (cannonball.isValid(projectile_entity)) {
-
-                    //update the cannonball
-                    checkWaterImpact(cannonball, projectile_entity);
-                    updateTeleporter(cannonball, projectile_entity);
-                    updateSmokeTrail(cannonball, projectile_entity);
-
-                    if (updateProjectileLocation(cannonball, projectile_entity)) {
-                        iter.remove();
+                Executor executor = (task) -> {
+                    if (plugin.isFolia()) {
+                        taskManager.scheduler.runTask(projectile_entity, task);
+                    } else {
+                        task.run();
                     }
-                    continue;
-                }
+                };
 
-                //remove a not valid projectile
-                //teleport the observer back to its start position
-                CannonsUtil.teleportBack(cannonball);
-                if (projectile_entity != null)
-                {
-                    Location l = projectile_entity.getLocation();
-                    projectile_entity.remove();
-                    plugin.logDebug("removed Projectile at " + l.getBlockX() + "," + l.getBlockY() + "," + l.getBlockZ() + " because it was not valid.");
-                }
-                else
-                    plugin.logDebug("removed Projectile at because the entity was missing");
-                //remove entry in hashmap
-                iter.remove();
+                var key = entry.getKey();
+                CompletableFuture.runAsync( () -> {
+                    if (cannonball.isValid(projectile_entity)) {
+
+                        //update the cannonball
+                        checkWaterImpact(cannonball, projectile_entity);
+                        updateTeleporter(cannonball, projectile_entity);
+                        updateSmokeTrail(cannonball, projectile_entity);
+
+                        if (updateProjectileLocation(cannonball, projectile_entity)) {
+                            projectiles.remove(key);
+                        }
+                        return;
+                    }
+
+                    //remove a not valid projectile
+                    //teleport the observer back to its start position
+                    CannonsUtil.teleportBack(cannonball);
+                    if (projectile_entity != null)
+                    {
+                        Location l = projectile_entity.getLocation();
+                        projectile_entity.remove();
+                        plugin.logDebug("removed Projectile at " + l.getBlockX() + "," + l.getBlockY() + "," + l.getBlockZ() + " because it was not valid.");
+                    }
+                    else
+                        plugin.logDebug("removed Projectile at because the entity was missing");
+                    //remove entry in hashmap
+                    projectiles.remove(key);
+                }, executor);
             }
 
         }, 1L, 1L);

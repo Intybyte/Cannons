@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @CommandAlias("cannons")
 @SuppressWarnings("deprecation")
@@ -47,6 +48,7 @@ public class Commands extends BaseCommand {
     private static PersistenceDatabase persistenceDatabase;
     private static CannonManager cannonManager;
     private static CannonSelector cannonSelector;
+    private static AsyncTaskManager taskManager;
 
     public Commands(Cannons plugin) {
         cannons = plugin;
@@ -56,6 +58,8 @@ public class Commands extends BaseCommand {
         cannonManager = CannonManager.getInstance();
         persistenceDatabase = cannons.getPersistenceDatabase();
         cannonSelector = CannonSelector.getInstance();
+
+        taskManager = AsyncTaskManager.get();
     }
 
     @HelpCommand
@@ -406,7 +410,11 @@ public class Commands extends BaseCommand {
     public static void onClaim(Player player, @Default("20") int size) {
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsStarted, player);
 
-        var taskManager = AsyncTaskManager.get();
+        if (cannons.isFolia()) {
+            player.sendMessage("This command is not available on folia");
+            return;
+        }
+
         CompletableFuture.runAsync(() -> {
             cannonManager.fetchCannonInBox(player.getLocation(), player.getUniqueId(), size);
             taskManager.scheduler.runTask(player, () -> {
@@ -419,7 +427,6 @@ public class Commands extends BaseCommand {
     @CommandPermission("cannons.admin.reload")
     public static void onResetArea(Player player, @Default("20") int size) {
 
-        var taskManager = AsyncTaskManager.get();
         CompletableFuture.runAsync(() -> {
             final HashSet<Cannon> cannonList = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
 
@@ -442,7 +449,11 @@ public class Commands extends BaseCommand {
     public static void onDismantleArea(Player player, @Default("20") int size) {
         player.sendMessage("Dismantling started");
 
-        var taskManager = AsyncTaskManager.get();
+        if (cannons.isFolia()) {
+            player.sendMessage("This command is not available on folia");
+            return;
+        }
+
         CompletableFuture.runAsync(() -> {
             var cannonHashSet = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
             for (Cannon cannon : cannonHashSet) {

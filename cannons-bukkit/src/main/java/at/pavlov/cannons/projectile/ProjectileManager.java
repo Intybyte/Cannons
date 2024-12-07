@@ -13,15 +13,15 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ProjectileManager
 {
     private static ProjectileManager instance = null;
 
     private final Cannons plugin;
-    private final HashMap<UUID, FlyingProjectile> flyingProjectilesMap = new HashMap<>();
+    private final ConcurrentHashMap<UUID, FlyingProjectile> flyingProjectilesMap = new ConcurrentHashMap<>();
 
     public static void initialize(Cannons plugin) {
         if (instance != null)
@@ -178,7 +178,7 @@ public class ProjectileManager
      * returns the list of all flying projectiles
      * @return - the list of all flying projectiles
      */
-    public HashMap<UUID, FlyingProjectile> getFlyingProjectiles()
+    public ConcurrentHashMap<UUID, FlyingProjectile> getFlyingProjectiles()
     {
         return flyingProjectilesMap;
     }
