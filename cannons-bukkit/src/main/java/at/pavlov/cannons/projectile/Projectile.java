@@ -1,10 +1,13 @@
 package at.pavlov.cannons.projectile;
 
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.builders.ParticleBuilder;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
 import at.pavlov.cannons.container.SpawnMaterialHolder;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Particle;
 import org.bukkit.block.data.BlockData;
@@ -45,12 +48,8 @@ public class Projectile implements Cloneable{
 	private BlockData smokeTrailMaterial;
 	private double smokeTrailDuration;
 	private boolean smokeTrailParticleEnabled;
-	private Particle smokeTrailParticleType;
-	private int smokeTrailParticleCount;
-	private double smokeTrailParticleOffsetX;
-	private double smokeTrailParticleOffsetY;
-	private double smokeTrailParticleOffsetZ;
-	private double smokeTrailParticleSpeed;
+	@Getter @Setter
+	private ParticleBuilder smokeTrailParticle;
 
 	//explosion
 	private float explosionPower;
@@ -744,42 +743,6 @@ public class Projectile implements Cloneable{
 	}
 
 	public boolean isSmokeTrailParticleEnabled() { return smokeTrailParticleEnabled; }
-
-	public void setSmokeTrailParticleType(Particle smokeTrailParticleType) {
-		this.smokeTrailParticleType = smokeTrailParticleType;
-	}
-
-	public Particle getSmokeTrailParticleType() { return smokeTrailParticleType; }
-
-	public void setSmokeTrailParticleCount(int smokeTrailParticleCount) {
-		this.smokeTrailParticleCount = smokeTrailParticleCount;
-	}
-
-	public int getSmokeTrailParticleCount() { return smokeTrailParticleCount; }
-
-	public void setSmokeTrailParticleOffsetX(double smokeTrailParticleOffsetX) {
-		this.smokeTrailParticleOffsetX = smokeTrailParticleOffsetX;
-	}
-
-	public double getSmokeTrailParticleOffsetX() { return smokeTrailParticleOffsetX; }
-
-	public void setSmokeTrailParticleOffsetY(double smokeTrailParticleOffsetY) {
-		this.smokeTrailParticleOffsetY = smokeTrailParticleOffsetY;
-	}
-
-	public double getSmokeTrailParticleOffsetY() { return smokeTrailParticleOffsetY; }
-
-	public void setSmokeTrailParticleOffsetZ(double smokeTrailParticleOffsetZ) {
-		this.smokeTrailParticleOffsetZ = smokeTrailParticleOffsetZ;
-	}
-
-	public double getSmokeTrailParticleOffsetZ() { return smokeTrailParticleOffsetZ; }
-
-	public void setSmokeTrailParticleSpeed(double smokeTrailParticleSpeed) {
-		this.smokeTrailParticleSpeed = smokeTrailParticleSpeed;
-	}
-
-	public double getSmokeTrailParticleSpeed() { return smokeTrailParticleSpeed; }
 
 	public int getSentryIgnoredBlocks() {
 		return sentryIgnoredBlocks;

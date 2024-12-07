@@ -1,10 +1,12 @@
 package at.pavlov.cannons.projectile;
 
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.builders.ParticleBuilder;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.utils.CannonsUtil;
+import at.pavlov.cannons.utils.FileUtils;
 import at.pavlov.cannons.utils.ParseUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -231,12 +233,10 @@ public class ProjectileStorage
 		projectile.setSmokeTrailMaterial(Bukkit.createBlockData(projectileConfig.getString("smokeTrail.material", "minecraft:cobweb")));
 		projectile.setSmokeTrailDuration(projectileConfig.getDouble("smokeTrail.duration", 20.0));
 		projectile.setSmokeTrailParticleEnabled(projectileConfig.getBoolean("smokeTrail.particles.enabled", false));
-		projectile.setSmokeTrailParticleType(Particle.valueOf(projectileConfig.getString("smokeTrail.particles.type", "CAMPFIRE_SIGNAL_SMOKE")));
-		projectile.setSmokeTrailParticleCount(projectileConfig.getInt("smokeTrail.particles.count", 1));
-		projectile.setSmokeTrailParticleOffsetX(projectileConfig.getDouble("smokeTrail.particles.x_offset", 0.0));
-		projectile.setSmokeTrailParticleOffsetY(projectileConfig.getDouble("smokeTrail.particles.y_offset", 0.0));
-		projectile.setSmokeTrailParticleOffsetZ(projectileConfig.getDouble("smokeTrail.particles.z_offset", 0.0));
-		projectile.setSmokeTrailParticleSpeed(projectileConfig.getDouble("smokeTrail.particles.speed", 0.0));
+
+		//smokeTrail Particle
+		ParticleBuilder pb = FileUtils.readParticleBuilder(projectileConfig, "smokeTrail.particles");
+		projectile.setSmokeTrailParticle(pb);
 
 		//explosion
 		projectile.setExplosionPower((float) projectileConfig.getDouble("explosion.explosionPower", 2.));

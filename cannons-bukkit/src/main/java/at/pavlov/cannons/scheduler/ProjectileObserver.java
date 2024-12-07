@@ -232,7 +232,7 @@ public class ProjectileObserver {
         plugin.logDebug("smoke trail at: " +  newLoc.getBlockX() + "," + newLoc.getBlockY() + "," + newLoc.getBlockZ());
 
         if (proj.isSmokeTrailParticleEnabled()) {
-            cannonball.getWorld().spawnParticle(proj.getSmokeTrailParticleType(), newLoc, proj.getSmokeTrailParticleCount(), proj.getSmokeTrailParticleOffsetX(), proj.getSmokeTrailParticleOffsetY(), proj.getSmokeTrailParticleOffsetZ(), proj.getSmokeTrailParticleSpeed(), null, true);
+            proj.getSmokeTrailParticle().at(newLoc);
             return;
         }
 
