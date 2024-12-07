@@ -68,6 +68,10 @@ public class Commands extends BaseCommand {
     @CommandPermission("cannons.admin.reload")
     public static void onReload(CommandSender sender) {
         myConfig.loadConfig();
+        DesignStorage.getInstance().loadCannonDesigns();
+        ProjectileStorage.getInstance().loadProjectiles();
+        CannonManager.getInstance().updateCannons();
+        UserMessages.getInstance().loadLanguage();
         sendMessage(sender, ChatColor.GREEN + tag + "Config loaded");
     }
 
