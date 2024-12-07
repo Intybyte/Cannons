@@ -14,6 +14,7 @@ import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.container.MovingObject;
 import at.pavlov.cannons.container.Target;
+import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.event.CannonLinkAimingEvent;
 import at.pavlov.cannons.event.CannonTargetEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
@@ -94,7 +95,7 @@ public class Aiming {
      */
     public void initAimingMode() {
         //changing angles for aiming mode
-        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+        AsyncTaskManager.get().scheduler.runTaskTimer(() -> {
             long startTime = System.nanoTime();
             updateAimingMode();
             double time = (System.nanoTime() - startTime) / 1000000.0;

@@ -188,7 +188,7 @@ public class CannonManager {
 
         //delay the remove task, so it fits to the sound
         RemoveTaskWrapper task = new RemoveTaskWrapper(cannon, breakCannon, canExplode, cause, removeEntry, ignoreInvalid);
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new DelayedTask(task) {
+        AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask(task) {
             public void run(Object object) {
                 RemoveTaskWrapper task = (RemoveTaskWrapper) object;
                 Cannon cannon = task.getCannon();
@@ -344,7 +344,7 @@ public class CannonManager {
         plugin.logDebug("added cannon " + cannon.getCannonName());
 
         LoadWhitelistTask loadWhitelistTask = new LoadWhitelistTask(cannon.getUID());
-        loadWhitelistTask.runTaskAsynchronously(plugin);
+        loadWhitelistTask.runTaskAsynchronously();
     }
 
     /**

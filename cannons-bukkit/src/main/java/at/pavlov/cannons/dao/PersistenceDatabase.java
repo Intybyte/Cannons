@@ -3,15 +3,14 @@ package at.pavlov.cannons.dao;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.UUID;
+import java.util.concurrent.Future;
 
 public class PersistenceDatabase
 {
 	private Cannons plugin;
-	private BukkitTask saveTask = null;
+	private Future<?> saveTask = null;
 
 	public PersistenceDatabase(Cannons _plugin)
 	{
@@ -36,7 +35,7 @@ public class PersistenceDatabase
 		CannonManager.getInstance().clearCannonList();
 
 	    LoadCannonTask task = new LoadCannonTask();
-	    task.runTaskAsynchronously(plugin);
+	    task.runTaskAsynchronously();
 	}
 
 	public void saveAllCannons(boolean async) {
@@ -46,7 +45,7 @@ public class PersistenceDatabase
 		}
 		SaveCannonTask saveCannonTask = new SaveCannonTask();
 		if (async)
-			saveTask = saveCannonTask.runTaskAsynchronously(plugin);
+			saveTask = saveCannonTask.runTaskAsynchronously();
 		else
 			saveCannonTask.run();
     }
@@ -57,11 +56,11 @@ public class PersistenceDatabase
 			return;
 		}
 		SaveCannonTask saveCannonTask = new SaveCannonTask(cannon.getUID());
-		saveTask = saveCannonTask.runTaskAsynchronously(plugin);
+		saveTask = saveCannonTask.runTaskAsynchronously();
 	}
 
 	public boolean isSaveTaskRunning() {
-		return saveTask != null && Bukkit.getScheduler().isCurrentlyRunning(saveTask.getTaskId());
+		return saveTask != null && !saveTask.isDone();
 	}
 
     public void deleteCannon(UUID cannon_id){
@@ -70,7 +69,7 @@ public class PersistenceDatabase
 			return;
 		}
 		DeleteCannonTask deleteCannonTask = new DeleteCannonTask(cannon_id);
-		deleteCannonTask.runTaskAsynchronously(plugin);
+		deleteCannonTask.runTaskAsynchronously();
 	}
 
 	public void deleteAllCannons(){
@@ -79,7 +78,7 @@ public class PersistenceDatabase
 			return;
 		}
 		DeleteCannonTask deleteCannonTask = new DeleteCannonTask();
-		deleteCannonTask.runTaskAsynchronously(plugin);
+		deleteCannonTask.runTaskAsynchronously();
 	}
 
 	public void deleteCannons(UUID player_id){
@@ -88,6 +87,6 @@ public class PersistenceDatabase
 			return;
 		}
 		DeleteCannonTask deleteCannonTask = new DeleteCannonTask(player_id, true);
-		deleteCannonTask.runTaskAsynchronously(plugin);
+		deleteCannonTask.runTaskAsynchronously();
 	}
 }

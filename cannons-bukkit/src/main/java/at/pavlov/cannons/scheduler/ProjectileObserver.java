@@ -5,6 +5,7 @@ import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.Enum.FakeBlockType;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
+import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
@@ -43,7 +44,7 @@ public class ProjectileObserver {
     public void setupScheduler()
     {
         //changing angles for aiming mode
-        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+        AsyncTaskManager.get().scheduler.runTaskTimer(() -> {
             //get projectiles
             Iterator<Map.Entry<UUID,FlyingProjectile>> iter = ProjectileManager
                     .getInstance()

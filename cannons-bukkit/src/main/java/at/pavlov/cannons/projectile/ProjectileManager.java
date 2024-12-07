@@ -3,6 +3,7 @@ package at.pavlov.cannons.projectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.Enum.ProjectileCause;
+import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.DelayedTask;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
@@ -99,7 +100,7 @@ public class ProjectileManager
         }
 
         //Delayed Task
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin,  new DelayedTask(cannonball.getUID())
+        AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask(cannonball.getUID())
         {
             public void run(Object object)
             {
