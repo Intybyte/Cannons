@@ -2,6 +2,7 @@ package at.pavlov.cannons.projectile;
 
 import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.container.MovingObject;
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -218,7 +219,7 @@ public class FlyingProjectile
     {
         if (projectile_entity == null)
             return;
-        projectile_entity.teleport(predictor.getLocation());
+        PaperLib.teleportAsync(projectile_entity, predictor.getLocation());
         projectile_entity.setVelocity(predictor.getVel());
     }
 

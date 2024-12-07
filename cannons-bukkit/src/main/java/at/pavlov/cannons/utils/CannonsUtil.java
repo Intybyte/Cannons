@@ -8,6 +8,7 @@ import at.pavlov.cannons.container.*;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileProperties;
+import io.papermc.lib.PaperLib;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -371,7 +372,7 @@ public class CannonsUtil
 
         teleLoc.setYaw(player.getLocation().getYaw());
         teleLoc.setPitch(player.getLocation().getPitch());
-        player.teleport(teleLoc);
+        PaperLib.teleportAsync(player, teleLoc);
         player.setVelocity(new Vector(0,0,0));
         cannonball.setTeleported(true);
     }

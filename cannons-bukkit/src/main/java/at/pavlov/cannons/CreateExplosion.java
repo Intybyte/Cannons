@@ -26,6 +26,7 @@ import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.cannons.utils.SoundUtils;
+import io.papermc.lib.PaperLib;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -791,7 +792,7 @@ public class CreateExplosion {
         }
 
         // teleport snowball to impact
-        projectile_entity.teleport(impactLoc);
+        PaperLib.teleportAsync(projectile_entity, impactLoc);
 
         float explosion_power = projectile.getExplosionPower();
         if (projectile.isExplosionPowerDependsOnVelocity()) {
@@ -988,7 +989,7 @@ public class CreateExplosion {
 
         teleLoc.setYaw(player.getLocation().getYaw());
         teleLoc.setPitch(player.getLocation().getPitch());
-        player.teleport(teleLoc);
+        PaperLib.teleportAsync(player, teleLoc);
         player.setVelocity(new Vector(0, 0, 0));
         cannonball.setTeleported(true);
     }

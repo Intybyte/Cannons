@@ -12,6 +12,7 @@ import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -175,7 +176,7 @@ public class ProjectileObserver {
         {
             optiLoc.setYaw(shooter.getLocation().getYaw());
             optiLoc.setPitch(shooter.getLocation().getPitch());
-            shooter.teleport(optiLoc);
+            PaperLib.teleportAsync(shooter, optiLoc);
         }
     }
 
