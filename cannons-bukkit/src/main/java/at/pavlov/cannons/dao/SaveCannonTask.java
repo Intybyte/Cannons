@@ -3,13 +3,13 @@ package at.pavlov.cannons.dao;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
+import at.pavlov.cannons.interfaces.RunnableAsync;
 import at.pavlov.cannons.projectile.Projectile;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.PreparedStatement;
 import java.util.UUID;
 
-public class SaveCannonTask extends BukkitRunnable {
+public class SaveCannonTask implements RunnableAsync {
 
     private final UUID cannonId;
     public SaveCannonTask(UUID cannonId){

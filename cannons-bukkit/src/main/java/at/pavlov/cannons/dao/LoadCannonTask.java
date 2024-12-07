@@ -4,13 +4,13 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.cannon.DesignStorage;
+import at.pavlov.cannons.interfaces.RunnableAsync;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.CreateCannon;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.sql.ResultSet;
@@ -18,10 +18,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class LoadCannonTask extends BukkitRunnable{
-    public LoadCannonTask(){
-
-    }
+public class LoadCannonTask implements RunnableAsync {
 
     @Override
     public void run() {
@@ -36,6 +33,7 @@ public class LoadCannonTask extends BukkitRunnable{
             );
 
             // found cannons - load them
+            var taskManager = AsyncTaskManager.get();
             while (rs.next()) {
                 UUID cannon_id = UUID.fromString(rs.getString("id"));
                 //check if cannon design exists
@@ -117,8 +115,9 @@ public class LoadCannonTask extends BukkitRunnable{
                 cannon.setPaid(rs.getBoolean("paid"));
 
                 //add a cannon to the cannon list
-                new CreateCannon(Cannons.getPlugin(), cannon, false).runTask(Cannons.getPlugin());
-                //plugin.createCannon(cannon);
+                taskManager.scheduler.runTask(
+                    new CreateCannon(Cannons.getPlugin(), cannon, false)
+                );
                 i++;
 
             }
