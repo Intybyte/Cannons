@@ -203,7 +203,7 @@ public class DesignStorage
 		// ammunition
 		cannonDesign.setGunpowderName(cannonDesignConfig.getString("ammunition.gunpowderName", "gunpowder"));
 		cannonDesign.setGunpowderType(new ItemHolder(cannonDesignConfig.getString("ammunition.gunpowderType", "SULPHUR:0")));
-        cannonDesign.setNeedsGunpowder(cannonDesignConfig.getBoolean("ammunition.needsGunpowder", true));
+        cannonDesign.setGunpowderNeeded(cannonDesignConfig.getBoolean("ammunition.needsGunpowder", true));
         cannonDesign.setGunpowderConsumption(cannonDesignConfig.getBoolean("ammunition.gunpowderConsumption", true));
         cannonDesign.setProjectileConsumption(cannonDesignConfig.getBoolean("ammunition.projectileConsumption", true));
 		cannonDesign.setAmmoInfiniteForPlayer(cannonDesignConfig.getBoolean("ammunition.ammoInfiniteForPlayer", false));
@@ -230,10 +230,10 @@ public class DesignStorage
 		// angles
 		cannonDesign.setDefaultHorizontalFacing(BlockFace.valueOf(cannonDesignConfig.getString("angles.defaultHorizontalFacing", "NORTH").toUpperCase()));
 		cannonDesign.setDefaultVerticalAngle(cannonDesignConfig.getDouble("angles.defaultVerticalAngle", 0.0));
-		cannonDesign.setMaxHorizontalAngleNormal(cannonDesignConfig.getDouble("angles.maxHorizontalAngle", 45.0));
-		cannonDesign.setMinHorizontalAngleNormal(cannonDesignConfig.getDouble("angles.minHorizontalAngle", -45.0));
-		cannonDesign.setMaxVerticalAngleNormal(cannonDesignConfig.getDouble("angles.maxVerticalAngle", 45.0));
-		cannonDesign.setMinVerticalAngleNormal(cannonDesignConfig.getDouble("angles.minVerticalAngle", -45.0));
+		cannonDesign.setMaxHorizontalAngle(cannonDesignConfig.getDouble("angles.maxHorizontalAngle", 45.0));
+		cannonDesign.setMinHorizontalAngle(cannonDesignConfig.getDouble("angles.minHorizontalAngle", -45.0));
+		cannonDesign.setMaxVerticalAngle(cannonDesignConfig.getDouble("angles.maxVerticalAngle", 45.0));
+		cannonDesign.setMinVerticalAngle(cannonDesignConfig.getDouble("angles.minVerticalAngle", -45.0));
         cannonDesign.setMaxHorizontalAngleOnShip(cannonDesignConfig.getDouble("angles.maxHorizontalAngleOnShip", 20.0));
         cannonDesign.setMinHorizontalAngleOnShip(cannonDesignConfig.getDouble("angles.minHorizontalAngleOnShip", -20.0));
         cannonDesign.setMaxVerticalAngleOnShip(cannonDesignConfig.getDouble("angles.maxVerticalAngleOnShip", 30.0));
@@ -282,7 +282,7 @@ public class DesignStorage
         cannonDesign.setOverloadingEnabled(cannonDesignConfig.getBoolean("overloading.enabled",false));
         cannonDesign.setOverloadingRealMode(cannonDesignConfig.getBoolean("overloading.realMode",false));
         cannonDesign.setOverloadingExponent(cannonDesignConfig.getDouble("overloading.exponent",1));
-        cannonDesign.setOverloadingChangeInc(cannonDesignConfig.getDouble("overloading.chanceInc",0.1));
+        cannonDesign.setOverloadingChanceInc(cannonDesignConfig.getDouble("overloading.chanceInc",0.1));
         cannonDesign.setOverloadingMaxOverloadableGunpowder(cannonDesignConfig.getInt("overloading.maxOverloadableGunpowder",3));
         cannonDesign.setOverloadingChanceOfExplosionPerGunpowder(cannonDesignConfig.getDouble("overloading.chanceOfExplosionPerGunpowder",0.01));
         cannonDesign.setOverloadingDependsOfTemperature(cannonDesignConfig.getBoolean("overloading.dependsOfTemperature",false));
@@ -298,7 +298,7 @@ public class DesignStorage
         cannonDesign.setProjectilePushing(cannonDesignConfig.getInt("realisticBehaviour.projectilePushing", 0));
 		cannonDesign.setHasRecoil(cannonDesignConfig.getBoolean("realisticBehaviour.hasRecoil", false));
 		cannonDesign.setFrontloader(cannonDesignConfig.getBoolean("realisticBehaviour.isFrontloader", false));
-		cannonDesign.setRotatable(cannonDesignConfig.getBoolean("realisticBehaviour.isRotatable", false));
+		cannonDesign.setRotable(cannonDesignConfig.getBoolean("realisticBehaviour.isRotatable", false));
         cannonDesign.setMassOfCannon(cannonDesignConfig.getInt("realisticBehaviour.massOfCannon", 1000));//What means 1000?
         cannonDesign.setStartingSoot(cannonDesignConfig.getInt("realisticBehaviour.startingSoot",10));
         cannonDesign.setExplodingLoadedCannons(cannonDesignConfig.getDouble("realisticBehaviour.explodingLoadedCannon",2.0));

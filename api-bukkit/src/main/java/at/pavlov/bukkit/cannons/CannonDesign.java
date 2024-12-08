@@ -31,7 +31,7 @@ import java.util.List;
 	//ammunition_consumption
 	private String gunpowderName;
 	private ItemHolder gunpowderType;
-    private boolean needsGunpowder;
+    private boolean gunpowderNeeded;
     private boolean gunpowderConsumption;
     private boolean projectileConsumption;
 	private boolean ammoInfiniteForPlayer;
@@ -120,8 +120,8 @@ import java.util.List;
     private double sootPerGunpowder;
     private int projectilePushing;
 	private boolean hasRecoil;
-	private boolean isFrontloader;
-	private boolean isRotatable;
+	private boolean frontloader;
+	private boolean rotable;
     private int massOfCannon;
     private int startingSoot;
     private double explodingLoadedCannons;
@@ -496,57 +496,6 @@ import java.util.List;
             return getMaxLoadableGunpowderNormal();
 	}
 
-	public double getMaxHorizontalAngleNormal()
-	{
-		return maxHorizontalAngle;
-	}
-	public void setMaxHorizontalAngleNormal(double maxHorizontalAngle)
-	{
-		this.maxHorizontalAngle = maxHorizontalAngle;
-	}
-	public double getMinHorizontalAngleNormal()
-	{
-		return minHorizontalAngle;
-	}
-	public void setMinHorizontalAngleNormal(double minHorizontalAngle)
-	{
-		this.minHorizontalAngle = minHorizontalAngle;
-	}
-	public double getMaxVerticalAngleNormal()
-	{
-		return maxVerticalAngle;
-	}
-	public void setMaxVerticalAngleNormal(double maxVerticalAngle)
-	{
-		this.maxVerticalAngle = maxVerticalAngle;
-	}
-	public double getMinVerticalAngleNormal()
-	{
-		return minVerticalAngle;
-	}
-	public void setMinVerticalAngleNormal(double minVerticalAngle)
-	{
-		this.minVerticalAngle = minVerticalAngle;
-	}
-
-	public boolean isFrontloader()
-	{
-		return isFrontloader;
-	}
-	public void setFrontloader(boolean isFrontloader)
-	{
-		this.isFrontloader = isFrontloader;
-	}
-	public boolean isRotatable()
-	{
-		return isRotatable;
-	}
-	public void setRotatable(boolean isRotatable)
-	{
-		this.isRotatable = isRotatable;
-	}
-
-
 	public void putCannonBlockMap(BlockFace cannonDirection, CannonBlocks blocks) {
 		for (var block : blocks.getAllCannonBlocks()) {
 			allowedMaterials.add(block.getBlockData().getMaterial());
@@ -598,16 +547,4 @@ import java.util.List;
         }
         return null;
     }
-
-    public boolean isGunpowderNeeded() {
-        return needsGunpowder;
-    }
-
-	public void setOverloadingChangeInc(double overloadingChanceInc) {
-		this.overloadingChanceInc = overloadingChanceInc;
-	}
-
-	public double getOverloadingChangeInc() {
-		return overloadingChanceInc;
-	}
 }

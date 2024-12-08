@@ -1360,7 +1360,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      * @return tun the maximum horizontal angle
      */
     public double getMaxHorizontalAngle() {
-        return (isOnShip()) ? design.getMaxHorizontalAngleOnShip() : design.getMaxHorizontalAngleNormal();
+        return (isOnShip()) ? design.getMaxHorizontalAngleOnShip() : design.getMaxHorizontalAngle();
     }
 
     /**
@@ -1369,7 +1369,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      * @return the minimum horizontal angle
      */
     public double getMinHorizontalAngle() {
-        return (isOnShip()) ? design.getMinHorizontalAngleOnShip() : design.getMinHorizontalAngleNormal();
+        return (isOnShip()) ? design.getMinHorizontalAngleOnShip() : design.getMinHorizontalAngle();
     }
 
     /**
@@ -1378,7 +1378,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      * @return returns the maximum vertical angle
      */
     public double getMaxVerticalAngle() {
-        return (isOnShip()) ? design.getMaxVerticalAngleOnShip() : design.getMaxVerticalAngleNormal();
+        return (isOnShip()) ? design.getMaxVerticalAngleOnShip() : design.getMaxVerticalAngle();
     }
 
     /**
@@ -1387,7 +1387,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      * @return returns the minimum vertical angle
      */
     public double getMinVerticalAngle() {
-        return (isOnShip()) ? design.getMinVerticalAngleOnShip() : design.getMinVerticalAngleNormal();
+        return (isOnShip()) ? design.getMinVerticalAngleOnShip() : design.getMinVerticalAngle();
     }
 
     public void setCannonDesign(CannonDesign design) {
@@ -1522,7 +1522,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      * @return default horizontal home position
      */
     public double getHomeHorizontalAngle() {
-        return (design.getMaxHorizontalAngleNormal() + design.getMinHorizontalAngleNormal()) / 2.0;
+        return (design.getMaxHorizontalAngle() + design.getMinHorizontalAngle()) / 2.0;
     }
 
     /**
@@ -1531,7 +1531,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      * @return default vertical home position
      */
     public double getHomeVerticalAngle() {
-        return (design.getMaxVerticalAngleNormal() + design.getMinVerticalAngleNormal()) / 2.0;
+        return (design.getMaxVerticalAngle() + design.getMinVerticalAngle()) / 2.0;
     }
 
     /**
@@ -1664,7 +1664,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
         int gunpowder = ammoLoadingData.getLoadedGunpowder() - saferGunpowder;
         if (gunpowder < 0)
             gunpowder = 0;
-        return tempInc * design.getOverloadingChangeInc() * Math.pow(gunpowder * design.getOverloadingChanceOfExplosionPerGunpowder(), design.getOverloadingExponent());
+        return tempInc * design.getOverloadingChanceInc() * Math.pow(gunpowder * design.getOverloadingChanceOfExplosionPerGunpowder(), design.getOverloadingExponent());
     }
 
     /**
