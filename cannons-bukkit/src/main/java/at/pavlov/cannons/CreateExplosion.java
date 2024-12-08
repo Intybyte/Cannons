@@ -4,7 +4,7 @@ import at.pavlov.bukkit.container.SoundHolder;
 import at.pavlov.bukkit.container.SpawnEntityHolder;
 import at.pavlov.bukkit.container.SpawnMaterialHolder;
 import at.pavlov.bukkit.projectile.Projectile;
-import at.pavlov.bukkit.projectile.ProjectileProperties;
+import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.internal.enums.DamageType;
 import at.pavlov.internal.enums.EntityDataType;
 import at.pavlov.internal.enums.FakeBlockType;

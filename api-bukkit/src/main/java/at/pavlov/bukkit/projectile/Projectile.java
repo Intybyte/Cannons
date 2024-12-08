@@ -5,6 +5,7 @@ import at.pavlov.bukkit.container.ItemHolder;
 import at.pavlov.bukkit.container.SoundHolder;
 import at.pavlov.bukkit.container.SpawnEntityHolder;
 import at.pavlov.bukkit.container.SpawnMaterialHolder;
+import at.pavlov.internal.enums.ProjectileProperties;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;

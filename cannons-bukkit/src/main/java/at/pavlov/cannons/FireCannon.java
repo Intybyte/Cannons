@@ -1,7 +1,7 @@
 package at.pavlov.cannons;
 
 import at.pavlov.bukkit.projectile.Projectile;
-import at.pavlov.bukkit.projectile.ProjectileProperties;
+import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.internal.enums.FakeBlockType;
 import at.pavlov.internal.enums.InteractAction;

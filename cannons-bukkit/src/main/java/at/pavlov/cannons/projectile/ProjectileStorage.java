@@ -4,7 +4,7 @@ import at.pavlov.bukkit.builders.ParticleBuilder;
 import at.pavlov.bukkit.container.ItemHolder;
 import at.pavlov.bukkit.container.SoundHolder;
 import at.pavlov.bukkit.projectile.Projectile;
-import at.pavlov.bukkit.projectile.ProjectileProperties;
+import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.bukkit.utils.FileUtils;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;

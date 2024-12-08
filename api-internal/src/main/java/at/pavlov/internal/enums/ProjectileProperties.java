@@ -1,4 +1,4 @@
-package at.pavlov.bukkit.projectile;
+package at.pavlov.internal.enums;
 
 public enum ProjectileProperties
 {

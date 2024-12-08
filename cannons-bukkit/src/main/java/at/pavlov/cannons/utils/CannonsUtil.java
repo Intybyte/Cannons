@@ -1,7 +1,7 @@
 package at.pavlov.cannons.utils;
 
 import at.pavlov.bukkit.projectile.Projectile;
-import at.pavlov.bukkit.projectile.ProjectileProperties;
+import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.TargetManager;
 import at.pavlov.cannons.cannon.Cannon;

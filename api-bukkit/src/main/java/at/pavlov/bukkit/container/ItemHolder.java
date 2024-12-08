@@ -16,11 +16,9 @@ public class ItemHolder
 	private Material material;
 	private String displayName;
 	private List<String> lore;
-	private boolean useTypeName;
 
-	public ItemHolder(ItemStack item)
+    public ItemHolder(ItemStack item)
 	{
-		useTypeName = false;
         if (item == null){
             material=Material.AIR;
             displayName="";
@@ -38,7 +36,6 @@ public class ItemHolder
         if (meta.hasDisplayName() && meta.getDisplayName()!=null) {
 			displayName = meta.getDisplayName();
 		} else if (!meta.hasDisplayName()){
-            useTypeName = true;
             displayName = getFriendlyName(item, true);
             //Cannons.getPlugin().logDebug("display name: " + displayName);
         } else {

@@ -24,7 +24,7 @@ public class SimpleBlock {
 		locZ = z;
 
 		this.blockData = blockData;
-		this.directional = this instanceof Directional;
+		this.directional = blockData instanceof Directional;
 	}
 
 	public SimpleBlock(Vector vect, BlockData blockData) {
