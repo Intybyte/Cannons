@@ -6,6 +6,7 @@ New features/fixes:
 - Simplified Chinese Translation by [SnowCutieOwO](https://github.com/SnowCutieOwO)
 - New area commands
 - Mohist compatibility (kind of, you need to use particle aiming)
+- Folia support
 
 Hooks:
 ---------------
