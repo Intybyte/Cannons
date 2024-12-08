@@ -1,6 +1,6 @@
-package at.pavlov.cannons.cannon;
+package at.pavlov.bukkit.cannons;
 
-import at.pavlov.cannons.container.SimpleBlock;
+import at.pavlov.bukkit.container.SimpleBlock;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package at.pavlov.cannons.cannon;
+package at.pavlov.bukkit.cannons;
 
 import at.pavlov.internal.cannons.functionalities.Updatable;
 
@@ -7,7 +7,7 @@ public interface CannonDesignHolder extends Updatable {
 
     CannonDesign getCannonDesign();
 
-    default boolean sameDesign(Cannon cannon) {
+    default boolean sameDesign(CannonBukkit cannon) {
         return sameDesign(cannon.getCannonDesign());
     }
 
@@ -19,9 +19,6 @@ public interface CannonDesignHolder extends Updatable {
         return getCannonDesign().getDesignID();
     }
 
-    default void setDesignID(String designID) {
-        setCannonDesign(DesignStorage.getInstance().getDesign(designID));
-        this.hasUpdated();
-    }
+    void setDesignID(String designID);
 
 }

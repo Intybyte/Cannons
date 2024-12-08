@@ -1,6 +1,6 @@
-package at.pavlov.cannons.utils;
+package at.pavlov.bukkit.utils;
 
-import at.pavlov.cannons.builders.ParticleBuilder;
+import at.pavlov.bukkit.builders.ParticleBuilder;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
 

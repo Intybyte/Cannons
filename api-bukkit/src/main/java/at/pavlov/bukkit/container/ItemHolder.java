@@ -1,8 +1,5 @@
-package at.pavlov.cannons.container;
+package at.pavlov.bukkit.container;
 
-import at.pavlov.cannons.Cannons;
-import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
-import java.util.logging.Level;
 
 
 //small class as at.pavlov.cannons.container for item id and data
@@ -21,12 +17,6 @@ public class ItemHolder
 	private String displayName;
 	private List<String> lore;
 	private boolean useTypeName;
-
-	//half of this stuff is useless, keeping it for compatibity maybe for now
-	private static Class localeClass = null;
-	private static Class craftItemStackClass = null, nmsItemStackClass = null, nmsItemClass = null;
-	private static String OBC_PREFIX = Bukkit.getServer().getClass().getPackage().getName();
-	private static String NMS_PREFIX = OBC_PREFIX.replace("org.bukkit.craftbukkit", "net.minecraft.server");
 
 	public ItemHolder(ItemStack item)
 	{
@@ -109,7 +99,7 @@ public class ItemHolder
 
 			s.close();
 		} catch(Exception e) {
-			Cannons.logger().log(Level.SEVERE,"[CANNONS] Error while converting " + str + ". Check formatting (minecraft:clock)");
+			//Cannons.logger().log(Level.SEVERE,"[CANNONS] Error while converting " + str + ". Check formatting (minecraft:clock)");
         }
 	}
 	
@@ -224,7 +214,7 @@ public class ItemHolder
 	
 	public String toString()
 	{
-		return this.material + ":" + this.displayName + ":" + StringUtils.join(this.lore, ":");
+		return this.material + ":" + this.displayName + ":" + String.join(":", this.lore);
 	}
 
 	public Material getType()

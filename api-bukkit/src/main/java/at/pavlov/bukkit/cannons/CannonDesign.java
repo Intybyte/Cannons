@@ -1,10 +1,9 @@
-package at.pavlov.cannons.cannon;
+package at.pavlov.bukkit.cannons;
 
-import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.container.ItemHolder;
-import at.pavlov.cannons.container.SimpleBlock;
-import at.pavlov.cannons.container.SoundHolder;
-import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.SimpleBlock;
+import at.pavlov.bukkit.container.SoundHolder;
+import at.pavlov.bukkit.projectile.Projectile;
 import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -197,7 +196,7 @@ import java.util.List;
      * @param cannon
      * @return
      */
-    public Location getRotationCenter(Cannon cannon)
+    public Location getRotationCenter(CannonBukkit cannon)
     {
     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	if (cannonBlocks != null)
@@ -205,7 +204,7 @@ import java.util.List;
     		return cannonBlocks.getRotationCenter().clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit());
     	}
 
-    	Cannons.logger().info("missing rotation center for cannon design " + cannon.getCannonName());
+    	//Cannons.logger().info("missing rotation center for cannon design " + cannon.getCannonName());
     	return cannon.getOffset().toLocation(cannon.getWorldBukkit());
     }
 
@@ -215,7 +214,7 @@ import java.util.List;
      * @param cannon
      * @return
      */
-    public Location getMuzzle(Cannon cannon)
+    public Location getMuzzle(CannonBukkit cannon)
     {
     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	if (cannonBlocks != null)
@@ -223,7 +222,7 @@ import java.util.List;
     		return cannonBlocks.getMuzzle().clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit());
     	}
 
-    	Cannons.logger().info("missing muzzle location for cannon design " + cannon.getCannonName());
+    	//Cannons.logger().info("missing muzzle location for cannon design " + cannon.getCannonName());
     	return cannon.getOffset().toLocation(cannon.getWorldBukkit());
     }
     
@@ -232,7 +231,7 @@ import java.util.List;
      * @param cannon the used cannon
      * @return the firing trigger of the cannon - can be null if the cannon has no trigger
      */
-    public Location getFiringTrigger(Cannon cannon)
+    public Location getFiringTrigger(CannonBukkit cannon)
     {
     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	if (cannonBlocks != null && cannonBlocks.getFiringTrigger() != null)
@@ -264,7 +263,7 @@ import java.util.List;
      * @param cannon
      * @return
      */
-    public List<Location> getAllCannonBlocks(Cannon cannon)
+    public List<Location> getAllCannonBlocks(CannonBukkit cannon)
     {
         CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
         List<Location> locList = new ArrayList<>();
@@ -284,7 +283,7 @@ import java.util.List;
      * @param cannon
      * @return
      */
-    public List<Location> getDestructibleBlocks(Cannon cannon)
+    public List<Location> getDestructibleBlocks(CannonBukkit cannon)
     {
      	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
@@ -304,7 +303,7 @@ import java.util.List;
      * @param cannon
      * @return
      */
-    public List<Location> getFiringIndicator(Cannon cannon)
+    public List<Location> getFiringIndicator(CannonBukkit cannon)
     {
      	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
@@ -323,7 +322,7 @@ import java.util.List;
      * @param cannon
      * @return
      */
-    public List<Location> getLoadingInterface(Cannon cannon)
+    public List<Location> getLoadingInterface(CannonBukkit cannon)
     {
         CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
         List<Location> locList = new ArrayList<>();
@@ -342,7 +341,7 @@ import java.util.List;
      * @param cannon
      * @return
      */
-    public List<Location> getBarrelBlocks(Cannon cannon)
+    public List<Location> getBarrelBlocks(CannonBukkit cannon)
     {
         CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
         List<Location> locList = new ArrayList<>();
@@ -361,7 +360,7 @@ import java.util.List;
      * @param cannon
      * @return
      */
-    public List<Location> getRightClickTrigger(Cannon cannon)
+    public List<Location> getRightClickTrigger(CannonBukkit cannon)
     {
      	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
@@ -380,7 +379,7 @@ import java.util.List;
      * @param cannon
      * @return
      */
-    public List<Location> getRedstoneTrigger(Cannon cannon)
+    public List<Location> getRedstoneTrigger(CannonBukkit cannon)
     {
      	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
@@ -400,7 +399,7 @@ import java.util.List;
      * @param cannon
      * @return
      */
-    public List<Location> getChestsAndSigns(Cannon cannon)
+    public List<Location> getChestsAndSigns(CannonBukkit cannon)
     {
     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
@@ -419,7 +418,7 @@ import java.util.List;
      * @param cannon
      * @return
      */
-    public List<Location> getRedstoneTorches(Cannon cannon)
+    public List<Location> getRedstoneTorches(CannonBukkit cannon)
     {
     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
@@ -438,7 +437,7 @@ import java.util.List;
      * @param cannon
      * @return
      */
-    public List<Location> getRedstoneWireAndRepeater(Cannon cannon)
+    public List<Location> getRedstoneWireAndRepeater(CannonBukkit cannon)
     {
     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();

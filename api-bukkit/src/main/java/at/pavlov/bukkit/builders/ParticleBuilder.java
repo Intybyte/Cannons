@@ -1,4 +1,4 @@
-package at.pavlov.cannons.builders;
+package at.pavlov.bukkit.builders;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

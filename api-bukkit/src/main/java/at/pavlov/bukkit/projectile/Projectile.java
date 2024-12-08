@@ -1,11 +1,10 @@
-package at.pavlov.bukkit.cannons;
+package at.pavlov.bukkit.projectile;
 
-import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.builders.ParticleBuilder;
-import at.pavlov.cannons.container.ItemHolder;
-import at.pavlov.cannons.container.SoundHolder;
-import at.pavlov.cannons.container.SpawnEntityHolder;
-import at.pavlov.cannons.container.SpawnMaterialHolder;
+import at.pavlov.bukkit.builders.ParticleBuilder;
+import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.SoundHolder;
+import at.pavlov.bukkit.container.SpawnEntityHolder;
+import at.pavlov.bukkit.container.SpawnMaterialHolder;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.FireworkEffect;
@@ -26,7 +25,7 @@ public class Projectile implements Cloneable{
 	private String itemName;
 	private ItemHolder loadingItem;
 	//list of items or blocks that can represent this this (e.g. redstone dust may for wire when you click a block)
-	private List<ItemHolder> alternativeItemList = new ArrayList<ItemHolder>();
+	private List<ItemHolder> alternativeItemList = new ArrayList<>();
 
 	//properties of the cannonball
 	private EntityType projectileEntity;
@@ -39,7 +38,7 @@ public class Projectile implements Cloneable{
 	private int numberOfBullets;
 	private double spreadMultiplier;
 	private int sentryIgnoredBlocks;
-	private List<ProjectileProperties> propertyList = new ArrayList<ProjectileProperties>();
+	private List<ProjectileProperties> propertyList = new ArrayList<>();
 
 	//smokeTrail
 	private boolean smokeTrailEnabled;
@@ -79,8 +78,8 @@ public class Projectile implements Cloneable{
 	private double spawnBlockRadius;
 	private double spawnEntityRadius;
 	private double spawnVelocity;
-	private List<SpawnMaterialHolder> spawnBlocks = new ArrayList<SpawnMaterialHolder>();
-	private List<SpawnEntityHolder> spawnEntities = new ArrayList<SpawnEntityHolder>();
+	private List<SpawnMaterialHolder> spawnBlocks = new ArrayList<>();
+	private List<SpawnEntityHolder> spawnEntities = new ArrayList<>();
 	private List<String> spawnProjectiles;
 
 	//spawn Fireworks
@@ -117,7 +116,7 @@ public class Projectile implements Cloneable{
 		}
 		catch(CloneNotSupportedException e)
 		{
-			Cannons.logger().info("Cloning not allowed.");
+			//Cannons.logger().info("Cloning not allowed.");
 			return this;
 		}
 	}

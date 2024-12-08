@@ -1,6 +1,5 @@
-package at.pavlov.cannons.container;
+package at.pavlov.bukkit.container;
 
-import at.pavlov.cannons.Cannons;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -31,7 +30,7 @@ public class SpawnMaterialHolder {
         }
         catch(Exception e)
         {
-            Cannons.logger().log(Level.SEVERE,"Error while converting " + str + ". Check formatting (minecraft:cobweb 1-2)");
+            //Cannons.logger().log(Level.SEVERE,"Error while converting " + str + ". Check formatting (minecraft:cobweb 1-2)");
             material =  Bukkit.createBlockData(Material.AIR);
             setMinAmount(0);
             setMaxAmount(0);

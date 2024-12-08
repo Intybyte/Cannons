@@ -1,11 +1,11 @@
-package at.pavlov.cannons.container;
+package at.pavlov.bukkit.container;
 
 
-import at.pavlov.cannons.utils.CannonsUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.material.Directional;
 import org.bukkit.util.Vector;
@@ -190,7 +190,7 @@ public class SimpleBlock {
 	 * @return
 	 */
 	public void rotate90(){
-		this.blockData = CannonsUtil.roateBlockFacingClockwise(this.blockData);
+		this.blockData = rotateBlockFacingClockwise(this.blockData);
 		int newx = -this.locZ;
 		this.locZ = this.locX;
 		this.locX = newx;
@@ -249,5 +249,19 @@ public class SimpleBlock {
 		return "x:" + locX + " y:" + locY + " z:" + locZ +" blockdata:" + this.getBlockData().toString();
 	}
 
+	public static BlockData rotateBlockFacingClockwise(BlockData blockData){
+		if (blockData instanceof org.bukkit.block.data.Directional directional){
+			directional.setFacing(rotateFace(directional.getFacing()));
+		}
+		return blockData;
+	}
+
+	public static BlockFace rotateFace(BlockFace face) {
+		if (face.equals(BlockFace.NORTH)) return BlockFace.EAST;
+		if (face.equals(BlockFace.EAST)) return BlockFace.SOUTH;
+		if (face.equals(BlockFace.SOUTH)) return BlockFace.WEST;
+		if (face.equals(BlockFace.WEST)) return BlockFace.NORTH;
+		return BlockFace.UP;
+	}
 
 }
