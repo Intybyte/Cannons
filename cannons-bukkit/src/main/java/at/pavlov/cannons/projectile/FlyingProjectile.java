@@ -4,6 +4,8 @@ import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.internal.enums.ProjectileCause;
 import at.pavlov.cannons.container.MovingObject;
 import io.papermc.lib.PaperLib;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -21,23 +23,28 @@ public class FlyingProjectile
 	private final UUID entityUID;
     private final UUID shooterUID;
     private final UUID worldUID;
+    @Setter @Getter
     private UUID cannonUID;
 	private final Projectile projectile;
     private final org.bukkit.projectiles.ProjectileSource source;
     //location of the shooterUID before firing - important for teleporting the player back - observer property
     private final Location playerlocation;
+    @Setter @Getter
     private Location impactLocation;
     //block which caused the cannonball explosion - can be null
+    @Setter @Getter
     private Location impactBlock;
+    @Setter @Getter
     private Location lastSmokeTrailLocation;
     //Important for visual splash effect when the cannonball hits the water surface
     private boolean inWater;
     private boolean wasInWater;
     //if the teleport was already performed
+    @Setter @Getter
     private boolean teleported;
     //was the projectile fired by a player, redstone or a sentry
     private final ProjectileCause projectileCause;
-    private boolean hasDetonated;
+    private boolean detonated;
     private final MovingObject predictor;
 
 
@@ -244,22 +251,6 @@ public class FlyingProjectile
         return entityUID;
     }
 
-    public Location getImpactLocation() {
-        return impactLocation;
-    }
-
-    public void setImpactLocation(Location impactLocation) {
-        this.impactLocation = impactLocation;
-    }
-
-    public UUID getCannonUID() {
-        return cannonUID;
-    }
-
-    public void setCannonUID(UUID cannonUID) {
-        this.cannonUID = cannonUID;
-    }
-
     public org.bukkit.projectiles.ProjectileSource getSource() {
         return source;
     }
@@ -274,22 +265,6 @@ public class FlyingProjectile
         return Bukkit.getWorld(worldUID);
     }
 
-    public boolean isTeleported() {
-        return teleported;
-    }
-
-    public void setTeleported(boolean teleported) {
-        this.teleported = teleported;
-    }
-
-    public Location getLastSmokeTrailLocation() {
-        return lastSmokeTrailLocation;
-    }
-
-    public void setLastSmokeTrailLocation(Location lastSmokeTrailLocation) {
-        this.lastSmokeTrailLocation = lastSmokeTrailLocation;
-    }
-
     public ProjectileCause getProjectileCause() {
         return projectileCause;
     }
@@ -298,19 +273,11 @@ public class FlyingProjectile
         return predictor.getVel().clone();
     }
 
-    public Location getImpactBlock() {
-        return impactBlock;
-    }
-
-    public void setImpactBlock(Location impactBlock) {
-        this.impactBlock = impactBlock;
-    }
-
     public boolean hasDetonated() {
-        return this.hasDetonated;
+        return this.detonated;
     }
 
-    public void setHasDetonated(boolean detonated) {
-        this.hasDetonated = detonated;
+    public void setDetonated(boolean detonated) {
+        this.detonated = detonated;
     }
 }

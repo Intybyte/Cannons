@@ -155,7 +155,7 @@ public class ProjectileManager
 
         org.bukkit.entity.Projectile projectile_entity = fproj.getProjectileEntity();
         if (!fproj.hasDetonated() && cannonball.isValid()) {
-            fproj.setHasDetonated(true);
+            fproj.setDetonated(true);
             CreateExplosion.getInstance().directHit(fproj, projectile_entity, target);
             projectile_entity.remove();
         }
