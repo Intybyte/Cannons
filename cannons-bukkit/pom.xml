@@ -82,6 +82,11 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
+            <groupId>at.pavlov</groupId>
+            <artifactId>api-bukkit</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.14.0</version>
