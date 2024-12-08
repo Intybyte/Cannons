@@ -26,7 +26,7 @@ import java.util.List;
     private boolean lastUserBecomesOwner;
 	
 	//sign
-	private boolean isSignRequired; 
+	private boolean signRequired;
 	
 	//ammunition_consumption
 	private String gunpowderName;
@@ -193,8 +193,6 @@ import java.util.List;
     
     /**
      * returns the rotation center of a cannon design
-     * @param cannon
-     * @return
      */
     public Location getRotationCenter(CannonBukkit cannon)
     {
@@ -211,8 +209,6 @@ import java.util.List;
 
     /**
      * returns the muzzle location
-     * @param cannon
-     * @return
      */
     public Location getMuzzle(CannonBukkit cannon)
     {
@@ -260,8 +256,6 @@ import java.util.List;
 
     /**
      * returns a list of all cannonBlocks
-     * @param cannon
-     * @return
      */
     public List<Location> getAllCannonBlocks(CannonBukkit cannon)
     {
@@ -280,8 +274,6 @@ import java.util.List;
 
     /**
      * returns a list of all destructible blocks
-     * @param cannon
-     * @return
      */
     public List<Location> getDestructibleBlocks(CannonBukkit cannon)
     {
@@ -300,8 +292,6 @@ import java.util.List;
     
     /**
      * returns a list of all firingIndicator blocks
-     * @param cannon
-     * @return
      */
     public List<Location> getFiringIndicator(CannonBukkit cannon)
     {
@@ -319,8 +309,6 @@ import java.util.List;
     
     /**
      * returns a list of all loading interface blocks
-     * @param cannon
-     * @return
      */
     public List<Location> getLoadingInterface(CannonBukkit cannon)
     {
@@ -338,8 +326,6 @@ import java.util.List;
 
     /**
      * returns a list of all barrel blocks
-     * @param cannon
-     * @return
      */
     public List<Location> getBarrelBlocks(CannonBukkit cannon)
     {
@@ -357,8 +343,6 @@ import java.util.List;
     
     /**
      * returns a list of all right click trigger blocks
-     * @param cannon
-     * @return
      */
     public List<Location> getRightClickTrigger(CannonBukkit cannon)
     {
@@ -376,8 +360,6 @@ import java.util.List;
     
     /**
      * returns a list of all redstone trigger blocks
-     * @param cannon
-     * @return
      */
     public List<Location> getRedstoneTrigger(CannonBukkit cannon)
     {
@@ -396,8 +378,6 @@ import java.util.List;
     
     /**
      * returns a list of all chest/sign blocks
-     * @param cannon
-     * @return
      */
     public List<Location> getChestsAndSigns(CannonBukkit cannon)
     {
@@ -415,8 +395,6 @@ import java.util.List;
     
     /**
      * returns a list of all redstone torch blocks
-     * @param cannon
-     * @return
      */
     public List<Location> getRedstoneTorches(CannonBukkit cannon)
     {
@@ -434,8 +412,6 @@ import java.util.List;
     
     /**
      * returns a list of all redstone wire/repeater blocks
-     * @param cannon
-     * @return
      */
     public List<Location> getRedstoneWireAndRepeater(CannonBukkit cannon)
     {
@@ -466,15 +442,6 @@ import java.util.List;
     	
     	return false;
     }
-
-	public boolean isSignRequired()
-	{
-		return isSignRequired;
-	}
-	public void setSignRequired(boolean isSignRequired)
-	{
-		this.isSignRequired = isSignRequired;
-	}
 
 	/**
 	 * Normal means without overloading stuff
