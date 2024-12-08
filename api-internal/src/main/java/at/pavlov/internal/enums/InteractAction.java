@@ -1,4 +1,4 @@
-package at.pavlov.cannons.Enum;
+package at.pavlov.internal.enums;
 
 public enum InteractAction
 {
