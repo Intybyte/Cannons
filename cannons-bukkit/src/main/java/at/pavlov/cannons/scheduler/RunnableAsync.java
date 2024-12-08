@@ -1,4 +1,4 @@
-package at.pavlov.internal.cannons;
+package at.pavlov.cannons.scheduler;
 
 import at.pavlov.cannons.dao.AsyncTaskManager;
 
