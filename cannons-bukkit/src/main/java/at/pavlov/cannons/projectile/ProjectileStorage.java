@@ -51,7 +51,7 @@ public class ProjectileStorage
 	public static ArrayList<String> getProjectileIds(){
 		ArrayList<String> list = new ArrayList<>();
 		for (Projectile proj : projectileList){
-			list.add(proj.getProjectileId());
+			list.add(proj.getProjectileID());
 		}
 		return list;
 	}
@@ -419,7 +419,7 @@ public class ProjectileStorage
 	{
 		for (Projectile projectile : projectileList)
 		{
-			if (projectile.getProjectileId().equalsIgnoreCase(str))
+			if (projectile.getProjectileID().equalsIgnoreCase(str))
 				return projectile;
 		}
 		return null;

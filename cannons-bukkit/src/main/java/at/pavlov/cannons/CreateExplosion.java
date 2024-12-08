@@ -167,7 +167,7 @@ public class CreateExplosion {
 
         // has this projectile the super breaker property and makes block damage
         Boolean superbreaker = projectile.hasProperty(ProjectileProperties.SUPERBREAKER);
-        Boolean doesBlockDamage = projectile.getPenetrationDamage();
+        Boolean doesBlockDamage = projectile.isPenetrationDamage();
 
         // list of destroy blocks
         LinkedList<Block> blocklist = new LinkedList<>();
@@ -323,7 +323,7 @@ public class CreateExplosion {
                 this.plugin.logDebug("reset TNT fuse ticks to: " + fuseTicks + " fusetime " + fusetime);
                 tnt.setFuseTicks(fuseTicks);
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof AreaEffectCloud cloud) {
             try {
@@ -355,14 +355,14 @@ public class CreateExplosion {
                     cloud.addCustomEffect(effect, true);
                 }
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof SpectralArrow arrow) {
             try {
                 arrow.setGlowingTicks(ParseUtils.parseInt(entityData.get(EntityDataType.DURATION),
                         arrow.getGlowingTicks()));
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof Arrow arrow) {
             try {
@@ -374,7 +374,7 @@ public class CreateExplosion {
                     arrow.addCustomEffect(effect, true);
                 }
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof LivingEntity living) {
             try {
@@ -398,7 +398,7 @@ public class CreateExplosion {
                                     equipment.getItemInOffHand())));
                 }
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof ThrownPotion pentity) {
             try {
@@ -417,7 +417,7 @@ public class CreateExplosion {
 
                 pentity.setItem(potion);
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         }
     }
@@ -820,7 +820,7 @@ public class CreateExplosion {
         }
 
         boolean incendiary = projectile.hasProperty(ProjectileProperties.INCENDIARY);
-        boolean blockDamage = projectile.getExplosionDamage();
+        boolean blockDamage = projectile.isExplosionDamage();
 
         this.plugin.logDebug("Projectile impact event: " + impactLoc.getBlockX() + ", " + impactLoc.getBlockY() + ", "
                 + impactLoc.getBlockZ() + " direction: " + impactLoc.getYaw() + " Pitch: " + impactLoc.getPitch());
