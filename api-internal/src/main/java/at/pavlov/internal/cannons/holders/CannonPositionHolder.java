@@ -49,21 +49,6 @@ public interface CannonPositionHolder<Direction, Vector> extends Updatable {
         return getCannonPosition().getWorld();
     }
 
-    /*
-     * @return bukkit world from saved UUID
-     */
-    /*
-    default World getWorldBukkit() {
-        if (this.getWorld() == null) {
-            return null;
-        }
-        World bukkitWorld = Bukkit.getWorld(this.getWorld());
-        if (bukkitWorld == null)
-            Cannons.logger().info("Can't find world: " + getWorld());
-        return Bukkit.getWorld(this.getWorld());
-        // return new Location(bukkitWorld, )
-    }*/
-
     default void setWorld(UUID world) {
         getCannonPosition().setWorld(world);
         this.hasUpdated();
@@ -75,14 +60,4 @@ public interface CannonPositionHolder<Direction, Vector> extends Updatable {
      * @param moved - how far the cannon has been moved
      */
     void move(Vector moved);
-    /*
-    default void move(Vector moved) {
-        getOffset().add(moved);
-        this.hasUpdated();
-    }*/
-    /*
-
-    Location getLocation();
-
-    Location getMuzzle();*/
 }
