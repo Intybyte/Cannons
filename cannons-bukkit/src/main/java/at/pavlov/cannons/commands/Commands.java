@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @CommandAlias("cannons")
 @SuppressWarnings("deprecation")
@@ -47,6 +48,7 @@ public class Commands extends BaseCommand {
     private static PersistenceDatabase persistenceDatabase;
     private static CannonManager cannonManager;
     private static CannonSelector cannonSelector;
+    private static AsyncTaskManager taskManager;
 
     public Commands(Cannons plugin) {
         cannons = plugin;
@@ -56,6 +58,8 @@ public class Commands extends BaseCommand {
         cannonManager = CannonManager.getInstance();
         persistenceDatabase = cannons.getPersistenceDatabase();
         cannonSelector = CannonSelector.getInstance();
+
+        taskManager = AsyncTaskManager.get();
     }
 
     @HelpCommand
@@ -68,6 +72,10 @@ public class Commands extends BaseCommand {
     @CommandPermission("cannons.admin.reload")
     public static void onReload(CommandSender sender) {
         myConfig.loadConfig();
+        DesignStorage.getInstance().loadCannonDesigns();
+        ProjectileStorage.getInstance().loadProjectiles();
+        CannonManager.getInstance().updateCannons();
+        UserMessages.getInstance().loadLanguage();
         sendMessage(sender, ChatColor.GREEN + tag + "Config loaded");
     }
 
@@ -402,11 +410,16 @@ public class Commands extends BaseCommand {
     public static void onClaim(Player player, @Default("20") int size) {
         userMessages.sendMessage(MessageEnum.CmdClaimCannonsStarted, player);
 
-        var taskManager = AsyncTaskManager.get();
+        if (cannons.isFolia()) {
+            player.sendMessage("This command is not available on folia");
+            return;
+        }
+
         CompletableFuture.runAsync(() -> {
             cannonManager.fetchCannonInBox(player.getLocation(), player.getUniqueId(), size);
-            taskManager.fireSyncRunnable( () ->
-                    userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player));
+            taskManager.scheduler.runTask(player, () -> {
+                userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player);
+            });
         }, taskManager.async);
     }
 
@@ -414,16 +427,17 @@ public class Commands extends BaseCommand {
     @CommandPermission("cannons.admin.reload")
     public static void onResetArea(Player player, @Default("20") int size) {
 
-        var taskManager = AsyncTaskManager.get();
         CompletableFuture.runAsync(() -> {
             final HashSet<Cannon> cannonList = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
 
-            taskManager.fireSyncRunnable( () -> {
-                cannonList.forEach(cannon -> {
+            for (Cannon cannon : cannonList) {
+                taskManager.scheduler.runTask(cannon.getLocation(), () -> {
                     persistenceDatabase.deleteCannon(cannon.getUID());
                     cannonManager.removeCannon(cannon, false, false, BreakCause.Other);
                 });
-                //make CannonReseted area
+            }
+
+            taskManager.scheduler.runTask(player, () -> {
                 player.sendMessage("N: " + cannonList.size() + " cannons nearby have been deleted");
             });
         }, taskManager.async);
@@ -435,12 +449,17 @@ public class Commands extends BaseCommand {
     public static void onDismantleArea(Player player, @Default("20") int size) {
         player.sendMessage("Dismantling started");
 
-        var taskManager = AsyncTaskManager.get();
+        if (cannons.isFolia()) {
+            player.sendMessage("This command is not available on folia");
+            return;
+        }
+
         CompletableFuture.runAsync(() -> {
             var cannonHashSet = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
-            taskManager.fireSyncRunnable( () ->
-                    cannonHashSet
-                            .forEach(cannon -> cannonManager.dismantleCannon(cannon, player)));
+            for (Cannon cannon : cannonHashSet) {
+                var location = cannon.getLocation();
+                taskManager.scheduler.runTask(location, () -> cannonManager.dismantleCannon(cannon, player));
+            }
         }, taskManager.async);
     }
 

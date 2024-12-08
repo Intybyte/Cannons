@@ -2,11 +2,13 @@ package at.pavlov.cannons.config;
 
 
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.builders.ParticleBuilder;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.multiversion.ParticleResolver;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
+import at.pavlov.cannons.utils.FileUtils;
 import at.pavlov.cannons.utils.ParseUtils;
 import lombok.Data;
 import lombok.Getter;
@@ -74,6 +76,9 @@ import java.util.List;
     private int imitatedAimingLineLength;
     private BlockData imitatedAimingMaterial = Bukkit.createBlockData("minecraft:glass");
     private double imitatedAimingTime;
+
+    private boolean imitatedAimingParticleEnabled;
+    private ParticleBuilder imitatedAimingParticle;
 
     private boolean imitatedFiringEffectEnabled;
     private BlockData imitatedFireMaterial = Bukkit.createBlockData("minecraft:glowstone");
@@ -179,6 +184,9 @@ import java.util.List;
         setImitatedAimingLineLength(config.getInt("imitatedEffects.aiming.length", 5));
         setImitatedAimingMaterial(CannonsUtil.createBlockData(config.getString("imitatedEffects.aiming.block", "minecraft:glass")));
         setImitatedAimingTime(config.getDouble("imitatedEffects.aiming.time", 1.0));
+
+        setImitatedAimingParticleEnabled(config.getBoolean("imitatedEffects.aiming.particles.enabled", false));
+        setImitatedAimingParticle(FileUtils.readParticleBuilder(config, "imitatedEffects.aiming.particles"));
 
         //imitated firing effects
         setImitatedFiringEffectEnabled(config.getBoolean("imitatedEffects.firing.enabled", false));

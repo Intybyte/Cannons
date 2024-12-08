@@ -1,25 +1,26 @@
 package at.pavlov.cannons.dao;
 
 import at.pavlov.cannons.Cannons;
-import org.bukkit.scheduler.BukkitRunnable;
+import at.pavlov.cannons.interfaces.RunnableAsync;
 
 import java.sql.Statement;
 import java.util.UUID;
 
-public class DeleteCannonTask extends BukkitRunnable{
+public class DeleteCannonTask implements RunnableAsync {
     private final UUID cannonId;
     private final UUID playerId;
-    public DeleteCannonTask(){
+
+    public DeleteCannonTask() {
         this.cannonId = null;
         this.playerId = null;
     }
 
-    public DeleteCannonTask(UUID cannonId){
+    public DeleteCannonTask(UUID cannonId) {
         this.cannonId = cannonId;
         this.playerId = null;
     }
 
-    public DeleteCannonTask(UUID playerId, boolean player){
+    public DeleteCannonTask(UUID playerId, boolean player) {
         this.cannonId = null;
         this.playerId = playerId;
     }

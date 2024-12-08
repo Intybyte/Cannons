@@ -5,22 +5,23 @@ import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.Enum.FakeBlockType;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
+import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 
 public class ProjectileObserver {
@@ -43,41 +44,54 @@ public class ProjectileObserver {
     public void setupScheduler()
     {
         //changing angles for aiming mode
-        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+        var taskManager = AsyncTaskManager.get();
+        taskManager.scheduler.runTaskTimer(() -> {
             //get projectiles
-            Iterator<Map.Entry<UUID,FlyingProjectile>> iter = ProjectileManager
+            var projectiles = ProjectileManager
                     .getInstance()
-                    .getFlyingProjectiles().entrySet().iterator();
-            while(iter.hasNext()) {
-                FlyingProjectile cannonball = iter.next().getValue();
+                    .getFlyingProjectiles();
+
+            for(var entry : projectiles.entrySet()) {
+                FlyingProjectile cannonball = entry.getValue();
                 org.bukkit.entity.Projectile projectile_entity = cannonball.getProjectileEntity();
 
-                if (cannonball.isValid(projectile_entity)) {
-
-                    //update the cannonball
-                    checkWaterImpact(cannonball, projectile_entity);
-                    updateTeleporter(cannonball, projectile_entity);
-                    updateSmokeTrail(cannonball, projectile_entity);
-
-                    if (updateProjectileLocation(cannonball, projectile_entity)) {
-                        iter.remove();
+                Executor executor = (task) -> {
+                    if (plugin.isFolia()) {
+                        taskManager.scheduler.runTask(projectile_entity, task);
+                    } else {
+                        task.run();
                     }
-                    continue;
-                }
+                };
 
-                //remove a not valid projectile
-                //teleport the observer back to its start position
-                CannonsUtil.teleportBack(cannonball);
-                if (projectile_entity != null)
-                {
-                    Location l = projectile_entity.getLocation();
-                    projectile_entity.remove();
-                    plugin.logDebug("removed Projectile at " + l.getBlockX() + "," + l.getBlockY() + "," + l.getBlockZ() + " because it was not valid.");
-                }
-                else
-                    plugin.logDebug("removed Projectile at because the entity was missing");
-                //remove entry in hashmap
-                iter.remove();
+                var key = entry.getKey();
+                CompletableFuture.runAsync( () -> {
+                    if (cannonball.isValid(projectile_entity)) {
+
+                        //update the cannonball
+                        checkWaterImpact(cannonball, projectile_entity);
+                        updateTeleporter(cannonball, projectile_entity);
+                        updateSmokeTrail(cannonball, projectile_entity);
+
+                        if (updateProjectileLocation(cannonball, projectile_entity)) {
+                            projectiles.remove(key);
+                        }
+                        return;
+                    }
+
+                    //remove a not valid projectile
+                    //teleport the observer back to its start position
+                    CannonsUtil.teleportBack(cannonball);
+                    if (projectile_entity != null)
+                    {
+                        Location l = projectile_entity.getLocation();
+                        projectile_entity.remove();
+                        plugin.logDebug("removed Projectile at " + l.getBlockX() + "," + l.getBlockY() + "," + l.getBlockZ() + " because it was not valid.");
+                    }
+                    else
+                        plugin.logDebug("removed Projectile at because the entity was missing");
+                    //remove entry in hashmap
+                    projectiles.remove(key);
+                }, executor);
             }
 
         }, 1L, 1L);
@@ -174,7 +188,7 @@ public class ProjectileObserver {
         {
             optiLoc.setYaw(shooter.getLocation().getYaw());
             optiLoc.setPitch(shooter.getLocation().getPitch());
-            shooter.teleport(optiLoc);
+            PaperLib.teleportAsync(shooter, optiLoc);
         }
     }
 
@@ -232,7 +246,7 @@ public class ProjectileObserver {
         plugin.logDebug("smoke trail at: " +  newLoc.getBlockX() + "," + newLoc.getBlockY() + "," + newLoc.getBlockZ());
 
         if (proj.isSmokeTrailParticleEnabled()) {
-            cannonball.getWorld().spawnParticle(proj.getSmokeTrailParticleType(), newLoc, proj.getSmokeTrailParticleCount(), proj.getSmokeTrailParticleOffsetX(), proj.getSmokeTrailParticleOffsetY(), proj.getSmokeTrailParticleOffsetZ(), proj.getSmokeTrailParticleSpeed(), null, true);
+            proj.getSmokeTrailParticle().at(newLoc);
             return;
         }
 

@@ -228,7 +228,8 @@ public class PlayerListener implements Listener
             return;
         }
 
-    	if((event.getAction().isRightClick() || event.getAction() == Action.PHYSICAL) && cannon != null) {
+        boolean isRMB = action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;
+    	if((isRMB || event.getAction() == Action.PHYSICAL) && cannon != null) {
             // prevent eggs and snowball from firing when loaded into the gun
             if(config.isCancelItem(eventitem))
                 event.setCancelled(true);

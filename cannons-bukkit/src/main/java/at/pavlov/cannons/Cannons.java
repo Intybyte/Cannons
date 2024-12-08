@@ -79,6 +79,9 @@ public final class Cannons extends JavaPlugin
 	@Getter
 	private ModrinthUpdateChecker updateChecker;
 
+	@Getter
+	private boolean folia = false;
+
 	private final String cannonDatabase = "cannonlist_2_4_6";
 	private final String whitelistDatabase = "whitelist_2_4_6";
 
@@ -88,6 +91,7 @@ public final class Cannons extends JavaPlugin
 
 	public void onLoad() {
 		// must be done in onLoad because "movecraft"
+		AsyncTaskManager.initialize(this);
 		UserMessages.initialize(this);
 		Config.initialize(this);
 		CannonManager.initialize(this);
@@ -95,17 +99,18 @@ public final class Cannons extends JavaPlugin
 
 		initUpdater();
 
-		if (!config.isMovecraftEnabled()) {
-			return;
+		if (config.isMovecraftEnabled()) {
+			try {
+				Class.forName("net.countercraft.movecraft.craft.type.property.Property");
+				MaxCannonsProperty.register();
+			} catch (Exception ignored) {}
+
 		}
 
 		try {
-			Class.forName("net.countercraft.movecraft.craft.type.property.Property");
-		} catch (Exception ignored) {
-			return;
-		}
-
-		MaxCannonsProperty.register();
+			Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+			folia = true;
+		} catch (Exception ignored) {}
 	}
 
 	private void initUpdater() {
@@ -120,7 +125,8 @@ public final class Cannons extends JavaPlugin
 	}
 
 	public void onDisable() {
-		getServer().getScheduler().cancelTasks(this);
+		AsyncTaskManager.get().scheduler.cancelTasks();
+		AsyncTaskManager.get().async.shutdown();
 
 		// save database on shutdown
 		logger.info(getLogPrefix() + "Wait until scheduler is finished");
@@ -205,6 +211,7 @@ public final class Cannons extends JavaPlugin
 		startTime = System.nanoTime();
 
 
+		var taskManager = AsyncTaskManager.get();
 		//load some global variables
 		try
 		{
@@ -218,7 +225,7 @@ public final class Cannons extends JavaPlugin
 
 
 			// Initialize the database
-			getServer().getScheduler().runTaskAsynchronously(this, () -> {
+			taskManager.async.submit(() -> {
                 try {
                     openConnection();
                     Statement statement = connection.createStatement();
@@ -241,25 +248,25 @@ public final class Cannons extends JavaPlugin
             FakeBlockHandler.getInstance().setupScheduler();
 
 			// save cannons
-			getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> persistenceDatabase.saveAllCannons(true), 6000L, 6000L);
+			AsyncTaskManager.get().scheduler.runTaskTimer(() -> persistenceDatabase.saveAllCannons(true), 6000L, 6000L);
 
 			Metrics metrics = new Metrics(this, 23139);
 			metrics.addCustomChart(
-					new AdvancedPie("hooks", () -> {
+				new AdvancedPie("hooks", () -> {
 
-						Map<String, Integer> result = new HashMap<>();
-						if (!hookManager.isActive()) {
-							result.put("None", 1);
-							return result;
-						}
-
-						for (Hook<?> hook : hookManager.hookMap().values()) {
-							final int status = hook.active() ? 1 : 0;
-							result.put(hook.getTypeClass().getName(), status);
-						}
-
+					Map<String, Integer> result = new HashMap<>();
+					if (!hookManager.isActive()) {
+						result.put("None", 1);
 						return result;
-					})
+					}
+
+					for (Hook<?> hook : hookManager.hookMap().values()) {
+						final int status = hook.active() ? 1 : 0;
+						result.put(hook.getTypeClass().getName(), status);
+					}
+
+					return result;
+				})
 			);
 
             logDebug("Time to enable cannons: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
@@ -286,7 +293,7 @@ public final class Cannons extends JavaPlugin
 			}
 		}
 
-		Bukkit.getScheduler().runTaskLater(this, () -> {
+		taskManager.scheduler.runTaskLater(() -> {
             if (!pm.isPluginEnabled("Movecraft-Cannons")) {
                 return;
             }

@@ -2,6 +2,7 @@ package at.pavlov.cannons.projectile;
 
 import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.container.MovingObject;
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -108,10 +109,7 @@ public class FlyingProjectile
         if(projectile_entity!=null)
         {
             Block block = projectile_entity.getLocation().getBlock();
-            if (block != null)
-            {
-                return block.isLiquid();
-            }
+            return block.isLiquid();
         }
         return false;
     }
@@ -121,21 +119,13 @@ public class FlyingProjectile
     }
 
     /**
-     * if the projectile has entered the water surface
-     * @return true if the projectile has entered the water surface
-     */
-    public boolean isWaterSurface(org.bukkit.entity.Projectile projectile_entity){
-        return !wasInWater&&isInWaterCheck(projectile_entity);
-    }
-
-    /**
      * returns if the projectile has entered the water surface and updates also inWater
      * @return true if the projectile has entered water
      */
     public boolean updateWaterSurfaceCheck(org.bukkit.entity.Projectile projectile_entity)
     {
-        boolean isSurface = isWaterSurface(projectile_entity);
         inWater = isInWaterCheck(projectile_entity);
+        boolean isSurface = !wasInWater && inWater;
         wasInWater = inWater;
         return isSurface;
     }
@@ -218,7 +208,7 @@ public class FlyingProjectile
     {
         if (projectile_entity == null)
             return;
-        projectile_entity.teleport(predictor.getLocation());
+        PaperLib.teleportAsync(projectile_entity, predictor.getLocation());
         projectile_entity.setVelocity(predictor.getVel());
     }
 

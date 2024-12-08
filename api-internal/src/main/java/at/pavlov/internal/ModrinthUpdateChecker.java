@@ -49,7 +49,7 @@ public class ModrinthUpdateChecker {
 
         // Compare versions
         if (latestVersionNumber.equals(current)) {
-            logger.info("You are using the latest version");
+            logger.info(GREEN + "You are using the latest version" + RESET);
             return true;
         }
 

@@ -105,6 +105,22 @@ imitatedEffects:
     block: 'minecraft:glass'
     #how long the effect will be displayed [s]
     time: 0.5
+    # if you prefer you can use particle instead of the glass aiming simulation
+    # this might be needed only if you use hybrid servers like mohist that didn't
+    # implement sending blocks and the alike
+    particles:
+      # whether to use particles for the trail instead of a block
+      enabled: false
+      # name of the particle to use - see https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html for a list
+      type: WAX_ON
+      # how many particles to spawn
+      count: 20
+      # the x, y and z offset of the particles
+      x_offset: 0
+      y_offset: 0
+      z_offset: 0
+      # how fast the particle travels to its offset position
+      speed: 2.5
 
   firing:
     #will show fake blocks for players which are far away

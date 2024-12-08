@@ -4,17 +4,20 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.FakeBlockType;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.container.FakeBlockEntry;
+import at.pavlov.cannons.dao.AsyncTaskManager;
 import lombok.Getter;
 import org.bukkit.Location;
-import org.bukkit.block.BlockState;
+import org.bukkit.Particle;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 public class FakeBlockHandler {
     private final Cannons plugin;
@@ -23,13 +26,16 @@ public class FakeBlockHandler {
 
     private long lastAiming;
     private long lastImpactPredictor;
+    private final AsyncTaskManager taskManager;
 
     @Getter
     private static FakeBlockHandler instance = null;
 
 
+
     private FakeBlockHandler(Cannons plugin) {
         this.plugin = plugin;
+        taskManager = AsyncTaskManager.get();
     }
 
     public static void initialize(Cannons plugin) {
@@ -45,12 +51,9 @@ public class FakeBlockHandler {
      */
     public void setupScheduler() {
         //changing angles for aiming mode
-        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-            public void run() {
-                removeOldBlocks();
-                removeOldBlockType();
-            }
-
+        taskManager.scheduler.runTaskTimer(() -> {
+            removeOldBlocks();
+            removeOldBlockType();
         }, 1L, 1L);
     }
 
@@ -76,7 +79,9 @@ public class FakeBlockHandler {
             //send real block to player
             Location loc = next.getLocation();
             if (loc != null) {
-                player.sendBlockChange(loc, loc.getBlock().getBlockData());
+                taskManager.scheduler.runTask(loc, () -> {
+                    player.sendBlockChange(loc, loc.getBlock().getBlockData());
+                });
                 // plugin.logDebug("expired fake block: " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", " + next.getType().toString());
             }
             //remove this entry
@@ -102,7 +107,9 @@ public class FakeBlockHandler {
             Player player = next.getPlayerBukkit();
             Location loc = next.getLocation();
             if (player != null && loc != null) {
-                player.sendBlockChange(loc, loc.getBlock().getBlockData());
+                taskManager.scheduler.runTask(loc, () -> {
+                    player.sendBlockChange(loc, loc.getBlock().getBlockData());
+                });
             }
 
             //remove this entry
@@ -125,7 +132,8 @@ public class FakeBlockHandler {
         if (loc == null || player == null)
             return;
 
-        LinkedList<BlockState> updates = new LinkedList<>();
+        Config config = Cannons.getPlugin().getMyConfig();
+        HashMap<Location, CompletableFuture<BlockData>> blockList = new HashMap<>();
         for (int x = -r; x <= r; x++) {
             for (int y = -r; y <= r; y++) {
                 for (int z = -r; z <= r; z++) {
@@ -134,15 +142,26 @@ public class FakeBlockHandler {
                         continue;
                     }
 
-                    var block = sendBlockChangeToPlayer(player, newL, blockData, type, duration);
-                    if (block != null) {
-                        updates.add(block);
+                    if (config.isImitatedAimingParticleEnabled()) {
+                        processParticle(newL, type);
+                    } else {
+                        var block = processBlockData(player, newL, blockData, type, duration);
+                        if (block != null) {
+                            blockList.put(newL, block);
+                        }
                     }
                 }
             }
         }
 
-        player.sendBlockChanges(updates);
+        for (var entry : blockList.entrySet()) {
+            BlockData block = entry.getValue().join();
+            if (block == null) {
+                continue;
+            }
+
+            player.sendBlockChange(entry.getKey(), block);
+        }
     }
 
     /**
@@ -159,14 +178,28 @@ public class FakeBlockHandler {
             return;
 
         BlockIterator iter = new BlockIterator(loc.getWorld(), loc.toVector(), direction, offset, length);
-        LinkedList<BlockState> updateList = new LinkedList<>();
+        Config config = Cannons.getPlugin().getMyConfig();
+        HashMap<Location, CompletableFuture<BlockData>> blockList = new HashMap<>();
         while (iter.hasNext()) {
-            var block = sendBlockChangeToPlayer(player, iter.next().getLocation(), blockData, type, duration);
-            if (block != null)
-                updateList.add(block);
+            Location location = iter.next().getLocation();
+            if (config.isImitatedAimingParticleEnabled()) {
+                processParticle(location, type);
+            } else {
+                var block = processBlockData(player, location, blockData, type, duration);
+                if (block != null) {
+                    blockList.put(location, block);
+                }
+            }
         }
 
-        player.sendBlockChanges(updateList);
+        for (var entry : blockList.entrySet()) {
+            BlockData block = entry.getValue().join();
+            if (block == null) {
+                continue;
+            }
+
+            player.sendBlockChange(entry.getKey(), block);
+        }
     }
 
     /**
@@ -177,38 +210,55 @@ public class FakeBlockHandler {
      * @param blockData type of the block
      * @param duration  how long to remove the block in [s]
      */
-    private BlockState sendBlockChangeToPlayer(final Player player, final Location loc, BlockData blockData, FakeBlockType type, double duration) {
+    private CompletableFuture<BlockData> processBlockData(final Player player, final Location loc, BlockData blockData, FakeBlockType type, double duration) {
         //only show block in air
-        if (!loc.getBlock().isEmpty()) {
-            return null;
-        }
-
-        FakeBlockEntry fakeBlockEntry = new FakeBlockEntry(loc, player, type, (long) (duration * 20.0));
-
-        boolean found = false;
-        for (FakeBlockEntry block : list) {
-            if (block.equals(fakeBlockEntry)) {
-                //renew entry
-                //plugin.logDebug("renew block at: " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", " + type.toString());
-                block.setStartTime(System.currentTimeMillis());
-                found = true;
-                //there is only one block here
-                break;
+        Executor taskExecutor = (task) -> {
+            if (plugin.isFolia()) {
+                taskManager.scheduler.runTask(loc, task);
+            } else {
+                task.run();
             }
-        }
+        };
 
-        if (!found) {
-            //player.sendBlockChange(loc, blockData);
-            list.add(fakeBlockEntry);
-        }
+        var airCheck = CompletableFuture.supplyAsync(() -> loc.getBlock().isEmpty(), taskExecutor);
+        return airCheck.thenCompose( (isAir) -> {
+            if (!isAir) {
+                return CompletableFuture.completedFuture(null);
+            }
 
+            FakeBlockEntry fakeBlockEntry = new FakeBlockEntry(loc, player, type, (long) (duration * 20.0));
 
+            boolean found = false;
+            for (FakeBlockEntry block : list) {
+                if (block.equals(fakeBlockEntry)) {
+                    block.setStartTime(System.currentTimeMillis());
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                list.add(fakeBlockEntry);
+            }
+
+            // Update last impact predictor or aiming timestamps
+            if (type == FakeBlockType.IMPACT_PREDICTOR) {
+                lastImpactPredictor = System.currentTimeMillis();
+            }
+            if (type == FakeBlockType.AIMING) {
+                lastAiming = System.currentTimeMillis();
+            }
+
+            return CompletableFuture.completedFuture(blockData);
+        });
+    }
+
+    private void processParticle(final Location location, FakeBlockType type) {
         if (type == FakeBlockType.IMPACT_PREDICTOR)
             lastImpactPredictor = System.currentTimeMillis();
         if (type == FakeBlockType.AIMING)
             lastAiming = System.currentTimeMillis();
-
-        return blockData.createBlockState().copy(loc);
+        location.getWorld().spawnParticle(Particle.WAX_ON, location, 20, 0, 0, 0, 2.5);
     }
 
     /**

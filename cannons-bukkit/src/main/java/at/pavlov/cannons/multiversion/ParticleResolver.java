@@ -16,20 +16,26 @@ public class ParticleResolver {
     private ParticleResolver() {}
 
     private static void initExplosion() {
-        if (version[1] >= 20) {
+        if (version[1] == 20 && version[2] < 5) {
+            explosion = getOldParticle();
+        }  else if (version[1] == 20 && version[2] >= 5) {
+            explosion = Particle.EXPLOSION;
+        } else if (version[1] >= 21) {
             explosion = Particle.EXPLOSION;
         } else {
-            try {
-                Field field = Particle.class.getDeclaredField("EXPLOSION_NORMAL");
-                field.setAccessible(true);
-                explosion = (Particle) field.get(null);
-            } catch (Exception e) {
-                Cannons.logger().severe("Version support not found");
-            }
+            explosion = getOldParticle();
         }
     }
 
     public static Particle getExplosion() {
         return explosion;
+    }
+
+    private static Particle getOldParticle() {
+        try {
+            return Particle.valueOf("EXPLOSION_NORMAL");
+        } catch (Exception e) {
+            throw new RuntimeException("Version support not found");
+        }
     }
 }

@@ -9,6 +9,7 @@ import at.pavlov.cannons.container.DeathCause;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
 import at.pavlov.cannons.container.SpawnMaterialHolder;
+import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.event.CannonDamageEvent;
 import at.pavlov.cannons.event.CannonsEntityDeathEvent;
@@ -26,6 +27,7 @@ import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.cannons.utils.SoundUtils;
+import io.papermc.lib.PaperLib;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -81,6 +83,7 @@ public class CreateExplosion {
     // players killed by cannons <Player, Cannon>
     private final HashMap<UUID, DeathCause> killedPlayers = new HashMap<>();
 
+    private final AsyncTaskManager taskManager = AsyncTaskManager.get();
     private final Random r = new Random();
 
     @Getter
@@ -791,7 +794,7 @@ public class CreateExplosion {
         }
 
         // teleport snowball to impact
-        projectile_entity.teleport(impactLoc);
+        PaperLib.teleportAsync(projectile_entity, impactLoc);
 
         float explosion_power = projectile.getExplosionPower();
         if (projectile.isExplosionPowerDependsOnVelocity()) {
@@ -936,24 +939,27 @@ public class CreateExplosion {
         for (int i = 0; i < projectile.getClusterExplosionsAmount(); i++) {
             double delay = projectile.getClusterExplosionsMinDelay() + Math.random()
                     * (projectile.getClusterExplosionsMaxDelay() - projectile.getClusterExplosionsMinDelay());
-            this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin,
-                    new DelayedTask(cannonball) {
-                        @Override
-                        public void run(Object object) {
-                            FlyingProjectile cannonball = (FlyingProjectile) object;
-                            Projectile proj = cannonball.getProjectile();
 
-                            Location expLoc = CannonsUtil.randomPointInSphere(cannonball.getImpactLocation(),
-                                    proj.getClusterExplosionsRadius());
-                            // only do if explosion in blocks are allowed
-                            if (proj.isClusterExplosionsInBlocks() || expLoc.getBlock().isEmpty()
-                                    || (expLoc.getBlock().isLiquid() && proj.isUnderwaterDamage())) {
-                                expLoc.getWorld().createExplosion(expLoc, (float) proj.getClusterExplosionsPower(), projectile.hasProperty(ProjectileProperties.INCENDIARY), true, cannonball.getProjectileEntity());
-                                CreateExplosion.this.sendExplosionToPlayers(null, expLoc,
-                                        projectile.getSoundImpact());
-                            }
+
+            taskManager.scheduler.runTaskLater(cannonball.getImpactLocation(),
+                new DelayedTask(cannonball) {
+                    @Override
+                    public void run(Object object) {
+                        FlyingProjectile cannonball = (FlyingProjectile) object;
+                        Projectile proj = cannonball.getProjectile();
+
+                        Location expLoc = CannonsUtil.randomPointInSphere(cannonball.getImpactLocation(),
+                                proj.getClusterExplosionsRadius());
+                        // only do if explosion in blocks are allowed
+                        if (proj.isClusterExplosionsInBlocks() || expLoc.getBlock().isEmpty()
+                                || (expLoc.getBlock().isLiquid() && proj.isUnderwaterDamage())) {
+                            expLoc.getWorld().createExplosion(expLoc, (float) proj.getClusterExplosionsPower(), projectile.hasProperty(ProjectileProperties.INCENDIARY), true, cannonball.getProjectileEntity());
+                            CreateExplosion.this.sendExplosionToPlayers(null, expLoc,
+                                    projectile.getSoundImpact());
                         }
-                    }, (long) (delay * 20.0));
+                    }
+                }, (long) (delay * 20.0)
+            );
         }
     }
 
@@ -988,7 +994,7 @@ public class CreateExplosion {
 
         teleLoc.setYaw(player.getLocation().getYaw());
         teleLoc.setPitch(player.getLocation().getPitch());
-        player.teleport(teleLoc);
+        PaperLib.teleportAsync(player, teleLoc);
         player.setVelocity(new Vector(0, 0, 0));
         cannonball.setTeleported(true);
     }
@@ -1099,7 +1105,9 @@ public class CreateExplosion {
 
         this.plugin.logDebug("Deflection valid");
         // spawn a new deflected cannnonball
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new DelayedTask(cannonball) {
+        Location impactLoc = cannonball.getImpactLocation()
+                .subtract(cannonball.getVelocity().normalize().multiply(0.3));
+        taskManager.scheduler.runTaskLater(impactLoc, new DelayedTask(cannonball) {
             @Override
             public void run(Object object) {
                 FlyingProjectile cannonball = (FlyingProjectile) object;
@@ -1114,8 +1122,6 @@ public class CreateExplosion {
                  */
 
                 Vector vectdeflect = cannonball.getVelocity().multiply(.5);
-                Location impactLoc = cannonball.getImpactLocation()
-                        .subtract(cannonball.getVelocity().normalize().multiply(0.3));
                 // vectdeflect.add(new
                 // Vector(vectdeflect.length()*r.nextGaussian()*0.2,vectdeflect.length()*r.nextGaussian()*0.2,vectdeflect.length()*r.nextGaussian()*0.2));
                 vectdeflect.setY(-vectdeflect.getY());
@@ -1139,13 +1145,14 @@ public class CreateExplosion {
         if (!cannonball.getProjectile().isSpawnEnabled())
             return;
 
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new DelayedTask(cannonball) {
+        Location impactLoc = cannonball.getImpactLocation();
+        taskManager.scheduler.runTaskLater(impactLoc, new DelayedTask(cannonball) {
             @Override
             public void run(Object object) {
                 FlyingProjectile cannonball = (FlyingProjectile) object;
 
                 Projectile projectile = cannonball.getProjectile();
-                Location impactLoc = cannonball.getImpactLocation();
+
 
                 for (String strProj : projectile.getSpawnProjectiles()) {
                     Projectile newProjectiles = ProjectileStorage.getInstance().getByName(strProj);
@@ -1205,7 +1212,7 @@ public class CreateExplosion {
 
         // detonate firework after 1tick. This seems to works much better than
         // detonating instantaneously
-        this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, new DelayedTask(fw) {
+        taskManager.scheduler.runTaskLater(fw, new DelayedTask(fw) {
             @Override
             public void run(Object object) {
                 Firework fw = (Firework) object;

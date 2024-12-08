@@ -188,7 +188,7 @@ public class CannonManager {
 
         //delay the remove task, so it fits to the sound
         RemoveTaskWrapper task = new RemoveTaskWrapper(cannon, breakCannon, canExplode, cause, removeEntry, ignoreInvalid);
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new DelayedTask(task) {
+        AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask(task) {
             public void run(Object object) {
                 RemoveTaskWrapper task = (RemoveTaskWrapper) object;
                 Cannon cannon = task.getCannon();
@@ -344,7 +344,7 @@ public class CannonManager {
         plugin.logDebug("added cannon " + cannon.getCannonName());
 
         LoadWhitelistTask loadWhitelistTask = new LoadWhitelistTask(cannon.getUID());
-        loadWhitelistTask.runTaskAsynchronously(plugin);
+        loadWhitelistTask.runTaskAsynchronously();
     }
 
     /**
@@ -387,7 +387,7 @@ public class CannonManager {
                 continue;
             }
 
-            Location newLoc = cannon.getCannonDesign().getBarrelBlocks(cannon).getFirst();
+            Location newLoc = cannon.getCannonDesign().getBarrelBlocks(cannon).get(0);
             Vector box = newLoc.subtract(center).toVector();
             if (Math.abs(box.getX()) < lengthX / 2 && Math.abs(box.getY()) < lengthY / 2 && Math.abs(box.getZ()) < lengthZ / 2)
                 newCannonList.add(cannon);
@@ -412,12 +412,14 @@ public class CannonManager {
 
     public void dismantleCannonsInBox(Player player, Location center, int size) {
         var taskManager = AsyncTaskManager.get();
-        CompletableFuture.runAsync(() -> {
+        taskManager.scheduler.runTask(center, () -> {
             var cannonHashSet = getCannonsInBox(center, size, size, size);
-            taskManager.fireSyncRunnable( () ->
-                    cannonHashSet
-                        .forEach(cannon -> dismantleCannon(cannon, player)));
-            }, taskManager.async);
+            for (Cannon cannon : cannonHashSet) {
+                taskManager.scheduler.runTask(cannon.getLocation(), () -> {
+                    dismantleCannon(cannon, player);
+                });
+            }
+        });
     }
 
 
@@ -589,7 +591,7 @@ public class CannonManager {
 
         //send messages
         if (!silent) {
-            taskManager.fireSyncRunnable(() -> {
+            taskManager.scheduler.runTask(player, () -> {
                 userMessages.sendMessage(message, player, cannon);
                 SoundUtils.playErrorSound(cannon.getMuzzle());
             });
@@ -606,7 +608,8 @@ public class CannonManager {
         //send messages
         var taskManager = AsyncTaskManager.get();
         if (!silent) {
-            taskManager.fireSyncRunnable(() -> {
+            Player player = Bukkit.getPlayer(owner);
+            taskManager.scheduler.runTask(player, () -> {
                 userMessages.sendMessage(message, owner, cannon);
                 SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundCreate());
             });

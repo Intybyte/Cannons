@@ -32,7 +32,7 @@ public interface SentryDataHolder extends Updatable {
         var history = getSentryData().getSentryEntityHistory();
         //store only 5
         if (history.size() > 5)
-            history.removeFirst();
+            history.remove(0);
         history.add(sentryTarget);
     }
     //endregion
