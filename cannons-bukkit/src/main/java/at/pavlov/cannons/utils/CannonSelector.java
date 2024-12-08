@@ -1,8 +1,8 @@
 package at.pavlov.cannons.utils;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.MessageEnum;
-import at.pavlov.cannons.Enum.SelectCannon;
+import at.pavlov.internal.enums.MessageEnum;
+import at.pavlov.internal.enums.SelectCannon;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.UserMessages;
@@ -201,7 +201,7 @@ public class CannonSelector {
 
         switch (cmd) {
             case OBSERVER: {
-                MessageEnum message = cannon.toggleObserver(player, false);
+                MessageEnum message = cannon.toggleObserver(player.getUniqueId(), false);
                 userMessages.sendMessage(message, player, cannon);
                 SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundSelected());
                 break;

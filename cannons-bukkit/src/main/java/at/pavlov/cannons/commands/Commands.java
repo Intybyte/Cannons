@@ -2,19 +2,19 @@ package at.pavlov.cannons.commands;
 
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.BreakCause;
-import at.pavlov.cannons.Enum.CommandList;
-import at.pavlov.cannons.Enum.MessageEnum;
-import at.pavlov.cannons.Enum.SelectCannon;
+import at.pavlov.internal.enums.BreakCause;
+import at.pavlov.internal.enums.CommandList;
+import at.pavlov.internal.enums.MessageEnum;
+import at.pavlov.internal.enums.SelectCannon;
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.cannon.CannonDesign;
+import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.PersistenceDatabase;
-import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.CannonsUtil;
@@ -34,7 +34,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 @CommandAlias("cannons")
 @SuppressWarnings("deprecation")
@@ -304,7 +303,7 @@ public class Commands extends BaseCommand {
             //selection done by a string '/cannons observer CANNON_NAME'
             Cannon cannon = CannonManager.getCannon(args[0]);
             if (cannon != null)
-                cannon.toggleObserver(player, false);
+                cannon.toggleObserver(player.getUniqueId(), false);
             else
                 userMessages.sendMessage(MessageEnum.CmdCannonNotFound, player);
         }

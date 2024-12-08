@@ -1,18 +1,19 @@
 package at.pavlov.cannons.projectile;
 
+import at.pavlov.bukkit.builders.ParticleBuilder;
+import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.SoundHolder;
+import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.ProjectileProperties;
+import at.pavlov.bukkit.utils.FileUtils;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.builders.ParticleBuilder;
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.container.ItemHolder;
-import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.utils.CannonsUtil;
-import at.pavlov.cannons.utils.FileUtils;
 import at.pavlov.cannons.utils.ParseUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;

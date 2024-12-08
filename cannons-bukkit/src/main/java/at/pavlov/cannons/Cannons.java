@@ -1,16 +1,17 @@
 package at.pavlov.cannons;
 
+import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.cannons.API.CannonsAPI;
-import at.pavlov.cannons.Enum.MessageEnum;
+import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.cannon.CannonDesign;
+import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.commands.CannonsCommandManager;
 import at.pavlov.cannons.commands.Commands;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
-import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
@@ -19,7 +20,6 @@ import at.pavlov.cannons.hooks.VaultHook;
 import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsProperty;
 import at.pavlov.cannons.hooks.movecraftcombat.MovecraftCombatHook;
 import at.pavlov.cannons.listener.*;
-import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
@@ -61,6 +61,7 @@ public final class Cannons extends JavaPlugin
 	private FireCannon fireCannon;
     private ProjectileObserver observer;
 
+    @Getter
     private CannonsAPI cannonsAPI;
 	@Getter
     private HookManager hookManager;
@@ -82,8 +83,10 @@ public final class Cannons extends JavaPlugin
 	@Getter
 	private boolean folia = false;
 
-	private final String cannonDatabase = "cannonlist_2_4_6";
-	private final String whitelistDatabase = "whitelist_2_4_6";
+	@Getter
+    private final String cannonDatabase = "cannonlist_2_4_6";
+	@Getter
+    private final String whitelistDatabase = "whitelist_2_4_6";
 
     public static Cannons getPlugin() {
         return (Cannons) Bukkit.getPluginManager().getPlugin("Cannons");
@@ -459,16 +462,19 @@ public final class Cannons extends JavaPlugin
 		return ProjectileStorage.getInstance();
 	}
 
+	@Deprecated(forRemoval = true)
 	public Projectile getProjectile(Cannon cannon, ItemHolder materialHolder)
 	{
 		return ProjectileStorage.getProjectile(cannon, materialHolder);
 	}
-	
+
+	@Deprecated(forRemoval = true)
 	public Projectile getProjectile(Cannon cannon, ItemStack item)
 	{
 		return ProjectileStorage.getProjectile(cannon, item);
 	}
 
+	@Deprecated(forRemoval = true)
     public Cannon getCannon(UUID id)
     {
         return CannonManager.getCannon(id);
@@ -504,10 +510,6 @@ public final class Cannons extends JavaPlugin
         return ProjectileManager.getInstance();
     }
 
-    public CannonsAPI getCannonsAPI() {
-        return cannonsAPI;
-    }
-
     public BlockListener getBlockListener() {
         return blockListener;
     }
@@ -520,14 +522,6 @@ public final class Cannons extends JavaPlugin
     public Economy getEconomy(){
         return vaultHook.hook();
     }
-
-	public String getCannonDatabase() {
-		return cannonDatabase;
-	}
-
-	public String getWhitelistDatabase() {
-		return whitelistDatabase;
-	}
 
     public void setDebugMode(boolean debugMode) {
         this.debugMode = debugMode;

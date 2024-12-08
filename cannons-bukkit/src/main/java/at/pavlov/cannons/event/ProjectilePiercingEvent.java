@@ -1,7 +1,6 @@
 package at.pavlov.cannons.event;
 
-import at.pavlov.cannons.projectile.Projectile;
-import org.antlr.v4.runtime.misc.NotNull;
+import at.pavlov.bukkit.projectile.Projectile;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.Cancellable;

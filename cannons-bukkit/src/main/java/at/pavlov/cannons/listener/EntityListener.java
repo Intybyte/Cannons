@@ -2,7 +2,7 @@ package at.pavlov.cannons.listener;
 
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.BreakCause;
+import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.projectile.ProjectileManager;

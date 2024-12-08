@@ -1,6 +1,6 @@
 package at.pavlov.cannons.event;
 
-import at.pavlov.cannons.Enum.BreakCause;
+import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

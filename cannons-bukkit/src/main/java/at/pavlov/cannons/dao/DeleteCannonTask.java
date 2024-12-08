@@ -1,7 +1,7 @@
 package at.pavlov.cannons.dao;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.interfaces.RunnableAsync;
+import at.pavlov.cannons.scheduler.RunnableAsync;
 
 import java.sql.Statement;
 import java.util.UUID;

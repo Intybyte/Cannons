@@ -1,6 +1,6 @@
 package at.pavlov.cannons.container;
 
-import at.pavlov.cannons.Enum.FakeBlockType;
+import at.pavlov.internal.enums.FakeBlockType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;

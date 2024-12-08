@@ -1,6 +1,6 @@
 package at.pavlov.cannons.container;
 
-import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.bukkit.projectile.Projectile;
 
 import java.util.UUID;
 

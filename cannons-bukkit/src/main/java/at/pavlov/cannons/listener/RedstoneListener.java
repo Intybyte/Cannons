@@ -1,8 +1,8 @@
 package at.pavlov.cannons.listener;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.InteractAction;
-import at.pavlov.cannons.Enum.MessageEnum;
+import at.pavlov.internal.enums.InteractAction;
+import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.FireCannon;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;

@@ -1,10 +1,10 @@
 package at.pavlov.cannons.dao;
 
+import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
-import at.pavlov.cannons.interfaces.RunnableAsync;
-import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.cannons.scheduler.RunnableAsync;
 
 import java.sql.PreparedStatement;
 import java.util.UUID;

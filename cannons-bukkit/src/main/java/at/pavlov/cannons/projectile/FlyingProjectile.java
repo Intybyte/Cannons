@@ -1,6 +1,7 @@
 package at.pavlov.cannons.projectile;
 
-import at.pavlov.cannons.Enum.ProjectileCause;
+import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.internal.enums.ProjectileCause;
 import at.pavlov.cannons.container.MovingObject;
 import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;

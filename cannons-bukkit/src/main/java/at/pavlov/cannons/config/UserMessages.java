@@ -1,10 +1,10 @@
 package at.pavlov.cannons.config;
 
+import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.MessageEnum;
+import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
-import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.utils.CannonsUtil;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;

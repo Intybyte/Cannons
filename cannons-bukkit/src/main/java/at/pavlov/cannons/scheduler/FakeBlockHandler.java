@@ -1,7 +1,7 @@
 package at.pavlov.cannons.scheduler;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.FakeBlockType;
+import at.pavlov.internal.enums.FakeBlockType;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.container.FakeBlockEntry;
 import at.pavlov.cannons.dao.AsyncTaskManager;

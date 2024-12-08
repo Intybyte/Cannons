@@ -1,13 +1,14 @@
 package at.pavlov.cannons.cannon;
 
+import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.SimpleBlock;
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.BreakCause;
-import at.pavlov.cannons.Enum.MessageEnum;
+import at.pavlov.internal.enums.BreakCause;
+import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
-import at.pavlov.cannons.container.ItemHolder;
-import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.LoadWhitelistTask;
 import at.pavlov.cannons.event.CannonAfterCreateEvent;
@@ -34,7 +35,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 

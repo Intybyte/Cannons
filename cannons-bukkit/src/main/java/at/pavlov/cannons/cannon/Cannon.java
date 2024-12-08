@@ -1,28 +1,31 @@
 package at.pavlov.cannons.cannon;
 
+import at.pavlov.bukkit.cannons.CannonBlocks;
+import at.pavlov.bukkit.cannons.CannonBukkit;
+import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.cannons.CannonDesignHolder;
+import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.SimpleBlock;
+import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.BreakCause;
-import at.pavlov.cannons.Enum.CannonRotation;
-import at.pavlov.cannons.Enum.InteractAction;
-import at.pavlov.cannons.Enum.MessageEnum;
-import at.pavlov.cannons.cannon.data.AimingData;
-import at.pavlov.cannons.cannon.data.AmmoLoadingData;
-import at.pavlov.cannons.cannon.data.AngleData;
-import at.pavlov.cannons.cannon.data.CannonMainData;
-import at.pavlov.cannons.cannon.data.CannonPosition;
-import at.pavlov.cannons.cannon.data.LinkingData;
-import at.pavlov.cannons.cannon.data.SentryData;
-import at.pavlov.cannons.cannon.data.WhitelistData;
-import at.pavlov.cannons.container.ItemHolder;
-import at.pavlov.cannons.container.SimpleBlock;
-import at.pavlov.cannons.cannon.data.FiringData;
+import at.pavlov.internal.enums.BreakCause;
+import at.pavlov.internal.enums.CannonRotation;
+import at.pavlov.internal.enums.InteractAction;
+import at.pavlov.internal.enums.MessageEnum;
+import at.pavlov.internal.cannons.data.AimingData;
+import at.pavlov.internal.cannons.data.AmmoLoadingData;
+import at.pavlov.internal.cannons.data.AngleData;
+import at.pavlov.internal.cannons.data.CannonMainData;
+import at.pavlov.internal.cannons.data.CannonPosition;
+import at.pavlov.internal.cannons.data.LinkingData;
+import at.pavlov.internal.cannons.data.SentryData;
+import at.pavlov.internal.cannons.data.WhitelistData;
+import at.pavlov.internal.cannons.data.FiringData;
 import at.pavlov.cannons.event.CannonDestroyedEvent;
 import at.pavlov.cannons.event.CannonGunpowderLoadEvent;
 import at.pavlov.cannons.event.CannonPreLoadEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
-import at.pavlov.cannons.interfaces.ICannon;
-import at.pavlov.cannons.interfaces.functionalities.Rotational;
-import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.internal.cannons.functionalities.Rotational;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.InventoryManagement;
@@ -45,6 +48,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,13 +56,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public class Cannon implements ICannon, Rotational {
+public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vector> {
 
     private CannonMainData mainData;
-    private CannonPosition cannonPosition;
+    private CannonPosition<BlockFace, Vector> cannonPosition;
 
-    private AmmoLoadingData ammoLoadingData = new AmmoLoadingData();
-    private FiringData firingData = new FiringData();
+    private AmmoLoadingData<Projectile> ammoLoadingData = new AmmoLoadingData<>();
+    private FiringData<Projectile> firingData = new FiringData<>();
     private AimingData aimingData = new AimingData();
     private AngleData angleData = new AngleData();
 
@@ -1321,7 +1325,7 @@ public class Cannon implements ICannon, Rotational {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ICannon obj2) {
+        if (obj instanceof CannonBukkit obj2) {
             return this.getUID().equals(obj2.getUID());
         }
         return false;
@@ -1333,7 +1337,7 @@ public class Cannon implements ICannon, Rotational {
     }
 
     @Override
-    public boolean sameType(ICannon cannon) {
+    public boolean sameType(CannonBukkit cannon) {
         if (!(cannon instanceof Cannon blockCannon)) {
             return false;
         }
@@ -1393,6 +1397,12 @@ public class Cannon implements ICannon, Rotational {
 
     public CannonDesign getCannonDesign() {
         return this.design;
+    }
+
+    @Override
+    public void setDesignID(String designID) {
+        setCannonDesign(DesignStorage.getInstance().getDesign(designID));
+        this.hasUpdated();
     }
 
     public void setLastUser(UUID lastUser) {
@@ -1597,6 +1607,11 @@ public class Cannon implements ICannon, Rotational {
         return observerMap;
     }
 
+    @Override
+    public MessageEnum addObserver(@NotNull UUID player, boolean removeAfterShowing) {
+        return addObserver(Bukkit.getPlayer(player), removeAfterShowing);
+    }
+
     /**
      * add the player as observer for this cannon
      *
@@ -1732,11 +1747,13 @@ public class Cannon implements ICannon, Rotational {
     /**
      * add the player as cannon operator for this cannon, if
      *
-     * @param player       player will be added as cannon operator
+     * @param playerID       player id will be added as cannon operator
      * @param masterCannon if the controlled cannon is a slave and not the master cannon
      * @return message for the player
      */
-    public MessageEnum addCannonOperator(Player player, Boolean masterCannon) {
+    public MessageEnum addCannonOperator(UUID playerID, Boolean masterCannon) {
+        Validate.notNull(playerID, "player must not be null");
+        var player = Bukkit.getPlayer(playerID);
         Validate.notNull(player, "player must not be null");
 
         //permission check
@@ -1754,13 +1771,13 @@ public class Cannon implements ICannon, Rotational {
     }
 
     @Override
-    public FiringData getFiringData() {
+    public FiringData<Projectile> getFiringData() {
         this.hasUpdated();
         return this.firingData;
     }
 
     @Override
-    public void setFiringData(FiringData firingData) {
+    public void setFiringData(FiringData<Projectile> firingData) {
         this.hasUpdated();
         this.firingData = firingData;
     }
@@ -1796,7 +1813,7 @@ public class Cannon implements ICannon, Rotational {
     }
 
     @Override
-    public void setCannonPosition(CannonPosition position) {
+    public void setCannonPosition(CannonPosition<BlockFace, Vector> position) {
         this.hasUpdated();
         this.cannonPosition = position;        
     }
@@ -1838,13 +1855,13 @@ public class Cannon implements ICannon, Rotational {
     }
 
     @Override
-    public AmmoLoadingData getAmmoLoadingData() {
+    public AmmoLoadingData<Projectile> getAmmoLoadingData() {
         this.hasUpdated();
         return ammoLoadingData;
     }
 
     @Override
-    public void setAmmoLoadingData(AmmoLoadingData ammoLoadingData) {
+    public void setAmmoLoadingData(AmmoLoadingData<Projectile> ammoLoadingData) {
         this.hasUpdated();
         this.ammoLoadingData = ammoLoadingData;
     }

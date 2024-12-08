@@ -1,13 +1,13 @@
 package at.pavlov.cannons.utils;
 
+import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.ProjectileProperties;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.TargetManager;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.container.*;
 import at.pavlov.cannons.projectile.FlyingProjectile;
-import at.pavlov.cannons.projectile.Projectile;
-import at.pavlov.cannons.projectile.ProjectileProperties;
 import io.papermc.lib.PaperLib;
 import org.bukkit.*;
 import org.bukkit.block.Block;

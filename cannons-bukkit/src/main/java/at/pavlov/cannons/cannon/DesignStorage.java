@@ -1,10 +1,12 @@
 package at.pavlov.cannons.cannon;
 
+import at.pavlov.bukkit.cannons.CannonBlocks;
+import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.SimpleBlock;
+import at.pavlov.bukkit.container.SoundHolder;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.container.DesignFileName;
-import at.pavlov.cannons.container.ItemHolder;
-import at.pavlov.cannons.container.SimpleBlock;
-import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.DesignComparator;
 import at.pavlov.cannons.utils.ParseUtils;

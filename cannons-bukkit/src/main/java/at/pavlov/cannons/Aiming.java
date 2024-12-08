@@ -1,13 +1,13 @@
 package at.pavlov.cannons;
 
-import at.pavlov.cannons.Enum.FakeBlockType;
-import at.pavlov.cannons.Enum.InteractAction;
-import at.pavlov.cannons.Enum.MessageEnum;
-import at.pavlov.cannons.Enum.TargetType;
+import at.pavlov.internal.enums.FakeBlockType;
+import at.pavlov.internal.enums.InteractAction;
+import at.pavlov.internal.enums.MessageEnum;
+import at.pavlov.internal.enums.TargetType;
 import at.pavlov.cannons.aim.GunAngles;
 import at.pavlov.cannons.aim.GunAnglesWrapper;
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.cannon.CannonDesign;
+import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.config.Config;
@@ -18,7 +18,7 @@ import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.event.CannonLinkAimingEvent;
 import at.pavlov.cannons.event.CannonTargetEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
-import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
@@ -508,7 +508,7 @@ public class Aiming {
             boolean checkDesign = fcannon.getCannonDesign().equals(cannon.getCannonDesign());
             boolean canAccess = cannon.isAccessLinkingAllowed(fcannon, player);
 
-            if (fcannon.isCannonOperator(player) && checkDesign && canAccess)
+            if (fcannon.isCannonOperator(player.getUniqueId()) && checkDesign && canAccess)
                 updateAngle(player, fcannon, null, InteractAction.adjustAutoaim);
         }
 
@@ -1018,7 +1018,7 @@ public class Aiming {
 
         inAimingMode.put(player.getUniqueId(), cannon.getUID());
 
-        MessageEnum message = cannon.addCannonOperator(player, true);
+        MessageEnum message = cannon.addCannonOperator(player.getUniqueId(), true);
         if (message != MessageEnum.AimingModeEnabled)
             return message;
 
@@ -1035,7 +1035,7 @@ public class Aiming {
 
         for (Cannon fcannon : event.getCannonList()) {
             if (fcannon.getCannonDesign().equals(cannon.getCannonDesign()) || event.isSameDesign())
-                fcannon.addCannonOperator(player, false);
+                fcannon.addCannonOperator(player.getUniqueId(), false);
         }
 
         return MessageEnum.AimingModeEnabled;
@@ -1234,7 +1234,7 @@ public class Aiming {
      */
     public void removeObserverForAllCannons(Player player) {
         for (Cannon cannon : CannonManager.getCannonList().values()) {
-            cannon.removeObserver(player);
+            cannon.removeObserver(player.getUniqueId());
             userMessages.sendMessage(MessageEnum.CannonObserverRemoved, player, cannon);
         }
 

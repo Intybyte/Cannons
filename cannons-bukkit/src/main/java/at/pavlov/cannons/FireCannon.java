@@ -1,12 +1,14 @@
 package at.pavlov.cannons;
 
-import at.pavlov.cannons.Enum.BreakCause;
-import at.pavlov.cannons.Enum.FakeBlockType;
-import at.pavlov.cannons.Enum.InteractAction;
-import at.pavlov.cannons.Enum.MessageEnum;
-import at.pavlov.cannons.Enum.ProjectileCause;
+import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.ProjectileProperties;
+import at.pavlov.internal.enums.BreakCause;
+import at.pavlov.internal.enums.FakeBlockType;
+import at.pavlov.internal.enums.InteractAction;
+import at.pavlov.internal.enums.MessageEnum;
+import at.pavlov.internal.enums.ProjectileCause;
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.cannon.CannonDesign;
+import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.dao.AsyncTaskManager;
@@ -15,9 +17,7 @@ import at.pavlov.cannons.event.CannonLinkFiringEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.multiversion.ParticleResolver;
 import at.pavlov.cannons.multiversion.PotionTypeResolver;
-import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
-import at.pavlov.cannons.projectile.ProjectileProperties;
 import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
@@ -146,10 +146,10 @@ public class FireCannon {
 
         LinkedList<Cannon> linkedCannons = new LinkedList<>();
         for (Cannon fcannon : CannonManager.getCannonsInBox(cannon.getLocation(), d, d, d)) {
-            plugin.logDebug(fcannon.getCannonName() + " is cannon operator: " + fcannon.isCannonOperator(player));
+            plugin.logDebug(fcannon.getCannonName() + " is cannon operator: " + fcannon.isCannonOperator(player.getUniqueId()));
             boolean allowedToFire = cannon.isAccessLinkingAllowed(fcannon, player);
 
-            if (fcannon.isCannonOperator(player) &&
+            if (fcannon.isCannonOperator(player.getUniqueId()) &&
                     fcannon.canAimYaw(player.getEyeLocation().getYaw()) &&
                     /*fcannon.isAimingFinished() &&*/
                     fcannon.sameDesign(cannon) &&
