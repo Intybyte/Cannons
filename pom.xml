@@ -19,5 +19,6 @@
     <modules>
         <module>api-internal</module>
         <module>cannons-bukkit</module>
+        <module>api-bukkit</module>
     </modules>
 </project>
