@@ -133,12 +133,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.36</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>net.countercraft</groupId>
             <artifactId>movecraft</artifactId>
             <version>8.0.0_beta-5</version>
