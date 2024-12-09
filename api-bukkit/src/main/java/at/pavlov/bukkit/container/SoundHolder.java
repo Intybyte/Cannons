@@ -39,20 +39,20 @@ public class SoundHolder {
                 return;
             }
 
-            //Cannons.logger().log(Level.WARNING,"missing sound value in: " + str);
+            CannonLogger.getLogger().log(Level.WARNING,"missing sound value in: " + str);
 
             if (s.hasNextFloat()) {
                 volume = s.nextFloat();
                 return;
             }
 
-            //Cannons.logger().log(Level.WARNING,"missing volume value in: " + str);
+            CannonLogger.getLogger().log(Level.WARNING,"missing volume value in: " + str);
             if (s.hasNextFloat()) {
                 pitch = s.nextFloat();
             }
-            //Cannons.logger().log(Level.WARNING,"missing pitch value in: " + str);
+            CannonLogger.getLogger().log(Level.WARNING,"missing pitch value in: " + str);
         } catch (Exception e) {
-            //Cannons.logger().log(Level.SEVERE, "Error while converting " + str + ". Formatting: 'IRON_GOLEM_WALK:1:0.5'" + e.toString());
+            CannonLogger.getLogger().log(Level.SEVERE, "Error while converting " + str + ". Formatting: 'IRON_GOLEM_WALK:1:0.5'" + e.toString());
         }
     }
 

@@ -89,7 +89,7 @@ public class ItemHolder
 
 			s.close();
 		} catch(Exception e) {
-			//Cannons.logger().log(Level.SEVERE,"[CANNONS] Error while converting " + str + ". Check formatting (minecraft:clock)");
+			CannonLogger.getLogger().log(Level.SEVERE,"[CANNONS] Error while converting " + str + ". Check formatting (minecraft:clock)");
         }
 	}
 	

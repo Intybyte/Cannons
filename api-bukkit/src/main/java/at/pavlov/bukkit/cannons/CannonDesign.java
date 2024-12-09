@@ -4,6 +4,7 @@ import at.pavlov.bukkit.container.ItemHolder;
 import at.pavlov.bukkit.container.SimpleBlock;
 import at.pavlov.bukkit.container.SoundHolder;
 import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.internal.CannonLogger;
 import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -202,7 +203,7 @@ import java.util.List;
     		return cannonBlocks.getRotationCenter().clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit());
     	}
 
-    	//Cannons.logger().info("missing rotation center for cannon design " + cannon.getCannonName());
+    	CannonLogger.getLogger().info("missing rotation center for cannon design " + cannon.getCannonName());
     	return cannon.getOffset().toLocation(cannon.getWorldBukkit());
     }
 
@@ -218,7 +219,7 @@ import java.util.List;
     		return cannonBlocks.getMuzzle().clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit());
     	}
 
-    	//Cannons.logger().info("missing muzzle location for cannon design " + cannon.getCannonName());
+    	CannonLogger.getLogger().info("missing muzzle location for cannon design " + cannon.getCannonName());
     	return cannon.getOffset().toLocation(cannon.getWorldBukkit());
     }
     

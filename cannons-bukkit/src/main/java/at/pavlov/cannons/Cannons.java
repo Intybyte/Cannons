@@ -3,6 +3,7 @@ package at.pavlov.cannons;
 import at.pavlov.bukkit.container.ItemHolder;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.cannons.API.CannonsAPI;
+import at.pavlov.internal.CannonLogger;
 import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.bukkit.cannons.CannonDesign;
@@ -93,6 +94,7 @@ public final class Cannons extends JavaPlugin
     }
 
 	public void onLoad() {
+		CannonLogger.instantiate(this.getLogger());
 		// must be done in onLoad because "movecraft"
 		AsyncTaskManager.initialize(this);
 		UserMessages.initialize(this);

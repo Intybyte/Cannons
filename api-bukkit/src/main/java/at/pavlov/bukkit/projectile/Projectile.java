@@ -109,7 +109,7 @@ public class Projectile implements Cloneable {
             // call clone in Object.
             return (Projectile) super.clone();
         } catch (CloneNotSupportedException e) {
-            //Cannons.logger().info("Cloning not allowed.");
+            CannonLogger.getLogger().info("Cloning not allowed.");
             return this;
         }
     }

@@ -50,13 +50,13 @@ import java.util.regex.Pattern;
             }
         } catch (Exception e) {
             s.close();
-            //Cannons.logger().log(Level.SEVERE, "Error: wrong entity type or min-max values");
+            CannonLogger.getLogger().log(Level.SEVERE, "Error: wrong entity type or min-max values");
             return;
         }
 
         if (result.group(4) == null) {
             s.close();
-            //Cannons.logger().log(Level.WARNING, "type: " + getType() + " data: " + getData() + " min: " + minAmount + " max: " + maxAmount + " from str: " + str);
+            CannonLogger.getLogger().log(Level.WARNING, "type: " + getType() + " data: " + getData() + " min: " + minAmount + " max: " + maxAmount + " from str: " + str);
             return;
         }
 
@@ -79,7 +79,7 @@ import java.util.regex.Pattern;
                 String[] s2 = s1.split(":(?![^\\[]*\\])");
                 // check if there are argument and value
                 if (s2.length <= 1) {
-                    //Cannons.logger().log(Level.SEVERE, "" + s1 + " does not have an argument, use 'DURATION:10'");
+                    CannonLogger.getLogger().log(Level.SEVERE, "" + s1 + " does not have an argument, use 'DURATION:10'");
                     continue;
                 }
 
@@ -97,7 +97,7 @@ import java.util.regex.Pattern;
                         }
                     }
                     if (!found) {
-                        //Cannons.logger().log(Level.SEVERE, "'" + s2[0] + "' is not supported by Cannons");
+                        CannonLogger.getLogger().log(Level.SEVERE, "'" + s2[0] + "' is not supported by Cannons");
                     }
                     continue;
                 }
@@ -144,7 +144,7 @@ import java.util.regex.Pattern;
                                 icon = Boolean.parseBoolean(val);
                                 break;
                             default:
-                                //Cannons.logger().log(Level.SEVERE, "'" + s3[0] + "' is not a correct potion effect argument. See Bukkit PotionType");
+                                CannonLogger.getLogger().log(Level.SEVERE, "'" + s3[0] + "' is not a correct potion effect argument. See Bukkit PotionType");
                         }
                     }
                     //Cannons.getPlugin().logDebug("AREA OF EFFECT CLOUD potion type: " + type + " duration " + duration + " amplifier " + amplifier + " ambient " + ambient + " particles " + particles + " icon " + icon);
@@ -153,9 +153,9 @@ import java.util.regex.Pattern;
                 }
             }
             s.close();
-            //Cannons.logger().info("type: " + getType() + " data: " + getData() + " min: " + minAmount + " max: " + maxAmount + " from str: " + str);
+            CannonLogger.getLogger().info("type: " + getType() + " data: " + getData() + " min: " + minAmount + " max: " + maxAmount + " from str: " + str);
         } catch (Exception e) {
-            //Cannons.logger().log(Level.SEVERE, "Error while converting " + str + ". Check formating (Zombie 1-2 EntityData)" + e);
+            CannonLogger.getLogger().log(Level.SEVERE, "Error while converting " + str + ". Check formating (Zombie 1-2 EntityData)" + e);
             setType(null);
             setMinAmount(0);
             setMaxAmount(0);

@@ -27,7 +27,7 @@ public class SpawnMaterialHolder {
             setMaxAmount(Integer.parseInt(result.group(3)));
             s.close();
         } catch (Exception e) {
-            //Cannons.logger().log(Level.SEVERE,"Error while converting " + str + ". Check formatting (minecraft:cobweb 1-2)");
+            CannonLogger.getLogger().log(Level.SEVERE,"Error while converting " + str + ". Check formatting (minecraft:cobweb 1-2)");
             material = Bukkit.createBlockData(Material.AIR);
             setMinAmount(0);
             setMaxAmount(0);
