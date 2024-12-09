@@ -48,8 +48,6 @@ public class Projectile implements Cloneable {
     private BlockData smokeTrailMaterial;
     private double smokeTrailDuration;
     private boolean smokeTrailParticleEnabled;
-    @Getter
-    @Setter
     private ParticleBuilder smokeTrailParticle;
 
     //explosion
@@ -64,7 +62,7 @@ public class Projectile implements Cloneable {
     private double potionRange;
     private double potionDuration;
     private int potionAmplifier;
-    private List<PotionEffectType> potionsEffectList = new ArrayList<PotionEffectType>();
+    private List<PotionEffectType> potionsEffectList = new ArrayList<>();
     private boolean impactIndicator;
 
     //cluster
