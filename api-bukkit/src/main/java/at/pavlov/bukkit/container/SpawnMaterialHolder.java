@@ -1,11 +1,13 @@
 package at.pavlov.bukkit.container;
 
+import at.pavlov.internal.CannonLogger;
 import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 
 import java.util.Scanner;
+import java.util.logging.Level;
 import java.util.regex.MatchResult;
 
 @Data

@@ -1,5 +1,6 @@
 package at.pavlov.bukkit.container;
 
+import at.pavlov.internal.CannonLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -8,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
+import java.util.logging.Level;
 
 
 //small class as at.pavlov.cannons.container for item id and data

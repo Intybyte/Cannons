@@ -76,7 +76,7 @@ public class ProjectileStorage
 	{
 		for (Projectile projectile : projectileList)
 		{
-			if (cannon.getCannonDesign().canLoad(projectile) && !projectile.getLoadingItem().equals(Material.AIR) && projectile.equals(materialHolder))
+			if (cannon.getCannonDesign().canLoad(projectile) && !projectile.getLoadingItem().equals(Material.AIR) && projectile.check(materialHolder))
 				return projectile;
 		}
 		return null;
@@ -92,7 +92,7 @@ public class ProjectileStorage
 	{
 		for (Projectile projectile : projectileList)
 		{
-			if (cannon.getCannonDesign().canLoad(projectile) && projectile.equals(projectileId))
+			if (cannon.getCannonDesign().canLoad(projectile) && projectile.check(projectileId))
 				return projectile;
 		}
 		return null;
@@ -107,7 +107,7 @@ public class ProjectileStorage
 	{
 		for (Projectile projectile : projectileList)
 		{
-			if (projectile.equals(projectileId))
+			if (projectile.check(projectileId))
 				return projectile;
 		}
 		return null;

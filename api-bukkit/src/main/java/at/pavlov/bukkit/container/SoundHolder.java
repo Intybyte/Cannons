@@ -1,5 +1,6 @@
 package at.pavlov.bukkit.container;
 
+import at.pavlov.internal.CannonLogger;
 import org.bukkit.Sound;
 
 import java.util.Locale;
