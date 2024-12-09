@@ -1,24 +1,28 @@
 package at.pavlov.bukkit.container;
 
 import at.pavlov.internal.enums.EntityDataType;
+import lombok.Data;
 import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SpawnEntityHolder{
+@Data public class SpawnEntityHolder {
     private EntityType type;
     private int minAmount;
     private int maxAmount;
     private Map<EntityDataType, String> data;
     private List<PotionEffect> potionEffects;
 
-    public SpawnEntityHolder(String str)
-    {
+    public SpawnEntityHolder(String str) {
         //split string at space
         // NAME min-max
         // ZOMBIE 1-2
@@ -60,7 +64,7 @@ public class SpawnEntityHolder{
         Pattern p = Pattern.compile("(?<=\\{)(.+)(?=\\})");
         Matcher m = p.matcher(result.group(4));
         String strdata = null;
-        if(m.find())
+        if (m.find())
             strdata = m.group(1);
 
         //if there are no curly braces set the string to complete argument
@@ -150,7 +154,7 @@ public class SpawnEntityHolder{
             }
             s.close();
             //Cannons.logger().info("type: " + getType() + " data: " + getData() + " min: " + minAmount + " max: " + maxAmount + " from str: " + str);
-        } catch(Exception e) {
+        } catch (Exception e) {
             //Cannons.logger().log(Level.SEVERE, "Error while converting " + str + ". Check formating (Zombie 1-2 EntityData)" + e);
             setType(null);
             setMinAmount(0);
@@ -163,45 +167,5 @@ public class SpawnEntityHolder{
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
         this.data = data;
-    }
-
-    public int getMinAmount() {
-        return minAmount;
-    }
-
-    public void setMinAmount(int minAmount) {
-        this.minAmount = minAmount;
-    }
-
-    public int getMaxAmount() {
-        return maxAmount;
-    }
-
-    public void setMaxAmount(int maxAmount) {
-        this.maxAmount = maxAmount;
-    }
-
-    public EntityType getType() {
-        return type;
-    }
-
-    public void setType(EntityType type) {
-        this.type = type;
-    }
-
-    public Map<EntityDataType, String> getData() {
-        return data;
-    }
-
-    public void setData(Map<EntityDataType, String> data) {
-        this.data = data;
-    }
-
-    public List<PotionEffect> getPotionEffects() {
-        return potionEffects;
-    }
-
-    public void setPotionEffects(List<PotionEffect> potionEffects) {
-        this.potionEffects = potionEffects;
     }
 }
