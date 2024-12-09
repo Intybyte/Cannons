@@ -524,7 +524,7 @@ public class DesignStorage
                 // the previous blocks
                 else {
                     // all remaining blocks are loading interface or cannonBlocks
-                    cannonBlocks.addBarrel(new Vector(x, y, z));
+                    cannonBlocks.addBarrelBlocks(new Vector(x, y, z));
                     cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, sblock.getBlockData()));
                     // this can be a destructible block
                     if (!isInList(blockProtectedList, sblock.getBlockData()))
