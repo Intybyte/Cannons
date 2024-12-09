@@ -2,7 +2,7 @@ package at.pavlov.cannons.hooks.papi;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.hooks.BukkitHook;
-import at.pavlov.internal.Hook;
+import at.pavlov.internal.hooks.Hook;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 

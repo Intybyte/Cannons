@@ -1,6 +1,6 @@
 package at.pavlov.cannons;
 
-import at.pavlov.bukkit.container.SoundHolder;
+import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.SpawnEntityHolder;
 import at.pavlov.bukkit.container.SpawnMaterialHolder;
 import at.pavlov.bukkit.projectile.Projectile;
@@ -1221,7 +1221,7 @@ public class CreateExplosion {
      * @param impactLoc Location of the explosion
      * @param sound     Which sound is broadcasted
      */
-    public void sendExplosionToPlayers(Projectile proj, Location impactLoc, SoundHolder sound) {
+    public void sendExplosionToPlayers(Projectile proj, Location impactLoc, BukkitSoundHolder sound) {
         SoundUtils.imitateSound(impactLoc, sound, this.config.getImitatedSoundMaximumDistance(),
                 this.config.getImitatedSoundMaximumVolume());
 

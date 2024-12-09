@@ -5,7 +5,7 @@ import at.pavlov.cannons.hooks.BukkitHook;
 import at.pavlov.cannons.hooks.movecraft.listener.CraftDetectListener;
 import at.pavlov.cannons.hooks.movecraft.listener.RotationListener;
 import at.pavlov.cannons.hooks.movecraft.listener.TranslationListener;
-import at.pavlov.internal.Hook;
+import at.pavlov.internal.hooks.Hook;
 import net.countercraft.movecraft.Movecraft;
 import org.bukkit.ChatColor;
 import org.bukkit.event.HandlerList;

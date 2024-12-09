@@ -1,16 +1,14 @@
-package at.pavlov.bukkit.container;
+package at.pavlov.internal.container;
 
 import at.pavlov.internal.CannonLogger;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.bukkit.Sound;
 
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.function.Function;
 import java.util.logging.Level;
 
-@Data public class SoundHolder {
+@Data public abstract class SoundHolder<Sound> {
     private Sound soundEnum;
     private String soundString;
     private Float volume;
@@ -36,7 +34,7 @@ import java.util.logging.Level;
                 }
 
                 try {
-                    soundEnum = Sound.valueOf(scan);
+                    soundEnum = converter().apply(scan);
                 } catch (Exception e) {
                     soundString = scan;
                 }
@@ -59,6 +57,8 @@ import java.util.logging.Level;
             CannonLogger.getLogger().log(Level.SEVERE, "Error while converting " + str + ". Formatting: 'IRON_GOLEM_WALK:1:0.5'" + e.toString());
         }
     }
+
+    public abstract Function<String, Sound> converter();
 
     public SoundHolder(Sound sound, float volume, float pitch) {
         this.soundEnum = sound;

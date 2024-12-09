@@ -1,6 +1,6 @@
 package at.pavlov.cannons.utils;
 
-import at.pavlov.bukkit.container.SoundHolder;
+import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -16,7 +16,7 @@ public class SoundUtils {
      * @param sound   sound
      * @param maxDist maximum distance
      */
-    public static void imitateSound(Location loc, SoundHolder sound, int maxDist, float maxVolume) {
+    public static void imitateSound(Location loc, BukkitSoundHolder sound, int maxDist, float maxVolume) {
         //https://forums.bukkit.org/threads/playsound-parameters-volume-and-pitch.151517/
         World w = loc.getWorld();
         //w.playSound(loc, sound.getSound(), maxVolume*16f, sound.getPitch());
@@ -83,7 +83,7 @@ public class SoundUtils {
      * @param loc   location of the sound
      * @param sound type of sound (sound, volume, pitch)
      */
-    public static void playSound(Location loc, SoundHolder sound) {
+    public static void playSound(Location loc, BukkitSoundHolder sound) {
         if (!sound.isValid())
             return;
 

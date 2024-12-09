@@ -1,8 +1,8 @@
 package at.pavlov.bukkit.cannons;
 
+import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.ItemHolder;
 import at.pavlov.bukkit.container.SimpleBlock;
-import at.pavlov.bukkit.container.SoundHolder;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.internal.CannonLogger;
 import lombok.Data;
@@ -152,24 +152,24 @@ import java.util.List;
 	private List<String> allowedProjectiles;
 
     //sounds
-    private SoundHolder soundCreate;
-    private SoundHolder soundDestroy;
-	private SoundHolder soundDismantle;
-    private SoundHolder soundAdjust;
-    private SoundHolder soundIgnite;
-    private SoundHolder soundFiring;
-    private SoundHolder soundGunpowderLoading;
-    private SoundHolder soundGunpowderOverloading;
-    private SoundHolder soundCool;
-    private SoundHolder soundHot;
-    private SoundHolder soundRamrodCleaning;
-    private SoundHolder soundRamrodCleaningDone;
-    private SoundHolder soundRamrodPushing;
-    private SoundHolder soundRamrodPushingDone;
-    private SoundHolder soundThermometer;
-    private SoundHolder soundEnableAimingMode;
-    private SoundHolder soundDisableAimingMode;
-	private SoundHolder soundSelected;
+    private BukkitSoundHolder soundCreate;
+    private BukkitSoundHolder soundDestroy;
+	private BukkitSoundHolder soundDismantle;
+    private BukkitSoundHolder soundAdjust;
+    private BukkitSoundHolder soundIgnite;
+    private BukkitSoundHolder soundFiring;
+    private BukkitSoundHolder soundGunpowderLoading;
+    private BukkitSoundHolder soundGunpowderOverloading;
+    private BukkitSoundHolder soundCool;
+    private BukkitSoundHolder soundHot;
+    private BukkitSoundHolder soundRamrodCleaning;
+    private BukkitSoundHolder soundRamrodCleaningDone;
+    private BukkitSoundHolder soundRamrodPushing;
+    private BukkitSoundHolder soundRamrodPushingDone;
+    private BukkitSoundHolder soundThermometer;
+    private BukkitSoundHolder soundEnableAimingMode;
+    private BukkitSoundHolder soundDisableAimingMode;
+	private BukkitSoundHolder soundSelected;
 
 	
 	//constructionblocks:

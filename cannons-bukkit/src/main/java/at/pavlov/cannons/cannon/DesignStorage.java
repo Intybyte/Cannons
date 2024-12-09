@@ -2,9 +2,9 @@ package at.pavlov.cannons.cannon;
 
 import at.pavlov.bukkit.cannons.CannonBlocks;
 import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.ItemHolder;
 import at.pavlov.bukkit.container.SimpleBlock;
-import at.pavlov.bukkit.container.SoundHolder;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.container.DesignFileName;
 import at.pavlov.cannons.utils.CannonsUtil;
@@ -328,24 +328,24 @@ public class DesignStorage
 		cannonDesign.setAllowedProjectiles(cannonDesignConfig.getStringList("allowedProjectiles"));
 
         // sounds
-        cannonDesign.setSoundCreate(new SoundHolder(cannonDesignConfig.getString("sounds.create","BLOCK_ANVIL_LAND:1:0.5")));
-        cannonDesign.setSoundDestroy(new SoundHolder(cannonDesignConfig.getString("sounds.destroy","ENTITY_ZOMBIE_ATTACK_IRON_DOOR:1:0.5")));
-        cannonDesign.setSoundDismantle(new SoundHolder(cannonDesignConfig.getString("sounds.dismantle", "BLOCK_ANVIL_USE:1:0.5")));
-        cannonDesign.setSoundAdjust(new SoundHolder(cannonDesignConfig.getString("sounds.adjust","ENTITY_IRON_GOLEM_STEP:1:0.5")));
-        cannonDesign.setSoundIgnite(new SoundHolder(cannonDesignConfig.getString("sounds.ignite","ENTITY_TNT_PRIMED:5:1")));
-        cannonDesign.setSoundFiring(new SoundHolder(cannonDesignConfig.getString("sounds.firing","ENTITY_GENERIC_EXPLODE:20:1.5")));
-        cannonDesign.setSoundGunpowderLoading(new SoundHolder(cannonDesignConfig.getString("sounds.gunpowderLoading","BLOCK_SAND_HIT:1:1.5")));
-        cannonDesign.setSoundGunpowderOverloading(new SoundHolder(cannonDesignConfig.getString("sounds.gunpowderOverloading","BLOCK_GRASS_HIT:1:1.5")));
-        cannonDesign.setSoundCool(new SoundHolder(cannonDesignConfig.getString("sounds.cool","BLOCK_FIRE_EXTINGUISH:1:1")));
-        cannonDesign.setSoundHot(new SoundHolder(cannonDesignConfig.getString("sounds.hot","BLOCK_FIRE_EXTINGUISH:1:1")));
-        cannonDesign.setSoundRamrodCleaning(new SoundHolder(cannonDesignConfig.getString("sounds.ramrodCleaning","BLOCK_SNOW_HIT:0.5:0")));
-        cannonDesign.setSoundRamrodCleaningDone(new SoundHolder(cannonDesignConfig.getString("sounds.ramrodCleaningDone","BLOCK_SNOW_HIT:0.5:1")));
-        cannonDesign.setSoundRamrodPushing(new SoundHolder(cannonDesignConfig.getString("sounds.ramrodPushing","BLOCK_STONE_HIT:0.5:0")));
-        cannonDesign.setSoundRamrodPushingDone(new SoundHolder(cannonDesignConfig.getString("sounds.ramrodPushingDone","BLOCK_ANVIL_LAND:0.5:0")));
-        cannonDesign.setSoundThermometer(new SoundHolder(cannonDesignConfig.getString("sounds.thermometer","BLOCK_ANVIL_LAND:1:1")));
-        cannonDesign.setSoundEnableAimingMode(new SoundHolder(cannonDesignConfig.getString("sounds.enableAimingMode","NONE:1:1")));
-        cannonDesign.setSoundDisableAimingMode(new SoundHolder(cannonDesignConfig.getString("sounds.disableAimingMode","NONE:1:1")));
-		cannonDesign.setSoundSelected(new SoundHolder(cannonDesignConfig.getString("sounds.selected","BLOCK_ANVIL_LAND:1:2")));
+        cannonDesign.setSoundCreate(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.create","BLOCK_ANVIL_LAND:1:0.5")));
+        cannonDesign.setSoundDestroy(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.destroy","ENTITY_ZOMBIE_ATTACK_IRON_DOOR:1:0.5")));
+        cannonDesign.setSoundDismantle(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.dismantle", "BLOCK_ANVIL_USE:1:0.5")));
+        cannonDesign.setSoundAdjust(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.adjust","ENTITY_IRON_GOLEM_STEP:1:0.5")));
+        cannonDesign.setSoundIgnite(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.ignite","ENTITY_TNT_PRIMED:5:1")));
+        cannonDesign.setSoundFiring(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.firing","ENTITY_GENERIC_EXPLODE:20:1.5")));
+        cannonDesign.setSoundGunpowderLoading(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.gunpowderLoading","BLOCK_SAND_HIT:1:1.5")));
+        cannonDesign.setSoundGunpowderOverloading(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.gunpowderOverloading","BLOCK_GRASS_HIT:1:1.5")));
+        cannonDesign.setSoundCool(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.cool","BLOCK_FIRE_EXTINGUISH:1:1")));
+        cannonDesign.setSoundHot(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.hot","BLOCK_FIRE_EXTINGUISH:1:1")));
+        cannonDesign.setSoundRamrodCleaning(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.ramrodCleaning","BLOCK_SNOW_HIT:0.5:0")));
+        cannonDesign.setSoundRamrodCleaningDone(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.ramrodCleaningDone","BLOCK_SNOW_HIT:0.5:1")));
+        cannonDesign.setSoundRamrodPushing(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.ramrodPushing","BLOCK_STONE_HIT:0.5:0")));
+        cannonDesign.setSoundRamrodPushingDone(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.ramrodPushingDone","BLOCK_ANVIL_LAND:0.5:0")));
+        cannonDesign.setSoundThermometer(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.thermometer","BLOCK_ANVIL_LAND:1:1")));
+        cannonDesign.setSoundEnableAimingMode(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.enableAimingMode","NONE:1:1")));
+        cannonDesign.setSoundDisableAimingMode(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.disableAimingMode","NONE:1:1")));
+		cannonDesign.setSoundSelected(new BukkitSoundHolder(cannonDesignConfig.getString("sounds.selected","BLOCK_ANVIL_LAND:1:2")));
 
 		// constructionBlocks
 		cannonDesign.setSchematicBlockTypeIgnore(CannonsUtil.createBlockData(cannonDesignConfig.getString("constructionBlocks.ignore", "minecraft:sand")));

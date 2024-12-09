@@ -1,4 +1,4 @@
-package at.pavlov.internal;
+package at.pavlov.internal.hooks;
 
 import java.util.Collections;
 import java.util.HashMap;

@@ -1,8 +1,8 @@
 package at.pavlov.bukkit.projectile;
 
 import at.pavlov.bukkit.builders.ParticleBuilder;
+import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.ItemHolder;
-import at.pavlov.bukkit.container.SoundHolder;
 import at.pavlov.bukkit.container.SpawnEntityHolder;
 import at.pavlov.bukkit.container.SpawnMaterialHolder;
 import at.pavlov.internal.CannonLogger;
@@ -90,10 +90,10 @@ public class Projectile implements Cloneable {
     private boolean impactMessage;
 
     //sounds
-    private SoundHolder soundLoading;
-    private SoundHolder soundImpact;
-    private SoundHolder soundImpactProtected;
-    private SoundHolder soundImpactWater;
+    private BukkitSoundHolder soundLoading;
+    private BukkitSoundHolder soundImpact;
+    private BukkitSoundHolder soundImpactProtected;
+    private BukkitSoundHolder soundImpactWater;
 
     //permissions
     private List<String> permissionLoad = new ArrayList<String>();

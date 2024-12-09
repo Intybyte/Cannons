@@ -2,7 +2,7 @@ package at.pavlov.cannons.hooks.movecraftcombat;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.hooks.BukkitHook;
-import at.pavlov.internal.Hook;
+import at.pavlov.internal.hooks.Hook;
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import org.bukkit.ChatColor;
 import org.bukkit.event.HandlerList;

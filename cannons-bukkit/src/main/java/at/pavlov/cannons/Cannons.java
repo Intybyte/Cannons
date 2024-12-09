@@ -1,12 +1,9 @@
 package at.pavlov.cannons;
 
-import at.pavlov.bukkit.container.ItemHolder;
-import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.cannons.API.CannonsAPI;
 import at.pavlov.internal.CannonLogger;
 import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.commands.CannonsCommandManager;
@@ -26,8 +23,8 @@ import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.scheduler.ProjectileObserver;
 import at.pavlov.cannons.utils.CannonSelector;
-import at.pavlov.internal.Hook;
-import at.pavlov.internal.HookManager;
+import at.pavlov.internal.hooks.Hook;
+import at.pavlov.internal.hooks.HookManager;
 import at.pavlov.internal.ModrinthUpdateChecker;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
@@ -37,7 +34,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,7 +45,6 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 public final class Cannons extends JavaPlugin

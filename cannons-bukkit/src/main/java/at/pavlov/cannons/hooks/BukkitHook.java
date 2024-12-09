@@ -1,7 +1,7 @@
 package at.pavlov.cannons.hooks;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.internal.Hook;
+import at.pavlov.internal.hooks.Hook;
 
 abstract public class BukkitHook<P> implements Hook<P> {
 

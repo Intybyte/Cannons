@@ -1,4 +1,4 @@
-package at.pavlov.internal;
+package at.pavlov.internal.hooks;
 
 public interface Hook<H> {
     H hook();

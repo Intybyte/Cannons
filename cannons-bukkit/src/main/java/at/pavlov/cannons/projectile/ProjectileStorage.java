@@ -1,8 +1,8 @@
 package at.pavlov.cannons.projectile;
 
 import at.pavlov.bukkit.builders.ParticleBuilder;
+import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.ItemHolder;
-import at.pavlov.bukkit.container.SoundHolder;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.bukkit.utils.FileUtils;
@@ -290,10 +290,10 @@ public class ProjectileStorage
 		projectile.setImpactMessage(projectileConfig.getBoolean("messages.hasImpactMessage", false));
 
 		//sounds
-		projectile.setSoundLoading(new SoundHolder(projectileConfig.getString("sounds.loading", "BLOCK_STONE_PLACE:5:0.5")));
-		projectile.setSoundImpact(new SoundHolder(projectileConfig.getString("sounds.impact", "ENTITY_GENERIC_EXPLODE:10:0.5")));
-		projectile.setSoundImpactProtected(new SoundHolder(projectileConfig.getString("sounds.impactProtected", "ENTITY_GENERIC_EXPLODE:10:0.5")));
-		projectile.setSoundImpactWater(new SoundHolder(projectileConfig.getString("sounds.impactWater", "ENTITY_GENERIC_SPLASH:10:0.3")));
+		projectile.setSoundLoading(new BukkitSoundHolder(projectileConfig.getString("sounds.loading", "BLOCK_STONE_PLACE:5:0.5")));
+		projectile.setSoundImpact(new BukkitSoundHolder(projectileConfig.getString("sounds.impact", "ENTITY_GENERIC_EXPLODE:10:0.5")));
+		projectile.setSoundImpactProtected(new BukkitSoundHolder(projectileConfig.getString("sounds.impactProtected", "ENTITY_GENERIC_EXPLODE:10:0.5")));
+		projectile.setSoundImpactWater(new BukkitSoundHolder(projectileConfig.getString("sounds.impactWater", "ENTITY_GENERIC_SPLASH:10:0.3")));
 
 		//loadPermissions
 		projectile.setPermissionLoad(projectileConfig.getStringList("loadPermission"));
