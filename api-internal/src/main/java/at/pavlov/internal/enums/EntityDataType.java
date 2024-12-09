@@ -12,7 +12,6 @@ public enum EntityDataType {
     RADIUS_ON_USE ("RadiusOnUse"),
     DURATION ("Duration"),
     DURATION_ON_USE ("DurationOnUse"),
-    EFFECTS ("Effects"),
     WAIT_TIME ("WaitTime"),
     MAIN_HAND_ITEM ("MainHandItem"),
     OFF_HAND_ITEM ("OffHandItem"),
