@@ -54,8 +54,6 @@ public class ItemHolder {
 
     public ItemHolder(Material material, String description, List<String> lore) {
         this.material = Objects.requireNonNullElse(material, Material.AIR);
-
-        Objects.requireNonNullElse(description, "");
         this.displayName = description == null ? "" : ChatColor.translateAlternateColorCodes('&', description);
         this.lore = Objects.requireNonNullElseGet(lore, ArrayList::new);
     }
