@@ -3,7 +3,7 @@ package at.pavlov.cannons.cannon;
 import at.pavlov.bukkit.cannons.CannonBlocks;
 import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.bukkit.container.BukkitSoundHolder;
-import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.SimpleBlock;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.container.DesignFileName;
@@ -202,7 +202,7 @@ public class DesignStorage
 
 		// ammunition
 		cannonDesign.setGunpowderName(cannonDesignConfig.getString("ammunition.gunpowderName", "gunpowder"));
-		cannonDesign.setGunpowderType(new ItemHolder(cannonDesignConfig.getString("ammunition.gunpowderType", "SULPHUR:0")));
+		cannonDesign.setGunpowderType(BukkitItemHolder.from(cannonDesignConfig.getString("ammunition.gunpowderType", "SULPHUR:0")));
         cannonDesign.setGunpowderNeeded(cannonDesignConfig.getBoolean("ammunition.needsGunpowder", true));
         cannonDesign.setGunpowderConsumption(cannonDesignConfig.getBoolean("ammunition.gunpowderConsumption", true));
         cannonDesign.setProjectileConsumption(cannonDesignConfig.getBoolean("ammunition.projectileConsumption", true));

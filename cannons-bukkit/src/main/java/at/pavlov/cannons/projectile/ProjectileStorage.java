@@ -2,7 +2,7 @@ package at.pavlov.cannons.projectile;
 
 import at.pavlov.bukkit.builders.ParticleBuilder;
 import at.pavlov.bukkit.container.BukkitSoundHolder;
-import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.bukkit.utils.FileUtils;
@@ -63,7 +63,7 @@ public class ProjectileStorage
 	 */
 	public static Projectile getProjectile(Cannon cannon, ItemStack item)
 	{
-		ItemHolder materialHolder = new ItemHolder(item);
+		BukkitItemHolder materialHolder = BukkitItemHolder.from(item);
 		return getProjectile(cannon, materialHolder);
 	}
 
@@ -72,11 +72,11 @@ public class ProjectileStorage
 	 * @param materialHolder material of the projectile
 	 * @return true if there is a projectile with this material
 	 */
-	public static Projectile getProjectile(Cannon cannon, ItemHolder materialHolder)
+	public static Projectile getProjectile(Cannon cannon, BukkitItemHolder materialHolder)
 	{
 		for (Projectile projectile : projectileList)
 		{
-			if (cannon.getCannonDesign().canLoad(projectile) && !projectile.getLoadingItem().equals(Material.AIR) && projectile.check(materialHolder))
+			if (cannon.getCannonDesign().canLoad(projectile) && !projectile.getLoadingItem().check(Material.AIR) && projectile.check(materialHolder))
 				return projectile;
 		}
 		return null;
@@ -209,7 +209,7 @@ public class ProjectileStorage
 		projectile.setProjectileName(projectileConfig.getString("general.projectileName", "noProjectileName"));
 		projectile.setDescription(projectileConfig.getString("general.description", "no description for this projectile"));
 		projectile.setItemName(projectileConfig.getString("general.itemName", "noItemName"));
-		projectile.setLoadingItem(new ItemHolder(projectileConfig.getString("general.loadingItem", "minecraft:cobblestone")));
+		projectile.setLoadingItem(BukkitItemHolder.from(projectileConfig.getString("general.loadingItem", "minecraft:cobblestone")));
 		projectile.setAlternativeItemList(ParseUtils.toItemHolderList(projectileConfig.getStringList("general.alternativeId")));
 
 		//cannonball

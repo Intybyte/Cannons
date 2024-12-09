@@ -1,7 +1,7 @@
 package at.pavlov.bukkit.cannons;
 
 import at.pavlov.bukkit.container.BukkitSoundHolder;
-import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.SimpleBlock;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.internal.CannonLogger;
@@ -31,7 +31,7 @@ import java.util.List;
 	
 	//ammunition_consumption
 	private String gunpowderName;
-	private ItemHolder gunpowderType;
+	private BukkitItemHolder gunpowderType;
     private boolean gunpowderNeeded;
     private boolean gunpowderConsumption;
     private boolean projectileConsumption;
@@ -100,8 +100,8 @@ import java.util.List;
     private double warningTemperature;
     private double criticalTemperature;
     private double maximumTemperature;
-    private List<ItemHolder> itemCooling = new ArrayList<>();
-    private List<ItemHolder> itemCoolingUsed = new ArrayList<>();
+    private List<BukkitItemHolder> itemCooling = new ArrayList<>();
+    private List<BukkitItemHolder> itemCoolingUsed = new ArrayList<>();
 
     //Overloading stuff
     private boolean overloadingEnabled;
@@ -490,7 +490,7 @@ import java.util.List;
     public boolean isCoolingTool(ItemStack item)
     {
     	//todo rework tool properties
-        for (ItemHolder mat : itemCooling)
+        for (BukkitItemHolder mat : itemCooling)
         {
             if (mat.equalsFuzzy(item))
                 return true;

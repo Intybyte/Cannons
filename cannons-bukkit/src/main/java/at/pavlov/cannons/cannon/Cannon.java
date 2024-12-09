@@ -4,7 +4,7 @@ import at.pavlov.bukkit.cannons.CannonBlocks;
 import at.pavlov.bukkit.cannons.CannonBukkit;
 import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.bukkit.cannons.CannonDesignHolder;
-import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.SimpleBlock;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.cannons.Cannons;
@@ -266,7 +266,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
             return true;
 
         //do this for every cooling item
-        for (ItemHolder mat : design.getItemCooling()) {
+        for (BukkitItemHolder mat : design.getItemCooling()) {
             if (mat == null)
                 continue;
 

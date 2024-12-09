@@ -1,6 +1,6 @@
 package at.pavlov.cannons.utils;
 
-import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.SpawnEntityHolder;
 import at.pavlov.bukkit.container.SpawnMaterialHolder;
 import at.pavlov.cannons.Cannons;
@@ -15,7 +15,6 @@ import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class ParseUtils {
     /**
@@ -146,11 +145,11 @@ public class ParseUtils {
 	 * @param stringList list of Materials as strings
 	 * @return list of ItemHolders
 	 */
-	public static List<ItemHolder> toItemHolderList(List<String> stringList) {
-		List<ItemHolder> materialList = new ArrayList<>();
+	public static List<BukkitItemHolder> toItemHolderList(List<String> stringList) {
+		List<BukkitItemHolder> materialList = new ArrayList<>();
 
 		for (String str : stringList) {
-            ItemHolder material = new ItemHolder(str);
+            BukkitItemHolder material = BukkitItemHolder.from(str);
 			//if id == -1 the str was invalid
             materialList.add(material);
 		}

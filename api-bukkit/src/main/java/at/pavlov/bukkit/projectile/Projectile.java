@@ -2,7 +2,7 @@ package at.pavlov.bukkit.projectile;
 
 import at.pavlov.bukkit.builders.ParticleBuilder;
 import at.pavlov.bukkit.container.BukkitSoundHolder;
-import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.SpawnEntityHolder;
 import at.pavlov.bukkit.container.SpawnMaterialHolder;
 import at.pavlov.internal.CannonLogger;
@@ -24,9 +24,9 @@ public class Projectile implements Cloneable {
     private String projectileName;
     private String description;
     private String itemName;
-    private ItemHolder loadingItem;
+    private BukkitItemHolder loadingItem;
     //list of items or blocks that can represent this this (e.g. redstone dust may for wire when you click a block)
-    private List<ItemHolder> alternativeItemList = new ArrayList<>();
+    private List<BukkitItemHolder> alternativeItemList = new ArrayList<>();
 
     //properties of the cannonball
     private EntityType projectileEntity;
@@ -119,7 +119,7 @@ public class Projectile implements Cloneable {
      * @param materialHolder the material of the loaded item
      * @return true if the materials match
      */
-    public boolean check(ItemHolder materialHolder) {
+    public boolean check(BukkitItemHolder materialHolder) {
         return loadingItem.equalsFuzzy(materialHolder);
     }
 

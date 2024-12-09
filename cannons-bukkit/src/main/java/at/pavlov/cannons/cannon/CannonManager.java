@@ -1,7 +1,7 @@
 package at.pavlov.cannons.cannon;
 
 import at.pavlov.bukkit.cannons.CannonDesign;
-import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.SimpleBlock;
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
@@ -874,7 +874,7 @@ public class CannonManager {
         for (Cannon cannon : cannonList.values()) {
             cannon.setCannonDesign(DesignStorage.getInstance().getDesign(cannon));
             if (cannon.getLoadedProjectile() != null) {
-                ItemHolder item = cannon.getLoadedProjectile().getLoadingItem();
+                BukkitItemHolder item = cannon.getLoadedProjectile().getLoadingItem();
                 cannon.setLoadedProjectile(ProjectileStorage.getProjectile(cannon, item));
             }
         }

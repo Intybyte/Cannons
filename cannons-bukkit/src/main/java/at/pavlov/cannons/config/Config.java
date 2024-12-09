@@ -2,10 +2,9 @@ package at.pavlov.cannons.config;
 
 
 import at.pavlov.bukkit.builders.ParticleBuilder;
-import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.utils.FileUtils;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.multiversion.ParticleResolver;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
@@ -49,13 +48,13 @@ import java.util.List;
     private boolean keepAliveEnabled;
     private double keepAliveTeleportDistance;
 	//tools
-    private ItemHolder toolAdjust = new ItemHolder("minecraft:air");
-    private ItemHolder toolAutoaim = new ItemHolder("minecraft:clock");
+    private BukkitItemHolder toolAdjust = BukkitItemHolder.from("minecraft:air");
+    private BukkitItemHolder toolAutoaim = BukkitItemHolder.from("minecraft:clock");
     private double toolAutoaimRange;
-    private ItemHolder toolFiring = new ItemHolder("minecraft:flint_and_steel");
-    private ItemHolder toolRamrod = new ItemHolder("minecraft:stick");
-    private ItemHolder toolRotating = new ItemHolder("minecraft:rail");
-    private ItemHolder toolThermometer = new ItemHolder("minecraft:gold_nugget");
+    private BukkitItemHolder toolFiring = BukkitItemHolder.from("minecraft:flint_and_steel");
+    private BukkitItemHolder toolRamrod = BukkitItemHolder.from("minecraft:stick");
+    private BukkitItemHolder toolRotating = BukkitItemHolder.from("minecraft:rail");
+    private BukkitItemHolder toolThermometer = BukkitItemHolder.from("minecraft:gold_nugget");
 
     private int imitatedBlockMinimumDistance;
     private int imitatedBlockMaximumDistance;
@@ -99,7 +98,7 @@ import java.util.List;
     private List<BlockData> unbreakableBlocks = new ArrayList<>();
 
     //cancelEventForLoadingItem
-    private List<ItemHolder> cancelItems = new ArrayList<>();
+    private List<BukkitItemHolder> cancelItems = new ArrayList<>();
 
 	private final Cannons plugin;
     @Getter
@@ -147,13 +146,13 @@ import java.util.List;
         setKeepAliveTeleportDistance(config.getDouble("keepProjectileAlive.teleportProjectile", 5.0));
 
 		//tools
-		setToolAdjust(new ItemHolder(config.getString("tools.adjust", "minecraft:air")));
-		setToolAutoaim(new ItemHolder(config.getString("tools.autoaim", "minecraft:clock")));
+		setToolAdjust(BukkitItemHolder.from(config.getString("tools.adjust", "minecraft:air")));
+		setToolAutoaim(BukkitItemHolder.from(config.getString("tools.autoaim", "minecraft:clock")));
         setToolAutoaimRange(config.getDouble("tools.autoaimRange", 4.0));
-		setToolFiring(new ItemHolder(config.getString("tools.firing", "minecraft:flint_and_steel")));
-        setToolRamrod(new ItemHolder(config.getString("tools.ramrod", "minecraft:stick")));
-		setToolRotating(new ItemHolder(config.getString("tools.adjust", "minecraft:rail")));
-        setToolThermometer(new ItemHolder(config.getString("tools.thermometer", "minecraft:gold_nugget")));
+		setToolFiring(BukkitItemHolder.from(config.getString("tools.firing", "minecraft:flint_and_steel")));
+        setToolRamrod(BukkitItemHolder.from(config.getString("tools.ramrod", "minecraft:stick")));
+		setToolRotating(BukkitItemHolder.from(config.getString("tools.adjust", "minecraft:rail")));
+        setToolThermometer(BukkitItemHolder.from(config.getString("tools.thermometer", "minecraft:gold_nugget")));
 
         //imitated effects
         setImitatedBlockMinimumDistance(config.getInt("imitatedEffects.minimumBlockDistance", 40));
@@ -223,7 +222,7 @@ import java.util.List;
 	}
 
     public boolean isCancelItem(ItemStack item) {
-        for (ItemHolder item2 : getCancelItems()) {
+        for (BukkitItemHolder item2 : getCancelItems()) {
             if (item2.equalsFuzzy(item))
                 return true;
         }

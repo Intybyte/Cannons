@@ -1,6 +1,6 @@
 package at.pavlov.cannons.hooks.papi;
 
-import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 
@@ -52,7 +52,7 @@ public class CannonsPAPIExpansion extends PlaceholderExpansion {
             case "temperature" ->  "" + operated.getAmbientTemperature();
             case "loaded_gunpowder" -> "" + operated.getLoadedGunpowder();
             case "loaded_projectile" -> {
-                ItemHolder stack;
+                BukkitItemHolder stack;
                 try {
                     stack = operated.getLoadedProjectile().getLoadingItem();
                 } catch (Exception e) {

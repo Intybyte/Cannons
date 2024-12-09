@@ -1,6 +1,7 @@
 package at.pavlov.bukkit.container;
 
 import at.pavlov.internal.CannonLogger;
+import at.pavlov.internal.container.ItemHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -10,28 +11,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Level;
 
 //small class as at.pavlov.cannons.container for item id and data
-public class ItemHolder {
+public class BukkitItemHolder extends ItemHolder<Material> {
     private Material material;
     private String displayName;
     private List<String> lore;
 
-    public ItemHolder(ItemStack item) {
+    public static BukkitItemHolder from(ItemStack item) {
         if (item == null) {
-            material = Material.AIR;
-            displayName = "";
-            lore = new ArrayList<String>();
-            return;
+            return new BukkitItemHolder(Material.AIR);
         }
 
-        material = item.getType();
+        Material material = item.getType();
+        String displayName;
+        List<String> lore;
 
         if (!item.hasItemMeta()) {
-            return;
+            return new BukkitItemHolder(Material.AIR);
         }
 
         ItemMeta meta = item.getItemMeta();
@@ -46,37 +45,41 @@ public class ItemHolder {
 
         boolean loreExists = meta.hasLore() && meta.getLore() != null;
         lore = loreExists ? meta.getLore() : new ArrayList<>();
+        return new BukkitItemHolder(material, displayName, lore);
     }
 
-    public ItemHolder(Material material) {
+    public BukkitItemHolder(Material material) {
         this(material, null, null);
     }
 
-    public ItemHolder(Material material, String description, List<String> lore) {
-        this.material = Objects.requireNonNullElse(material, Material.AIR);
-        this.displayName = description == null ? "" : ChatColor.translateAlternateColorCodes('&', description);
-        this.lore = Objects.requireNonNullElseGet(lore, ArrayList::new);
+    public BukkitItemHolder(Material material, String description, List<String> lore) {
+        super(material, description, lore);
     }
 
-    public ItemHolder(String str) {
+    @Override
+    public Material defaultType() {
+        return Material.AIR;
+    }
+
+    public static BukkitItemHolder from(String str) {
         // data structure:
         // id;DESCRIPTION;LORE1;LORE2
         // HOE;COOL Item;Looks so cool;Fancy
         try {
-            material = Material.AIR;
+            Material material = Material.AIR;
             Scanner s = new Scanner(str).useDelimiter("\\s*;\\s*");
 
             if (s.hasNext()) {
                 String next = s.next();
                 if (next != null)
-                    this.material = Material.matchMaterial(next);
-                if (this.material == null) {
-                    this.material = Material.AIR;
+                    material = Material.matchMaterial(next);
+                if (material == null) {
+                    material = Material.AIR;
                 }
             }
 
-            displayName = s.hasNext() ? ChatColor.translateAlternateColorCodes('&', s.next()) : "";
-            lore = new ArrayList<>();
+            String displayName = s.hasNext() ? ChatColor.translateAlternateColorCodes('&', s.next()) : "";
+            List<String> lore = new ArrayList<>();
 
             while (s.hasNext()) {
                 String nextStr = s.next();
@@ -85,13 +88,11 @@ public class ItemHolder {
             }
 
             s.close();
+            return new BukkitItemHolder(material, displayName, lore);
         } catch (Exception e) {
             CannonLogger.getLogger().log(Level.SEVERE, "[CANNONS] Error while converting " + str + ". Check formatting (minecraft:clock)");
+            return new BukkitItemHolder(Material.AIR);
         }
-    }
-
-    public SimpleBlock toSimpleBlock() {
-        return new SimpleBlock(0, 0, 0, material);
     }
 
     public ItemStack toItemStack(int amount) {
@@ -112,7 +113,7 @@ public class ItemHolder {
      * @param material material to compare
      * @return true if both material are equal
      */
-    public boolean equals(Material material) {
+    public boolean check(Material material) {
         return material != null && material.equals(this.material);
     }
 
@@ -123,7 +124,7 @@ public class ItemHolder {
      * @return true if both items are equal in data and id or only the id if one data = -1
      */
     public boolean equalsFuzzy(ItemStack item) {
-        ItemHolder itemHolder = new ItemHolder(item);
+        BukkitItemHolder itemHolder = BukkitItemHolder.from(item);
         return equalsFuzzy(itemHolder);
     }
 
@@ -134,7 +135,7 @@ public class ItemHolder {
      * @param item the item to compare
      * @return true if both items are equal in data and id or only the id if one data = -1
      */
-    public boolean equalsFuzzy(ItemHolder item) {
+    public boolean equalsFuzzy(BukkitItemHolder item) {
         if (item == null) {
             return false;
         }
@@ -164,34 +165,6 @@ public class ItemHolder {
             return false;
 
         return item.getType().equals(this.material);
-    }
-
-    public String toString() {
-        return this.material + ":" + this.displayName + ":" + String.join(":", this.lore);
-    }
-
-    public Material getType() {
-        return this.material;
-    }
-
-    public void setType(Material material) {
-        this.material = material;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public boolean hasDisplayName() {
-        return this.displayName != null && !this.displayName.equals("");
-    }
-
-    public List<String> getLore() {
-        return lore;
-    }
-
-    public boolean hasLore() {
-        return this.lore != null && this.lore.size() > 0;
     }
 
     private static String capitalizeFully(String name) {

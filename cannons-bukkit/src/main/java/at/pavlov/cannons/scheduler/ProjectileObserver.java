@@ -1,7 +1,7 @@
 package at.pavlov.cannons.scheduler;
 
 import at.pavlov.bukkit.container.BukkitSoundHolder;
-import at.pavlov.bukkit.container.ItemHolder;
+import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.cannons.Cannons;
@@ -111,7 +111,7 @@ public class ProjectileObserver {
         //go up until there is air and place the same liquid
         Location startLoc = projectile_entity.getLocation().clone();
         Vector vel = projectile_entity.getVelocity().clone();
-        ItemHolder liquid = new ItemHolder(startLoc.getBlock().getType());
+        BukkitItemHolder liquid = new BukkitItemHolder(startLoc.getBlock().getType());
 
         for (int i = 0; i<5; i++) {
             Block block = startLoc.subtract(vel.clone().multiply(i)).getBlock();
@@ -129,7 +129,7 @@ public class ProjectileObserver {
      * @param loc - location of the impact
      * @param liquid - material of the fake blocks
      */
-    public void sendSplashToPlayers(Location loc, ItemHolder liquid, BukkitSoundHolder sound)
+    public void sendSplashToPlayers(Location loc, BukkitItemHolder liquid, BukkitSoundHolder sound)
     {
         int maxDist = (int) plugin.getMyConfig().getImitatedBlockMaximumDistance();
         int maxSoundDist = plugin.getMyConfig().getImitatedSoundMaximumDistance();
