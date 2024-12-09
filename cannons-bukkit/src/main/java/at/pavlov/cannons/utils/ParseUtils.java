@@ -15,6 +15,7 @@ import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ParseUtils {
     /**
@@ -116,11 +117,12 @@ public class ParseUtils {
             return default_value;
         }
 
-        for (Material mt : Material.values())
-            if (str.equalsIgnoreCase(mt.toString())){
-                return new ItemStack(mt);
-            }
-        return default_value;
+        try {
+            Material m = Material.valueOf(str.toUpperCase());
+            return new ItemStack(m);
+        } catch (Exception e) {
+            return default_value;
+        }
     }
 
     /**
