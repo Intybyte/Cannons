@@ -87,11 +87,7 @@ public class Projectile implements Cloneable {
 
     //spawn Fireworks
     private boolean fireworksEnabled;
-    private boolean fireworksFlicker;
-    private boolean fireworksTrail;
-    private FireworkEffect.Type fireworksType;
-    private List<Integer> fireworksColors;
-    private List<Integer> fireworksFadeColors;
+    private FireworkEffect.Builder fireworkEffect;
 
     //messages
     private boolean impactMessage;

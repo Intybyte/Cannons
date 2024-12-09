@@ -277,11 +277,14 @@ public class ProjectileStorage
 
 		//spawnFireworks
 		projectile.setFireworksEnabled(projectileConfig.getBoolean("spawnFireworks.enabled", false));
-		projectile.setFireworksFlicker(projectileConfig.getBoolean("spawnFireworks.flicker",false));
-		projectile.setFireworksTrail(projectileConfig.getBoolean("spawnFireworks.trail",false));
-		projectile.setFireworksType(getFireworksType(projectileConfig.getString("spawnFireworks.type", "BALL")));
-		projectile.setFireworksColors(toColor(projectileConfig.getStringList("spawnFireworks.colors")));
-		projectile.setFireworksFadeColors(toColor(projectileConfig.getStringList("spawnFireworks.fadeColors")));
+		FireworkEffect.Builder fw = FireworkEffect.builder()
+			.flicker(projectileConfig.getBoolean("spawnFireworks.flicker",false))
+			.trail(projectileConfig.getBoolean("spawnFireworks.trail",false))
+			.with(getFireworksType(projectileConfig.getString("spawnFireworks.type", "BALL")))
+			.withColor(toColor(projectileConfig.getStringList("spawnFireworks.colors")))
+			.withFade(toColor(projectileConfig.getStringList("spawnFireworks.fadeColors")));
+
+		projectile.setFireworkEffect(fw);
 
 		//messages
 		projectile.setImpactMessage(projectileConfig.getBoolean("messages.hasImpactMessage", false));

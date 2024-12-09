@@ -1187,26 +1187,17 @@ public class CreateExplosion {
         World world = cannonball.getWorld();
         Projectile projectile = cannonball.getProjectile();
 
+        FireworkEffect.Builder fireworkBuilder = projectile.getFireworkEffect();
+        FireworkEffect fireworkEffect = fireworkBuilder.build();
         // a fireworks needs some colors
-        if (!projectile.isFireworksEnabled() || projectile.getFireworksColors().isEmpty())
+        if (!projectile.isFireworksEnabled() || fireworkEffect.getColors().isEmpty())
             return;
-
-        // building the fireworks effect
-        FireworkEffect.Builder fwb = FireworkEffect.builder().flicker(projectile.isFireworksFlicker())
-                .trail(projectile.isFireworksTrail()).with(projectile.getFireworksType());
-        // setting colors
-        for (Integer color : projectile.getFireworksColors()) {
-            fwb.withColor(Color.fromRGB(color));
-        }
-        for (Integer color : projectile.getFireworksFadeColors()) {
-            fwb.withFade(Color.fromRGB(color));
-        }
 
         // apply to rocket
         final Firework fw = (Firework) world.spawnEntity(projectile_entity.getLocation(), EntityTypeResolver.getFirework());
         FireworkMeta meta = fw.getFireworkMeta();
 
-        meta.addEffect(fwb.build());
+        meta.addEffect(fireworkEffect);
         meta.setPower(0);
         fw.setFireworkMeta(meta);
 
