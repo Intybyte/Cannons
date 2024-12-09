@@ -121,7 +121,7 @@ public class PlayerListener implements Listener
         if (cannon != null)
         {
             // data =-1 means no data check, all buckets are allowed
-            Projectile projectile = plugin.getProjectile(cannon, event.getItemStack());
+            Projectile projectile = ProjectileStorage.getProjectile(cannon, event.getItemStack());
             if (projectile != null) event.setCancelled(true);
         }
     }

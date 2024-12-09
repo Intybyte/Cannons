@@ -116,6 +116,12 @@ public interface AmmoLoadingDataHolder<Player, Projectile> extends Updatable {
 
     boolean barrelTooHot();
     boolean isOverheatedAfterFiring();
+
+    /**
+     * removes cooling item form the chest attached to the cannon, returns true if it was enough to cool down the cannon
+     *
+     * @return - true if the cannon has been cooled down
+     */
     boolean automaticCooling();
     //endregion
 

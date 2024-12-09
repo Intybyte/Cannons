@@ -222,16 +222,6 @@ import java.util.List;
         plugin.setDebugMode(debugMode);
 	}
 
-    @Deprecated(forRemoval = true)
-    public UserMessages getUserMessages() {
-        return UserMessages.getInstance();
-    }
-
-    @Deprecated(forRemoval = true)
-    public CannonManager getCannonManager() {
-        return CannonManager.getInstance();
-    }
-
     public boolean isCancelItem(ItemStack item) {
         for (ItemHolder item2 : getCancelItems()) {
             if (item2.equalsFuzzy(item))

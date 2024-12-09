@@ -5,6 +5,7 @@ import at.pavlov.bukkit.container.ItemHolder;
 import at.pavlov.bukkit.container.SimpleBlock;
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.config.Config;
@@ -874,7 +875,7 @@ public class CannonManager {
             cannon.setCannonDesign(DesignStorage.getInstance().getDesign(cannon));
             if (cannon.getLoadedProjectile() != null) {
                 ItemHolder item = cannon.getLoadedProjectile().getLoadingItem();
-                cannon.setLoadedProjectile(plugin.getProjectile(cannon, item));
+                cannon.setLoadedProjectile(ProjectileStorage.getProjectile(cannon, item));
             }
         }
     }

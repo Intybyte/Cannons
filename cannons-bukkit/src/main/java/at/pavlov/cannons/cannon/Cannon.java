@@ -256,17 +256,6 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
 
     @Override
     public boolean automaticCooling() {
-        return automaticCoolingFromChest();
-    }
-
-    /**
-     * removes cooling item form the chest attached to the cannon, returns true if it was enough to cool down the cannon
-     *
-     * @return - true if the cannon has been cooled down
-     */
-    @Deprecated(forRemoval = true)
-    public boolean automaticCoolingFromChest() {
-
         List<Inventory> invlist = getInventoryList();
 
         //cooling items will be consumed from the inventory
@@ -303,7 +292,6 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
         }
         return false;
     }
-
 
     /**
      * returns the inventories of all attached chests

@@ -411,74 +411,15 @@ public final class Cannons extends JavaPlugin
 		return persistenceDatabase;
 	}
 
-	@Deprecated(forRemoval = true)
-	public CannonManager getCannonManager()
-	{
-		return CannonManager.getInstance();
-	}
-
 	public FireCannon getFireCannon()
 	{
 		return fireCannon;
-	}
-
-	@Deprecated(forRemoval = true)
-	public CreateExplosion getExplosion()
-	{
-		return CreateExplosion.getInstance();
-	}
-
-	@Deprecated(forRemoval = true)
-	public Aiming getAiming()
-	{
-		return Aiming.getInstance();
 	}
 
 	public PlayerListener getPlayerListener()
 	{
 		return playerListener;
 	}
-
-	@Deprecated(forRemoval = true)
-	public DesignStorage getDesignStorage() {
-		return DesignStorage.getInstance();
-	}
-
-	@Deprecated(forRemoval = true)
-	public CannonDesign getCannonDesign(Cannon cannon)
-	{
-		return getDesignStorage().getDesign(cannon);
-	}
-
-	@Deprecated(forRemoval = true)
-	public CannonDesign getCannonDesign(String designId)
-	{
-		return getDesignStorage().getDesign(designId);
-	}
-
-	@Deprecated(forRemoval = true)
-	public ProjectileStorage getProjectileStorage()
-	{
-		return ProjectileStorage.getInstance();
-	}
-
-	@Deprecated(forRemoval = true)
-	public Projectile getProjectile(Cannon cannon, ItemHolder materialHolder)
-	{
-		return ProjectileStorage.getProjectile(cannon, materialHolder);
-	}
-
-	@Deprecated(forRemoval = true)
-	public Projectile getProjectile(Cannon cannon, ItemStack item)
-	{
-		return ProjectileStorage.getProjectile(cannon, item);
-	}
-
-	@Deprecated(forRemoval = true)
-    public Cannon getCannon(UUID id)
-    {
-        return CannonManager.getCannon(id);
-    }
 
 	public EntityListener getEntityListener()
 	{
@@ -495,28 +436,12 @@ public final class Cannons extends JavaPlugin
 		UserMessages.getInstance().sendImpactMessage(player, impact, canceled);
     }
 
-	@Deprecated(forRemoval = true)
-	public void createCannon(Cannon cannon, boolean saveToDatabase)
-	{
-		CannonManager.getInstance().createCannon(cannon, saveToDatabase);
-	}
-
     public ProjectileObserver getProjectileObserver() {
         return observer;
     }
 
-	@Deprecated(forRemoval = true)
-    public ProjectileManager getProjectileManager(){
-        return ProjectileManager.getInstance();
-    }
-
     public BlockListener getBlockListener() {
         return blockListener;
-    }
-
-	@Deprecated(forRemoval = true)
-    public FakeBlockHandler getFakeBlockHandler() {
-        return FakeBlockHandler.getInstance();
     }
 
     public Economy getEconomy(){
