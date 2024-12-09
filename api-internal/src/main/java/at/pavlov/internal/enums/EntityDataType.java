@@ -13,7 +13,7 @@ public enum EntityDataType {
     DURATION ("Duration"),
     DURATION_ON_USE ("DurationOnUse"),
     EFFECTS ("Effects"),
-    WAIT_TIME ("WaitTime "),
+    WAIT_TIME ("WaitTime"),
     MAIN_HAND_ITEM ("MainHandItem"),
     OFF_HAND_ITEM ("OffHandItem"),
     HELMET_ARMOR_ITEM ("HelmetArmorItem"),
