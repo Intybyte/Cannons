@@ -46,13 +46,6 @@ public class ItemHolder
         lore = loreExists ? meta.getLore() : new ArrayList<>();
     }
 
-    @Deprecated
-    public ItemHolder(int id)
-    {
-    	//not working
-        this(Material.AIR);
-    }
-
     public ItemHolder(Material material)
     {
         this(material, null, null);
