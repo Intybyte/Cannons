@@ -5,10 +5,9 @@ import at.pavlov.bukkit.container.ItemHolder;
 import at.pavlov.bukkit.container.SoundHolder;
 import at.pavlov.bukkit.container.SpawnEntityHolder;
 import at.pavlov.bukkit.container.SpawnMaterialHolder;
+import at.pavlov.internal.CannonLogger;
 import at.pavlov.internal.enums.ProjectileProperties;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.FireworkEffect;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.EntityType;
@@ -120,7 +119,7 @@ public class Projectile implements Cloneable {
      * @param materialHolder the material of the loaded item
      * @return true if the materials match
      */
-    public boolean equals(ItemHolder materialHolder) {
+    public boolean check(ItemHolder materialHolder) {
         return loadingItem.equalsFuzzy(materialHolder);
     }
 
@@ -130,7 +129,7 @@ public class Projectile implements Cloneable {
      * @param projectileID the file name id of the projectile
      * @return true if the id matches
      */
-    public boolean equals(String projectileID) {
+    public boolean check(String projectileID) {
         return this.projectileID.equals(projectileID);
     }
 
