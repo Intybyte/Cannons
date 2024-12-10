@@ -401,6 +401,7 @@ public class CannonsUtil
     }
 
     /**
+     * This method searches in the nearby chunks in a square and
      * returns all targets (entity and cannons) in a given radius
      * @param l center location
      * @param minRadius minimum radius for search
@@ -421,8 +422,13 @@ public class CannonsUtil
                         continue;
                     }
 
+
+                    if (!(e instanceof LivingEntity) || e.isDead() || e.getLocation().getBlock() == l.getBlock()) {
+                        continue;
+                    }
+
                     double dist = e.getLocation().distanceSquared(l);
-                    if (!(e instanceof LivingEntity) || e.isDead() || !(minRadius*minRadius <= dist) || !(dist <= maxRadius*maxRadius) || e.getLocation().getBlock() == l.getBlock()) {
+                    if (maxRadius * maxRadius < dist || dist < minRadius * minRadius) {
                         continue;
                     }
 

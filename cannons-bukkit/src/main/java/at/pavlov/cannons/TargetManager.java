@@ -6,8 +6,12 @@ import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Class used by other plugins in order to add targets
+ */
 public class TargetManager {
     private static HashMap<UUID, Target> targets = new HashMap<>();
 
@@ -36,7 +40,7 @@ public class TargetManager {
             Location newLoc = target.centerLocation();
             Vector box = newLoc.subtract(center).toVector();
 
-            if (newLoc.getWorld().equals(center.getWorld().getUID()) && Math.abs(box.getX())<lengthX/2 && Math.abs(box.getY())<lengthY/2 && Math.abs(box.getZ())<lengthZ/2)
+            if (Objects.equals(newLoc.getWorld(), center.getWorld()) && Math.abs(box.getX())<lengthX/2 && Math.abs(box.getY())<lengthY/2 && Math.abs(box.getZ())<lengthZ/2)
                 newTargetList.add(target);
         }
         return newTargetList;
