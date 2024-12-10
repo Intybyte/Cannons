@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 
 public class ModrinthUpdateChecker {
     private static final String API_URL = "https://api.modrinth.com/v2/project/cannons-revamped/version";
+    private static final String DOWNLOAD = "https://modrinth.com/plugin/cannons-revamped/version/";
+
     private final Logger logger;
     private String downloadUrl = null;
 
@@ -54,9 +56,7 @@ public class ModrinthUpdateChecker {
         }
 
         logger.info(YELLOW + "A new version is available: " + current + " --> " + latestVersionNumber + RESET);
-        JsonArray files = latestVersion.getAsJsonArray("files");
-        downloadUrl = files.get(0).getAsJsonObject().get("url").getAsString();
-        logger.info(YELLOW + "Download it here: " + downloadUrl + RESET);
+        logger.info(YELLOW + "Download it here: " + DOWNLOAD + latestVersionNumber + RESET);
         return false;
     }
 
