@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <cannon.version>3.2.2</cannon.version>
+        <cannon.version>3.2.3</cannon.version>
         <java.target>17</java.target>
         <java.source>17</java.source>
     </properties>
