@@ -2,7 +2,7 @@ package at.pavlov.bukkit.cannons;
 
 import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.container.SimpleBlock;
+import at.pavlov.bukkit.container.BukkitBlock;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.internal.CannonLogger;
 import lombok.Data;
@@ -243,7 +243,7 @@ import java.util.List;
      * @param cannonDirection - the direction the cannon is facing
      * @return List of cannon blocks
      */
-    public List<SimpleBlock> getAllCannonBlocks(BlockFace cannonDirection)
+    public List<BukkitBlock> getAllCannonBlocks(BlockFace cannonDirection)
     {
     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannonDirection);
     	if (cannonBlocks != null)
@@ -264,7 +264,7 @@ import java.util.List;
         List<Location> locList = new ArrayList<>();
         if (cannonBlocks != null)
         {
-            for (SimpleBlock block : cannonBlocks.getAllCannonBlocks())
+            for (BukkitBlock block : cannonBlocks.getAllCannonBlocks())
             {
                 Vector vect = block.toVector();
                 locList.add(vect.clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit()));
@@ -386,7 +386,7 @@ import java.util.List;
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
-    		for (SimpleBlock block : cannonBlocks.getChestsAndSigns())
+    		for (BukkitBlock block : cannonBlocks.getChestsAndSigns())
     		{
     			locList.add(block.toLocation(cannon.getWorldBukkit(), cannon.getOffset()));
     		}
@@ -420,7 +420,7 @@ import java.util.List;
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
-    		for (SimpleBlock block : cannonBlocks.getRedstoneWiresAndRepeater())
+    		for (BukkitBlock block : cannonBlocks.getRedstoneWiresAndRepeater())
     		{
     			locList.add(block.toLocation(cannon.getWorldBukkit(),cannon.getOffset()));
     		}

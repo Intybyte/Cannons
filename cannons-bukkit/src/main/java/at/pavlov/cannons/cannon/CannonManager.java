@@ -2,7 +2,7 @@ package at.pavlov.cannons.cannon;
 
 import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.container.SimpleBlock;
+import at.pavlov.bukkit.container.BukkitBlock;
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.projectile.ProjectileStorage;
@@ -653,14 +653,14 @@ public class CannonManager {
             // check of all directions
             for (BlockFace cannonDirection : blockFaces) {
                 // for all blocks for the design
-                List<SimpleBlock> designBlockList = cannonDesign.getAllCannonBlocks(cannonDirection);
+                List<BukkitBlock> designBlockList = cannonDesign.getAllCannonBlocks(cannonDirection);
                 //check for empty entries
                 if (designBlockList.isEmpty()) {
                     plugin.logSevere("There are empty cannon design schematics in your design folder. Please check it.");
                     return null;
                 }
 
-                for (SimpleBlock designBlock : designBlockList) {
+                for (BukkitBlock designBlock : designBlockList) {
                     // compare blocks
                     if (!designBlock.compareMaterialAndFacing(blockData)) {
                         continue;
@@ -672,7 +672,7 @@ public class CannonManager {
                     // check all other blocks of the cannon
                     boolean isCannon = true;
 
-                    for (SimpleBlock checkBlocks : designBlockList) {
+                    for (BukkitBlock checkBlocks : designBlockList) {
                         if (!checkBlocks.compareMaterialAndFacing(world, offset)) {
                             // if the block does not match this is not the
                             // right one

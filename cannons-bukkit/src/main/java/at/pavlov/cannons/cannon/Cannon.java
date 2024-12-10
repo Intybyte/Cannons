@@ -5,7 +5,7 @@ import at.pavlov.bukkit.cannons.CannonBukkit;
 import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.bukkit.cannons.CannonDesignHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.container.SimpleBlock;
+import at.pavlov.bukkit.container.BukkitBlock;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.internal.enums.BreakCause;
@@ -716,7 +716,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      * this will force the cannon to show up at this location - all blocks will be overwritten
      */
     public void show() {
-        for (SimpleBlock cBlock : design.getAllCannonBlocks(this.getCannonDirection())) {
+        for (BukkitBlock cBlock : design.getAllCannonBlocks(this.getCannonDirection())) {
             Block wBlock = cBlock.toLocation(getWorldBukkit(), getOffset()).getBlock();
             //todo check show
             wBlock.setBlockData(cBlock.getBlockData());
@@ -729,7 +729,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      */
     public void hide() {
         //remove only attachable block
-        for (SimpleBlock cBlock : design.getAllCannonBlocks(this.getCannonDirection())) {
+        for (BukkitBlock cBlock : design.getAllCannonBlocks(this.getCannonDirection())) {
             Block wBlock = cBlock.toLocation(getWorldBukkit(), getOffset()).getBlock();
             //if that block is not loaded
 
@@ -741,7 +741,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
         }
 
         //remove all
-        for (SimpleBlock cBlock : design.getAllCannonBlocks(this.getCannonDirection())) {
+        for (BukkitBlock cBlock : design.getAllCannonBlocks(this.getCannonDirection())) {
             Block wBlock = cBlock.toLocation(getWorldBukkit(), getOffset()).getBlock();
 
             if (wBlock.getType() != Material.AIR) {
@@ -774,7 +774,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
             return false;
         }
 
-        for (SimpleBlock designBlock : design.getAllCannonBlocks(getCannonDirection())) {
+        for (BukkitBlock designBlock : design.getAllCannonBlocks(getCannonDirection())) {
             if (designBlock.compareMaterialAndLoc(block, getOffset())) {
                 return true;
             }
@@ -847,7 +847,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
             return false;
         }
 
-        for (SimpleBlock cannonblock : cannonBlocks.getChestsAndSigns()) {
+        for (BukkitBlock cannonblock : cannonBlocks.getChestsAndSigns()) {
             // compare location
             if (cannonblock.toLocation(this.getWorldBukkit(), this.getOffset()).equals(loc)) {
                 //Block block = loc.getBlock();
@@ -923,7 +923,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
             return false;
         }
 
-        for (SimpleBlock cannonblock : cannonBlocks.getRedstoneWiresAndRepeater()) {
+        for (BukkitBlock cannonblock : cannonBlocks.getRedstoneWiresAndRepeater()) {
             // compare location
             if (cannonblock.toLocation(this.getWorldBukkit(), this.getOffset()).equals(loc)) {
                 //Block block = loc.getBlock();

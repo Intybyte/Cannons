@@ -4,7 +4,7 @@ import at.pavlov.bukkit.cannons.CannonBlocks;
 import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.container.SimpleBlock;
+import at.pavlov.bukkit.container.BukkitBlock;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.container.DesignFileName;
 import at.pavlov.cannons.utils.CannonsUtil;
@@ -113,7 +113,7 @@ public class DesignStorage
 		cannonDesignList.sort(comparator);
 
 		for (CannonDesign cannonDesign : getCannonDesignList()) {
-			for (SimpleBlock sBlock : cannonDesign.getAllCannonBlocks(BlockFace.NORTH)){
+			for (BukkitBlock sBlock : cannonDesign.getAllCannonBlocks(BlockFace.NORTH)){
 				Material material = sBlock.getBlockData().getMaterial();
 				if (material != Material.AIR && !cannonBlockMaterials.contains(material)) {
 					cannonBlockMaterials.add(sBlock.getBlockData().getMaterial());
@@ -432,7 +432,7 @@ public class DesignStorage
 		cc.setOrigin(BlockVector3.ZERO);
 
 		//plugin.logDebug("design: " + schematicFile);
-		ArrayList<SimpleBlock> schematicList = getSchematic(width, height, length, cc, blockIgnore);
+		ArrayList<BukkitBlock> schematicList = getSchematic(width, height, length, cc, blockIgnore);
 
 		for (int i = 0; i < 4; i++) {
 			// create CannonBlocks entry
@@ -452,7 +452,7 @@ public class DesignStorage
 			Vector maxRotation = new Vector(width, height, length);
 			boolean firstEntryRotation = true;
 
-            for (SimpleBlock sblock : schematicList) {
+            for (BukkitBlock sblock : schematicList) {
                 int x = sblock.getLocX();
                 int y = sblock.getLocY();
                 int z = sblock.getLocZ();
@@ -471,7 +471,7 @@ public class DesignStorage
                         setMaximum(x, y, z, maxMuzzle);
                     }
                     //muzzle blocks need to be air - else the projectile would spawn in a block
-                    cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, Material.AIR));
+                    cannonBlocks.addAllCannonBlocks(new BukkitBlock(x, y, z, Material.AIR));
                 }
                 // #############  find the min and max for rotation blocks
                 else if (sblock.compareMaterial(blockRotationCenter)) {
@@ -490,12 +490,12 @@ public class DesignStorage
                     cannonBlocks.addRedstoneTorch(new Vector(x, y, z));
                     // #############  redstoneWire and Repeater
                 else if (sblock.compareMaterial(blockRedstoneWireAndRepeater))
-                    cannonBlocks.addRedstoneWiresAndRepeater(new SimpleBlock(x, y, z, Material.REPEATER));
+                    cannonBlocks.addRedstoneWiresAndRepeater(new BukkitBlock(x, y, z, Material.REPEATER));
                     // #############  redstoneTrigger
                 else if (sblock.compareMaterialAndFacing(blockRedstoneTrigger)) {
                     cannonBlocks.addRedstoneTrigger(new Vector(x, y, z));
                     // buttons or levers are part of the cannon
-                    cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRedstoneTrigger));
+                    cannonBlocks.addAllCannonBlocks(new BukkitBlock(x, y, z, replaceRedstoneTrigger));
                     // this can be a destructible block
                     if (!isInList(blockProtectedList, sblock.getBlockData()))
                         cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
@@ -507,10 +507,10 @@ public class DesignStorage
                     //can be also a sign
                     if (sblock.compareMaterialAndFacing(blockChestAndSign))
                         // the id does not matter, but the data is important for signs
-                        cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, sblock.getBlockData())); //Material.WALL_SIGN
+                        cannonBlocks.addChestsAndSigns(new BukkitBlock(x, y, z, sblock.getBlockData())); //Material.WALL_SIGN
                     // firing blocks are also part of the cannon are
                     // part of the cannon
-                    cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRightClickTrigger));
+                    cannonBlocks.addAllCannonBlocks(new BukkitBlock(x, y, z, replaceRightClickTrigger));
                     // this can be a destructible block
                     if (!isInList(blockProtectedList, sblock.getBlockData()))
                         cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
@@ -518,14 +518,14 @@ public class DesignStorage
                 // #############  chests and signs
                 else if (sblock.compareMaterial(blockChestAndSign)) {
                     // the id does not matter, but the data is important for signs
-                    cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, sblock.getBlockData())); //Material.WALL_SIGN
+                    cannonBlocks.addChestsAndSigns(new BukkitBlock(x, y, z, sblock.getBlockData())); //Material.WALL_SIGN
                 }
                 // #############  loading Interface is a cannonblock that is non of
                 // the previous blocks
                 else {
                     // all remaining blocks are loading interface or cannonBlocks
                     cannonBlocks.addBarrelBlocks(new Vector(x, y, z));
-                    cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, sblock.getBlockData()));
+                    cannonBlocks.addAllCannonBlocks(new BukkitBlock(x, y, z, sblock.getBlockData()));
                     // this can be a destructible block
                     if (!isInList(blockProtectedList, sblock.getBlockData()))
                         cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
@@ -548,15 +548,15 @@ public class DesignStorage
             //set the muzzle location
             Vector compensation = new Vector(cannonBlocks.getMuzzle().getBlockX(), cannonBlocks.getMuzzle().getBlockY(), cannonBlocks.getMuzzle().getBlockZ());
 
-            for (SimpleBlock block : cannonBlocks.getAllCannonBlocks())
+            for (BukkitBlock block : cannonBlocks.getAllCannonBlocks())
                 block.subtract_noCopy(compensation);
             for (Vector block : cannonBlocks.getBarrelBlocks())
                 block.subtract(compensation);
-            for (SimpleBlock block : cannonBlocks.getChestsAndSigns())
+            for (BukkitBlock block : cannonBlocks.getChestsAndSigns())
                 block.subtract_noCopy(compensation);
             for (Vector block : cannonBlocks.getRedstoneTorches())
                 block.subtract(compensation);
-            for (SimpleBlock block : cannonBlocks.getRedstoneWiresAndRepeater())
+            for (BukkitBlock block : cannonBlocks.getRedstoneWiresAndRepeater())
                 block.subtract_noCopy(compensation);
             for (Vector block : cannonBlocks.getRedstoneTrigger())
                 block.subtract(compensation);
@@ -590,7 +590,7 @@ public class DesignStorage
 			}
 
 			//rotate schematic blocks
-			for (SimpleBlock simpleBlock : schematicList){
+			for (BukkitBlock simpleBlock : schematicList){
 				simpleBlock.rotate90();
 			}
 
@@ -717,8 +717,8 @@ public class DesignStorage
 		return material != Material.AIR && cannonBlockMaterials.contains(material);
 	}
 
-	private ArrayList<SimpleBlock> getSchematic(int width, int height, int length, Clipboard cc, BlockData blockIgnore) {
-		ArrayList<SimpleBlock> schematiclist = new ArrayList<>();
+	private ArrayList<BukkitBlock> getSchematic(int width, int height, int length, Clipboard cc, BlockData blockIgnore) {
+		ArrayList<BukkitBlock> schematiclist = new ArrayList<>();
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
 				for (int z = 0; z < length; ++z) {
@@ -732,7 +732,7 @@ public class DesignStorage
 
 					// ignore if block is AIR or the IgnoreBlock type
 					if (!block.getMaterial().equals(Material.AIR) && !block.matches(blockIgnore)) {
-						schematiclist.add(new SimpleBlock(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ(), block));
+						schematiclist.add(new BukkitBlock(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ(), block));
 					}
 				}
 			}

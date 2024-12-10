@@ -1,6 +1,6 @@
 package at.pavlov.bukkit.cannons;
 
-import at.pavlov.bukkit.container.SimpleBlock;
+import at.pavlov.bukkit.container.BukkitBlock;
 import lombok.Data;
 import org.bukkit.util.Vector;
 
@@ -15,11 +15,11 @@ import java.util.ArrayList;
 	private Vector rotationCenter;	//center off all rotation blocks
     private Vector muzzle;			//center off all muzzle blocks - spawing Vector for snowball
 
-	private ArrayList<SimpleBlock> allCannonBlocks = new ArrayList<>();
+	private ArrayList<BukkitBlock> allCannonBlocks = new ArrayList<>();
     private ArrayList<Vector> barrelBlocks = new ArrayList<>();
-    private ArrayList<SimpleBlock> chestsAndSigns = new ArrayList<>();
+    private ArrayList<BukkitBlock> chestsAndSigns = new ArrayList<>();
     private ArrayList<Vector> redstoneTorches = new ArrayList<>();
-    private ArrayList<SimpleBlock> redstoneWiresAndRepeater = new ArrayList<>();
+    private ArrayList<BukkitBlock> redstoneWiresAndRepeater = new ArrayList<>();
     private ArrayList<Vector> redstoneTrigger = new ArrayList<>();
     private ArrayList<Vector> rightClickTrigger = new ArrayList<>();
     private ArrayList<Vector> firingIndicator = new ArrayList<>();
@@ -52,7 +52,7 @@ import java.util.ArrayList;
         return null;
     }
 
-    public void addAllCannonBlocks(SimpleBlock add) {
+    public void addAllCannonBlocks(BukkitBlock add) {
 		this.allCannonBlocks.add(add);
 	}
 
@@ -72,11 +72,11 @@ import java.util.ArrayList;
 		this.rightClickTrigger.add(add);
 	}
 
-    public void addChestsAndSigns(SimpleBlock add) {
+    public void addChestsAndSigns(BukkitBlock add) {
 		this.chestsAndSigns.add(add);
 	}
 
-    public void addRedstoneWiresAndRepeater(SimpleBlock add) {
+    public void addRedstoneWiresAndRepeater(BukkitBlock add) {
 		this.redstoneWiresAndRepeater.add(add);
 	}
 
