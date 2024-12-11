@@ -1,15 +1,14 @@
 package at.pavlov.bukkit.container;
 
 import at.pavlov.internal.CannonLogger;
+import at.pavlov.internal.container.SpawnEntityHolder;
 import at.pavlov.internal.enums.EntityDataType;
-import lombok.Data;
 import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -17,14 +16,8 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Data public class SpawnEntityHolder {
-    private EntityType type;
-    private int minAmount;
-    private int maxAmount;
-    private Map<EntityDataType, String> data;
-    private List<PotionEffect> potionEffects;
-
-    public SpawnEntityHolder(String str) {
+public class BukkitEntityHolder extends SpawnEntityHolder<EntityType, PotionEffect> {
+    public BukkitEntityHolder(String str) {
         //split string at space
         // NAME min-max
         // ZOMBIE 1-2
@@ -164,7 +157,7 @@ import java.util.regex.Pattern;
         }
     }
 
-    public SpawnEntityHolder(EntityType type, int minAmount, int maxAmount, Map<EntityDataType, String> data) {
+    public BukkitEntityHolder(EntityType type, int minAmount, int maxAmount, Map<EntityDataType, String> data) {
         this.type = type;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;

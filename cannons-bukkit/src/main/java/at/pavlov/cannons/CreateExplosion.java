@@ -1,7 +1,7 @@
 package at.pavlov.cannons;
 
 import at.pavlov.bukkit.container.BukkitSoundHolder;
-import at.pavlov.bukkit.container.SpawnEntityHolder;
+import at.pavlov.bukkit.container.BukkitEntityHolder;
 import at.pavlov.bukkit.container.SpawnMaterialHolder;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.internal.enums.ProjectileProperties;
@@ -289,7 +289,7 @@ public class CreateExplosion {
      * @param entityHolder   type of entity to spawn
      */
     private void spawnEntity(FlyingProjectile cannonball, Location loc, double entityVelocity,
-                             SpawnEntityHolder entityHolder) {
+                             BukkitEntityHolder entityHolder) {
         Location impactLoc = cannonball.getImpactLocation();
         World world = impactLoc.getWorld();
 
@@ -462,7 +462,7 @@ public class CreateExplosion {
 
         double spread = projectile.getSpawnEntityRadius();
 
-        for (SpawnEntityHolder spawn : projectile.getSpawnEntities()) {
+        for (BukkitEntityHolder spawn : projectile.getSpawnEntities()) {
             // add some randomness to the amount of spawned blocks
             int maxPlacement = CannonsUtil.getRandomInt(spawn.getMinAmount(), spawn.getMaxAmount());
             plugin.logDebug("spawn Entity: " + spawn.getType() + " min: " + spawn.getMinAmount() + " max: " + spawn.getMaxAmount());

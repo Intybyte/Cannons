@@ -1,7 +1,7 @@
 package at.pavlov.cannons.utils;
 
 import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.container.SpawnEntityHolder;
+import at.pavlov.bukkit.container.BukkitEntityHolder;
 import at.pavlov.bukkit.container.SpawnMaterialHolder;
 import at.pavlov.cannons.Cannons;
 import org.bukkit.Bukkit;
@@ -177,11 +177,11 @@ public class ParseUtils {
      * @param stringList list of strings to convert
      * @return list of converted SpawnMaterialHolder
      */
-    public static List<SpawnEntityHolder> toSpawnEntityHolderList(List<String> stringList) {
-        List<SpawnEntityHolder> entityList = new ArrayList<>();
+    public static List<BukkitEntityHolder> toSpawnEntityHolderList(List<String> stringList) {
+        List<BukkitEntityHolder> entityList = new ArrayList<>();
 
         for (String str : stringList) {
-            SpawnEntityHolder entity = new SpawnEntityHolder(str);
+            BukkitEntityHolder entity = new BukkitEntityHolder(str);
             //if id == -1 the str was invalid
             if (entity.getType() != null)
                 entityList.add(entity);

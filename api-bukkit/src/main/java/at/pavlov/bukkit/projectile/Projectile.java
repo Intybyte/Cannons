@@ -3,7 +3,7 @@ package at.pavlov.bukkit.projectile;
 import at.pavlov.bukkit.builders.ParticleBuilder;
 import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.container.SpawnEntityHolder;
+import at.pavlov.bukkit.container.BukkitEntityHolder;
 import at.pavlov.bukkit.container.SpawnMaterialHolder;
 import at.pavlov.internal.CannonLogger;
 import at.pavlov.internal.enums.ProjectileProperties;
@@ -79,7 +79,7 @@ public class Projectile implements Cloneable {
     private double spawnEntityRadius;
     private double spawnVelocity;
     private List<SpawnMaterialHolder> spawnBlocks = new ArrayList<>();
-    private List<SpawnEntityHolder> spawnEntities = new ArrayList<>();
+    private List<BukkitEntityHolder> spawnEntities = new ArrayList<>();
     private List<String> spawnProjectiles;
 
     //spawn Fireworks
