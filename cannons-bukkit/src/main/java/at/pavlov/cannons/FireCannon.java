@@ -2,7 +2,6 @@ package at.pavlov.cannons;
 
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.Projectile;
-import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.internal.enums.FakeBlockType;

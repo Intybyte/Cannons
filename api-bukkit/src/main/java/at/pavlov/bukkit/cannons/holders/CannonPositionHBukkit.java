@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.util.Vector;
 
 public interface CannonPositionHBukkit extends CannonPositionHolder<BlockFace> {
 

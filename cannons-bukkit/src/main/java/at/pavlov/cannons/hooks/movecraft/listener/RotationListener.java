@@ -10,7 +10,6 @@ import net.countercraft.movecraft.events.CraftRotateEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.util.Vector;
 
 import java.util.Set;
 
