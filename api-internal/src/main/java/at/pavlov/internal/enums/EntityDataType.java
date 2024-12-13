@@ -1,6 +1,12 @@
 package at.pavlov.internal.enums;
 
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 public enum EntityDataType {
     FUSE_TIME ("Fuse"),
     POTION_EFFECT ("Potion"),
@@ -30,5 +36,19 @@ public enum EntityDataType {
     public String getString()
     {
         return str;
+    }
+
+    private static final Map<String, EntityDataType> LOOKUP_MAP;
+
+    static {
+        LOOKUP_MAP = new HashMap<>();
+        for (EntityDataType dataType : values()) {
+            LOOKUP_MAP.put(dataType.getString().toLowerCase(), dataType);
+        }
+    }
+
+    public static EntityDataType lookup(String str) {
+        String lookup = str.toLowerCase();
+        return LOOKUP_MAP.get(lookup);
     }
 }
