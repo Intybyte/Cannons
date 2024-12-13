@@ -1,8 +1,6 @@
-package at.pavlov.bukkit.cannons;
+package at.pavlov.internal.container;
 
-import at.pavlov.bukkit.container.BukkitBlock;
 import lombok.Data;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 
@@ -11,15 +9,15 @@ import java.util.ArrayList;
  * it is not suggested to create new instances of it but instead
  * use it to get the positions of the various stuff
  */
-@Data public class CannonBlocks {
+@Data public class CannonBlocks<Vector, Block extends SimpleBlock<?>> {
 	private Vector rotationCenter;	//center off all rotation blocks
     private Vector muzzle;			//center off all muzzle blocks - spawing Vector for snowball
 
-	private ArrayList<BukkitBlock> allCannonBlocks = new ArrayList<>();
+	private ArrayList<Block> allCannonBlocks = new ArrayList<>();
     private ArrayList<Vector> barrelBlocks = new ArrayList<>();
-    private ArrayList<BukkitBlock> chestsAndSigns = new ArrayList<>();
+    private ArrayList<Block> chestsAndSigns = new ArrayList<>();
     private ArrayList<Vector> redstoneTorches = new ArrayList<>();
-    private ArrayList<BukkitBlock> redstoneWiresAndRepeater = new ArrayList<>();
+    private ArrayList<Block> redstoneWiresAndRepeater = new ArrayList<>();
     private ArrayList<Vector> redstoneTrigger = new ArrayList<>();
     private ArrayList<Vector> rightClickTrigger = new ArrayList<>();
     private ArrayList<Vector> firingIndicator = new ArrayList<>();
@@ -27,8 +25,6 @@ import java.util.ArrayList;
 
     /**
      * returns true if this block is part of the loading interface
-     * @param loc
-     * @return
      */
     public boolean isLoadingInterface(Vector loc) {
     	for (Vector loadingBlock : barrelBlocks) {
@@ -52,7 +48,7 @@ import java.util.ArrayList;
         return null;
     }
 
-    public void addAllCannonBlocks(BukkitBlock add) {
+    public void addAllCannonBlocks(Block add) {
 		this.allCannonBlocks.add(add);
 	}
 
@@ -72,11 +68,11 @@ import java.util.ArrayList;
 		this.rightClickTrigger.add(add);
 	}
 
-    public void addChestsAndSigns(BukkitBlock add) {
+    public void addChestsAndSigns(Block add) {
 		this.chestsAndSigns.add(add);
 	}
 
-    public void addRedstoneWiresAndRepeater(BukkitBlock add) {
+    public void addRedstoneWiresAndRepeater(Block add) {
 		this.redstoneWiresAndRepeater.add(add);
 	}
 

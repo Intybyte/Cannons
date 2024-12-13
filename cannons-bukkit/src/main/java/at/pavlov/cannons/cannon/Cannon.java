@@ -1,6 +1,6 @@
 package at.pavlov.cannons.cannon;
 
-import at.pavlov.bukkit.cannons.CannonBlocks;
+import at.pavlov.bukkit.container.BukkitCannonBlocks;
 import at.pavlov.bukkit.cannons.CannonBukkit;
 import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.bukkit.cannons.CannonDesignHolder;
@@ -841,7 +841,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
             return false;
         }
 
-        CannonBlocks cannonBlocks = this.getCannonDesign().getCannonBlockMap().get(this.getCannonDirection());
+        BukkitCannonBlocks cannonBlocks = this.getCannonDesign().getCannonBlockMap().get(this.getCannonDirection());
 
         if (cannonBlocks == null) {
             return false;
@@ -917,7 +917,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      * @return true if this location where the repeater interacts with the cannon
      */
     public boolean isRedstoneRepeaterInterface(Location loc) {
-        CannonBlocks cannonBlocks = this.getCannonDesign().getCannonBlockMap().get(this.getCannonDirection());
+        BukkitCannonBlocks cannonBlocks = this.getCannonDesign().getCannonBlockMap().get(this.getCannonDirection());
 
         if (cannonBlocks == null) {
             return false;

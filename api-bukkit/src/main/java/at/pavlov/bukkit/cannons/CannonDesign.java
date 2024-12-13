@@ -1,5 +1,6 @@
 package at.pavlov.bukkit.cannons;
 
+import at.pavlov.bukkit.container.BukkitCannonBlocks;
 import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.BukkitBlock;
@@ -187,7 +188,7 @@ import java.util.List;
     private List<BlockData> schematicBlockTypeProtected;				//list of blocks that are protected from explosions (e.g. buttons)
     
     //cannon design block lists for every direction (NORTH, EAST, SOUTH, WEST)
-    private final HashMap<BlockFace, CannonBlocks> cannonBlockMap = new HashMap<>();
+    private final HashMap<BlockFace, BukkitCannonBlocks> cannonBlockMap = new HashMap<>();
 	private final EnumSet<Material> allowedMaterials = EnumSet.noneOf(Material.class);
 
 
@@ -197,7 +198,7 @@ import java.util.List;
      */
     public Location getRotationCenter(CannonBukkit cannon)
     {
-    	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+    	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	if (cannonBlocks != null)
     	{
     		return cannonBlocks.getRotationCenter().clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit());
@@ -213,7 +214,7 @@ import java.util.List;
      */
     public Location getMuzzle(CannonBukkit cannon)
     {
-    	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+    	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	if (cannonBlocks != null)
     	{
     		return cannonBlocks.getMuzzle().clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit());
@@ -230,7 +231,7 @@ import java.util.List;
      */
     public Location getFiringTrigger(CannonBukkit cannon)
     {
-    	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+    	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	if (cannonBlocks != null && cannonBlocks.getFiringTrigger() != null)
     	{
             return cannonBlocks.getFiringTrigger().clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit());
@@ -245,7 +246,7 @@ import java.util.List;
      */
     public List<BukkitBlock> getAllCannonBlocks(BlockFace cannonDirection)
     {
-    	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannonDirection);
+    	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannonDirection);
     	if (cannonBlocks != null)
     	{
     		return cannonBlocks.getAllCannonBlocks();
@@ -260,7 +261,7 @@ import java.util.List;
      */
     public List<Location> getAllCannonBlocks(CannonBukkit cannon)
     {
-        CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+        BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
         List<Location> locList = new ArrayList<>();
         if (cannonBlocks != null)
         {
@@ -278,7 +279,7 @@ import java.util.List;
      */
     public List<Location> getDestructibleBlocks(CannonBukkit cannon)
     {
-     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+     	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
@@ -296,7 +297,7 @@ import java.util.List;
      */
     public List<Location> getFiringIndicator(CannonBukkit cannon)
     {
-     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+     	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
@@ -313,7 +314,7 @@ import java.util.List;
      */
     public List<Location> getLoadingInterface(CannonBukkit cannon)
     {
-        CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+        BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
         List<Location> locList = new ArrayList<>();
         if (cannonBlocks != null)
         {
@@ -330,7 +331,7 @@ import java.util.List;
      */
     public List<Location> getBarrelBlocks(CannonBukkit cannon)
     {
-        CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+        BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
         List<Location> locList = new ArrayList<>();
         if (cannonBlocks != null)
         {
@@ -347,7 +348,7 @@ import java.util.List;
      */
     public List<Location> getRightClickTrigger(CannonBukkit cannon)
     {
-     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+     	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
@@ -364,7 +365,7 @@ import java.util.List;
      */
     public List<Location> getRedstoneTrigger(CannonBukkit cannon)
     {
-     	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+     	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
@@ -382,7 +383,7 @@ import java.util.List;
      */
     public List<Location> getChestsAndSigns(CannonBukkit cannon)
     {
-    	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+    	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
@@ -399,7 +400,7 @@ import java.util.List;
      */
     public List<Location> getRedstoneTorches(CannonBukkit cannon)
     {
-    	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+    	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
@@ -416,7 +417,7 @@ import java.util.List;
      */
     public List<Location> getRedstoneWireAndRepeater(CannonBukkit cannon)
     {
-    	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
+    	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
@@ -464,7 +465,7 @@ import java.util.List;
             return getMaxLoadableGunpowderNormal();
 	}
 
-	public void putCannonBlockMap(BlockFace cannonDirection, CannonBlocks blocks) {
+	public void putCannonBlockMap(BlockFace cannonDirection, BukkitCannonBlocks blocks) {
 		for (var block : blocks.getAllCannonBlocks()) {
 			allowedMaterials.add(block.getBlockData().getMaterial());
 		}

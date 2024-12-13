@@ -1,6 +1,6 @@
 package at.pavlov.cannons.cannon;
 
-import at.pavlov.bukkit.cannons.CannonBlocks;
+import at.pavlov.bukkit.container.BukkitCannonBlocks;
 import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
@@ -436,7 +436,7 @@ public class DesignStorage
 
 		for (int i = 0; i < 4; i++) {
 			// create CannonBlocks entry
-            CannonBlocks cannonBlocks = new CannonBlocks();
+            BukkitCannonBlocks cannonBlocks = new BukkitCannonBlocks();
 
 			// to set the muzzle location the maximum and mininum x, y, z values
 			// of all muzzle blocks have to be found
