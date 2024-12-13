@@ -16,9 +16,6 @@ import java.util.logging.Level;
 
 //small class as at.pavlov.cannons.container for item id and data
 public class BukkitItemHolder extends ItemHolder<Material> {
-    private Material material;
-    private String displayName;
-    private List<String> lore;
 
     public static BukkitItemHolder from(ItemStack item) {
         if (item == null) {
@@ -96,8 +93,8 @@ public class BukkitItemHolder extends ItemHolder<Material> {
     }
 
     public ItemStack toItemStack(int amount) {
-        material = material == null ? Material.AIR : material;
-        ItemStack item = new ItemStack(material, amount);
+        type = type == null ? Material.AIR : type;
+        ItemStack item = new ItemStack(type, amount);
         ItemMeta meta = item.getItemMeta();
         if (this.hasDisplayName())
             meta.setDisplayName(this.displayName);
@@ -114,7 +111,7 @@ public class BukkitItemHolder extends ItemHolder<Material> {
      * @return true if both material are equal
      */
     public boolean check(Material material) {
-        return material != null && material.equals(this.material);
+        return material != null && material.equals(this.type);
     }
 
     /**
@@ -150,7 +147,7 @@ public class BukkitItemHolder extends ItemHolder<Material> {
             return false;
 
         if (!this.hasLore()) {
-            return item.getType().equals(this.material);
+            return item.getType().equals(this.type);
         }
         //does Item have a Lore
         if (!item.hasLore())
@@ -164,7 +161,7 @@ public class BukkitItemHolder extends ItemHolder<Material> {
         if (similar.size() < size)
             return false;
 
-        return item.getType().equals(this.material);
+        return item.getType().equals(this.type);
     }
 
     private static String capitalizeFully(String name) {
