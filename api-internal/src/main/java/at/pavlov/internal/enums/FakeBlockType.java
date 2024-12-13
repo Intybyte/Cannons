@@ -1,8 +1,11 @@
 package at.pavlov.internal.enums;
 
+import lombok.Getter;
+
 /**
  * Created by Peter on 25.04.2014.
  */
+@Getter
 public enum FakeBlockType {
     AIMING("Aiming"),
     EXPLOSION("Explosion"),
@@ -11,14 +14,10 @@ public enum FakeBlockType {
     WATER_SPLASH("Water splash"),
     SMOKE_TRAIL("Smoke trail");
 
-    private final String str;
+    private final String type;
 
     FakeBlockType(String type) {
-        this.str = type;
+        this.type = type;
     }
 
-
-    public String getStr() {
-        return str;
-    }
 }

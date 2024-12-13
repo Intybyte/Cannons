@@ -328,7 +328,7 @@ public class PlayerListener implements Listener
 
         //this will directly fire the cannon after it was loaded
         if (!player.isSneaking() && design.isFireAfterLoading() && cannon.isLoaded() && cannon.isProjectilePushed())
-            fireCannon.playerFiring(cannon, player, InteractAction.fireAfterLoading);
+            fireCannon.playerFiring(cannon, player, InteractAction.FIRE_AFTER_LOADING);
 
         return message != null;
     }
@@ -369,7 +369,7 @@ public class PlayerListener implements Listener
             return true;
         }
 
-        MessageEnum message = fireCannon.playerFiring(cannon, player, InteractAction.fireRightClickTigger);
+        MessageEnum message = fireCannon.playerFiring(cannon, player, InteractAction.FIRE_RIGHT_CLICK_TIGGER);
         // display message
         userMessages.sendMessage(message, player, cannon);
 
@@ -502,7 +502,7 @@ public class PlayerListener implements Listener
 
         //this will directly fire the cannon after it was loaded
         if (!player.isSneaking() && cannon.getCannonDesign().isFireAfterLoading() && cannon.isLoaded() && cannon.isProjectilePushed())
-            fireCannon.playerFiring(cannon, player, InteractAction.fireAfterLoading);
+            fireCannon.playerFiring(cannon, player, InteractAction.FIRE_AFTER_LOADING);
 
         return message != null;
     }

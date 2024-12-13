@@ -4,13 +4,13 @@ package at.pavlov.internal.enums;
 public enum BreakCause {
 
     //Error Messages
-    PlayerBreak ("player break"),
-    Explosion ("explosion"),
-    Overheating ("overheating"),
-    ShipDestroyed ("ShipDestroyed"),
-    Overloading ("overloading"),
-    Dismantling ("dismantling"),
-    Other ("other");
+    PLAYER_BREAK("player break"),
+    EXPLOSION("explosion"),
+    OVERHEATING("overheating"),
+    SHIP_DESTROYED("ShipDestroyed"),
+    OVERLOADING("overloading"),
+    DISMANTLING("dismantling"),
+    OTHER("other");
 
 
 

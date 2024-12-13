@@ -180,7 +180,7 @@ public class FireCannon {
     public MessageEnum sentryFiring(Cannon cannon) {
         CannonDesign design = cannon.getCannonDesign();
 
-        return this.fire(cannon, null, true, !design.isAmmoInfiniteForPlayer(), InteractAction.fireSentry);
+        return this.fire(cannon, null, true, !design.isAmmoInfiniteForPlayer(), InteractAction.FIRE_SENTRY);
     }
 
     /**
@@ -265,18 +265,18 @@ public class FireCannon {
 
         final ProjectileCause projectileCause;
         switch (action) {
-            case fireRightClickTigger:
-            case fireAutoaim:
-            case fireRedstoneTrigger:
-            case fireAfterLoading: {
+            case FIRE_RIGHT_CLICK_TIGGER:
+            case FIRE_AUTOAIM:
+            case FIRE_REDSTONE_TRIGGER:
+            case FIRE_AFTER_LOADING: {
                 projectileCause = ProjectileCause.PlayerFired;
                 break;
             }
-            case fireRedstone: {
+            case FIRE_REDSTONE: {
                 projectileCause = ProjectileCause.RedstoneFired;
                 break;
             }
-            case fireSentry: {
+            case FIRE_SENTRY: {
                 projectileCause = ProjectileCause.SentryFired;
                 break;
             }
@@ -377,7 +377,7 @@ public class FireCannon {
 
         //check if the temperature exceeds the limit and overloading
         if (cannon.checkHeatManagement() || cannon.isExplodedDueOverloading()) {
-            CannonManager.getInstance().removeCannon(cannon, true, true, BreakCause.Overheating);
+            CannonManager.getInstance().removeCannon(cannon, true, true, BreakCause.OVERHEATING);
             return;
         }
 

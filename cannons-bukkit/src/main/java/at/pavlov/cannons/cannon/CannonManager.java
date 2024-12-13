@@ -93,19 +93,19 @@ public class CannonManager {
         if (cannon == null)
             return;
         if (player == null) {
-            removeCannon(cannon, true, false, BreakCause.Dismantling);
+            removeCannon(cannon, true, false, BreakCause.DISMANTLING);
             return;
         }
         // admins can dismantle all cannons
         if (player.hasPermission("cannons.admin.dismantle")) {
-            removeCannon(cannon, true, false, BreakCause.Dismantling);
+            removeCannon(cannon, true, false, BreakCause.DISMANTLING);
             return;
         }
 
         if (player.hasPermission(cannon.getCannonDesign().getPermissionDismantle())) {
             //only the owner of the cannon can dismantle a cannon
             if (cannon.getOwner() != null && cannon.getOwner().equals(player.getUniqueId()))
-                removeCannon(cannon, true, false, BreakCause.Dismantling);
+                removeCannon(cannon, true, false, BreakCause.DISMANTLING);
             else
                 userMessages.sendMessage(MessageEnum.ErrorDismantlingNotOwner, player, cannon);
             return;
@@ -181,7 +181,7 @@ public class CannonManager {
             return;
 
         long delay = 0;
-        if (cause == BreakCause.Dismantling || cause == BreakCause.Other) {
+        if (cause == BreakCause.DISMANTLING || cause == BreakCause.OTHER) {
             plugin.logDebug("Dismantling," + cannon.getCannonDesign().getSoundDismantle().toString());
             SoundUtils.playSound(cannon.getRandomBarrelBlock(), cannon.getCannonDesign().getSoundDismantle());
             delay = (long) (cannon.getCannonDesign().getDismantlingDelay() * 20.0);
@@ -207,7 +207,7 @@ public class CannonManager {
                     // return message
                     if (offplayer.hasPlayedBefore() && plugin.getEconomy() != null && cannon.isPaid()) {
                         double funds = switch (cause) {
-                            case Other, Dismantling -> cannon.getCannonDesign().getEconomyDismantlingRefund();
+                            case OTHER, DISMANTLING -> cannon.getCannonDesign().getEconomyDismantlingRefund();
                             default -> cannon.getCannonDesign().getEconomyDestructionRefund();
                         };
                         plugin.getEconomy().depositPlayer(offplayer, funds);
@@ -842,7 +842,7 @@ public class CannonManager {
             // return money to the player if the cannon was paid
             if (offplayer != null && offplayer.hasPlayedBefore() && plugin.getEconomy() != null && cannon.isPaid())
                 plugin.getEconomy().depositPlayer(offplayer, cannon.getCannonDesign().getEconomyBuildingCost());
-            cannon.destroyCannon(false, false, BreakCause.Other);
+            cannon.destroyCannon(false, false, BreakCause.OTHER);
             iter.remove();
         }
     }
@@ -862,7 +862,7 @@ public class CannonManager {
             Cannon next = iter.next();
             if (next.getOwner() != null && next.getOwner().equals(owner)) {
                 inList = true;
-                next.destroyCannon(false, false, BreakCause.Other);
+                next.destroyCannon(false, false, BreakCause.OTHER);
                 iter.remove();
             }
         }

@@ -370,7 +370,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
     public MessageEnum loadGunpowder(Player player) {
 
         //fire event
-        CannonUseEvent useEvent = new CannonUseEvent(this, player.getUniqueId(), InteractAction.loadGunpowder);
+        CannonUseEvent useEvent = new CannonUseEvent(this, player.getUniqueId(), InteractAction.LOAD_GUNPOWDER);
         Bukkit.getServer().getPluginManager().callEvent(useEvent);
 
         if (useEvent.isCancelled())
@@ -434,7 +434,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      */
     public MessageEnum loadProjectile(Projectile projectile, Player player) {
         //fire event
-        CannonUseEvent useEvent = new CannonUseEvent(this, player.getUniqueId(), InteractAction.loadProjectile);
+        CannonUseEvent useEvent = new CannonUseEvent(this, player.getUniqueId(), InteractAction.LOAD_PROJECTILE);
         Bukkit.getServer().getPluginManager().callEvent(useEvent);
 
         if (useEvent.isCancelled())
@@ -572,7 +572,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
             if (isClean())
                 return MessageEnum.RamrodCleaningDone;
             else {
-                CannonUseEvent cleaning = new CannonUseEvent(this, player.getUniqueId(), InteractAction.cleaningCannon);
+                CannonUseEvent cleaning = new CannonUseEvent(this, player.getUniqueId(), InteractAction.CLEANING_CANNON);
                 Bukkit.getServer().getPluginManager().callEvent(cleaning);
                 return MessageEnum.RamrodCleaning;
             }
@@ -591,7 +591,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
             if (isProjectilePushed()) {
                 return MessageEnum.RamrodPushingProjectileDone;
             } else {
-                CannonUseEvent cleaning = new CannonUseEvent(this, player.getUniqueId(), InteractAction.pushingProjectile);
+                CannonUseEvent cleaning = new CannonUseEvent(this, player.getUniqueId(), InteractAction.PUSHING_PROJECTILE);
                 Bukkit.getServer().getPluginManager().callEvent(cleaning);
                 return MessageEnum.RamrodPushingProjectile;
             }
@@ -705,9 +705,9 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
 
         // return message
         return switch (cause) {
-            case Overheating -> MessageEnum.HeatManagementOverheated;
-            case Other -> null;
-            case Dismantling -> MessageEnum.CannonDismantled;
+            case OVERHEATING -> MessageEnum.HeatManagementOverheated;
+            case OTHER -> null;
+            case DISMANTLING -> MessageEnum.CannonDismantled;
             default -> MessageEnum.CannonDestroyed;
         };
     }

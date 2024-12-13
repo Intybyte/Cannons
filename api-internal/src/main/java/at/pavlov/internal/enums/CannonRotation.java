@@ -1,5 +1,8 @@
 package at.pavlov.internal.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum CannonRotation {
     LEFT(-90),
     RIGHT(90),
@@ -10,7 +13,4 @@ public enum CannonRotation {
         this.angle = angle;
     }
 
-    public int getAngle() {
-        return angle;
-    }
 }
