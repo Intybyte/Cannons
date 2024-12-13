@@ -2,7 +2,7 @@ package at.pavlov.cannons;
 
 import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitEntityHolder;
-import at.pavlov.bukkit.container.SpawnMaterialHolder;
+import at.pavlov.bukkit.container.BukkitSpawnMaterialHolder;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.internal.enums.DamageType;
@@ -531,7 +531,7 @@ public class CreateExplosion {
 
         double spread = projectile.getSpawnBlockRadius();
 
-        for (SpawnMaterialHolder spawn : projectile.getSpawnBlocks()) {
+        for (BukkitSpawnMaterialHolder spawn : projectile.getSpawnBlocks()) {
 
             // add some randomness to the amount of spawned blocks
             int maxPlacement = CannonsUtil.getRandomInt(spawn.getMinAmount(), spawn.getMaxAmount());

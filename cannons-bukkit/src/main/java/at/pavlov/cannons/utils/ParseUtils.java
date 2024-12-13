@@ -2,7 +2,7 @@ package at.pavlov.cannons.utils;
 
 import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.BukkitEntityHolder;
-import at.pavlov.bukkit.container.SpawnMaterialHolder;
+import at.pavlov.bukkit.container.BukkitSpawnMaterialHolder;
 import at.pavlov.cannons.Cannons;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -162,10 +162,10 @@ public class ParseUtils {
      * @param stringList list of strings to convert
      * @return list of converted SpawnItemHolder
      */
-    public static List<SpawnMaterialHolder> toSpawnMaterialHolderList(List<String> stringList) {
-        List<SpawnMaterialHolder> materialList = new ArrayList<SpawnMaterialHolder>();
+    public static List<BukkitSpawnMaterialHolder> toSpawnMaterialHolderList(List<String> stringList) {
+        List<BukkitSpawnMaterialHolder> materialList = new ArrayList<BukkitSpawnMaterialHolder>();
         for (String str : stringList) {
-            SpawnMaterialHolder material = new SpawnMaterialHolder(str);
+            BukkitSpawnMaterialHolder material = new BukkitSpawnMaterialHolder(str);
             materialList.add(material);
         }
 
