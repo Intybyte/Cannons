@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Class used to specify a location without needing the specific world
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data public class CannonVector implements Cloneable {
