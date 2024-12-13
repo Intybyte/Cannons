@@ -2,19 +2,20 @@ package at.pavlov.internal.cannons.holders;
 
 import at.pavlov.internal.cannons.data.CannonPosition;
 import at.pavlov.internal.cannons.functionalities.Updatable;
+import at.pavlov.internal.container.location.CannonVector;
 
 import java.util.UUID;
 
-public interface CannonPositionHolder<Direction, Vector> extends Updatable {
+public interface CannonPositionHolder<Direction> extends Updatable {
 
-    CannonPosition<Direction, Vector> getCannonPosition();
-    void setCannonPosition(CannonPosition<Direction, Vector> position);
+    CannonPosition<Direction> getCannonPosition();
+    void setCannonPosition(CannonPosition<Direction> position);
 
-    default Vector getVelocity() {
+    default CannonVector getVelocity() {
         return getCannonPosition().getVelocity();
     }
 
-    default void setVelocity(Vector velocity) {
+    default void setVelocity(CannonVector velocity) {
         getCannonPosition().setVelocity(velocity);
     }
 
@@ -27,11 +28,11 @@ public interface CannonPositionHolder<Direction, Vector> extends Updatable {
         this.hasUpdated();
     }
 
-    default Vector getOffset() {
+    default CannonVector getOffset() {
         return getCannonPosition().getOffset();
     }
 
-    default void setOffset(Vector offset) {
+    default void setOffset(CannonVector offset) {
         getCannonPosition().setOffset(offset);
         this.hasUpdated();
     }
@@ -59,5 +60,5 @@ public interface CannonPositionHolder<Direction, Vector> extends Updatable {
      *
      * @param moved - how far the cannon has been moved
      */
-    void move(Vector moved);
+    void move(CannonVector moved);
 }

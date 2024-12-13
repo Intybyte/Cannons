@@ -1,5 +1,7 @@
 package at.pavlov.cannons;
 
+import at.pavlov.bukkit.factory.VectorUtils;
+import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.enums.FakeBlockType;
 import at.pavlov.internal.enums.InteractAction;
 import at.pavlov.internal.enums.MessageEnum;
@@ -603,13 +605,13 @@ public class Aiming {
 
         if (System.currentTimeMillis() > cannon.getSentryTargetingTime() + design.getSentrySwapTime() || !targets.containsKey(cannon.getSentryEntity())) {
             cannon.setSentryEntity(null);
-        } else if (!canFindTargetSolution(cannon, target, target.centerLocation(), target.velocity())) { //is the previous target still valid
+        } else if (!canFindTargetSolution(cannon, target, target.centerLocation())) { //is the previous target still valid
             cannon.setSentryEntity(null);
         }
 
         //find target solution
         // find exact solution for the cannon
-        if (!calculateTargetSolution(cannon, target, target.velocity(), true)) {//no exact solution found for this target. So skip it and try it again in the next run
+        if (!calculateTargetSolution(cannon, target, true)) {//no exact solution found for this target. So skip it and try it again in the next run
             cannon.setSentryEntity(null);
             return true;
         }
@@ -649,7 +651,7 @@ public class Aiming {
         for (Target t : targets.values()) {
             switch (t.targetType()) {
                 case MONSTER -> {
-                    if (cannon.isTargetMob() && canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
+                    if (cannon.isTargetMob() && canFindTargetSolution(cannon, t, t.centerLocation())) {
                         possibleTargets.add(t);
                     }
                 }
@@ -664,7 +666,7 @@ public class Aiming {
                         continue;
 
                     // get solution
-                    if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
+                    if (canFindTargetSolution(cannon, t, t.centerLocation())) {
                         possibleTargets.add(t);
                     }
                 }
@@ -684,7 +686,7 @@ public class Aiming {
                     if (scoreboardCheck(p, cannon))
                         continue;
 
-                    if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
+                    if (canFindTargetSolution(cannon, t, t.centerLocation())) {
                         possibleTargets.add(t);
                     }
                 }
@@ -704,7 +706,7 @@ public class Aiming {
                     if (scoreboardCheck(p, cannon))
                         continue;
 
-                    if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
+                    if (canFindTargetSolution(cannon, t, t.centerLocation())) {
                         possibleTargets.add(t);
                     }
                 }
@@ -739,10 +741,9 @@ public class Aiming {
      *
      * @param cannon         the cannon which is operated
      * @param loctarget      lcoation of the target
-     * @param targetVelocity how fast the target is moving
      * @return true if the cannon can fire on this target
      */
-    private boolean canFindTargetSolution(Cannon cannon, Target target, Location loctarget, Vector targetVelocity) {
+    private boolean canFindTargetSolution(Cannon cannon, Target target, Location loctarget) {
         if (!cannon.getWorld().equals(loctarget.getWorld().getUID()))
             return false;
 
@@ -786,16 +787,15 @@ public class Aiming {
      *
      * @param cannon         the cannon which is operated
      * @param target         lcoation of the target
-     * @param targetVelocity how fast the target is moving
      * @return true if a solution was found
      */
-    private boolean calculateTargetSolution(Cannon cannon, Target target, Vector targetVelocity, boolean addSpread) {
+    private boolean calculateTargetSolution(Cannon cannon, Target target, boolean addSpread) {
         Location targetLoc = target.centerLocation();
         //aim for the center of the target if there is an area effect of the projectile
         if (cannon.getLoadedProjectile() != null && (cannon.getLoadedProjectile().getExplosionPower() > 2. || (cannon.getLoadedProjectile().getPlayerDamage() > 1. && cannon.getLoadedProjectile().getPlayerDamageRange() > 2.)))
             targetLoc = target.groundLocation();
 
-        if (!canFindTargetSolution(cannon, target, target.centerLocation(), targetVelocity))
+        if (!canFindTargetSolution(cannon, target, target.centerLocation()))
             return false;
 
         if (cannon.getCannonballVelocity() < 0.01)
@@ -817,7 +817,7 @@ public class Aiming {
         cannon.setAimingPitch(cannon.getAimingPitch() - sign * step);
 
         for (int i = 0; i < 100; i++) {
-            Vector fvector = CannonsUtil.directionToVector(cannon.getAimingYaw(), cannon.getAimingPitch(), cannon.getCannonballVelocity());
+            CannonVector fvector = CannonsUtil.directionToVector(cannon.getAimingYaw(), cannon.getAimingPitch(), cannon.getCannonballVelocity());
             double diffY = simulateShot(fvector, cannon.getMuzzle(), targetLoc, cannon.getProjectileEntityType(), maxInterations);
 
             if (!cannon.getCannonDesign().isSentryIndirectFire() && Math.abs(diffY) > 1000.0) {
@@ -867,7 +867,7 @@ public class Aiming {
      */
     private boolean verifyTargetSolution(Cannon cannon, Target target, double maxdistance) {
         Location muzzle = cannon.getMuzzle();
-        Vector vel = cannon.getTargetVector();
+        CannonVector vel = cannon.getTargetVector();
 
         MovingObject predictor = new MovingObject(muzzle, vel, cannon.getProjectileEntityType());
         Vector start = muzzle.toVector();
@@ -905,7 +905,7 @@ public class Aiming {
      * @param target target for the cannonball
      * @return distance how much above/below the projectile will hit
      */
-    private double simulateShot(Vector vector, Location muzzle, Location target, EntityType projectileType, int maxInterations) {
+    private double simulateShot(CannonVector vector, Location muzzle, Location target, EntityType projectileType, int maxInterations) {
         MovingObject cannonball = new MovingObject(muzzle, vector, projectileType);
         double target_distance_squared = Math.pow(target.getX() - muzzle.getX(), 2) + Math.pow(target.getZ() - muzzle.getZ(), 2);
 
@@ -1170,7 +1170,7 @@ public class Aiming {
 
         // Imitation of angle
         if (config.isImitatedAimingEnabled() && isImitatingEnabled(player.getUniqueId())) {
-            FakeBlockHandler.getInstance().imitateLine(player, cannon.getMuzzle(), cannon.getAimingVector(), 0,
+            FakeBlockHandler.getInstance().imitateLine(player, cannon.getMuzzle(), VectorUtils.toBaseVector(cannon.getAimingVector()), 0,
                     config.getImitatedAimingLineLength(), config.getImitatedAimingMaterial(), FakeBlockType.AIMING, config.getImitatedAimingTime());
         }
     }
@@ -1251,7 +1251,7 @@ public class Aiming {
             return null;
 
         Location muzzle = cannon.getMuzzle();
-        Vector vel = cannon.getFiringVector(false, false);
+        CannonVector vel = cannon.getFiringVector(false, false);
 
         MovingObject predictor = new MovingObject(muzzle, vel, cannon.getProjectileEntityType());
         Vector start = muzzle.toVector();

@@ -1,13 +1,14 @@
 package at.pavlov.bukkit.cannons.holders;
 
 import at.pavlov.internal.cannons.holders.CannonPositionHolder;
+import at.pavlov.internal.container.location.CannonVector;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
-public interface CannonPositionHBukkit extends CannonPositionHolder<BlockFace, Vector> {
+public interface CannonPositionHBukkit extends CannonPositionHolder<BlockFace> {
 
     /**
      * @return bukkit world from saved UUID
@@ -23,7 +24,7 @@ public interface CannonPositionHBukkit extends CannonPositionHolder<BlockFace, V
         // return new Location(bukkitWorld, )
     }
 
-    default void move(Vector moved) {
+    default void move(CannonVector moved) {
         getOffset().add(moved);
         this.hasUpdated();
     }

@@ -1,6 +1,8 @@
 package at.pavlov.cannons;
 
+import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.internal.enums.FakeBlockType;
@@ -359,7 +361,7 @@ public class FireCannon {
                 playerLoc = onlinePlayer.getLocation();
             }
 
-            Vector vect = cannon.getFiringVector(true, true);
+            Vector vect = VectorUtils.toBaseVector(cannon.getFiringVector(true, true));
 
             org.bukkit.entity.Projectile projectileEntity = ProjectileManager.getInstance().spawnProjectile(projectile, shooter, source, playerLoc, firingLoc, vect, cannon.getUID(), projectileCause);
 
@@ -440,7 +442,7 @@ public class FireCannon {
         if (!config.isImitatedFiringEffectEnabled())
             return;
 
-        Vector aimingVector = cannon.getAimingVector().clone();
+        Vector aimingVector = VectorUtils.toBaseVector(cannon.getAimingVector().clone());
         Location loc = cannon.getMuzzle();
 
         double duration = config.getImitatedFiringTime();

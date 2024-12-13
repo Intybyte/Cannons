@@ -1,16 +1,17 @@
 package at.pavlov.internal.cannons.functionalities;
 
+import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.enums.CannonRotation;
 
-public interface Rotational<Vector> {
+public interface Rotational {
 
-    void rotate(Vector center, CannonRotation rotation);
+    void rotate(CannonVector center, CannonRotation rotation);
     /**
      * updates the rotation of the cannon by rotating it 90 to the right
      *
      * @param center - center of the rotation
      */
-    default void rotateRight(Vector center) {
+    default void rotateRight(CannonVector center) {
         this.rotate(center, CannonRotation.RIGHT);
     }
 
@@ -19,7 +20,7 @@ public interface Rotational<Vector> {
      *
      * @param center - center of the rotation
      */
-    default void rotateLeft(Vector center) {
+    default void rotateLeft(CannonVector center) {
         this.rotate(center, CannonRotation.LEFT);
     }
 
@@ -28,7 +29,7 @@ public interface Rotational<Vector> {
      *
      * @param center - center of the rotation
      */
-    default void rotateFlip(Vector center) {
+    default void rotateFlip(CannonVector center) {
         this.rotate(center, CannonRotation.FLIP);
     }
 }

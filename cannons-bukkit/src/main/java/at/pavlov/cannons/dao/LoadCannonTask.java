@@ -7,6 +7,7 @@ import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.scheduler.RunnableAsync;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.CreateCannon;
+import at.pavlov.internal.container.location.CannonVector;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -78,7 +79,7 @@ public class LoadCannonTask implements RunnableAsync {
                     continue;
                 }
 
-                Vector offset = new Vector(rs.getInt("loc_x"), rs.getInt("loc_y"), rs.getInt("loc_z"));
+                CannonVector offset = new CannonVector(rs.getInt("loc_x"), rs.getInt("loc_y"), rs.getInt("loc_z"));
                 BlockFace cannonDirection = BlockFace.valueOf(rs.getString("cannon_direction"));
 
                 //make a cannon

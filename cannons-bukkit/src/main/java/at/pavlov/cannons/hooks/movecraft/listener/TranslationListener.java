@@ -1,5 +1,6 @@
 package at.pavlov.cannons.hooks.movecraft.listener;
 
+import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.cannons.API.CannonsAPI;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
@@ -27,7 +28,7 @@ public class TranslationListener implements Listener {
         if (cannons.isEmpty())
             return;
         for (Cannon c : cannons) {
-            c.move(v);
+            c.move(VectorUtils.fromBaseVector(v));
         }
     }
 

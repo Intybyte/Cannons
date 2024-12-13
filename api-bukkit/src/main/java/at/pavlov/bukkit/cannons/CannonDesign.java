@@ -4,8 +4,10 @@ import at.pavlov.bukkit.container.BukkitCannonBlocks;
 import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.BukkitBlock;
+import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.internal.CannonLogger;
+import at.pavlov.internal.container.location.CannonVector;
 import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -201,11 +203,12 @@ import java.util.List;
     	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	if (cannonBlocks != null)
     	{
-    		return cannonBlocks.getRotationCenter().clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit());
+            CannonVector vector = cannonBlocks.getRotationCenter().clone().add(cannon.getOffset());
+    		return VectorUtils.toLoc(cannon.getWorldBukkit(), vector);
     	}
 
     	CannonLogger.getLogger().info("missing rotation center for cannon design " + cannon.getCannonName());
-    	return cannon.getOffset().toLocation(cannon.getWorldBukkit());
+    	return VectorUtils.toLoc(cannon.getWorldBukkit(), cannon.getOffset());
     }
 
 
@@ -217,11 +220,12 @@ import java.util.List;
     	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	if (cannonBlocks != null)
     	{
-    		return cannonBlocks.getMuzzle().clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit());
+            CannonVector vector = cannonBlocks.getMuzzle().clone().add(cannon.getOffset());
+    		return VectorUtils.toLoc(cannon.getWorldBukkit(), vector);
     	}
 
     	CannonLogger.getLogger().info("missing muzzle location for cannon design " + cannon.getCannonName());
-    	return cannon.getOffset().toLocation(cannon.getWorldBukkit());
+    	return VectorUtils.toLoc(cannon.getWorldBukkit(), cannon.getOffset());
     }
     
     /**
@@ -234,7 +238,8 @@ import java.util.List;
     	BukkitCannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
     	if (cannonBlocks != null && cannonBlocks.getFiringTrigger() != null)
     	{
-            return cannonBlocks.getFiringTrigger().clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit());
+            CannonVector vector = cannonBlocks.getFiringTrigger().clone().add(cannon.getOffset());
+            return VectorUtils.toLoc(cannon.getWorldBukkit(), vector);
     	}
     	return null;
     }
@@ -267,8 +272,9 @@ import java.util.List;
         {
             for (BukkitBlock block : cannonBlocks.getAllCannonBlocks())
             {
-                Vector vect = block.toVector();
-                locList.add(vect.clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit()));
+                CannonVector vect = block.toVector();
+                CannonVector calc = vect.clone().add(cannon.getOffset());
+                locList.add(VectorUtils.toLoc(cannon.getWorldBukkit(), calc));
             }
         }
         return locList;
@@ -283,9 +289,10 @@ import java.util.List;
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
-    		for (Vector vect : cannonBlocks.getDestructibleBlocks())
+    		for (CannonVector vect : cannonBlocks.getDestructibleBlocks())
     		{
-    			locList.add(vect.clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit()));
+                CannonVector vector = vect.clone().add(cannon.getOffset());
+    			locList.add(VectorUtils.toLoc(cannon.getWorldBukkit(), vector));
     		}
     	}
 		return locList;
@@ -301,9 +308,10 @@ import java.util.List;
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
-    		for (Vector vect : cannonBlocks.getFiringIndicator())
+    		for (CannonVector vect : cannonBlocks.getFiringIndicator())
     		{
-    			locList.add(vect.clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit()));
+                CannonVector vector = vect.clone().add(cannon.getOffset());
+    			locList.add(VectorUtils.toLoc(cannon.getWorldBukkit(), vector));
     		}
     	}
 		return locList;
@@ -318,9 +326,10 @@ import java.util.List;
         List<Location> locList = new ArrayList<>();
         if (cannonBlocks != null)
         {
-            for (Vector vect : cannonBlocks.getBarrelBlocks())
+            for (CannonVector vect : cannonBlocks.getBarrelBlocks())
             {
-                locList.add(vect.clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit()));
+                CannonVector vector = vect.clone().add(cannon.getOffset());
+                locList.add(VectorUtils.toLoc(cannon.getWorldBukkit(), vector));
             }
         }
         return locList;
@@ -335,9 +344,10 @@ import java.util.List;
         List<Location> locList = new ArrayList<>();
         if (cannonBlocks != null)
         {
-            for (Vector vect : cannonBlocks.getBarrelBlocks())
+            for (CannonVector vect : cannonBlocks.getBarrelBlocks())
             {
-                locList.add(vect.clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit()));
+                CannonVector vector = vect.clone().add(cannon.getOffset());
+                locList.add(VectorUtils.toLoc(cannon.getWorldBukkit(), vector));
             }
         }
         return locList;
@@ -352,9 +362,10 @@ import java.util.List;
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
-    		for (Vector vect : cannonBlocks.getRightClickTrigger())
+    		for (CannonVector vect : cannonBlocks.getRightClickTrigger())
     		{
-    			locList.add(vect.clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit()));
+                CannonVector vector = vect.clone().add(cannon.getOffset());
+    			locList.add(VectorUtils.toLoc(cannon.getWorldBukkit(), vector));
     		}
     	}
 		return locList;
@@ -369,9 +380,10 @@ import java.util.List;
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
-    		for (Vector vect : cannonBlocks.getRedstoneTrigger())
+    		for (CannonVector vect : cannonBlocks.getRedstoneTrigger())
     		{
-    			locList.add(vect.clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit()));
+                CannonVector vector = vect.clone().add(cannon.getOffset());
+    			locList.add(VectorUtils.toLoc(cannon.getWorldBukkit(), vector));
     		}
     	}
 		return locList;
@@ -404,9 +416,10 @@ import java.util.List;
     	List<Location> locList = new ArrayList<>();
     	if (cannonBlocks != null)
     	{
-    		for (Vector vect : cannonBlocks.getRedstoneTorches())
+    		for (CannonVector vect : cannonBlocks.getRedstoneTorches())
     		{
-    			locList.add(vect.clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit()));
+                CannonVector vector = vect.clone().add(cannon.getOffset());
+    			locList.add(VectorUtils.toLoc(cannon.getWorldBukkit(), vector));
     		}
     	}
 		return locList;

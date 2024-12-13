@@ -3,9 +3,11 @@ package at.pavlov.cannons.cannon;
 import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.BukkitBlock;
+import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.projectile.ProjectileStorage;
+import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.config.Config;
@@ -488,7 +490,7 @@ public class CannonManager {
     private Cannon getCannonFromStorage(Location loc) {
         for (Cannon cannon : cannonList.values()) {
             //To make code faster on servers with a lot of cannons we check the distance squared
-            if (loc.toVector().distanceSquared(cannon.getOffset()) <= 1024 && cannon.isCannonBlock(loc.getBlock())) {
+            if (loc.toVector().distanceSquared(VectorUtils.toBaseVector(cannon.getOffset())) <= 1024 && cannon.isCannonBlock(loc.getBlock())) {
                 return cannon;
             }
         }
@@ -667,7 +669,7 @@ public class CannonManager {
                     }
 
                     // this block is same as in the design, get the offset
-                    Vector offset = designBlock.subtractInverted(cannonBlock).toVector();
+                    CannonVector offset = designBlock.subtractInverted(cannonBlock).toVector();
 
                     // check all other blocks of the cannon
                     boolean isCannon = true;

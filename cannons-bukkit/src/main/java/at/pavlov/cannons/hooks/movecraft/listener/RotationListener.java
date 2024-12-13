@@ -1,8 +1,10 @@
 package at.pavlov.cannons.hooks.movecraft.listener;
 
+import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.cannons.API.CannonsAPI;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.internal.container.location.CannonVector;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.events.CraftRotateEvent;
 import org.bukkit.event.EventHandler;
@@ -23,7 +25,7 @@ public class RotationListener implements Listener {
         if (cannons.isEmpty())
             return;
 
-        Vector v = e.getOriginPoint().toBukkit(craft.getWorld()).toVector();
+        CannonVector v = VectorUtils.fromBaseVector(e.getOriginPoint().toBukkit(craft.getWorld()).toVector());
         for (Cannon c : cannons) {
             switch (e.getRotation()) {
                 case CLOCKWISE -> c.rotateRight(v);

@@ -1,5 +1,6 @@
 package at.pavlov.cannons.container;
 
+import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.internal.enums.TargetType;
 import at.pavlov.cannons.cannon.Cannon;
 import org.bukkit.Location;
@@ -56,7 +57,7 @@ public record Target(
             cannon.getUID(),
             cannon.getRandomBarrelBlock().clone().add(0.5, 0.0, 0.5),
             cannon.getRandomBarrelBlock().clone().add(0.5, 0.5, 0.5),
-            cannon.getVelocity()
+            VectorUtils.toBaseVector(cannon.getVelocity())
         );
     }
 }

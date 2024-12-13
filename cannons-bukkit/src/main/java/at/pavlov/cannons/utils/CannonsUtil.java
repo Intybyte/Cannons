@@ -1,6 +1,7 @@
 package at.pavlov.cannons.utils;
 
 import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.TargetManager;
@@ -461,13 +462,13 @@ public class CannonsUtil
         return -Math.asin(vector.normalize().getY())*180./Math.PI;
     }
 
-    public static Vector directionToVector(double yaw, double pitch, double speed){
+    public static CannonVector directionToVector(double yaw, double pitch, double speed){
         double hx = -Math.cos(pitch * Math.PI / 180.)*Math.sin(yaw*Math.PI/180.);
         double hy = -Math.sin(pitch * Math.PI / 180.);
         double hz = Math.cos(pitch*Math.PI/180.)*Math.cos(yaw*Math.PI/180.);
 //        System.out.println("yaw: " + yaw + " pitch " + pitch);
 //        System.out.println("vector: " + (new Vector(hx, hy, hz)));
-        return new Vector(hx, hy, hz).multiply(speed);
+        return new CannonVector(hx, hy, hz).multiply(speed);
     }
 
     /**

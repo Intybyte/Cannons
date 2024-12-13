@@ -2,6 +2,7 @@ package at.pavlov.bukkit.container;
 
 
 import at.pavlov.internal.container.SimpleBlock;
+import at.pavlov.internal.container.location.CannonVector;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -24,6 +25,10 @@ public class BukkitBlock extends SimpleBlock<BlockData> {
         return Directional.class::isInstance;
     }
 
+    public BukkitBlock(CannonVector vect, BlockData blockData) {
+        this(vect.getBlockX(), vect.getBlockY(), vect.getBlockZ(), blockData);
+    }
+
     public BukkitBlock(Vector vect, BlockData blockData) {
         this(vect.getBlockX(), vect.getBlockY(), vect.getBlockZ(), blockData);
     }
@@ -32,7 +37,7 @@ public class BukkitBlock extends SimpleBlock<BlockData> {
         this(x, y, z, material.createBlockData());
     }
 
-    private BukkitBlock(Vector vect, Material material) {
+    private BukkitBlock(CannonVector vect, Material material) {
         this(vect, material.createBlockData());
     }
 
@@ -47,7 +52,7 @@ public class BukkitBlock extends SimpleBlock<BlockData> {
      * @param world bukkit world
      * @return location of the block
      */
-    public Location toLocation(World world, Vector offset) {
+    public Location toLocation(World world, CannonVector offset) {
         return new Location(world, locX + offset.getBlockX(), locY + offset.getBlockY(), locZ + offset.getBlockZ());
     }
 
@@ -59,7 +64,7 @@ public class BukkitBlock extends SimpleBlock<BlockData> {
      * @param offset the offset of the cannon
      * @return true if both block match
      */
-    public boolean compareMaterialAndLoc(Block block, Vector offset) {
+    public boolean compareMaterialAndLoc(Block block, CannonVector offset) {
         if (!toVector().add(offset).equals(block.getLocation().toVector())) {
             return false;
         }
@@ -102,7 +107,7 @@ public class BukkitBlock extends SimpleBlock<BlockData> {
      * @param offset the locations in x,y,z
      * @return true if both block are equal in data and facing
      */
-    public boolean compareMaterialAndFacing(World world, Vector offset) {
+    public boolean compareMaterialAndFacing(World world, CannonVector offset) {
         Block block = toLocation(world, offset).getBlock();
         return compareMaterialAndFacing(block.getBlockData());
     }
@@ -133,7 +138,7 @@ public class BukkitBlock extends SimpleBlock<BlockData> {
      * @param vect offset vector
      * @return a new block with a shifted location
      */
-    public BukkitBlock add(Vector vect) {
+    public BukkitBlock add(CannonVector vect) {
         return new BukkitBlock(toVector().add(vect), this.blockData);
     }
 
@@ -152,7 +157,7 @@ public class BukkitBlock extends SimpleBlock<BlockData> {
      *
      * @param vect vector to subtract
      */
-    public void subtract_noCopy(Vector vect) {
+    public void subtract_noCopy(CannonVector vect) {
         locX -= vect.getBlockX();
         locY -= vect.getBlockY();
         locZ -= vect.getBlockZ();
@@ -192,8 +197,8 @@ public class BukkitBlock extends SimpleBlock<BlockData> {
     /**
      * SimpleBlock to Vector
      */
-    public Vector toVector() {
-        return new Vector(locX, locY, locZ);
+    public CannonVector toVector() {
+        return new CannonVector(locX, locY, locZ);
     }
 
     public static BlockData rotateBlockFacingClockwise(BlockData blockData) {

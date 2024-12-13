@@ -11,11 +11,11 @@ import at.pavlov.internal.cannons.holders.ObserverMapHolder;
 import at.pavlov.internal.cannons.holders.SentryDataHolder;
 import at.pavlov.internal.cannons.holders.WhitelistDataHolder;
 
-public interface CannonDataHolder<Dir, Vec, Prj, Ply> extends
+public interface CannonDataHolder<Dir, Prj, Ply> extends
         FiringDataHolder<Prj>,
         AimingDataHolder,
         SentryDataHolder,
-        CannonPositionHolder<Dir, Vec>,
+        CannonPositionHolder<Dir>,
         AmmoLoadingDataHolder<Prj, Ply>,
         WhitelistDataHolder,
         CannonMainDataHolder,

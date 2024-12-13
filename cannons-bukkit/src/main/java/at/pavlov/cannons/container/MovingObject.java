@@ -1,5 +1,7 @@
 package at.pavlov.cannons.container;
 
+import at.pavlov.bukkit.factory.VectorUtils;
+import at.pavlov.internal.container.location.CannonVector;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -7,6 +9,7 @@ import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
+//TODO abstract this away and replace Vector with CannonVector
 public class MovingObject {
 
     //location and speed
@@ -21,6 +24,14 @@ public class MovingObject {
         world = loc.getWorld().getUID();
         this.loc = loc.toVector();
         this.vel = vel;
+        this.entityType = entityType;
+    }
+
+    public MovingObject(Location loc, CannonVector vel, EntityType entityType)
+    {
+        world = loc.getWorld().getUID();
+        this.loc = loc.toVector();
+        this.vel = VectorUtils.toBaseVector(vel);
         this.entityType = entityType;
     }
 

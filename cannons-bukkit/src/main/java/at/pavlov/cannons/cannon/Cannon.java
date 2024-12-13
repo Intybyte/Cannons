@@ -8,6 +8,7 @@ import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.BukkitBlock;
 import at.pavlov.bukkit.projectile.Projectile;
 import at.pavlov.cannons.Cannons;
+import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.internal.enums.CannonRotation;
 import at.pavlov.internal.enums.InteractAction;
@@ -56,10 +57,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vector> {
+public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
 
     private CannonMainData mainData;
-    private CannonPosition<BlockFace, Vector> cannonPosition;
+    private CannonPosition<BlockFace> cannonPosition;
 
     private AmmoLoadingData<Projectile> ammoLoadingData = new AmmoLoadingData<>();
     private FiringData<Projectile> firingData = new FiringData<>();
@@ -84,13 +85,13 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
     private CannonDesign design;
     private final Random random = new Random();
     //TODO make a vector util class and add this there
-    private final static Vector noVelocity = new Vector(0,0,0);
+    private final static CannonVector noVelocity = new CannonVector(0,0,0);
 
 
-    public Cannon(CannonDesign design, UUID world, Vector cannonOffset, BlockFace cannonDirection, UUID owner) {
+    public Cannon(CannonDesign design, UUID world, CannonVector cannonOffset, BlockFace cannonDirection, UUID owner) {
 
         this.design = design;
-        this.cannonPosition = new CannonPosition(cannonDirection, cannonOffset, world, false, noVelocity.clone());
+        this.cannonPosition = new CannonPosition<BlockFace>(cannonDirection, cannonOffset, world, false, noVelocity.clone());
         boolean feePresent = design.getEconomyBuildingCost() <= 0;
         this.mainData = new CannonMainData( UUID.randomUUID(),null, feePresent, owner, true);
 
@@ -1034,18 +1035,18 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      * @param rotation  - how far the cannon is rotated in degree (90, 180, 270, -90)
      */
     @Override
-    public void rotate(Vector center, CannonRotation rotation) {
+    public void rotate(CannonVector center, CannonRotation rotation) {
         int angle = rotation.getAngle();
         double dAngle = angle * Math.PI / 180;
 
-        center = new Vector(center.getBlockX(), center.getBlockY(), center.getBlockZ());
+        center = new CannonVector(center.getBlockX(), center.getBlockY(), center.getBlockZ());
 
-        Vector diffToCenter = getOffset().clone().subtract(center);
+        CannonVector diffToCenter = getOffset().clone().subtract(center);
 
         double newX = diffToCenter.getX() * Math.cos(dAngle) - diffToCenter.getZ() * Math.sin(dAngle);
         double newZ = diffToCenter.getX() * Math.sin(dAngle) + diffToCenter.getZ() * Math.cos(dAngle);
 
-        setOffset(new Vector(Math.round(center.getX() + newX), getOffset().getBlockY(), Math.round(center.getZ() + newZ)));
+        setOffset(new CannonVector(Math.round(center.getX() + newX), getOffset().getBlockY(), Math.round(center.getZ() + newZ)));
 
         //rotate blockface
         if (angle > 0) {
@@ -1177,7 +1178,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      * @param usePlayerSpread if additional spread of the player will be added
      * @return firing vector
      */
-    public Vector getFiringVector(boolean addSpread, boolean usePlayerSpread) {
+    public CannonVector getFiringVector(boolean addSpread, boolean usePlayerSpread) {
         if (firingData.getLastFiredProjectile() == null && ammoLoadingData.getLoadedProjectile() == null)
             return noVelocity.clone();
         Projectile projectile = ammoLoadingData.getLoadedProjectile();
@@ -1213,7 +1214,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      *
      * @return vector the cannon is aiming
      */
-    public Vector getAimingVector() {
+    public CannonVector getAimingVector() {
         double multi = Math.max(getCannonballVelocity(), 0.1);
         return CannonsUtil.directionToVector(getTotalHorizontalAngle() + CannonsUtil.directionToYaw(getCannonDirection()), -getTotalVerticalAngle(), multi);
     }
@@ -1223,7 +1224,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
      *
      * @return targeting vector
      */
-    public Vector getTargetVector() {
+    public CannonVector getTargetVector() {
         double multi = Math.max(getCannonballVelocity(), 0.1);
         return CannonsUtil.directionToVector(getAimingYaw(), getAimingPitch(), multi);
     }
@@ -1801,7 +1802,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational<Vect
     }
 
     @Override
-    public void setCannonPosition(CannonPosition<BlockFace, Vector> position) {
+    public void setCannonPosition(CannonPosition<BlockFace> position) {
         this.hasUpdated();
         this.cannonPosition = position;        
     }

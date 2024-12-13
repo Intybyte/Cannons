@@ -10,6 +10,7 @@ import at.pavlov.cannons.container.DesignFileName;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.DesignComparator;
 import at.pavlov.cannons.utils.ParseUtils;
+import at.pavlov.internal.container.location.CannonVector;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
@@ -440,16 +441,16 @@ public class DesignStorage
 
 			// to set the muzzle location the maximum and mininum x, y, z values
 			// of all muzzle blocks have to be found
-			Vector minMuzzle = new Vector(0, 0, 0);
-			Vector maxMuzzle = new Vector(0, 0, 0);
+			CannonVector minMuzzle = new CannonVector(0, 0, 0);
+			CannonVector maxMuzzle = new CannonVector(0, 0, 0);
 			boolean firstEntryMuzzle = true;
 
 			// to set the rotation Center maximum and mininum x, y, z values
 			// of all rotation blocks have to be found
 			// setting max to the size of the marked area is a good approximation
 			// if no rotationblock is given
-			Vector minRotation = new Vector(0, 0, 0);
-			Vector maxRotation = new Vector(width, height, length);
+			CannonVector minRotation = new CannonVector(0, 0, 0);
+			CannonVector maxRotation = new CannonVector(width, height, length);
 			boolean firstEntryRotation = true;
 
             for (BukkitBlock sblock : schematicList) {
@@ -464,8 +465,8 @@ public class DesignStorage
                     // reset for the first entry
                     if (firstEntryMuzzle) {
                         firstEntryMuzzle = false;
-                        minMuzzle = new Vector(x, y, z);
-                        maxMuzzle = new Vector(x, y, z);
+                        minMuzzle = new CannonVector(x, y, z);
+                        maxMuzzle = new CannonVector(x, y, z);
                     } else {
                         setMinimum(x, y, z, minMuzzle);
                         setMaximum(x, y, z, maxMuzzle);
@@ -478,8 +479,8 @@ public class DesignStorage
                     // reset for the first entry
                     if (firstEntryRotation) {
                         firstEntryRotation = false;
-                        minRotation = new Vector(x, y, z);
-                        maxRotation= new Vector(x, y, z);
+                        minRotation = new CannonVector(x, y, z);
+                        maxRotation = new CannonVector(x, y, z);
                     } else {
                         setMinimum(x, y, z, minRotation);
                         setMaximum(x, y, z, maxRotation);
@@ -487,23 +488,23 @@ public class DesignStorage
                 }
                 // #############  redstoneTorch
                 else if (sblock.compareMaterial(blockRedstoneTorch))
-                    cannonBlocks.addRedstoneTorch(new Vector(x, y, z));
+                    cannonBlocks.addRedstoneTorch(new CannonVector(x, y, z));
                     // #############  redstoneWire and Repeater
                 else if (sblock.compareMaterial(blockRedstoneWireAndRepeater))
                     cannonBlocks.addRedstoneWiresAndRepeater(new BukkitBlock(x, y, z, Material.REPEATER));
                     // #############  redstoneTrigger
                 else if (sblock.compareMaterialAndFacing(blockRedstoneTrigger)) {
-                    cannonBlocks.addRedstoneTrigger(new Vector(x, y, z));
+                    cannonBlocks.addRedstoneTrigger(new CannonVector(x, y, z));
                     // buttons or levers are part of the cannon
                     cannonBlocks.addAllCannonBlocks(new BukkitBlock(x, y, z, replaceRedstoneTrigger));
                     // this can be a destructible block
                     if (!isInList(blockProtectedList, sblock.getBlockData()))
-                        cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
+                        cannonBlocks.addDestructibleBlocks(new CannonVector(x, y, z));
                 }
                 // #############  rightClickTrigger
                 else if (sblock.compareMaterialAndFacing(blockRightClickTrigger))
                 {
-                    cannonBlocks.addRightClickTrigger(new Vector(x, y, z));
+                    cannonBlocks.addRightClickTrigger(new CannonVector(x, y, z));
                     //can be also a sign
                     if (sblock.compareMaterialAndFacing(blockChestAndSign))
                         // the id does not matter, but the data is important for signs
@@ -513,7 +514,7 @@ public class DesignStorage
                     cannonBlocks.addAllCannonBlocks(new BukkitBlock(x, y, z, replaceRightClickTrigger));
                     // this can be a destructible block
                     if (!isInList(blockProtectedList, sblock.getBlockData()))
-                        cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
+                        cannonBlocks.addDestructibleBlocks(new CannonVector(x, y, z));
                 }
                 // #############  chests and signs
                 else if (sblock.compareMaterial(blockChestAndSign)) {
@@ -524,47 +525,47 @@ public class DesignStorage
                 // the previous blocks
                 else {
                     // all remaining blocks are loading interface or cannonBlocks
-                    cannonBlocks.addBarrelBlocks(new Vector(x, y, z));
+                    cannonBlocks.addBarrelBlocks(new CannonVector(x, y, z));
                     cannonBlocks.addAllCannonBlocks(new BukkitBlock(x, y, z, sblock.getBlockData()));
                     // this can be a destructible block
                     if (!isInList(blockProtectedList, sblock.getBlockData()))
-                        cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
+                        cannonBlocks.addDestructibleBlocks(new CannonVector(x, y, z));
                 }
 
                 // #############  firingIndicator
                 // can be everywhere on the cannon
                 if (sblock.compareMaterialAndFacing(blockFiringIndicator))
-                    cannonBlocks.addFiringIndicator(new Vector(x, y, z));
+                    cannonBlocks.addFiringIndicator(new CannonVector(x, y, z));
             }
 
 			// calculate the muzzle location
-			maxMuzzle.add(new Vector(1, 1, 1));
+			maxMuzzle.add(new CannonVector(1, 1, 1));
 			cannonBlocks.setMuzzle(maxMuzzle.add(minMuzzle).multiply(0.5));
 
 			// calculate the rotation Center
-			maxRotation.add(new Vector(1, 1, 1));
+			maxRotation.add(new CannonVector(1, 1, 1));
 			cannonBlocks.setRotationCenter(maxRotation.add(maxRotation).multiply(0.5));
 
             //set the muzzle location
-            Vector compensation = new Vector(cannonBlocks.getMuzzle().getBlockX(), cannonBlocks.getMuzzle().getBlockY(), cannonBlocks.getMuzzle().getBlockZ());
+			CannonVector compensation = new CannonVector(cannonBlocks.getMuzzle().getBlockX(), cannonBlocks.getMuzzle().getBlockY(), cannonBlocks.getMuzzle().getBlockZ());
 
             for (BukkitBlock block : cannonBlocks.getAllCannonBlocks())
                 block.subtract_noCopy(compensation);
-            for (Vector block : cannonBlocks.getBarrelBlocks())
+            for (CannonVector block : cannonBlocks.getBarrelBlocks())
                 block.subtract(compensation);
             for (BukkitBlock block : cannonBlocks.getChestsAndSigns())
                 block.subtract_noCopy(compensation);
-            for (Vector block : cannonBlocks.getRedstoneTorches())
+            for (CannonVector block : cannonBlocks.getRedstoneTorches())
                 block.subtract(compensation);
             for (BukkitBlock block : cannonBlocks.getRedstoneWiresAndRepeater())
                 block.subtract_noCopy(compensation);
-            for (Vector block : cannonBlocks.getRedstoneTrigger())
+            for (CannonVector block : cannonBlocks.getRedstoneTrigger())
                 block.subtract(compensation);
-            for (Vector block : cannonBlocks.getRightClickTrigger())
+            for (CannonVector block : cannonBlocks.getRightClickTrigger())
                 block.subtract(compensation);
-            for (Vector block : cannonBlocks.getFiringIndicator())
+            for (CannonVector block : cannonBlocks.getFiringIndicator())
                 block.subtract(compensation);
-            for (Vector block : cannonBlocks.getDestructibleBlocks())
+            for (CannonVector block : cannonBlocks.getDestructibleBlocks())
                 block.subtract(compensation);
             cannonBlocks.getMuzzle().subtract(compensation);
             cannonBlocks.getRotationCenter().subtract(compensation);
@@ -604,13 +605,13 @@ public class DesignStorage
         return true;
 	}
 
-	private void setMinimum(int x, int y, int z, Vector min) {
+	private void setMinimum(int x, int y, int z, CannonVector min) {
 		if (x < min.getBlockX()) min.setX(x);
 		if (y < min.getBlockY()) min.setY(y);
 		if (z < min.getBlockZ()) min.setZ(z);
 	}
 
-	private void setMaximum(int x, int y, int z, Vector max) {
+	private void setMaximum(int x, int y, int z, CannonVector max) {
 		if (x > max.getBlockX()) max.setX(x);
 		if (y > max.getBlockY()) max.setY(y);
 		if (z > max.getBlockZ()) max.setZ(z);

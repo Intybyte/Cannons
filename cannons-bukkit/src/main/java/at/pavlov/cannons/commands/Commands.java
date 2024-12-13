@@ -1,7 +1,9 @@
 package at.pavlov.cannons.commands;
 
+import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
+import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.internal.enums.CommandList;
 import at.pavlov.internal.enums.MessageEnum;
@@ -172,7 +174,8 @@ public class Commands extends BaseCommand {
         sendMessage(player, ChatColor.GREEN + tag + "Create design: " + ChatColor.GOLD + arg);
         CannonDesign cannonDesign = designStorage.getDesign(arg);
 
-        Cannon cannon = new Cannon(cannonDesign, player.getWorld().getUID(), player.getLocation().toVector(), BlockFace.NORTH, player.getUniqueId());
+        CannonVector vector = VectorUtils.fromBaseVector(player.getLocation().toVector());
+        Cannon cannon = new Cannon(cannonDesign, player.getWorld().getUID(), vector, BlockFace.NORTH, player.getUniqueId());
         //createCannon(cannon);
         cannon.show();
     }
