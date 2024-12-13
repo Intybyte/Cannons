@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * it is not suggested to create new instances of it but instead
  * use it to get the positions of the various stuff
  */
-@Data public class CannonBlocks<Vector, Block extends SimpleBlock<?>> {
+@Data public abstract class CannonBlocks<Vector, Block extends SimpleBlock<?>> {
 	private Vector rotationCenter;	//center off all rotation blocks
     private Vector muzzle;			//center off all muzzle blocks - spawing Vector for snowball
 
