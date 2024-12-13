@@ -48,4 +48,9 @@ public enum EntityDataType {
         String lookup = str.toLowerCase();
         return LOOKUP_MAP.get(lookup);
     }
+
+    public static boolean has(String str) {
+        String lookup = str.toLowerCase();
+        return LOOKUP_MAP.containsKey(lookup);
+    }
 }

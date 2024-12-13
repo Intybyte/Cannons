@@ -72,8 +72,10 @@ import java.util.logging.Level;
 
                 if (key.equalsIgnoreCase("effects")) {
                     parsePotionEffects(value);
-                } else {
+                } else if(EntityDataType.has(key)) {
                     addEntityData(key, value.getAsString());
+                } else {
+                    throw new Exception("Invalid key: " + key);
                 }
             }
         } catch (Exception e) {
