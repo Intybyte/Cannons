@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BukkitProjectile extends Projectile<
-        Entity,
+        EntityType,
         PotionEffectType,
         BlockData,
         ParticleBuilder,
