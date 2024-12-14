@@ -76,12 +76,20 @@ public class FakeBlockEntry {
         return hash;
     }
 
+    public boolean samePosition(FakeBlockEntry entry) {
+        return this.locX == entry.getLocX() && this.locY == entry.getLocY() && this.locZ == entry.getLocZ();
+    }
+
     @Override
     public boolean equals(Object obj) {
-        FakeBlockEntry obj2 = (FakeBlockEntry) obj;
-        return this.type == obj2.getType() &&
-                this.locX == obj2.getLocX() && this.locY == obj2.getLocY() && this.locZ == obj2.getLocZ() && this.world.equals(obj2.getWorld())
-                && this.player.equals(obj2.getPlayer());
+        if (!(obj instanceof FakeBlockEntry entry)) {
+            return false;
+        }
+
+        return this.type == entry.getType()
+                && this.samePosition(entry)
+                && this.world.equals(entry.getWorld())
+                && this.player.equals(entry.getPlayer());
     }
 
 }
