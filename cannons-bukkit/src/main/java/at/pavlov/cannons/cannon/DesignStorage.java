@@ -6,7 +6,7 @@ import at.pavlov.bukkit.container.BukkitCannonBlocks;
 import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.container.DesignFileName;
+import at.pavlov.internal.various.DesignFileName;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.DesignComparator;
 import at.pavlov.cannons.utils.ParseUtils;
@@ -91,7 +91,7 @@ public class DesignStorage
 			copyDefaultDesigns();
 		}
 
-		ArrayList<DesignFileName> designFileList = getDesignFiles();
+		ArrayList<DesignFileName> designFileList = DesignFileName.getDesignFiles(getPath());
 
 		// stop if there are no files found
 		if (designFileList == null || designFileList.isEmpty())
@@ -127,54 +127,6 @@ public class DesignStorage
 			plugin.logDebug("design " + design.toString());
 		}
 
-	}
-
-	/**
-	 * returns a list with valid cannon designs (.yml + .schematic)
-	 * 
-	 * @return
-	 */
-	private ArrayList<DesignFileName> getDesignFiles() {
-		ArrayList<DesignFileName> designList = new ArrayList<>();
-
-		try {
-			// check plugin/cannons/designs for .yml and .schematic files
-			String ymlFile;
-			File folder = new File(getPath());
-
-			File[] listOfFiles = folder.listFiles();
-            if (listOfFiles == null) {
-                plugin.logSevere("Design folder empty");
-                return designList;
-            }
-
-
-			for (File listOfFile : listOfFiles) {
-                if (!listOfFile.isFile()) {
-                	continue;
-				}
-
-                ymlFile = listOfFile.getName();
-                if (!ymlFile.endsWith(".yml") && !ymlFile.endsWith(".yaml")) {
-                	continue;
-				}
-
-                String schematicFile = CannonsUtil.changeExtension(ymlFile, ".schematic");
-                String schemFile = CannonsUtil.changeExtension(ymlFile, ".schem");
-                if (new File(getPath() + schematicFile).isFile()) {
-                    // there is a shematic file and a .yml file
-                    designList.add(new DesignFileName(ymlFile, schematicFile));
-                } else if (new File(getPath() + schemFile).isFile()) {
-                    // there is a shematic file and a .yml file
-                    designList.add(new DesignFileName(ymlFile, schemFile));
-                } else {
-                    plugin.logSevere(schematicFile + " is missing");
-                }
-            }
-		} catch (Exception e) {
-			plugin.logSevere("Error while checking yml and schematic " + e);
-		}
-		return designList;
 	}
 
 	/**
