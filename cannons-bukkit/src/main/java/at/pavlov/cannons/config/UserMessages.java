@@ -6,6 +6,7 @@ import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.internal.enums.MessageEnum;
+import at.pavlov.internal.utils.FileUtils;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -60,12 +61,12 @@ public class UserMessages {
 
         localizationGerman.getParentFile().mkdirs();
         if (!localizationGerman.exists()) {
-            CannonsUtil.copyFile(plugin.getResource("localization/localization_german.yml"), localizationGerman);
+            FileUtils.copyFile(plugin.getResource("localization/localization_german.yml"), localizationGerman);
         }
         //copy english language
         File localizationEnglish = new File(plugin.getDataFolder(), "localization/localization_english.yml");
         if (!localizationEnglish.exists()) {
-            CannonsUtil.copyFile(plugin.getResource("localization/localization.yml"), localizationEnglish);
+            FileUtils.copyFile(plugin.getResource("localization/localization.yml"), localizationEnglish);
         }
     }
 

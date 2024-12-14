@@ -4,7 +4,7 @@ import at.pavlov.bukkit.builders.ParticleBuilder;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class FileUtils {
+public class FileReadUtils {
 
     public static ParticleBuilder readParticleBuilder(FileConfiguration cfg, String key) {
         var k = key + ".";

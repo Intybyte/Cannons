@@ -6,6 +6,7 @@ import at.pavlov.bukkit.container.BukkitCannonBlocks;
 import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.cannons.Cannons;
+import at.pavlov.internal.utils.FileUtils;
 import at.pavlov.internal.various.DesignFileName;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.DesignComparator;
@@ -84,7 +85,7 @@ public class DesignStorage
 		cannonDesignList.clear();
 		
 		// check if design folder is empty or does not exist
-		if (CannonsUtil.isFolderEmpty(getPath()))
+		if (FileUtils.isFolderEmpty(getPath()))
 		{
 			// the folder is empty, copy defaults
 			plugin.logInfo("No cannon designs loaded - loading default designs");
@@ -143,7 +144,7 @@ public class DesignStorage
 		// load all entries of the config file
 
 		// general
-		cannonDesign.setDesignID(CannonsUtil.removeExtension(ymlFile));
+		cannonDesign.setDesignID(FileUtils.removeExtension(ymlFile));
         cannonDesign.setDesignName(cannonDesignConfig.getString("general.designName", "no cannonName"));
         cannonDesign.setMessageName(cannonDesignConfig.getString("general.messageName", "no messageName"));
         cannonDesign.setDescription(cannonDesignConfig.getString("general.description", "no description for this cannon"));
@@ -591,11 +592,11 @@ public class DesignStorage
         SchematicFile.getParentFile().mkdirs();
         if (!YmlFile.exists())
         {
-            CannonsUtil.copyFile(plugin.getResource("designs/" + fileName + ".yml"), YmlFile);
+			FileUtils.copyFile(plugin.getResource("designs/" + fileName + ".yml"), YmlFile);
         }
         if (!SchematicFile.exists())
         {
-            CannonsUtil.copyFile(plugin.getResource("designs/" + fileName + ".schematic"), SchematicFile);
+			FileUtils.copyFile(plugin.getResource("designs/" + fileName + ".schematic"), SchematicFile);
         }
     }
 	

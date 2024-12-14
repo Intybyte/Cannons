@@ -3,7 +3,7 @@ package at.pavlov.cannons.config;
 
 import at.pavlov.bukkit.builders.ParticleBuilder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.utils.FileUtils;
+import at.pavlov.bukkit.utils.FileReadUtils;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.multiversion.ParticleResolver;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
@@ -185,7 +185,7 @@ import java.util.List;
         setImitatedAimingTime(config.getDouble("imitatedEffects.aiming.time", 1.0));
 
         setImitatedAimingParticleEnabled(config.getBoolean("imitatedEffects.aiming.particles.enabled", false));
-        setImitatedAimingParticle(FileUtils.readParticleBuilder(config, "imitatedEffects.aiming.particles"));
+        setImitatedAimingParticle(FileReadUtils.readParticleBuilder(config, "imitatedEffects.aiming.particles"));
 
         //imitated firing effects
         setImitatedFiringEffectEnabled(config.getBoolean("imitatedEffects.firing.enabled", false));

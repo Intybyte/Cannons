@@ -4,12 +4,13 @@ import at.pavlov.bukkit.builders.ParticleBuilder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
-import at.pavlov.bukkit.utils.FileUtils;
+import at.pavlov.bukkit.utils.FileReadUtils;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.internal.enums.ProjectileProperties;
+import at.pavlov.internal.utils.FileUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
@@ -125,7 +126,7 @@ public class ProjectileStorage
 
 		//load defaults if there no projectile folder
 		// check if design folder is empty or does not exist
-		if (CannonsUtil.isFolderEmpty(getPath()))
+		if (FileUtils.isFolderEmpty(getPath()))
 		{
 			// the folder is empty, copy defaults
 			plugin.logInfo("No projectiles loaded - loading default projectiles");
@@ -196,7 +197,7 @@ public class ProjectileStorage
 	private BukkitProjectile loadYml(String ymlFile)
 	{
 		//create a new projectile
-		String id = CannonsUtil.removeExtension(ymlFile);
+		String id = FileUtils.removeExtension(ymlFile);
 		BukkitProjectile projectile = new BukkitProjectile(id);
 		// load .yml file
 
@@ -236,7 +237,7 @@ public class ProjectileStorage
 		projectile.setSmokeTrailParticleEnabled(projectileConfig.getBoolean("smokeTrail.particles.enabled", false));
 
 		//smokeTrail Particle
-		ParticleBuilder pb = FileUtils.readParticleBuilder(projectileConfig, "smokeTrail.particles");
+		ParticleBuilder pb = FileReadUtils.readParticleBuilder(projectileConfig, "smokeTrail.particles");
 		projectile.setSmokeTrailParticle(pb);
 
 		//explosion
@@ -331,7 +332,7 @@ public class ProjectileStorage
 		YmlFile.getParentFile().mkdirs();
 		if (!YmlFile.exists())
 		{
-			CannonsUtil.copyFile(plugin.getResource("projectiles/" + filename + ".yml"), YmlFile);
+			FileUtils.copyFile(plugin.getResource("projectiles/" + filename + ".yml"), YmlFile);
 		}
 	}
 
