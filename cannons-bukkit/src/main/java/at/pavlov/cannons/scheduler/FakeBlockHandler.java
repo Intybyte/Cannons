@@ -231,7 +231,7 @@ public class FakeBlockHandler {
             boolean found = false;
             for (FakeBlockEntry block : list) {
                 if (block.equals(fakeBlockEntry)) {
-                    block.setStartTime(System.currentTimeMillis());
+                    block.updateTime();
                     found = true;
                     break;
                 }

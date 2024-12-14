@@ -1,6 +1,7 @@
 package at.pavlov.cannons.container;
 
 import at.pavlov.internal.enums.FakeBlockType;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -8,7 +9,8 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class FakeBlockEntry implements Cloneable{
+@Getter
+public class FakeBlockEntry {
     private final int locX;
     private final int locY;
     private final int locZ;
@@ -22,9 +24,6 @@ public class FakeBlockEntry implements Cloneable{
     private final UUID player;
     //only one type effect will be shown (aiming, explosion,...)
     private final FakeBlockType type;
-
-
-
 
     public FakeBlockEntry(Location loc, Player player, FakeBlockType type, long duration) {
         this.locX = loc.getBlockX();
@@ -40,53 +39,24 @@ public class FakeBlockEntry implements Cloneable{
     }
 
 
-    public int getLocX() {
-        return locX;
-    }
-
-    public int getLocY() {
-        return locY;
-    }
-
-    public int getLocZ() {
-        return locZ;
-    }
-
-    public UUID getWorld() {
-        return world;
-    }
-
     public World getWorldBukkit() {
         return Bukkit.getWorld(getWorld());
     }
 
     public Location getLocation() {
         World world = getWorldBukkit();
-        if(world != null)
-            return new Location(world,getLocX(),getLocY(),getLocZ());
+        if (world != null)
+            return new Location(world, getLocX(), getLocY(), getLocZ());
         else
             return null;
     }
 
-    public long getStartTime() {
-        return startTime;
+    public void updateTime() {
+        this.startTime = System.currentTimeMillis();
     }
 
-    public void setStartTime(long startTime)
-    {
-        this.startTime = startTime;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public boolean isExpired(){
-        return (System.currentTimeMillis() > getStartTime() + getDuration()*50);
-    }
-
-    public UUID getPlayer() {
-        return player;
+    public boolean isExpired() {
+        return (System.currentTimeMillis() > getStartTime() + getDuration() * 50);
     }
 
     public Player getPlayerBukkit() {
@@ -114,7 +84,4 @@ public class FakeBlockEntry implements Cloneable{
                 && this.player.equals(obj2.getPlayer());
     }
 
-    public FakeBlockType getType() {
-        return type;
-    }
 }
