@@ -16,7 +16,7 @@ import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.PersistenceDatabase;
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.CannonsUtil;
@@ -185,7 +185,7 @@ public class Commands extends BaseCommand {
     @CommandPermission("cannons.admin.give")
     public static void onGive(Player player, String projectileString, @Default("1") int amount) {
         //check if the projectile id is valid
-        Projectile projectile = ProjectileStorage.getProjectile(projectileString);
+        BukkitProjectile projectile = ProjectileStorage.getProjectile(projectileString);
         if (projectile == null) {
             String out = StringUtils.join(ProjectileStorage.getProjectileIds(), ", ");
             sendMessage(player, ChatColor.RED + tag + "Design not found. Available designs are: " + out);

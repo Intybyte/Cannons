@@ -44,7 +44,7 @@ abstract public class ItemHolder<Type> {
      * @param item the item to compare
      * @return true if both items are equal in data and id or only the id if one data = -1
      */
-    public boolean equalsFuzzy(ItemHolder<Type> item) {
+    public boolean equalsFuzzy(ItemHolder<?> item) {
         if (item == null) {
             return false;
         }

@@ -20,7 +20,7 @@ import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.event.CannonLinkAimingEvent;
 import at.pavlov.cannons.event.CannonTargetEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
@@ -759,7 +759,7 @@ public class Aiming {
         int ignoredBlocks = 0;
 
         if (cannon.isProjectileLoaded()) {
-            Projectile proj = cannon.getLoadedProjectile();
+            BukkitProjectile proj = cannon.getLoadedProjectile();
             if (proj != null)
                 ignoredBlocks = proj.getSentryIgnoredBlocks();
         }

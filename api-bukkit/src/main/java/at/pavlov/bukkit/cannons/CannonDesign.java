@@ -5,7 +5,7 @@ import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.BukkitBlock;
 import at.pavlov.bukkit.factory.VectorUtils;
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.internal.CannonLogger;
 import at.pavlov.internal.container.location.CannonVector;
 import lombok.Data;
@@ -446,7 +446,7 @@ import java.util.List;
      * @param projectile projectile to load
      * @return true if the projectile can be loaded in this type of cannon
      */
-    public boolean canLoad(Projectile projectile)
+    public boolean canLoad(BukkitProjectile projectile)
     {
     	for (String p : allowedProjectiles)
     	{

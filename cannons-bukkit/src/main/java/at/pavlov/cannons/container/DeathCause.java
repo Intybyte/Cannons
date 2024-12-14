@@ -1,9 +1,9 @@
 package at.pavlov.cannons.container;
 
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 
 import java.util.UUID;
 
-public record DeathCause(Projectile projectile, UUID cannonUID, UUID shooterUID) {
+public record DeathCause(BukkitProjectile projectile, UUID cannonUID, UUID shooterUID) {
 
 }

@@ -1,7 +1,7 @@
 package at.pavlov.bukkit.cannons;
 
 import at.pavlov.bukkit.cannons.holders.CannonPositionHBukkit;
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.internal.cannons.holders.AimingDataHolder;
 import at.pavlov.internal.cannons.holders.AmmoLoadingDataHolder;
 import at.pavlov.internal.cannons.holders.AngleDataHolder;
@@ -15,11 +15,11 @@ import org.bukkit.entity.Player;
 
 public interface CannonDataHolderBukkit extends
         AimingDataHolder,
-        AmmoLoadingDataHolder<Player, Projectile>,
+        AmmoLoadingDataHolder<Player, BukkitProjectile>,
         AngleDataHolder,
         CannonMainDataHolder,
         CannonPositionHBukkit,
-        FiringDataHolder<Projectile>,
+        FiringDataHolder<BukkitProjectile>,
         LinkingDataHolder,
         ObserverMapHolder,
         SentryDataHolder,

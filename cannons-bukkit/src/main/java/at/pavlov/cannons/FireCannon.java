@@ -1,7 +1,7 @@
 package at.pavlov.cannons;
 
 import at.pavlov.bukkit.factory.VectorUtils;
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.internal.enums.FakeBlockType;
@@ -246,7 +246,7 @@ public class FireCannon {
         if (fireEvent.isCancelled())
             return null;
 
-        Projectile projectile = cannon.getLoadedProjectile();
+        BukkitProjectile projectile = cannon.getLoadedProjectile();
         //reset after firing
         cannon.setLastFired(System.currentTimeMillis());
         //this cannon is now firing
@@ -321,7 +321,7 @@ public class FireCannon {
      */
     private void fireTask(Cannon cannon, UUID shooter, boolean removeCharge, ProjectileCause projectileCause) {
         CannonDesign design = cannon.getCannonDesign();
-        Projectile projectile = cannon.getLoadedProjectile();
+        BukkitProjectile projectile = cannon.getLoadedProjectile();
 
         //the player might be null if not online
         Player onlinePlayer = Bukkit.getPlayer(shooter);

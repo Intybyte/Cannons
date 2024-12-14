@@ -1,6 +1,6 @@
 package at.pavlov.cannons.dao;
 
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
@@ -75,7 +75,7 @@ public class SaveCannonTask implements RunnableAsync {
 
                 // load projectile
                 // if no projectile is found, set it to air
-                Projectile projectile = cannon.getLoadedProjectile();
+                BukkitProjectile projectile = cannon.getLoadedProjectile();
                 if (projectile != null) {
                     preparedStatement.setString(11,projectile.getProjectileID());
                 } else {

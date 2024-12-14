@@ -1,6 +1,6 @@
 package at.pavlov.cannons.projectile;
 
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.internal.enums.ProjectileCause;
@@ -43,7 +43,7 @@ public class ProjectileManager
         this.plugin = plugin;
     }
 
-    public org.bukkit.entity.Projectile spawnProjectile(Projectile projectile, UUID shooter, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, Location spawnLoc, Vector velocity, UUID cannonId, ProjectileCause projectileCause)
+    public org.bukkit.entity.Projectile spawnProjectile(BukkitProjectile projectile, UUID shooter, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, Location spawnLoc, Vector velocity, UUID cannonId, ProjectileCause projectileCause)
     {
         Validate.notNull(shooter, "shooter for the projectile can't be null");
         World world = spawnLoc.getWorld();

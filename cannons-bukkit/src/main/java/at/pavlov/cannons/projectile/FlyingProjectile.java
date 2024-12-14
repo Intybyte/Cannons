@@ -1,6 +1,6 @@
 package at.pavlov.cannons.projectile;
 
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.internal.enums.ProjectileCause;
 import at.pavlov.cannons.container.MovingObject;
 import io.papermc.lib.PaperLib;
@@ -25,7 +25,7 @@ public class FlyingProjectile
     private final UUID worldUID;
     @Setter @Getter
     private UUID cannonUID;
-	private final Projectile projectile;
+	private final BukkitProjectile projectile;
     private final org.bukkit.projectiles.ProjectileSource source;
     //location of the shooterUID before firing - important for teleporting the player back - observer property
     private final Location playerlocation;
@@ -48,7 +48,7 @@ public class FlyingProjectile
     private final MovingObject predictor;
 
 
-	public FlyingProjectile(Projectile projectile, org.bukkit.entity.Projectile projectile_entity, UUID shooterUID, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, UUID cannonId, ProjectileCause projectileCause)
+	public FlyingProjectile(BukkitProjectile projectile, org.bukkit.entity.Projectile projectile_entity, UUID shooterUID, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, UUID cannonId, ProjectileCause projectileCause)
 	{
         //Validate.notNull(shooterUID, "shooterUID for the projectile can't be null");
         this.entityUID = projectile_entity.getUniqueId();
@@ -94,7 +94,7 @@ public class FlyingProjectile
         return (org.bukkit.entity.Projectile) Bukkit.getEntity(entityUID);
 	}
 
-	public Projectile getProjectile()
+	public BukkitProjectile getProjectile()
 	{
 		return projectile;
 	}

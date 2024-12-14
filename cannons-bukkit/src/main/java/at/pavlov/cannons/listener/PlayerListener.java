@@ -1,6 +1,6 @@
 package at.pavlov.cannons.listener;
 
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
@@ -121,7 +121,7 @@ public class PlayerListener implements Listener
         if (cannon != null)
         {
             // data =-1 means no data check, all buckets are allowed
-            Projectile projectile = ProjectileStorage.getProjectile(cannon, event.getItemStack());
+            BukkitProjectile projectile = ProjectileStorage.getProjectile(cannon, event.getItemStack());
             if (projectile != null) event.setCancelled(true);
         }
     }
@@ -480,7 +480,7 @@ public class PlayerListener implements Listener
     }
 
     private boolean isLoadProjectile(Cannon cannon, ItemStack eventitem, Block clickedBlock, PlayerInteractEvent event) {
-        Projectile projectile = ProjectileStorage.getProjectile(cannon, eventitem);
+        BukkitProjectile projectile = ProjectileStorage.getProjectile(cannon, eventitem);
         if (!cannon.isLoadingBlock(clickedBlock.getLocation()) || projectile == null) {
             return false;
         }

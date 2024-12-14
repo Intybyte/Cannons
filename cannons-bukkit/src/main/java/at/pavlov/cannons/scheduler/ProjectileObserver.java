@@ -2,7 +2,7 @@ package at.pavlov.cannons.scheduler;
 
 import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
@@ -158,7 +158,7 @@ public class ProjectileObserver {
             return;
 
         //if projectile has HUMAN_CANNONBALL or OBSERVER - update player position
-        Projectile projectile = cannonball.getProjectile();
+        BukkitProjectile projectile = cannonball.getProjectile();
         if (!projectile.hasProperty(ProjectileProperties.HUMAN_CANNONBALL) && !projectile.hasProperty(ProjectileProperties.OBSERVER)) {
             return;
         }
@@ -232,7 +232,7 @@ public class ProjectileObserver {
      * @param projectile_entity the entity of the projectile
      */
     private void updateSmokeTrail(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
-        Projectile proj = cannonball.getProjectile();
+        BukkitProjectile proj = cannonball.getProjectile();
         int maxDist = plugin.getMyConfig().getImitatedBlockMaximumDistance();
         double smokeDist = proj.getSmokeTrailDistance()*(0.5 + random.nextDouble());
         double smokeDuration = proj.getSmokeTrailDuration()*(0.5 + random.nextGaussian());

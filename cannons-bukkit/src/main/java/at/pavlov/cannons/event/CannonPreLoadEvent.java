@@ -1,6 +1,6 @@
 package at.pavlov.cannons.event;
 
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.cannon.Cannon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
 public class CannonPreLoadEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final Cannon cannon;
-    private Projectile projectile;
+    private BukkitProjectile projectile;
     private final Player player;
 
-    public CannonPreLoadEvent(Cannon cannon, Projectile projectile, Player player) {
+    public CannonPreLoadEvent(Cannon cannon, BukkitProjectile projectile, Player player) {
         this.cannon = cannon;
         this.projectile = projectile;
         this.player = player;
@@ -31,11 +31,11 @@ public class CannonPreLoadEvent extends Event {
         return cannon;
     }
 
-    public Projectile getProjectile() {
+    public BukkitProjectile getProjectile() {
         return projectile;
     }
 
-    public void setProjectile(Projectile projectile) {
+    public void setProjectile(BukkitProjectile projectile) {
         this.projectile = projectile;
     }
 

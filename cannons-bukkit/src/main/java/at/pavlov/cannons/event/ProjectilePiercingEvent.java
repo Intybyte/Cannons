@@ -1,6 +1,6 @@
 package at.pavlov.cannons.event;
 
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.Cancellable;
@@ -11,12 +11,12 @@ import java.util.List;
 
 public class ProjectilePiercingEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private Projectile projectile;
+    private BukkitProjectile projectile;
     private Location impactLocation;
     private List<Block> blockList;
     private boolean cancelled;
 
-    public ProjectilePiercingEvent(Projectile projectile, Location impactLocation, List<Block> blockList) {
+    public ProjectilePiercingEvent(BukkitProjectile projectile, Location impactLocation, List<Block> blockList) {
         this.projectile = projectile;
         this.impactLocation = impactLocation;
         this.blockList = blockList;
@@ -32,11 +32,11 @@ public class ProjectilePiercingEvent extends Event implements Cancellable {
         this.impactLocation = impactLocation;
     }
 
-    public Projectile getProjectile() {
+    public BukkitProjectile getProjectile() {
         return projectile;
     }
 
-    public void setProjectile(Projectile projectile) {
+    public void setProjectile(BukkitProjectile projectile) {
         this.projectile = projectile;
     }
 

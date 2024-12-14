@@ -1,6 +1,6 @@
 package at.pavlov.cannons.event;
 
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -9,12 +9,12 @@ import java.util.UUID;
 
 public class ProjectileImpactEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private Projectile projectile;
+    private BukkitProjectile projectile;
     private Location impactLocation;
     private final UUID shooter;
     private boolean cancelled;
 
-    public ProjectileImpactEvent(Projectile projectile, Location impactLocation, UUID shooter) {
+    public ProjectileImpactEvent(BukkitProjectile projectile, Location impactLocation, UUID shooter) {
         this.projectile = projectile;
         this.impactLocation = impactLocation;
         this.shooter = shooter;
@@ -33,11 +33,11 @@ public class ProjectileImpactEvent extends Event {
         this.impactLocation = impactLocation;
     }
 
-    public Projectile getProjectile() {
+    public BukkitProjectile getProjectile() {
         return this.projectile;
     }
 
-    public void setProjectile(Projectile projectile) {
+    public void setProjectile(BukkitProjectile projectile) {
         this.projectile = projectile;
     }
 

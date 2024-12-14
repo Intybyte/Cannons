@@ -6,7 +6,7 @@ import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.bukkit.cannons.CannonDesignHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.BukkitBlock;
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.enums.BreakCause;
@@ -61,8 +61,8 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
     private CannonMainData mainData;
     private CannonPosition<BlockFace> cannonPosition;
 
-    private AmmoLoadingData<Projectile> ammoLoadingData = new AmmoLoadingData<>();
-    private FiringData<Projectile> firingData = new FiringData<>();
+    private AmmoLoadingData<BukkitProjectile> ammoLoadingData = new AmmoLoadingData<>();
+    private FiringData<BukkitProjectile> firingData = new FiringData<>();
     private AimingData aimingData = new AimingData();
     private AngleData angleData = new AngleData();
 
@@ -110,7 +110,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
         int defaultLoadedGunpowder = !design.isGunpowderNeeded() || design.isPreloaded() ? design.getMaxLoadableGunpowderNormal() : 0;
         this.ammoLoadingData.setLoadedGunpowder(defaultLoadedGunpowder);
 
-        Projectile defaultLoadedProjectile = design.isPreloaded() ? this.getDefaultProjectile(this) : null;
+        BukkitProjectile defaultLoadedProjectile = design.isPreloaded() ? this.getDefaultProjectile(this) : null;
         this.ammoLoadingData.setLoadedProjectile(defaultLoadedProjectile);
         firingData.setLastFiredProjectile(null);
         firingData.setLastFiredGunpowder(0);
@@ -192,7 +192,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
         // find a loadable projectile in the chests
         for (Inventory inv : invlist) {
             for (ItemStack item : inv.getContents()) {
-                Projectile projectile = ProjectileStorage.getProjectile(this, item);
+                BukkitProjectile projectile = ProjectileStorage.getProjectile(this, item);
                 if (projectile == null)
                     continue;
 
@@ -432,7 +432,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @param player - who is loading the cannon
      * @return - a message which can be displayed
      */
-    public MessageEnum loadProjectile(Projectile projectile, Player player) {
+    public MessageEnum loadProjectile(BukkitProjectile projectile, Player player) {
         //fire event
         CannonUseEvent useEvent = new CannonUseEvent(this, player.getUniqueId(), InteractAction.LOAD_PROJECTILE);
         Bukkit.getServer().getPluginManager().callEvent(useEvent);
@@ -478,7 +478,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      *
      * @return default Projectile
      */
-    public Projectile getDefaultProjectile(Cannon cannon) {
+    public BukkitProjectile getDefaultProjectile(Cannon cannon) {
         if (!this.getCannonDesign().getAllowedProjectiles().isEmpty())
             return ProjectileStorage.getProjectile(cannon, this.getCannonDesign().getAllowedProjectiles().get(0));
         return null;
@@ -510,7 +510,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @param playerUid - whose permissions are checked
      * @return true if the player and cannons can load the projectile
      */
-    private MessageEnum CheckPermProjectile(Projectile projectile, UUID playerUid) {
+    private MessageEnum CheckPermProjectile(BukkitProjectile projectile, UUID playerUid) {
         return CheckPermProjectile(projectile, Bukkit.getPlayer(playerUid));
     }
 
@@ -520,7 +520,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @param player - whose permissions are checked
      * @return true if the player and cannons can load the projectile
      */
-    private MessageEnum CheckPermProjectile(Projectile projectile, Player player) {
+    private MessageEnum CheckPermProjectile(BukkitProjectile projectile, Player player) {
         if (player != null) {
             //if the player is not the owner of this gun
             if (this.getOwner() != null && !this.getOwner().equals(player.getUniqueId()) && design.isAccessForOwnerOnly())
@@ -1180,7 +1180,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
     public CannonVector getFiringVector(boolean addSpread, boolean usePlayerSpread) {
         if (firingData.getLastFiredProjectile() == null && ammoLoadingData.getLoadedProjectile() == null)
             return noVelocity.clone();
-        Projectile projectile = ammoLoadingData.getLoadedProjectile();
+        BukkitProjectile projectile = ammoLoadingData.getLoadedProjectile();
         if (projectile == null)
             projectile = firingData.getLastFiredProjectile();
 
@@ -1401,7 +1401,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
 
     public boolean isFiring() {
         //check if firing is finished and not reseted (after server restart)
-        Projectile projectile = getLoadedProjectile();
+        BukkitProjectile projectile = getLoadedProjectile();
         //delayTime is the time how long the firing should take
         long delayTime = (long) (design.getFuseBurnTime() * 1000.);
         if (projectile != null)
@@ -1412,7 +1412,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
 
     public boolean finishedFiringAndLoading() {
         //check if firing is finished and not reseted (after server restart)
-        Projectile projectile = getLoadedProjectile();
+        BukkitProjectile projectile = getLoadedProjectile();
         //delayTime is the time how long the firing should take
         long delayTime = (long) ((design.getFuseBurnTime() + design.getLoadTime()) * 1000.);
         if (projectile != null)
@@ -1759,13 +1759,13 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
     }
 
     @Override
-    public FiringData<Projectile> getFiringData() {
+    public FiringData<BukkitProjectile> getFiringData() {
         this.hasUpdated();
         return this.firingData;
     }
 
     @Override
-    public void setFiringData(FiringData<Projectile> firingData) {
+    public void setFiringData(FiringData<BukkitProjectile> firingData) {
         this.hasUpdated();
         this.firingData = firingData;
     }
@@ -1843,13 +1843,13 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
     }
 
     @Override
-    public AmmoLoadingData<Projectile> getAmmoLoadingData() {
+    public AmmoLoadingData<BukkitProjectile> getAmmoLoadingData() {
         this.hasUpdated();
         return ammoLoadingData;
     }
 
     @Override
-    public void setAmmoLoadingData(AmmoLoadingData<Projectile> ammoLoadingData) {
+    public void setAmmoLoadingData(AmmoLoadingData<BukkitProjectile> ammoLoadingData) {
         this.hasUpdated();
         this.ammoLoadingData = ammoLoadingData;
     }

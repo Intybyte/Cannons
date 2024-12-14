@@ -1,6 +1,6 @@
 package at.pavlov.cannons.config;
 
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.cannon.Cannon;
@@ -395,7 +395,7 @@ public class UserMessages {
      * @param projectile fired projectile
      * @return death message
      */
-    public String getDeathMessage(UUID killed, UUID shooter, Cannon cannon, Projectile projectile) {
+    public String getDeathMessage(UUID killed, UUID shooter, Cannon cannon, BukkitProjectile projectile) {
         MessageEnum messageEnum = switch (random.nextInt(3)) {
             case 1 -> MessageEnum.DeathMessage2;
             case 2 -> MessageEnum.DeathMessage3;

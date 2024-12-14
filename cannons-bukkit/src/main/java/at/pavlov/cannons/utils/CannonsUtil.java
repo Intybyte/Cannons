@@ -1,6 +1,6 @@
 package at.pavlov.cannons.utils;
 
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.cannons.Cannons;
@@ -359,7 +359,7 @@ public class CannonsUtil
         if (player == null)
             return;
 
-        Projectile projectile = cannonball.getProjectile();
+        BukkitProjectile projectile = cannonball.getProjectile();
 
         Location teleLoc = null;
         //teleport the player back to the location before firing

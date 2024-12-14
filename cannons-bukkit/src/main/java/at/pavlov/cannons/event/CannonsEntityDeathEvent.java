@@ -1,6 +1,6 @@
 package at.pavlov.cannons.event;
 
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -11,12 +11,12 @@ public class CannonsEntityDeathEvent extends Event
 {
     private static final HandlerList handlers = new HandlerList();
     private LivingEntity killedEntity;
-    private Projectile projectile;
+    private BukkitProjectile projectile;
     private UUID cannonID;
     private UUID shooter;
     private boolean cancelled;
 
-    public CannonsEntityDeathEvent(LivingEntity killedEntity, Projectile projectile, UUID cannonID, UUID shooter)
+    public CannonsEntityDeathEvent(LivingEntity killedEntity, BukkitProjectile projectile, UUID cannonID, UUID shooter)
     {
         this.killedEntity = killedEntity;
         this.projectile = projectile;
@@ -25,11 +25,11 @@ public class CannonsEntityDeathEvent extends Event
         this.cancelled = false;
     }
 
-    public Projectile getProjectile() {
+    public BukkitProjectile getProjectile() {
         return projectile;
     }
 
-    public void setProjectile(Projectile projectile) {
+    public void setProjectile(BukkitProjectile projectile) {
         this.projectile = projectile;
     }
 

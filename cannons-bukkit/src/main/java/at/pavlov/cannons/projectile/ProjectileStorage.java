@@ -3,7 +3,7 @@ package at.pavlov.cannons.projectile;
 import at.pavlov.bukkit.builders.ParticleBuilder;
 import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.projectile.Projectile;
+import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.bukkit.utils.FileUtils;
 import at.pavlov.cannons.Cannons;
@@ -30,7 +30,7 @@ public class ProjectileStorage
 	@Getter
 	private static ProjectileStorage instance = null;
 
-	private static List<Projectile> projectileList;
+	private static List<BukkitProjectile> projectileList;
 
 	private ProjectileStorage(Cannons plugin)
 	{
@@ -50,7 +50,7 @@ public class ProjectileStorage
 	 */
 	public static ArrayList<String> getProjectileIds(){
 		ArrayList<String> list = new ArrayList<>();
-		for (Projectile proj : projectileList){
+		for (BukkitProjectile proj : projectileList){
 			list.add(proj.getProjectileID());
 		}
 		return list;
@@ -61,7 +61,7 @@ public class ProjectileStorage
 	 * @param item ItemStack of projectile
 	 * @return true if there is a projectile with this material
 	 */
-	public static Projectile getProjectile(Cannon cannon, ItemStack item)
+	public static BukkitProjectile getProjectile(Cannon cannon, ItemStack item)
 	{
 		BukkitItemHolder materialHolder = BukkitItemHolder.from(item);
 		return getProjectile(cannon, materialHolder);
@@ -72,9 +72,9 @@ public class ProjectileStorage
 	 * @param materialHolder material of the projectile
 	 * @return true if there is a projectile with this material
 	 */
-	public static Projectile getProjectile(Cannon cannon, BukkitItemHolder materialHolder)
+	public static BukkitProjectile getProjectile(Cannon cannon, BukkitItemHolder materialHolder)
 	{
-		for (Projectile projectile : projectileList)
+		for (BukkitProjectile projectile : projectileList)
 		{
 			if (cannon.getCannonDesign().canLoad(projectile) && !projectile.getLoadingItem().check(Material.AIR) && projectile.check(materialHolder))
 				return projectile;
@@ -88,9 +88,9 @@ public class ProjectileStorage
 	 * @param projectileId id of the projectile
 	 * @return true if there is a projectile with this id
 	 */
-	public static Projectile getProjectile(Cannon cannon, String projectileId)
+	public static BukkitProjectile getProjectile(Cannon cannon, String projectileId)
 	{
-		for (Projectile projectile : projectileList)
+		for (BukkitProjectile projectile : projectileList)
 		{
 			if (cannon.getCannonDesign().canLoad(projectile) && projectile.check(projectileId))
 				return projectile;
@@ -103,9 +103,9 @@ public class ProjectileStorage
 	 * @param projectileId id of the projectile
 	 * @return true if there is a projectile with this id
 	 */
-	public static Projectile getProjectile(String projectileId)
+	public static BukkitProjectile getProjectile(String projectileId)
 	{
-		for (Projectile projectile : projectileList)
+		for (BukkitProjectile projectile : projectileList)
 		{
 			if (projectile.check(projectileId))
 				return projectile;
@@ -142,7 +142,7 @@ public class ProjectileStorage
 		for (String file : projectileFileList)
 		{
 			//load .yml
-			Projectile projectile = loadYml(file);
+			BukkitProjectile projectile = loadYml(file);
 			if (projectile != null) {
 				plugin.logDebug("load projectile " + file + " item " + projectile.getLoadingItem().toString());
 				projectileList.add(projectile);
@@ -193,11 +193,11 @@ public class ProjectileStorage
 	 * @param ymlFile
 	 *            of the cannon config file
 	 */
-	private Projectile loadYml(String ymlFile)
+	private BukkitProjectile loadYml(String ymlFile)
 	{
 		//create a new projectile
 		String id = CannonsUtil.removeExtension(ymlFile);
-		Projectile projectile = new Projectile(id);
+		BukkitProjectile projectile = new BukkitProjectile(id);
 		// load .yml file
 
 		File projectileFile = new File(getPath() + ymlFile);
@@ -418,9 +418,9 @@ public class ProjectileStorage
 	 * @param str
 	 * @return
 	 */
-	public Projectile getByName(String str)
+	public BukkitProjectile getByName(String str)
 	{
-		for (Projectile projectile : projectileList)
+		for (BukkitProjectile projectile : projectileList)
 		{
 			if (projectile.getProjectileID().equalsIgnoreCase(str))
 				return projectile;
