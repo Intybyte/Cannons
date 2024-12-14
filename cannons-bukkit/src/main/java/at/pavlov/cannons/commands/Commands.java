@@ -192,9 +192,9 @@ public class Commands extends BaseCommand {
     @CommandPermission("cannons.admin.give")
     public static void onGive(Player player, String projectileString, @Default("1") int amount) {
         //check if the projectile id is valid
-        BukkitProjectile projectile = ProjectileStorage.getProjectile(projectileString);
+        BukkitProjectile projectile = ProjectileStorage.getInstance().getProjectile(projectileString);
         if (projectile == null) {
-            String out = StringUtils.join(ProjectileStorage.getProjectileIds(), ", ");
+            String out = StringUtils.join(ProjectileStorage.getInstance().getProjectileIds(), ", ");
             sendMessage(player, ChatColor.RED + tag + "Design not found. Available designs are: " + out);
             return;
         }

@@ -877,7 +877,7 @@ public class CannonManager {
             cannon.setCannonDesign(DesignStorage.getInstance().getDesign(cannon));
             if (cannon.getLoadedProjectile() != null) {
                 BukkitItemHolder item = cannon.getLoadedProjectile().getLoadingItem();
-                cannon.setLoadedProjectile(ProjectileStorage.getProjectile(cannon, item));
+                cannon.setLoadedProjectile(ProjectileStorage.getInstance().getProjectile(cannon, item));
             }
         }
     }

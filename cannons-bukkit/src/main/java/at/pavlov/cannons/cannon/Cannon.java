@@ -192,7 +192,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
         // find a loadable projectile in the chests
         for (Inventory inv : invlist) {
             for (ItemStack item : inv.getContents()) {
-                BukkitProjectile projectile = ProjectileStorage.getProjectile(this, item);
+                BukkitProjectile projectile = ProjectileStorage.getInstance().getProjectile(this, item);
                 if (projectile == null)
                     continue;
 
@@ -480,7 +480,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      */
     public BukkitProjectile getDefaultProjectile(Cannon cannon) {
         if (!this.getCannonDesign().getAllowedProjectiles().isEmpty())
-            return ProjectileStorage.getProjectile(cannon, this.getCannonDesign().getAllowedProjectiles().get(0));
+            return ProjectileStorage.getInstance().getProjectile(cannon, this.getCannonDesign().getAllowedProjectiles().get(0));
         return null;
     }
 

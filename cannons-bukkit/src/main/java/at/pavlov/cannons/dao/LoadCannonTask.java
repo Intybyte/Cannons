@@ -90,7 +90,7 @@ public class LoadCannonTask implements RunnableAsync {
                 cannon.setLoadedGunpowder(rs.getInt("gunpowder"));
 
                 //load projectile
-                cannon.setLoadedProjectile(ProjectileStorage.getProjectile(cannon, rs.getString("projectile_id")));
+                cannon.setLoadedProjectile(ProjectileStorage.getInstance().getProjectile(cannon, rs.getString("projectile_id")));
 
                 cannon.setProjectilePushed(rs.getInt("projectile_pushed"));
 
