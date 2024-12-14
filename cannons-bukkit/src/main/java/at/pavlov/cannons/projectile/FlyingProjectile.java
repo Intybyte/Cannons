@@ -1,8 +1,8 @@
 package at.pavlov.cannons.projectile;
 
 import at.pavlov.bukkit.projectile.BukkitProjectile;
-import at.pavlov.internal.enums.ProjectileCause;
 import at.pavlov.cannons.container.MovingObject;
+import at.pavlov.internal.enums.ProjectileCause;
 import io.papermc.lib.PaperLib;
 import lombok.Getter;
 import lombok.Setter;

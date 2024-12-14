@@ -1,8 +1,6 @@
 package at.pavlov.cannons.listener;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.dao.AsyncTaskManager;
-import at.pavlov.internal.ModrinthUpdateChecker;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -2,6 +2,7 @@ package at.pavlov.internal.container;
 
 
 import lombok.Data;
+
 import java.util.function.Function;
 
 @Data abstract public class SimpleBlock<Block> {

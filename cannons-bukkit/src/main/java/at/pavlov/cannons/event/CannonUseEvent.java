@@ -1,7 +1,7 @@
 package at.pavlov.cannons.event;
 
-import at.pavlov.internal.enums.InteractAction;
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.internal.enums.InteractAction;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

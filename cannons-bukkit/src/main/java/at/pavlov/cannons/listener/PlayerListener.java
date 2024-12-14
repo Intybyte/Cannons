@@ -1,14 +1,12 @@
 package at.pavlov.cannons.listener;
 
+import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
-import at.pavlov.internal.enums.InteractAction;
-import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.FireCannon;
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.bukkit.cannons.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
@@ -19,6 +17,8 @@ import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
+import at.pavlov.internal.enums.InteractAction;
+import at.pavlov.internal.enums.MessageEnum;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;

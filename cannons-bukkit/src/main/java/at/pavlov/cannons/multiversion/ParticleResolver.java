@@ -1,9 +1,6 @@
 package at.pavlov.cannons.multiversion;
 
-import at.pavlov.cannons.Cannons;
 import org.bukkit.Particle;
-
-import java.lang.reflect.Field;
 
 public class ParticleResolver {
     private static final int[] version = VersionHandler.getVersion();

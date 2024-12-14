@@ -3,11 +3,11 @@ package at.pavlov.cannons.listener;
 
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.multiversion.EventResolver;
 import at.pavlov.cannons.utils.CannonSelector;
+import at.pavlov.internal.enums.BreakCause;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;

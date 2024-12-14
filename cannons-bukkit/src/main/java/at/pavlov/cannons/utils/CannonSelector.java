@@ -1,11 +1,11 @@
 package at.pavlov.cannons.utils;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.internal.enums.MessageEnum;
-import at.pavlov.internal.enums.SelectCannon;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.UserMessages;
+import at.pavlov.internal.enums.MessageEnum;
+import at.pavlov.internal.enums.SelectCannon;
 import lombok.Getter;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;

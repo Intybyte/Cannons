@@ -1,11 +1,11 @@
 package at.pavlov.cannons.API;
 
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.internal.enums.InteractAction;
 import at.pavlov.internal.enums.MessageEnum;
-import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.cannon.CannonManager;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PilotedCraft;

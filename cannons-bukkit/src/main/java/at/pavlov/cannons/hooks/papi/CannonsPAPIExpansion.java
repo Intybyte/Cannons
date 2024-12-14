@@ -3,7 +3,6 @@ package at.pavlov.cannons.hooks.papi;
 import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
-
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;

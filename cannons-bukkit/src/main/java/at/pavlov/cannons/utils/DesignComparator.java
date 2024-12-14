@@ -1,7 +1,7 @@
 package at.pavlov.cannons.utils;
 
-import at.pavlov.cannons.Cannons;
 import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.cannons.Cannons;
 import org.bukkit.block.BlockFace;
 
 import java.util.Comparator;

@@ -1,13 +1,13 @@
 package at.pavlov.cannons.listener;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.internal.enums.InteractAction;
-import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.FireCannon;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.utils.CannonsUtil;
+import at.pavlov.internal.enums.InteractAction;
+import at.pavlov.internal.enums.MessageEnum;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

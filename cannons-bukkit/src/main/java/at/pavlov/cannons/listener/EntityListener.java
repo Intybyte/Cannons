@@ -2,15 +2,18 @@ package at.pavlov.cannons.listener;
 
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.projectile.ProjectileManager;
+import at.pavlov.internal.enums.BreakCause;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 
 import java.util.HashSet;
 import java.util.List;

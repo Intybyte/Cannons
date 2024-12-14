@@ -1,15 +1,15 @@
 package at.pavlov.cannons.projectile;
 
 import at.pavlov.bukkit.builders.ParticleBuilder;
-import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
+import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
-import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.bukkit.utils.FileUtils;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
+import at.pavlov.internal.enums.ProjectileProperties;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
