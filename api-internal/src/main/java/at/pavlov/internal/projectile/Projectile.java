@@ -1,6 +1,5 @@
 package at.pavlov.internal.projectile;
 
-import at.pavlov.internal.CannonLogger;
 import at.pavlov.internal.container.ItemHolder;
 import at.pavlov.internal.container.SoundHolder;
 import at.pavlov.internal.container.SpawnEntityHolder;
@@ -21,7 +20,8 @@ abstract public class Projectile<
         Firework,
         IH extends ItemHolder<?>,
         SMH extends SpawnMaterialHolder<Block>,
-        SH extends SoundHolder<?>
+        SH extends SoundHolder<?>,
+        SEH extends SpawnEntityHolder<Entity, ?>
         > implements Cloneable {
     protected String projectileID;
     protected String projectileName;
@@ -82,7 +82,7 @@ abstract public class Projectile<
     protected double spawnEntityRadius;
     protected double spawnVelocity;
     protected List<SMH> spawnBlocks = new ArrayList<>();
-    protected List<SpawnEntityHolder<Entity, Potion>> spawnEntities = new ArrayList<>();
+    protected List<SEH> spawnEntities = new ArrayList<>();
     protected List<String> spawnProjectiles;
 
     //spawn Fireworks
@@ -103,31 +103,6 @@ abstract public class Projectile<
 
     public Projectile(String id) {
         this.projectileID = id;
-    }
-
-    @Override
-    public Projectile<Entity,
-            Potion,
-            Block,
-            ParticleBuilder,
-            Firework,
-            IH,
-            SMH,
-            SH> clone() {
-        try {
-            // call clone in Object.
-            return (Projectile<Entity,
-                    Potion,
-                    Block,
-                    ParticleBuilder,
-                    Firework,
-                    IH,
-                    SMH,
-                    SH>) super.clone();
-        } catch (CloneNotSupportedException e) {
-            CannonLogger.getLogger().info("Cloning not allowed.");
-            return this;
-        }
     }
 
     /**

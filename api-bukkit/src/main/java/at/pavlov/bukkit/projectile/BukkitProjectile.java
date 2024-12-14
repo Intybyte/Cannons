@@ -5,19 +5,12 @@ import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.container.BukkitEntityHolder;
 import at.pavlov.bukkit.container.BukkitSpawnMaterialHolder;
-import at.pavlov.internal.CannonLogger;
-import at.pavlov.internal.enums.ProjectileProperties;
 import at.pavlov.internal.projectile.Projectile;
-import lombok.Data;
 import org.bukkit.FireworkEffect;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BukkitProjectile extends Projectile<
         EntityType,
@@ -27,8 +20,9 @@ public class BukkitProjectile extends Projectile<
         FireworkEffect.Builder,
         BukkitItemHolder,
         BukkitSpawnMaterialHolder,
-        BukkitSoundHolder
-        > {
+        BukkitSoundHolder,
+        BukkitEntityHolder
+        > implements Cloneable {
 
     public BukkitProjectile(String id) {
         super(id);
@@ -51,5 +45,14 @@ public class BukkitProjectile extends Projectile<
         }
         //player has all permissions
         return true;
+    }
+
+    @Override
+    public BukkitProjectile clone() {
+        try {
+            return (BukkitProjectile) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
