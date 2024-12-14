@@ -806,8 +806,8 @@ public class CreateExplosion {
         }
 
         // reset explosion power if it is underwater and not allowed
-        this.plugin.logDebug("Explosion is underwater: " + cannonball.wasInWater());
-        if (!projectile.isUnderwaterDamage() && cannonball.wasInWater()) {
+        this.plugin.logDebug("Explosion is underwater: " + cannonball.isWasInWater());
+        if (!projectile.isUnderwaterDamage() && cannonball.isWasInWater()) {
             this.plugin.logDebug("Underwater explosion not allowed. Event cancelled");
             return;
         }

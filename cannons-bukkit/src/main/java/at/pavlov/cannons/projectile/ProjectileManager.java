@@ -74,7 +74,7 @@ public class ProjectileManager {
         FlyingProjectile cannonball = new FlyingProjectile(projectile, projectileEntity, shooter, source, playerLoc, cannonId, projectileCause);
 
 
-        flyingProjectilesMap.put(cannonball.getUID(), cannonball);
+        flyingProjectilesMap.put(cannonball.getEntityUID(), cannonball);
 
         //detonate timefused projectiles
         detonateTimefuse(cannonball);
@@ -94,7 +94,7 @@ public class ProjectileManager {
         }
 
         //Delayed Task
-        AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask(cannonball.getUID()) {
+        AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask(cannonball.getEntityUID()) {
             public void run(Object object) {
                 //find given UID in list
                 FlyingProjectile fproj = flyingProjectilesMap.get(object);
@@ -107,7 +107,7 @@ public class ProjectileManager {
                         CreateExplosion.getInstance().detonate(cannonball, projectile_entity);
                         projectile_entity.remove();
                     }
-                    flyingProjectilesMap.remove(cannonball.getUID());
+                    flyingProjectilesMap.remove(cannonball.getEntityUID());
                 }
             }
         }, (long) (cannonball.getProjectile().getTimefuse() * 20));
@@ -127,7 +127,7 @@ public class ProjectileManager {
         if (fproj != null) {
             CreateExplosion.getInstance().detonate(fproj, (Projectile) projectile);
             projectile.remove();
-            flyingProjectilesMap.remove(fproj.getUID());
+            flyingProjectilesMap.remove(fproj.getEntityUID());
         }
     }
 
@@ -146,13 +146,13 @@ public class ProjectileManager {
         }
 
         Projectile projectile_entity = fproj.getProjectileEntity();
-        if (!fproj.hasDetonated() && cannonball.isValid()) {
+        if (!fproj.isDetonated() && cannonball.isValid()) {
             fproj.setDetonated(true);
             CreateExplosion.getInstance().directHit(fproj, projectile_entity, target);
             projectile_entity.remove();
         }
 
-        flyingProjectilesMap.remove(fproj.getUID());
+        flyingProjectilesMap.remove(fproj.getEntityUID());
     }
 
     /**
