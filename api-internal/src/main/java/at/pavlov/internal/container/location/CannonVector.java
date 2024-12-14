@@ -1,6 +1,6 @@
 package at.pavlov.internal.container.location;
 
-import at.pavlov.internal.NumberTricks;
+import at.pavlov.internal.utils.NumberTricks;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

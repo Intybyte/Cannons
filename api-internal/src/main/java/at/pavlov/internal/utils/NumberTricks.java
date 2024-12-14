@@ -1,4 +1,4 @@
-package at.pavlov.internal;
+package at.pavlov.internal.utils;
 
 import lombok.experimental.UtilityClass;
 
