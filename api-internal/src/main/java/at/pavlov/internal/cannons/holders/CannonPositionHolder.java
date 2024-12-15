@@ -3,6 +3,7 @@ package at.pavlov.internal.cannons.holders;
 import at.pavlov.internal.cannons.data.CannonPosition;
 import at.pavlov.internal.cannons.functionalities.Updatable;
 import at.pavlov.internal.container.location.CannonVector;
+import at.pavlov.internal.container.location.Coordinate;
 
 import java.util.UUID;
 
@@ -61,4 +62,6 @@ public interface CannonPositionHolder<Direction> extends Updatable {
      * @param moved - how far the cannon has been moved
      */
     void move(CannonVector moved);
+
+    Coordinate getRandomCoordinate();
 }

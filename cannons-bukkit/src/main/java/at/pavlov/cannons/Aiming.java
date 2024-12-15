@@ -11,7 +11,7 @@ import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.bukkit.container.BukkitMovingObject;
-import at.pavlov.cannons.container.Target;
+import at.pavlov.bukkit.container.BukkitTarget;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.event.CannonLinkAimingEvent;
 import at.pavlov.cannons.event.CannonTargetEvent;
@@ -594,14 +594,14 @@ public class Aiming {
         return team != null && team.hasPlayer(Bukkit.getOfflinePlayer(cannon.getOwner()));
     }
 
-    private boolean isOldTargetValid(Cannon cannon, HashMap<UUID, Target> targets) {
+    private boolean isOldTargetValid(Cannon cannon, HashMap<UUID, BukkitTarget> targets) {
         //old target - is this still valid?
         if (!cannon.hasSentryEntity()) {
             return false;
         }
 
         CannonDesign design = cannon.getCannonDesign();
-        Target target = targets.get(cannon.getSentryEntity());
+        BukkitTarget target = targets.get(cannon.getSentryEntity());
 
         if (System.currentTimeMillis() > cannon.getSentryTargetingTime() + design.getSentrySwapTime() || !targets.containsKey(cannon.getSentryEntity())) {
             cannon.setSentryEntity(null);
@@ -641,14 +641,14 @@ public class Aiming {
 
         cannon.setLastSentryUpdate(System.currentTimeMillis());
 
-        HashMap<UUID, Target> targets = CannonsUtil.getNearbyTargets(cannon.getMuzzle(), design.getSentryMinRange(), design.getSentryMaxRange());
+        HashMap<UUID, BukkitTarget> targets = CannonsUtil.getNearbyTargets(cannon.getMuzzle(), design.getSentryMinRange(), design.getSentryMaxRange());
         //old target - is this still valid?
         if (isOldTargetValid(cannon, targets))
             return;
 
         // find a suitable target
-        ArrayList<Target> possibleTargets = new ArrayList<>();
-        for (Target t : targets.values()) {
+        ArrayList<BukkitTarget> possibleTargets = new ArrayList<>();
+        for (BukkitTarget t : targets.values()) {
             switch (t.targetType()) {
                 case MONSTER -> {
                     if (cannon.isTargetMob() && canFindTargetSolution(cannon, t, t.centerLocation())) {
@@ -720,7 +720,7 @@ public class Aiming {
             return;
         }
 
-        for (Target t : possibleTargets) {
+        for (BukkitTarget t : possibleTargets) {
             //select one target
             if (cannon.wasSentryTarget(t.uniqueId())) {
                 continue;
@@ -743,7 +743,7 @@ public class Aiming {
      * @param loctarget      lcoation of the target
      * @return true if the cannon can fire on this target
      */
-    private boolean canFindTargetSolution(Cannon cannon, Target target, Location loctarget) {
+    private boolean canFindTargetSolution(Cannon cannon, BukkitTarget target, Location loctarget) {
         if (!cannon.getWorld().equals(loctarget.getWorld().getUID()))
             return false;
 
@@ -789,7 +789,7 @@ public class Aiming {
      * @param target         lcoation of the target
      * @return true if a solution was found
      */
-    private boolean calculateTargetSolution(Cannon cannon, Target target, boolean addSpread) {
+    private boolean calculateTargetSolution(Cannon cannon, BukkitTarget target, boolean addSpread) {
         Location targetLoc = target.centerLocation();
         //aim for the center of the target if there is an area effect of the projectile
         if (cannon.getLoadedProjectile() != null && (cannon.getLoadedProjectile().getExplosionPower() > 2. || (cannon.getLoadedProjectile().getPlayerDamage() > 1. && cannon.getLoadedProjectile().getPlayerDamageRange() > 2.)))
@@ -865,7 +865,7 @@ public class Aiming {
      * @param maxdistance allowed distance of the target to the impact location
      * @return true if the target is not blocked or close to the impact
      */
-    private boolean verifyTargetSolution(Cannon cannon, Target target, double maxdistance) {
+    private boolean verifyTargetSolution(Cannon cannon, BukkitTarget target, double maxdistance) {
         Location muzzle = cannon.getMuzzle();
         CannonVector vel = cannon.getTargetVector();
 

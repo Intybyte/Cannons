@@ -1,11 +1,12 @@
 package at.pavlov.cannons.utils;
 
+import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.TargetManager;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
-import at.pavlov.cannons.container.Target;
+import at.pavlov.bukkit.container.BukkitTarget;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.enums.ProjectileProperties;
@@ -26,10 +27,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -353,9 +350,9 @@ public class CannonsUtil
      * @param maxRadius radius for search
      * @return array of Entities in area
      */
-    public static HashMap<UUID, Target> getNearbyTargets(Location l, int minRadius, int maxRadius){
+    public static HashMap<UUID, BukkitTarget> getNearbyTargets(Location l, int minRadius, int maxRadius){
         int chunkTargets = maxRadius < 16 ? 1 : (maxRadius - (maxRadius % 16))/16;
-        HashMap<UUID, Target> radiusTargets = new HashMap<>();
+        HashMap<UUID, BukkitTarget> radiusTargets = new HashMap<>();
 
         for (int chX = -chunkTargets; chX <= chunkTargets; chX++){
             for (int chZ = -chunkTargets; chZ <= chunkTargets; chZ++){
@@ -382,17 +379,17 @@ public class CannonsUtil
                             continue;
                     }
 
-                    radiusTargets.put(e.getUniqueId(), new Target(e));
+                    radiusTargets.put(e.getUniqueId(), new BukkitTarget(e));
                 }
             }
         }
         for (Cannon cannon : CannonManager.getCannonsInSphere(l, maxRadius))
             if (cannon.getRandomBarrelBlock().distanceSquared(l) > minRadius * minRadius)
-                radiusTargets.put(cannon.getUID(), new Target(cannon));
+                radiusTargets.put(cannon.getUID(), new BukkitTarget(cannon));
 
         // additional targets from different plugins e.g. ships
-        for (Target target : TargetManager.getTargetsInSphere(l, maxRadius))
-            if (target.centerLocation().distanceSquared(l) > minRadius * minRadius)
+        for (BukkitTarget target : TargetManager.getTargetsInSphere(l, maxRadius))
+            if (target.centerLocation().getVector().distanceSquared(VectorUtils.fromLoc(l)) > minRadius * minRadius)
                 radiusTargets.put(target.uniqueId(), target);
         return radiusTargets;
     }

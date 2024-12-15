@@ -1,7 +1,7 @@
 package at.pavlov.cannons.event;
 
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.container.Target;
+import at.pavlov.bukkit.container.BukkitTarget;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -12,10 +12,10 @@ import org.bukkit.event.HandlerList;
 public class CannonTargetEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final Cannon cannon;
-    private final Target target;
+    private final BukkitTarget target;
     private boolean cancelled;
 
-    public CannonTargetEvent(Cannon cannon, Target player)
+    public CannonTargetEvent(Cannon cannon, BukkitTarget player)
     {
         this.cannon = cannon;
         this.target = player;
@@ -26,7 +26,7 @@ public class CannonTargetEvent extends Event {
         return cannon;
     }
 
-    public Target getPlayer() {
+    public BukkitTarget getPlayer() {
         return target;
     }
 

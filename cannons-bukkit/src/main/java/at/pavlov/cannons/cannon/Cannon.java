@@ -6,6 +6,7 @@ import at.pavlov.bukkit.cannons.CannonDesignHolder;
 import at.pavlov.bukkit.container.BukkitBlock;
 import at.pavlov.bukkit.container.BukkitCannonBlocks;
 import at.pavlov.bukkit.container.BukkitItemHolder;
+import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.event.CannonDestroyedEvent;
@@ -27,6 +28,7 @@ import at.pavlov.internal.cannons.data.SentryData;
 import at.pavlov.internal.cannons.data.WhitelistData;
 import at.pavlov.internal.cannons.functionalities.Rotational;
 import at.pavlov.internal.container.location.CannonVector;
+import at.pavlov.internal.container.location.Coordinate;
 import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.internal.enums.CannonRotation;
 import at.pavlov.internal.enums.InteractAction;
@@ -1816,6 +1818,11 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
     public void setCannonMainData(CannonMainData data) {
         this.hasUpdated();
         this.mainData = data;
+    }
+
+    @Override
+    public Coordinate getRandomCoordinate() {
+        return CoordinateUtil.fromLoc(getRandomBarrelBlock());
     }
 
     @Override

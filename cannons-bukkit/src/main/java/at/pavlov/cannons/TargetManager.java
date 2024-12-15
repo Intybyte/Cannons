@@ -1,6 +1,6 @@
 package at.pavlov.cannons;
 
-import at.pavlov.cannons.container.Target;
+import at.pavlov.bukkit.container.BukkitTarget;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
@@ -13,30 +13,30 @@ import java.util.UUID;
  * Class used by other plugins in order to add targets
  */
 public class TargetManager {
-    private static HashMap<UUID, Target> targets = new HashMap<>();
+    private static HashMap<UUID, BukkitTarget> targets = new HashMap<>();
 
-    public static void addTarget(Target target){
+    public static void addTarget(BukkitTarget target){
         targets.put(target.uniqueId(), target);
     }
 
-    public static Target getTarget(UUID uid){
+    public static BukkitTarget getTarget(UUID uid){
         return targets.get(uid);
     }
 
-    public static HashSet<Target> getTargetsInSphere(Location center, double radius){
-        HashSet<Target> newTargetList = new HashSet<>();
+    public static HashSet<BukkitTarget> getTargetsInSphere(Location center, double radius){
+        HashSet<BukkitTarget> newTargetList = new HashSet<>();
 
-        for (Target target : targets.values()) {
+        for (BukkitTarget target : targets.values()) {
             if (target.centerLocation().distanceSquared(center) < radius * radius)
                 newTargetList.add(target);
         }
         return newTargetList;
     }
 
-    public static HashSet<Target> getTargetsInBox(Location center, double lengthX, double lengthY, double lengthZ){
-        HashSet<Target> newTargetList = new HashSet<>();
+    public static HashSet<BukkitTarget> getTargetsInBox(Location center, double lengthX, double lengthY, double lengthZ){
+        HashSet<BukkitTarget> newTargetList = new HashSet<>();
 
-        for (Target target : targets.values()) {
+        for (BukkitTarget target : targets.values()) {
             Location newLoc = target.centerLocation();
             Vector box = newLoc.subtract(center).toVector();
 
