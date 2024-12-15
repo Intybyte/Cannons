@@ -1,54 +1,38 @@
-package at.pavlov.cannons.container;
+package at.pavlov.internal.container;
 
+import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.enums.FakeBlockType;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
 @Getter
-public class FakeBlockEntry {
-    private final int locX;
-    private final int locY;
-    private final int locZ;
-    private final UUID world;
+public abstract class FakeBlockEntry {
+    protected final int locX;
+    protected final int locY;
+    protected final int locZ;
+    protected final UUID world;
 
-    private long startTime;
+    protected long startTime;
     //how long the block stays in ticks
-    private final long duration;
+    protected final long duration;
 
     //fake block will only be shown to this player
-    private final UUID player;
+    protected final UUID player;
     //only one type effect will be shown (aiming, explosion,...)
-    private final FakeBlockType type;
+    protected final FakeBlockType type;
 
-    public FakeBlockEntry(Location loc, Player player, FakeBlockType type, long duration) {
+    public FakeBlockEntry(CannonVector loc, UUID world, UUID player, FakeBlockType type, long duration) {
         this.locX = loc.getBlockX();
         this.locY = loc.getBlockY();
         this.locZ = loc.getBlockZ();
-        this.world = loc.getWorld().getUID();
+        this.world = world;
 
-        this.player = player.getUniqueId();
+        this.player = player;
         this.type = type;
 
         this.startTime = System.currentTimeMillis();
         this.duration = duration;
-    }
-
-
-    public World getWorldBukkit() {
-        return Bukkit.getWorld(getWorld());
-    }
-
-    public Location getLocation() {
-        World world = getWorldBukkit();
-        if (world != null)
-            return new Location(world, getLocX(), getLocY(), getLocZ());
-        else
-            return null;
     }
 
     public void updateTime() {
@@ -56,11 +40,7 @@ public class FakeBlockEntry {
     }
 
     public boolean isExpired() {
-        return (System.currentTimeMillis() > getStartTime() + getDuration() * 50);
-    }
-
-    public Player getPlayerBukkit() {
-        return Bukkit.getPlayer(getPlayer());
+        return (System.currentTimeMillis() > startTime + duration * 50);
     }
 
     @Override

@@ -2,7 +2,7 @@ package at.pavlov.cannons.scheduler;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.config.Config;
-import at.pavlov.cannons.container.FakeBlockEntry;
+import at.pavlov.bukkit.container.BukkitFakeBlockEntry;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.internal.enums.FakeBlockType;
 import lombok.Getter;
@@ -22,7 +22,7 @@ import java.util.concurrent.Executor;
 public class FakeBlockHandler {
     private final Cannons plugin;
 
-    private final ArrayList<FakeBlockEntry> list = new ArrayList<>();
+    private final ArrayList<BukkitFakeBlockEntry> list = new ArrayList<>();
 
     private long lastAiming;
     private long lastImpactPredictor;
@@ -62,9 +62,9 @@ public class FakeBlockHandler {
      * removes old blocks form the players vision
      */
     private void removeOldBlocks() {
-        Iterator<FakeBlockEntry> iter = list.iterator();
+        Iterator<BukkitFakeBlockEntry> iter = list.iterator();
         while (iter.hasNext()) {
-            FakeBlockEntry next = iter.next();
+            BukkitFakeBlockEntry next = iter.next();
             Player player = next.getPlayerBukkit();
 
             //if player is offline remove this one
@@ -93,9 +93,9 @@ public class FakeBlockHandler {
      * removes previous entries for this type of fake blocks
      */
     private void removeOldBlockType() {
-        Iterator<FakeBlockEntry> iter = list.iterator();
+        Iterator<BukkitFakeBlockEntry> iter = list.iterator();
         while (iter.hasNext()) {
-            FakeBlockEntry next = iter.next();
+            BukkitFakeBlockEntry next = iter.next();
             final long start = next.getStartTime();
             final FakeBlockType type = next.getType();
             //if older and if the type matches
@@ -226,10 +226,10 @@ public class FakeBlockHandler {
                 return CompletableFuture.completedFuture(null);
             }
 
-            FakeBlockEntry fakeBlockEntry = new FakeBlockEntry(loc, player, type, (long) (duration * 20.0));
+            BukkitFakeBlockEntry fakeBlockEntry = new BukkitFakeBlockEntry(loc, player, type, (long) (duration * 20.0));
 
             boolean found = false;
-            for (FakeBlockEntry block : list) {
+            for (BukkitFakeBlockEntry block : list) {
                 if (block.equals(fakeBlockEntry)) {
                     block.updateTime();
                     found = true;
