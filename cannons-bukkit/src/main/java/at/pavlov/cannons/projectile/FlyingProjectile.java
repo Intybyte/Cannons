@@ -2,7 +2,7 @@ package at.pavlov.cannons.projectile;
 
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
-import at.pavlov.cannons.container.BukkitMovingObject;
+import at.pavlov.bukkit.container.BukkitMovingObject;
 import at.pavlov.internal.enums.ProjectileCause;
 import io.papermc.lib.PaperLib;
 import lombok.Getter;

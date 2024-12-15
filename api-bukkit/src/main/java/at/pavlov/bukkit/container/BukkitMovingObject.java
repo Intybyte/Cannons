@@ -1,4 +1,4 @@
-package at.pavlov.cannons.container;
+package at.pavlov.bukkit.container;
 
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.internal.container.MovingObject;
