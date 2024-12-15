@@ -1,6 +1,7 @@
 package at.pavlov.cannons;
 
 import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.aim.GunAngles;
@@ -20,6 +21,7 @@ import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
 import at.pavlov.internal.container.location.CannonVector;
+import at.pavlov.internal.container.location.Coordinate;
 import at.pavlov.internal.enums.FakeBlockType;
 import at.pavlov.internal.enums.InteractAction;
 import at.pavlov.internal.enums.MessageEnum;
@@ -736,6 +738,10 @@ public class Aiming {
 
     }
 
+
+    private boolean canFindTargetSolution(Cannon cannon, BukkitTarget target, Coordinate loctarget) {
+        return canFindTargetSolution(cannon, target, CoordinateUtil.toLoc(loctarget));
+    }
     /**
      * find a possible solution to fire the cannon - this is just an estimation
      *
@@ -752,7 +758,7 @@ public class Aiming {
         Location muzzle = cannon.getMuzzle();
         int maxSentryRange = cannon.getCannonDesign().getSentryMaxRange();
 
-        if (target.centerLocation().distanceSquared(muzzle) > maxSentryRange * maxSentryRange) {
+        if (target.centerLocation().getVector().distanceSquared(VectorUtils.fromLoc(muzzle)) > maxSentryRange * maxSentryRange) {
             return false;
         }
 
@@ -790,7 +796,7 @@ public class Aiming {
      * @return true if a solution was found
      */
     private boolean calculateTargetSolution(Cannon cannon, BukkitTarget target, boolean addSpread) {
-        Location targetLoc = target.centerLocation();
+        Coordinate targetLoc = target.centerLocation();
         //aim for the center of the target if there is an area effect of the projectile
         if (cannon.getLoadedProjectile() != null && (cannon.getLoadedProjectile().getExplosionPower() > 2. || (cannon.getLoadedProjectile().getPlayerDamage() > 1. && cannon.getLoadedProjectile().getPlayerDamageRange() > 2.)))
             targetLoc = target.groundLocation();
@@ -818,7 +824,7 @@ public class Aiming {
 
         for (int i = 0; i < 100; i++) {
             CannonVector fvector = CannonsUtil.directionToVector(cannon.getAimingYaw(), cannon.getAimingPitch(), cannon.getCannonballVelocity());
-            double diffY = simulateShot(fvector, cannon.getMuzzle(), targetLoc, cannon.getProjectileEntityType(), maxInterations);
+            double diffY = simulateShot(fvector, cannon.getMuzzle(), CoordinateUtil.toLoc(targetLoc), cannon.getProjectileEntityType(), maxInterations);
 
             if (!cannon.getCannonDesign().isSentryIndirectFire() && Math.abs(diffY) > 1000.0) {
                 // plugin.logDebug("diffY too large: " + diffY);
@@ -880,7 +886,8 @@ public class Aiming {
         for (int i = 0; start.distance(predVec) < cannon.getCannonDesign().getSentryMaxRange() * 1.2 && i < maxInterations; i++) {
             //is target distance shorter than before
             Location predictorLoc = predictor.getLocation();
-            double newDist = predictorLoc.distance(target.centerLocation());
+            var center = CoordinateUtil.toLoc(target.centerLocation());
+            double newDist = predictorLoc.distance(center);
 
             if (!(newDist < targetDist)) {
                 // missed the target
@@ -888,10 +895,10 @@ public class Aiming {
             }
             targetDist = newDist;
             //see if we hit something, but wait until the cannonball is 1 block away (safety first)
-            Block block = predictorLoc.getBlock();
+            Block block = CoordinateUtil.toLoc(target.centerLocation()).getBlock();
             if (start.distance(predVec) > 1. && !block.isEmpty()) {
                 predictor.revertProjectileLocation(false);
-                return CannonsUtil.findSurface(predictorLoc, predVec).distance(target.centerLocation()) < maxdistance;
+                return CannonsUtil.findSurface(predictorLoc, predVec).distance(center) < maxdistance;
             }
             predictor.updateProjectileLocation(false);
         }
