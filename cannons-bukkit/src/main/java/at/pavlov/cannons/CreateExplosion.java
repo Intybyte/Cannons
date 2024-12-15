@@ -5,7 +5,7 @@ import at.pavlov.bukkit.container.BukkitSoundHolder;
 import at.pavlov.bukkit.container.BukkitSpawnMaterialHolder;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.config.Config;
-import at.pavlov.cannons.container.DeathCause;
+import at.pavlov.bukkit.container.BukkitDeathCause;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.event.CannonDamageEvent;
@@ -81,7 +81,7 @@ public class CreateExplosion {
     // the entity is used in 1 tick. There should be no garbage collector problem
     private final HashMap<Entity, Double> damageMap = new HashMap<>();
     // players killed by cannons <Player, Cannon>
-    private final HashMap<UUID, DeathCause> killedPlayers = new HashMap<>();
+    private final HashMap<UUID, BukkitDeathCause> killedPlayers = new HashMap<>();
 
     private final AsyncTaskManager taskManager = AsyncTaskManager.get();
     private final Random r = new Random();
@@ -898,7 +898,7 @@ public class CreateExplosion {
 
             lEntities.add((LivingEntity) entity);
             if (entity instanceof Player) {
-                this.killedPlayers.put(entity.getUniqueId(), new DeathCause(cannonball.getProjectile(),
+                this.killedPlayers.put(entity.getUniqueId(), new BukkitDeathCause(cannonball.getProjectile(),
                         cannonball.getCannonUID(), cannonball.getShooterUID()));
             }
         }
@@ -1273,7 +1273,7 @@ public class CreateExplosion {
      * @param playerUID killed player
      * @return death cause
      */
-    public DeathCause getDeathCause(UUID playerUID) {
+    public BukkitDeathCause getDeathCause(UUID playerUID) {
         return this.killedPlayers.get(playerUID);
     }
 
