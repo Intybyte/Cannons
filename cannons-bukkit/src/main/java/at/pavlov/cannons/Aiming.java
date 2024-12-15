@@ -10,7 +10,7 @@ import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
-import at.pavlov.cannons.container.MovingObject;
+import at.pavlov.cannons.container.BukkitMovingObject;
 import at.pavlov.cannons.container.Target;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.event.CannonLinkAimingEvent;
@@ -869,14 +869,15 @@ public class Aiming {
         Location muzzle = cannon.getMuzzle();
         CannonVector vel = cannon.getTargetVector();
 
-        MovingObject predictor = new MovingObject(muzzle, vel, cannon.getProjectileEntityType());
+        BukkitMovingObject predictor = new BukkitMovingObject(cannon.getWorld(), VectorUtils.fromLoc(muzzle), vel, cannon.getProjectileEntityType());
         Vector start = muzzle.toVector();
 
         int maxInterations = 500;
         double targetDist = 100000000000000.;
 
         //make a few iterations until we hit something
-        for (int i = 0; start.distance(predictor.getLoc()) < cannon.getCannonDesign().getSentryMaxRange() * 1.2 && i < maxInterations; i++) {
+        var predVec = VectorUtils.toBaseVector(predictor.getLoc());
+        for (int i = 0; start.distance(predVec) < cannon.getCannonDesign().getSentryMaxRange() * 1.2 && i < maxInterations; i++) {
             //is target distance shorter than before
             Location predictorLoc = predictor.getLocation();
             double newDist = predictorLoc.distance(target.centerLocation());
@@ -888,9 +889,9 @@ public class Aiming {
             targetDist = newDist;
             //see if we hit something, but wait until the cannonball is 1 block away (safety first)
             Block block = predictorLoc.getBlock();
-            if (start.distance(predictor.getLoc()) > 1. && !block.isEmpty()) {
+            if (start.distance(predVec) > 1. && !block.isEmpty()) {
                 predictor.revertProjectileLocation(false);
-                return CannonsUtil.findSurface(predictorLoc, predictor.getVel()).distance(target.centerLocation()) < maxdistance;
+                return CannonsUtil.findSurface(predictorLoc, predVec).distance(target.centerLocation()) < maxdistance;
             }
             predictor.updateProjectileLocation(false);
         }
@@ -906,23 +907,23 @@ public class Aiming {
      * @return distance how much above/below the projectile will hit
      */
     private double simulateShot(CannonVector vector, Location muzzle, Location target, EntityType projectileType, int maxInterations) {
-        MovingObject cannonball = new MovingObject(muzzle, vector, projectileType);
+        BukkitMovingObject cannonball = new BukkitMovingObject(muzzle.getWorld().getUID(), VectorUtils.fromLoc(muzzle), vector, projectileType);
         double target_distance_squared = Math.pow(target.getX() - muzzle.getX(), 2) + Math.pow(target.getZ() - muzzle.getZ(), 2);
 
-        Vector oldLoc = null;
+        CannonVector oldLoc = null;
         for (int i = 0; i < 500; i++) {
             cannonball.updateProjectileLocation(false);
-            Vector cLoc = cannonball.getLoc();
+            CannonVector cLoc = cannonball.getLoc();
             double calculated_distance_squared = Math.pow(cLoc.getX() - muzzle.getX(), 2) + Math.pow(cLoc.getZ() - muzzle.getZ(), 2);
 
             if (calculated_distance_squared > target_distance_squared) {
                 //calculate intersection
                 if (oldLoc == null)
                     return cLoc.getY() - target.getY();
-                Vector vel = cannonball.getVel().clone();
+                CannonVector vel = cannonball.getVel().clone();
                 double dist1 = Math.sqrt(vel.getX() * vel.getX() + vel.getY() * vel.getY() + vel.getZ() * vel.getZ());
-                double dist2 = oldLoc.distance(target.toVector());
-                Vector inter = oldLoc.add(vel.multiply(dist2 / dist1));
+                double dist2 = oldLoc.distance(VectorUtils.fromLoc(target));
+                CannonVector inter = oldLoc.add(vel.multiply(dist2 / dist1));
                 return inter.getY() - target.getY();
             }
             oldLoc = cLoc.clone();
@@ -1253,9 +1254,9 @@ public class Aiming {
         Location muzzle = cannon.getMuzzle();
         CannonVector vel = cannon.getFiringVector(false, false);
 
-        MovingObject predictor = new MovingObject(muzzle, vel, cannon.getProjectileEntityType());
-        Vector start = muzzle.toVector();
+        BukkitMovingObject predictor = new BukkitMovingObject(cannon.getWorld(), VectorUtils.fromLoc(muzzle), vel, cannon.getProjectileEntityType());
 
+        CannonVector start = VectorUtils.fromLoc(muzzle);
 
         //make a few iterations until we hit something
         for (int i = 0; start.distance(predictor.getLoc()) < config.getImitatedPredictorDistance() && i < config.getImitatedPredictorIterations(); i++) {
@@ -1265,7 +1266,7 @@ public class Aiming {
             Block block = loc.getBlock();
             if (!block.isEmpty()) {
                 predictor.revertProjectileLocation(false);
-                return CannonsUtil.findSurface(loc, predictor.getVel());
+                return CannonsUtil.findSurface(loc, VectorUtils.toBaseVector(predictor.getVel()));
             }
 
             predictor.updateProjectileLocation(false);

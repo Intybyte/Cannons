@@ -10,6 +10,10 @@ public class VectorUtils {
         return new Location(world, vector.getX(), vector.getY(), vector.getZ());
     }
 
+    public static CannonVector fromLoc(Location location) {
+        return new CannonVector(location.getX(), location.getY(), location.getZ());
+    }
+
     public static Vector toBaseVector(CannonVector vector) {
         return new Vector(vector.getX(), vector.getY(), vector.getZ());
     }

@@ -1,7 +1,8 @@
 package at.pavlov.cannons.projectile;
 
+import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
-import at.pavlov.cannons.container.MovingObject;
+import at.pavlov.cannons.container.BukkitMovingObject;
 import at.pavlov.internal.enums.ProjectileCause;
 import io.papermc.lib.PaperLib;
 import lombok.Getter;
@@ -63,7 +64,7 @@ public class FlyingProjectile {
     @Setter
     @Getter
     private boolean detonated;
-    private final MovingObject predictor;
+    private final BukkitMovingObject predictor;
 
 
     public FlyingProjectile(BukkitProjectile projectile, Projectile projectile_entity, UUID shooterUID, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, UUID cannonId, ProjectileCause projectileCause) {
@@ -86,7 +87,7 @@ public class FlyingProjectile {
 
         //set location and speed
         Location new_loc = projectile_entity.getLocation();
-        predictor = new MovingObject(new_loc, projectile_entity.getVelocity(), projectile.getProjectileEntity());
+        predictor = new BukkitMovingObject(new_loc, projectile_entity.getVelocity(), projectile.getProjectileEntity());
 
         this.lastSmokeTrailLocation = new_loc;
     }
@@ -188,7 +189,7 @@ public class FlyingProjectile {
      * @return distance of the projectile location to the calculated location
      */
     public double distanceToProjectile(Projectile projectile_entity) {
-        return projectile_entity.getLocation().toVector().distance(predictor.getLoc());
+        return projectile_entity.getLocation().toVector().distance(VectorUtils.toBaseVector(predictor.getLoc()));
     }
 
     /**
@@ -198,7 +199,7 @@ public class FlyingProjectile {
         if (projectile_entity == null)
             return;
         PaperLib.teleportAsync(projectile_entity, predictor.getLocation());
-        projectile_entity.setVelocity(predictor.getVel());
+        projectile_entity.setVelocity(VectorUtils.toBaseVector(predictor.getVel()));
     }
 
     /**
@@ -209,7 +210,7 @@ public class FlyingProjectile {
      */
     public void teleport(Location loc, Vector vel) {
         this.predictor.setLocation(loc);
-        this.predictor.setVel(vel);
+        this.predictor.setVel(VectorUtils.fromBaseVector(vel));
         teleportToPrediction(getProjectileEntity());
     }
 
@@ -234,6 +235,6 @@ public class FlyingProjectile {
     }
 
     public Vector getVelocity() {
-        return predictor.getVel().clone();
+        return VectorUtils.toBaseVector(predictor.getVel().clone());
     }
 }
