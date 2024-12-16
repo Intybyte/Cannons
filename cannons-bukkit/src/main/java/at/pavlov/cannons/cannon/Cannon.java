@@ -1,7 +1,7 @@
 package at.pavlov.cannons.cannon;
 
 import at.pavlov.bukkit.cannons.CannonBukkit;
-import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
 import at.pavlov.bukkit.cannons.CannonDesignHolder;
 import at.pavlov.bukkit.container.BukkitBlock;
 import at.pavlov.bukkit.container.BukkitCannonBlocks;
@@ -83,13 +83,13 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
     @Getter
     private boolean updated;
 
-    private CannonDesign design;
+    private BukkitCannonDesign design;
     private final Random random = new Random();
     //TODO make a vector util class and add this there
     private final static CannonVector noVelocity = new CannonVector(0,0,0);
 
 
-    public Cannon(CannonDesign design, UUID world, CannonVector cannonOffset, BlockFace cannonDirection, UUID owner) {
+    public Cannon(BukkitCannonDesign design, UUID world, CannonVector cannonOffset, BlockFace cannonDirection, UUID owner) {
 
         this.design = design;
         this.cannonPosition = new CannonPosition<BlockFace>(cannonDirection, cannonOffset, world, false, noVelocity.clone());
@@ -1305,7 +1305,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @param cannonDesign
      * @return result
      */
-    public boolean equals(CannonDesign cannonDesign) {
+    public boolean equals(BukkitCannonDesign cannonDesign) {
         return this.sameDesign(cannonDesign);
     }
 
@@ -1380,12 +1380,12 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
         return (isOnShip()) ? design.getMinVerticalAngleOnShip() : design.getMinVerticalAngle();
     }
 
-    public void setCannonDesign(CannonDesign design) {
+    public void setCannonDesign(BukkitCannonDesign design) {
         this.design = design;
         this.hasUpdated();
     }
 
-    public CannonDesign getCannonDesign() {
+    public BukkitCannonDesign getCannonDesign() {
         return this.design;
     }
 

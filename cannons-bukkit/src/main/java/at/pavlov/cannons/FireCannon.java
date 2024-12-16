@@ -1,6 +1,6 @@
 package at.pavlov.cannons;
 
-import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.cannon.Cannon;
@@ -65,7 +65,7 @@ public class FireCannon {
      * @return message for the player
      */
     private MessageEnum getPrepareFireMessage(Cannon cannon, Player player) {
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
         if (design == null) return null;
         //if the player is not the owner of this gun
         if (player != null && cannon.getOwner() != null && !cannon.getOwner().equals(player.getUniqueId()) && design.isAccessForOwnerOnly())
@@ -125,7 +125,7 @@ public class FireCannon {
      * @return - message for the player
      */
     public MessageEnum redstoneFiring(Cannon cannon, InteractAction action) {
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
         return this.fire(cannon, null, cannon.getCannonDesign().isAutoreloadRedstone(), !design.isAmmoInfiniteForRedstone(), action);
     }
 
@@ -139,7 +139,7 @@ public class FireCannon {
      * @return - message for the player
      */
     public MessageEnum playerFiring(Cannon cannon, Player player, InteractAction action) {
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
         boolean autoreload = player.isSneaking() && player.hasPermission(design.getPermissionAutoreload());
 
         //todo add firing of multiple cannons
@@ -182,7 +182,7 @@ public class FireCannon {
      * @return - message for the player
      */
     public MessageEnum sentryFiring(Cannon cannon) {
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
 
         return this.fire(cannon, null, true, !design.isAmmoInfiniteForPlayer(), InteractAction.FIRE_SENTRY);
     }
@@ -210,7 +210,7 @@ public class FireCannon {
         if (useEvent.isCancelled())
             return null;
 
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
 
         //if there is no gunpowder needed we set it to the maximum
         if (!design.isGunpowderNeeded() && cannon.getLoadedGunpowder() == 0)
@@ -324,7 +324,7 @@ public class FireCannon {
      * @param projectileCause - how the projectile was fired (by a player, redstone, or sentry)
      */
     private void fireTask(Cannon cannon, UUID shooter, boolean removeCharge, ProjectileCause projectileCause) {
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
         BukkitProjectile projectile = cannon.getLoadedProjectile();
 
         //the player might be null if not online

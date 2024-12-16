@@ -1,6 +1,6 @@
 package at.pavlov.cannons;
 
-import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
 import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
@@ -164,7 +164,7 @@ public class Aiming {
         if (cannon == null)
             return null;
 
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
         boolean isSentry = design.isSentry();
 
         //both horizontal and vertical angle will be displayed in one message
@@ -211,7 +211,7 @@ public class Aiming {
             return null;
 
         UUID owner = cannon.getOwner();
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
         //if the player is not the owner of this gun
         if (owner != null && !owner.equals(player.getUniqueId()) && design.isAccessForOwnerOnly())
             return MessageEnum.ErrorNotTheOwner;
@@ -223,7 +223,7 @@ public class Aiming {
     }
 
     private MessageEnum adjustAngles(GunAnglesWrapper wrapper, Cannon cannon) {
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
         boolean largeChange = false;
         MessageEnum message = null;
 
@@ -321,7 +321,7 @@ public class Aiming {
             playerLoc = player.getLocation();
         }
 
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
 
         if (action == InteractAction.ADJUST_SENTRY && isSentry) {
             if (cannon.isChunkLoaded())
@@ -431,7 +431,7 @@ public class Aiming {
             return false;
 
         //check if player is far away from the cannon
-        CannonDesign design = DesignStorage.getInstance().getDesign(cannon);
+        BukkitCannonDesign design = DesignStorage.getInstance().getDesign(cannon);
         //go to trigger location
         Location locCannon = design.getFiringTrigger(cannon);
         //if there is no trigger - set the muzzle a location
@@ -602,7 +602,7 @@ public class Aiming {
             return false;
         }
 
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
         BukkitTarget target = targets.get(cannon.getSentryEntity());
 
         if (System.currentTimeMillis() > cannon.getSentryTargetingTime() + design.getSentrySwapTime() || !targets.containsKey(cannon.getSentryEntity())) {
@@ -635,7 +635,7 @@ public class Aiming {
 
     private void calculateFiringSolution(Cannon cannon) {
 
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
 
         if (!cannon.isChunkLoaded() || System.currentTimeMillis() <= (cannon.getLastSentryUpdate() + design.getSentryUpdateTime())) {
             return;
@@ -1297,7 +1297,7 @@ public class Aiming {
                 continue;
             }
 
-            CannonDesign design = cannon.getCannonDesign();
+            BukkitCannonDesign design = cannon.getCannonDesign();
             if (last.getValue() + design.getPredictorDelay() >= System.currentTimeMillis()) {
                 continue;
             }

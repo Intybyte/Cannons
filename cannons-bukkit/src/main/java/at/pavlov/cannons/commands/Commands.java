@@ -1,6 +1,6 @@
 package at.pavlov.cannons.commands;
 
-import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Aiming;
@@ -179,7 +179,7 @@ public class Commands extends BaseCommand {
         }
 
         sendMessage(player, ChatColor.GREEN + tag + "Create design: " + ChatColor.GOLD + arg);
-        CannonDesign cannonDesign = designStorage.getDesign(arg);
+        BukkitCannonDesign cannonDesign = designStorage.getDesign(arg);
 
         CannonVector vector = VectorUtils.fromBaseVector(player.getLocation().toVector());
         Cannon cannon = new Cannon(cannonDesign, player.getWorld().getUID(), vector, BlockFace.NORTH, player.getUniqueId());

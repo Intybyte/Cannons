@@ -1,6 +1,6 @@
 package at.pavlov.cannons.cannon;
 
-import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
 import at.pavlov.bukkit.container.BukkitBlock;
 import at.pavlov.bukkit.container.BukkitCannonBlocks;
 import at.pavlov.bukkit.container.BukkitItemHolder;
@@ -44,7 +44,7 @@ public class DesignStorage
 	@Getter
     private static DesignStorage instance = null;
 
-	private final List<CannonDesign> cannonDesignList;
+	private final List<BukkitCannonDesign> cannonDesignList;
 	private final Cannons plugin;
 	private final List<Material> cannonBlockMaterials;
 
@@ -68,7 +68,7 @@ public class DesignStorage
 	 */
 	public ArrayList<String> getDesignIds(){
 		ArrayList<String> list = new ArrayList<>();
-		for (CannonDesign design : cannonDesignList){
+		for (BukkitCannonDesign design : cannonDesignList){
 			list.add(design.getDesignID());
 		}
 		return list;
@@ -100,7 +100,7 @@ public class DesignStorage
 
 		for (DesignFileName designFile : designFileList) {
 			plugin.logDebug("loading cannon " + designFile.getYmlString());
-			CannonDesign cannonDesign = new CannonDesign();
+			BukkitCannonDesign cannonDesign = new BukkitCannonDesign();
 			//load .yml
 			loadDesignYml(cannonDesign, designFile.getYmlString());
 			//load .shematic and add to list if valid
@@ -110,10 +110,10 @@ public class DesignStorage
 		
 		//sort the list so the designs with more cannon blocks comes first
 		//important if there is a design with one block less but else identically 
-		Comparator<CannonDesign> comparator = new DesignComparator();
+		Comparator<BukkitCannonDesign> comparator = new DesignComparator();
 		cannonDesignList.sort(comparator);
 
-		for (CannonDesign cannonDesign : getCannonDesignList()) {
+		for (BukkitCannonDesign cannonDesign : getCannonDesignList()) {
 			for (BukkitBlock sBlock : cannonDesign.getAllCannonBlocks(BlockFace.NORTH)){
 				Material material = sBlock.getBlockData().getMaterial();
 				if (material != Material.AIR && !cannonBlockMaterials.contains(material)) {
@@ -123,7 +123,7 @@ public class DesignStorage
 		}
 
 
-		for (CannonDesign design : cannonDesignList)
+		for (BukkitCannonDesign design : cannonDesignList)
 		{
 			plugin.logDebug("design " + design.toString());
 		}
@@ -135,7 +135,7 @@ public class DesignStorage
      * @param cannonDesign design of the cannon
 	 * @param ymlFile of the cannon config file
 	 */
-	private void loadDesignYml(CannonDesign cannonDesign, String ymlFile)
+	private void loadDesignYml(BukkitCannonDesign cannonDesign, String ymlFile)
 	{
 		// load .yml file
 		File cannonDesignFile = new File(getPath() + ymlFile);
@@ -345,7 +345,7 @@ public class DesignStorage
 	 * @param cannonDesign design of the cannon
 	 * @param schematicFile path of the schematic file
 	 */
-	private boolean loadDesignSchematic(CannonDesign cannonDesign, String schematicFile) {
+	private boolean loadDesignSchematic(BukkitCannonDesign cannonDesign, String schematicFile) {
         long startTime = System.nanoTime();
 		
 		// load schematic with worldedit
@@ -618,7 +618,7 @@ public class DesignStorage
 		return "plugins/Cannons/designs/";
 	}
 	
-	public List<CannonDesign> getCannonDesignList()
+	public List<BukkitCannonDesign> getCannonDesignList()
 	{
 		return cannonDesignList;
 	}
@@ -628,7 +628,7 @@ public class DesignStorage
 	 * @param cannon the cannon
 	 * @return design of cannon
 	 */
-	public CannonDesign getDesign(Cannon cannon)
+	public BukkitCannonDesign getDesign(Cannon cannon)
 	{
 		return getDesign(cannon.getDesignID());
 	}
@@ -638,9 +638,9 @@ public class DesignStorage
 	 * @param designId Name of the design
 	 * @return cannon design
 	 */
-	public CannonDesign getDesign(String designId)
+	public BukkitCannonDesign getDesign(String designId)
 	{
-		for (CannonDesign cannonDesign : cannonDesignList)
+		for (BukkitCannonDesign cannonDesign : cannonDesignList)
 		{
 			if (cannonDesign.getDesignID().equals(designId))
 				return cannonDesign;
@@ -654,7 +654,7 @@ public class DesignStorage
 	 * @return true if there is a cannon design with this name
      */
 	public boolean hasDesign(String name){
-		for (CannonDesign design : cannonDesignList){
+		for (BukkitCannonDesign design : cannonDesignList){
 			if (design.getDesignID().equalsIgnoreCase(name)) {
 				return true;
 			}

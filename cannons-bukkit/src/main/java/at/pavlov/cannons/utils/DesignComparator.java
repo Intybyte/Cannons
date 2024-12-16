@@ -1,17 +1,17 @@
 package at.pavlov.cannons.utils;
 
-import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
 import at.pavlov.cannons.Cannons;
 import org.bukkit.block.BlockFace;
 
 import java.util.Comparator;
 import java.util.logging.Level;
 
-public class DesignComparator implements Comparator<CannonDesign>
+public class DesignComparator implements Comparator<BukkitCannonDesign>
 {
 
 	@Override
-	public int compare(CannonDesign design1, CannonDesign design2)
+	public int compare(BukkitCannonDesign design1, BukkitCannonDesign design2)
 	{
 		int amount1 = getCannonBlockAmount(design1);
 		int amount2 = getCannonBlockAmount(design2);
@@ -19,7 +19,7 @@ public class DesignComparator implements Comparator<CannonDesign>
 		return amount2 - amount1;
 	}
 	
-	private Integer getCannonBlockAmount(CannonDesign design)
+	private Integer getCannonBlockAmount(BukkitCannonDesign design)
 	{
 		if (design == null) return 0;
 		//if the design is invalid something goes wrong, message the user

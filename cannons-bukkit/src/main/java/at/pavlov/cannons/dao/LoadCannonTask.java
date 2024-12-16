@@ -1,6 +1,6 @@
 package at.pavlov.cannons.dao;
 
-import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.DesignStorage;
@@ -37,7 +37,7 @@ public class LoadCannonTask implements RunnableAsync {
             while (rs.next()) {
                 UUID cannon_id = UUID.fromString(rs.getString("id"));
                 //check if cannon design exists
-                CannonDesign design = DesignStorage.getInstance().getDesign(rs.getString("design_id"));
+                BukkitCannonDesign design = DesignStorage.getInstance().getDesign(rs.getString("design_id"));
                 if (design == null) {
                     Cannons.getPlugin().logDebug("Design " + rs.getString("design_id") + " not found in plugin/designs");
                     invalid.add(cannon_id);

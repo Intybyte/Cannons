@@ -1,6 +1,6 @@
 package at.pavlov.cannons.cannon;
 
-import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
 import at.pavlov.bukkit.container.BukkitBlock;
 import at.pavlov.bukkit.container.BukkitItemHolder;
 import at.pavlov.bukkit.factory.VectorUtils;
@@ -264,7 +264,7 @@ public class CannonManager {
             return "missing Owner";
 
         String name;
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
         if (design != null)
             name = design.getDesignName();
         else
@@ -651,7 +651,7 @@ public class CannonManager {
         designList = designList.stream().filter(it -> it.isAllowedMaterial(block.getType())).toList();
 
         // check all cannon design if this block is part of the design
-        for (CannonDesign cannonDesign : designList) {
+        for (BukkitCannonDesign cannonDesign : designList) {
             // check of all directions
             for (BlockFace cannonDirection : blockFaces) {
                 // for all blocks for the design
@@ -811,7 +811,7 @@ public class CannonManager {
      * checks if the player can build a cannon, checks permission and builtLimit
      */
     private MessageEnum canBuildCannon(Cannon cannon, UUID owner) {
-        CannonDesign design = cannon.getCannonDesign();
+        BukkitCannonDesign design = cannon.getCannonDesign();
 
         //get the player from the server
         if (owner == null) return null;

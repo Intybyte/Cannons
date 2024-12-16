@@ -1,6 +1,6 @@
 package at.pavlov.cannons.listener;
 
-import at.pavlov.bukkit.cannons.CannonDesign;
+import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
@@ -317,7 +317,7 @@ public class PlayerListener implements Listener
         MessageEnum message = cannon.useRamRod(player);
         userMessages.sendMessage(message, player, cannon);
 
-        final CannonDesign design = cannon.getCannonDesign();
+        final BukkitCannonDesign design = cannon.getCannonDesign();
         if (design.isLinkCannonsEnabled() ) {
             int d = design.getLinkCannonsDistance() * 2;
             for (Cannon fcannon : CannonManager.getCannonsInBox(cannon.getLocation(), d, d, d)) {
@@ -399,7 +399,7 @@ public class PlayerListener implements Listener
     }
 
     private void handleBurningTouch(Cannon cannon, Player player, BlockFace clickedFace, Block clickedBlock) {
-        final CannonDesign design = cannon.getCannonDesign();
+        final BukkitCannonDesign design = cannon.getCannonDesign();
         if (!(cannon.getTemperature() > design.getWarningTemperature())) {
             return;
         }
@@ -437,7 +437,7 @@ public class PlayerListener implements Listener
 
     private boolean isMeasureTemperature(Cannon cannon, ItemStack eventitem, PlayerInteractEvent event) {
         final Player player = event.getPlayer();
-        final CannonDesign design = cannon.getCannonDesign();
+        final BukkitCannonDesign design = cannon.getCannonDesign();
 
         if (!config.getToolThermometer().equalsFuzzy(eventitem)) {
             return false;
