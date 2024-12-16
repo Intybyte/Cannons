@@ -1,5 +1,6 @@
 package at.pavlov.bukkit.cannons;
 
+import at.pavlov.bukkit.cannons.holders.CannonDesignHBukkit;
 import at.pavlov.bukkit.cannons.holders.CannonPositionHBukkit;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.internal.cannons.holders.AimingDataHolder;
@@ -24,5 +25,5 @@ public interface CannonDataHolderBukkit extends
         ObserverMapHolder,
         SentryDataHolder,
         WhitelistDataHolder,
-        CannonDesignHolder
+        CannonDesignHBukkit
 {}
