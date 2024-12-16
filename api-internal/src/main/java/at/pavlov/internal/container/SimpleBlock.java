@@ -1,6 +1,7 @@
 package at.pavlov.internal.container;
 
 
+import at.pavlov.internal.container.location.CannonVector;
 import lombok.Data;
 
 import java.util.function.Function;
@@ -31,6 +32,12 @@ import java.util.function.Function;
 	 */
 	public abstract boolean compareMaterial(Block block);
 
+	/**
+	 * SimpleBlock to Vector
+	 */
+	public CannonVector toVector() {
+		return new CannonVector(locX, locY, locZ);
+	}
 
 	/**
 	 * compares material and facing

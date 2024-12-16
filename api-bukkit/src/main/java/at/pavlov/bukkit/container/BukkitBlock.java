@@ -194,13 +194,6 @@ public class BukkitBlock extends SimpleBlock<BlockData> {
         this.locX = newx;
     }
 
-    /**
-     * SimpleBlock to Vector
-     */
-    public CannonVector toVector() {
-        return new CannonVector(locX, locY, locZ);
-    }
-
     public static BlockData rotateBlockFacingClockwise(BlockData blockData) {
         if (blockData instanceof org.bukkit.block.data.Directional directional) {
             directional.setFacing(rotateFace(directional.getFacing()));
