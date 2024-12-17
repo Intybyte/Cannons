@@ -16,7 +16,7 @@ public interface CannonDataHolder<Dir, Prj, Ply> extends
         AimingDataHolder,
         SentryDataHolder,
         CannonPositionHolder<Dir>,
-        AmmoLoadingDataHolder<Prj, Ply>,
+        AmmoLoadingDataHolder<Ply, Prj>,
         WhitelistDataHolder,
         CannonMainDataHolder,
         LinkingDataHolder,
