@@ -8,12 +8,20 @@ import org.bukkit.World;
 
 public class CoordinateUtil {
     public static Location toLoc(Coordinate coordinate) {
+        if (coordinate == null) {
+            return null;
+        }
+
         CannonVector vector = coordinate.getVector();
         World world = Bukkit.getWorld(coordinate.getWorld());
         return new Location(world, vector.getX(), vector.getY(), vector.getZ());
     }
 
     public static Coordinate fromLoc(Location location) {
+        if (location == null) {
+            return null;
+        }
+
         return new Coordinate(location.getWorld().getUID(), location.getX(), location.getY(), location.getZ());
     }
 }
