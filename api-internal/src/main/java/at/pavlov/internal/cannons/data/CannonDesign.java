@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-@Data public class CannonDesign <
+@Data public abstract class CannonDesign <
         Block,
         Facing,
         Material,
@@ -484,15 +484,6 @@ import java.util.List;
             return getMaxLoadableGunpowderNormal();
 	}
 
-    /* TODO: Link block data and material ?
-	public void putCannonBlockMap(Facing cannonDirection, CB blocks) {
-		for (var block : blocks.getAllCannonBlocks()) {
-			allowedMaterials.add(block.getBlockData().getMaterial());
-		}
-
-		cannonBlockMap.put(cannonDirection, blocks);
-	}*/
-
 	public boolean isAllowedMaterial(Material m) {
 		return allowedMaterials.contains(m);
 	}
@@ -533,4 +524,6 @@ import java.util.List;
         }
         return null;
     }*/
+
+    public abstract void putCannonBlockMap(Facing cannonDirection, CB blocks);
 }

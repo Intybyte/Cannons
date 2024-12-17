@@ -1,6 +1,7 @@
 package at.pavlov.cannons;
 
 import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
+import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.cannon.Cannon;
@@ -259,7 +260,12 @@ public class FireCannon {
         cannon.setLastPlayerSpreadMultiplier(player);
 
         //Set up smoke effects on the torch
-        for (Location torchLoc : design.getFiringIndicator(cannon)) {
+        List<Location> locations = design.getFiringIndicator(cannon)
+                .stream()
+                .map(CoordinateUtil::toLoc)
+                .toList();
+
+        for (Location torchLoc : locations) {
             torchLoc.setX(torchLoc.getX() + 0.5);
             torchLoc.setY(torchLoc.getY() + 1);
             torchLoc.setZ(torchLoc.getZ() + 0.5);

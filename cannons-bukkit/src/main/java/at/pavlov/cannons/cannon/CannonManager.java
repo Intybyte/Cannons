@@ -3,6 +3,7 @@ package at.pavlov.cannons.cannon;
 import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
 import at.pavlov.bukkit.container.BukkitBlock;
 import at.pavlov.bukkit.container.BukkitItemHolder;
+import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
@@ -365,7 +366,9 @@ public class CannonManager {
                 continue;
             }
 
-            Location newLoc = cannon.getCannonDesign().getBarrelBlocks(cannon).get(0);
+            Location newLoc = CoordinateUtil.toLoc(
+                    cannon.getCannonDesign().getBarrelBlocks(cannon).get(0)
+            );
             if (newLoc.distanceSquared(center) < sphereRadius * sphereRadius)
                 newCannonList.add(cannon);
         }
@@ -390,7 +393,9 @@ public class CannonManager {
                 continue;
             }
 
-            Location newLoc = cannon.getCannonDesign().getBarrelBlocks(cannon).get(0);
+            Location newLoc = CoordinateUtil.toLoc(
+                    cannon.getCannonDesign().getBarrelBlocks(cannon).get(0)
+            );
             Vector box = newLoc.subtract(center).toVector();
             if (Math.abs(box.getX()) < lengthX / 2 && Math.abs(box.getY()) < lengthY / 2 && Math.abs(box.getZ()) < lengthZ / 2)
                 newCannonList.add(cannon);

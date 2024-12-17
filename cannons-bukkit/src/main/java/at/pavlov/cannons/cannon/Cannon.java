@@ -2,7 +2,6 @@ package at.pavlov.cannons.cannon;
 
 import at.pavlov.bukkit.cannons.CannonBukkit;
 import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
-import at.pavlov.bukkit.cannons.CannonDesignHolder;
 import at.pavlov.bukkit.container.BukkitBlock;
 import at.pavlov.bukkit.container.BukkitCannonBlocks;
 import at.pavlov.bukkit.container.BukkitItemHolder;
@@ -58,7 +57,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
+public class Cannon implements CannonBukkit, Rotational {
 
     private CannonMainData mainData;
     private CannonPosition<BlockFace> cannonPosition;
@@ -133,7 +132,7 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @return location of the cannon
      */
     public Location getLocation() {
-        return design.getAllCannonBlocks(this).get(0);
+        return CoordinateUtil.toLoc(design.getAllCannonBlocks(this).get(0));
     }
 
     /**
@@ -150,12 +149,13 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      *
      * @return location of the barrel block
      */
+    @Deprecated
     public Location getRandomBarrelBlock() {
-        List<Location> barrel = design.getBarrelBlocks(this);
+        List<Coordinate> barrel = design.getBarrelBlocks(this);
         if (!barrel.isEmpty())
-            return barrel.get(random.nextInt(barrel.size()));
-        List<Location> all = design.getAllCannonBlocks(this);
-        return all.get(random.nextInt(all.size()));
+            return CoordinateUtil.toLoc(barrel.get(random.nextInt(barrel.size())));
+        List<Coordinate> all = design.getAllCannonBlocks(this);
+        return CoordinateUtil.toLoc(all.get(random.nextInt(all.size())));
     }
 
 
@@ -303,7 +303,12 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
     public List<Inventory> getInventoryList() {
         //get the inventories of all attached chests
         List<Inventory> invlist = new ArrayList<>();
-        for (Location loc : getCannonDesign().getChestsAndSigns(this)) {
+        List<Location> locations = design.getChestsAndSigns(this)
+                .stream()
+                .map(CoordinateUtil::toLoc)
+                .toList();
+
+        for (Location loc : locations) {
             // check if block is a chest
             invlist = InventoryManagement.getInventories(loc.getBlock(), invlist);
         }
@@ -758,10 +763,11 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * breaks all cannon blocks of the cannon
      */
     private void breakAllCannonBlocks() {
-        List<Location> locList = design.getAllCannonBlocks(this);
-        for (Location loc : locList) {
-            loc.getBlock().breakNaturally();
-        }
+         design.getAllCannonBlocks(this)
+                .stream()
+                .map(CoordinateUtil::toLoc)
+                .map(Location::getBlock)
+                .forEach(Block::breakNaturally);
     }
 
 
@@ -791,8 +797,9 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @return - true if the block can be destroyed
      */
     public boolean isDestructibleBlock(Location block) {
-        for (Location loc : design.getDestructibleBlocks(this)) {
-            if (loc.equals(block)) {
+        Coordinate blockCoord = CoordinateUtil.fromLoc(block);
+        for (Coordinate loc : design.getDestructibleBlocks(this)) {
+            if (loc.equals(blockCoord)) {
                 return true;
             }
         }
@@ -807,8 +814,9 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @return true if this block is a part of the loading interface
      */
     public boolean isLoadingBlock(Location block) {
-        for (Location loc : design.getLoadingInterface(this)) {
-            if (loc.equals(block)) {
+        Coordinate blockCoord = CoordinateUtil.fromLoc(block);
+        for (Coordinate loc : design.getLoadingInterface(this)) {
+            if (loc.equals(blockCoord)) {
                 return true;
             }
         }
@@ -823,8 +831,9 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @return true if this location where the torch interacts with the cannon
      */
     public boolean isChestInterface(Location block) {
-        for (Location loc : design.getChestsAndSigns(this)) {
-            if (loc.equals(block)) {
+        Coordinate blockCoord = CoordinateUtil.fromLoc(block);
+        for (Coordinate loc : design.getChestsAndSigns(this)) {
+            if (loc.equals(blockCoord)) {
                 return true;
             }
         }
@@ -867,8 +876,9 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @return true if this is a right click trigger block
      */
     public boolean isRightClickTrigger(Location block) {
-        for (Location loc : design.getRightClickTrigger(this)) {
-            if (loc.equals(block)) {
+        Coordinate coordBlock = CoordinateUtil.fromLoc(block);
+        for (Coordinate loc : design.getRightClickTrigger(this)) {
+            if (loc.equals(coordBlock)) {
                 return true;
             }
         }
@@ -880,8 +890,9 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @return true if this is a redstone trigger block
      */
     public boolean isRestoneTrigger(Location block) {
-        for (Location loc : design.getRedstoneTrigger(this)) {
-            if (loc.equals(block)) {
+        Coordinate blockCoord = CoordinateUtil.fromLoc(block);
+        for (Coordinate loc : design.getRedstoneTrigger(this)) {
+            if (loc.equals(blockCoord)) {
                 return true;
             }
         }
@@ -893,8 +904,9 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @return true if this location where the torch interacts with the cannon
      */
     public boolean isRedstoneTorchInterface(Location block) {
-        for (Location loc : design.getRedstoneTorches(this)) {
-            if (loc.equals(block)) {
+        Coordinate blockCoord = CoordinateUtil.fromLoc(block);
+        for (Coordinate loc : design.getRedstoneTorches(this)) {
+            if (loc.equals(blockCoord)) {
                 return true;
             }
         }
@@ -906,8 +918,9 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @return true if this location where a redstone torch interacts with the cannon
      */
     public boolean isRedstoneWireInterface(Location block) {
-        for (Location loc : design.getRedstoneWireAndRepeater(this)) {
-            if (loc.equals(block)) {
+        Coordinate blockCoord = CoordinateUtil.fromLoc(block);
+        for (Coordinate loc : design.getRedstoneWireAndRepeater(this)) {
+            if (loc.equals(blockCoord)) {
                 return true;
             }
         }
@@ -944,7 +957,8 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      * @return true if sentry is in automatic mode
      */
     public boolean isSentryAutomatic() {
-        for (Location loc : design.getBarrelBlocks(this)) {
+        for (Coordinate coord : design.getBarrelBlocks(this)) {
+            var loc = CoordinateUtil.toLoc(coord);
             if (loc.getBlock().isBlockIndirectlyPowered())
                 return false;
         }
@@ -987,7 +1001,8 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
         if (player.hasPermission(design.getPermissionRedstone())) return MessageEnum.CannonCreated;
 
         // torch
-        for (Location loc : design.getRedstoneTorches(this)) {
+        for (Coordinate coord : design.getRedstoneTorches(this)) {
+            var loc = CoordinateUtil.toLoc(coord);
             Material b = loc.getBlock().getType();
             if (b == Material.REDSTONE_TORCH) {
                 removeRedstone();
@@ -996,7 +1011,8 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
         }
 
         // wire
-        for (Location loc : design.getRedstoneWireAndRepeater(this)) {
+        for (Coordinate coord : design.getRedstoneWireAndRepeater(this)) {
+            var loc = CoordinateUtil.toLoc(coord);
             Material b = loc.getBlock().getType();
             if (b == Material.REDSTONE_WIRE || b == Material.REPEATER || b == Material.COMPARATOR) {
                 removeRedstone();
@@ -1013,7 +1029,8 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      */
     private void removeRedstone() {
         // torches
-        for (Location loc : design.getRedstoneTorches(this)) {
+        for (Coordinate coord : design.getRedstoneTorches(this)) {
+            var loc = CoordinateUtil.toLoc(coord);
             Block block = loc.getBlock();
             if (block.getType() == Material.REDSTONE_TORCH) {
                 block.breakNaturally();
@@ -1021,7 +1038,8 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
         }
 
         // wires and repeater
-        for (Location loc : design.getRedstoneWireAndRepeater(this)) {
+        for (Coordinate coord : design.getRedstoneWireAndRepeater(this)) {
+            var loc = CoordinateUtil.toLoc(coord);
             Block block = loc.getBlock();
             if (block.getType() == Material.REDSTONE_WIRE || block.getType() == Material.REPEATER || block.getType() == Material.COMPARATOR) {
                 block.breakNaturally();
@@ -1103,7 +1121,10 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
         if (amount <= 0)
             return;
 
-        List<Location> barrelList = design.getBarrelBlocks(this);
+        List<Location> barrelList = design.getBarrelBlocks(this)
+                .stream()
+                .map(CoordinateUtil::toLoc)
+                .toList();
 
         //if the barrel list is 0 something is completely odd
         int max = barrelList.size();
@@ -1279,8 +1300,9 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
      */
     public boolean hasCannonSign() {
         // search all possible sign locations
-        for (Location signLoc : design.getChestsAndSigns(this)) {
-            if (signLoc.getBlock().getBlockData() instanceof WallSign)
+        for (Coordinate signLoc : design.getChestsAndSigns(this)) {
+            var loc = CoordinateUtil.toLoc(signLoc);
+            if (loc.getBlock().getBlockData() instanceof WallSign)
                 return true;
         }
         return false;
@@ -1292,8 +1314,9 @@ public class Cannon implements CannonBukkit, CannonDesignHolder, Rotational {
     public int getNumberCannonSigns() {
         // search all possible sign locations
         int i = 0;
-        for (Location signLoc : design.getChestsAndSigns(this)) {
-            if (signLoc.getBlock().getBlockData() instanceof WallSign)
+        for (Coordinate signLoc : design.getChestsAndSigns(this)) {
+            var loc = CoordinateUtil.toLoc(signLoc);
+            if (loc.getBlock().getBlockData() instanceof WallSign)
                 i++;
         }
         return i;

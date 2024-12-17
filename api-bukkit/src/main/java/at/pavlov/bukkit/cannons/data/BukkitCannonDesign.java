@@ -91,4 +91,13 @@ public class BukkitCannonDesign extends CannonDesign<
         }
         return null;
     }
+
+    @Override
+    public void putCannonBlockMap(BlockFace cannonDirection, BukkitCannonBlocks blocks) {
+        for (var block : blocks.getAllCannonBlocks()) {
+            allowedMaterials.add(block.getBlockData().getMaterial());
+        }
+
+        cannonBlockMap.put(cannonDirection, blocks);
+    }
 }

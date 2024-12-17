@@ -433,7 +433,7 @@ public class Aiming {
         //check if player is far away from the cannon
         BukkitCannonDesign design = DesignStorage.getInstance().getDesign(cannon);
         //go to trigger location
-        Location locCannon = design.getFiringTrigger(cannon);
+        Location locCannon = CoordinateUtil.toLoc(design.getFiringTrigger(cannon));
         //if there is no trigger - set the muzzle a location
         if (locCannon == null)
             locCannon = cannon.getMuzzle();
