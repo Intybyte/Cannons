@@ -31,11 +31,20 @@ I suggest you download an IDE like IntellijIDEA and get you more experienced wit
 Dependency:
 ---------------
 
+Use jitpack dependency
+
 ```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
 <dependency>
-    <groupId>at.pavlov</groupId>
-    <artifactId>cannons</artifactId>
-    <version>LATEST</version>
+    <groupId>com.github.Intybyte</groupId>
+    <artifactId>Cannons</artifactId>
+    <version>Tag</version>
     <scope>provided</scope>
 </dependency>
 ```
