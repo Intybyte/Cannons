@@ -2,7 +2,9 @@ package at.pavlov.cannons.aim;
 
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.utils.CannonsUtil;
+import lombok.Data;
 
+@Data
 public class GunAngles {
     private double horizontal;
     private double vertical;
@@ -12,25 +14,9 @@ public class GunAngles {
         this.setVertical(vertical);
     }
 
-    public double getHorizontal() {
-        return horizontal;
-    }
-
     public double getAbsHorizontal() { return Math.abs(horizontal); }
 
-    public void setHorizontal(double horizontal) {
-        this.horizontal = horizontal;
-    }
-
-    public double getVertical() {
-        return vertical;
-    }
-
     public double getAbsVertical() { return Math.abs(vertical); }
-
-    public void setVertical(double vertical) {
-        this.vertical = vertical;
-    }
 
     /**
      * evaluates the difference between actual cannon direction and the given direction
