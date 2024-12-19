@@ -1,9 +1,9 @@
 package at.pavlov.internal.projectile;
 
-import at.pavlov.internal.container.ItemHolder;
-import at.pavlov.internal.container.SoundHolder;
-import at.pavlov.internal.container.SpawnEntityHolder;
-import at.pavlov.internal.container.SpawnMaterialHolder;
+import at.pavlov.internal.container.holders.ItemHolder;
+import at.pavlov.internal.container.holders.SoundHolder;
+import at.pavlov.internal.container.holders.SpawnEntityHolder;
+import at.pavlov.internal.container.holders.SpawnMaterialHolder;
 import at.pavlov.internal.enums.ProjectileProperties;
 import lombok.Data;
 

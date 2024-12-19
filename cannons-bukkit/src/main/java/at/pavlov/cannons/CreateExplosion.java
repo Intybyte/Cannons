@@ -1,8 +1,8 @@
 package at.pavlov.cannons;
 
-import at.pavlov.bukkit.container.BukkitEntityHolder;
-import at.pavlov.bukkit.container.BukkitSoundHolder;
-import at.pavlov.bukkit.container.BukkitSpawnMaterialHolder;
+import at.pavlov.bukkit.container.holders.BukkitEntityHolder;
+import at.pavlov.bukkit.container.holders.BukkitSoundHolder;
+import at.pavlov.bukkit.container.holders.BukkitSpawnMaterialHolder;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.bukkit.container.BukkitDeathCause;

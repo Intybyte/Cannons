@@ -1,6 +1,6 @@
-package at.pavlov.bukkit.container;
+package at.pavlov.bukkit.container.holders;
 
-import at.pavlov.internal.container.SpawnMaterialHolder;
+import at.pavlov.internal.container.holders.SpawnMaterialHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;

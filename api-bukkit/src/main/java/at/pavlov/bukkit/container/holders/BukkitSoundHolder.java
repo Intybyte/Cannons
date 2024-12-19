@@ -1,6 +1,6 @@
-package at.pavlov.bukkit.container;
+package at.pavlov.bukkit.container.holders;
 
-import at.pavlov.internal.container.SoundHolder;
+import at.pavlov.internal.container.holders.SoundHolder;
 import org.bukkit.Sound;
 
 import java.util.function.Function;

@@ -1,8 +1,8 @@
 package at.pavlov.cannons.cannon;
 
 import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
-import at.pavlov.bukkit.container.BukkitBlock;
-import at.pavlov.bukkit.container.BukkitItemHolder;
+import at.pavlov.bukkit.container.holders.BukkitBlock;
+import at.pavlov.bukkit.container.holders.BukkitItemHolder;
 import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.cannons.Aiming;

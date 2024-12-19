@@ -1,4 +1,4 @@
-package at.pavlov.internal.container;
+package at.pavlov.internal.container.holders;
 
 
 import at.pavlov.internal.container.location.CannonVector;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.util.function.Function;
 
-@Data abstract public class SimpleBlock<Block> {
+@Data abstract public class BlockHolder<Block> {
     protected int locX;
 	protected int locY;
 	protected int locZ;
@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 	protected Block blockData;
 
-	public SimpleBlock(int x, int y, int z, Block blockData) {
+	public BlockHolder(int x, int y, int z, Block blockData) {
 		locX = x;
 		locY = y;
 		locZ = z;

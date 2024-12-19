@@ -1,7 +1,7 @@
-package at.pavlov.bukkit.container;
+package at.pavlov.bukkit.container.holders;
 
 import at.pavlov.internal.CannonLogger;
-import at.pavlov.internal.container.SpawnEntityHolder;
+import at.pavlov.internal.container.holders.SpawnEntityHolder;
 import at.pavlov.internal.enums.EntityDataType;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

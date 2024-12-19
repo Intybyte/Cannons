@@ -1,10 +1,10 @@
 package at.pavlov.cannons.cannon;
 
 import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
-import at.pavlov.bukkit.container.BukkitBlock;
+import at.pavlov.bukkit.container.holders.BukkitBlock;
 import at.pavlov.bukkit.container.BukkitCannonBlocks;
-import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.container.BukkitSoundHolder;
+import at.pavlov.bukkit.container.holders.BukkitItemHolder;
+import at.pavlov.bukkit.container.holders.BukkitSoundHolder;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.internal.utils.FileUtils;
 import at.pavlov.internal.various.DesignFileName;

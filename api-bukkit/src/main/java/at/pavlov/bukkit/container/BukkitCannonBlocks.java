@@ -1,5 +1,6 @@
 package at.pavlov.bukkit.container;
 
+import at.pavlov.bukkit.container.holders.BukkitBlock;
 import at.pavlov.internal.container.CannonBlocks;
 
 /**

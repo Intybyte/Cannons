@@ -1,7 +1,7 @@
-package at.pavlov.bukkit.container;
+package at.pavlov.bukkit.container.holders;
 
 
-import at.pavlov.internal.container.SimpleBlock;
+import at.pavlov.internal.container.holders.BlockHolder;
 import at.pavlov.internal.container.location.CannonVector;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,7 +14,7 @@ import org.bukkit.util.Vector;
 
 import java.util.function.Function;
 
-public class BukkitBlock extends SimpleBlock<BlockData> {
+public class BukkitBlock extends BlockHolder<BlockData> {
 
     public BukkitBlock(int x, int y, int z, BlockData blockData) {
         super(x, y, z, blockData);

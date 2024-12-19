@@ -1,5 +1,6 @@
 package at.pavlov.internal.container;
 
+import at.pavlov.internal.container.holders.BlockHolder;
 import at.pavlov.internal.container.location.CannonVector;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ import java.util.ArrayList;
  * it is not suggested to create new instances of it but instead
  * use it to get the positions of the various stuff
  */
-@Data public abstract class CannonBlocks<Block extends SimpleBlock<?>> {
+@Data public abstract class CannonBlocks<Block extends BlockHolder<?>> {
 	private CannonVector rotationCenter;	//center off all rotation blocks
     private CannonVector muzzle;			//center off all muzzle blocks - spawing CannonVector for snowball
 

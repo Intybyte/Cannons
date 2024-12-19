@@ -1,7 +1,7 @@
 package at.pavlov.cannons.scheduler;
 
-import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.container.BukkitSoundHolder;
+import at.pavlov.bukkit.container.holders.BukkitItemHolder;
+import at.pavlov.bukkit.container.holders.BukkitSoundHolder;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;

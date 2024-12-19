@@ -1,8 +1,8 @@
 package at.pavlov.cannons.utils;
 
-import at.pavlov.bukkit.container.BukkitEntityHolder;
-import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.container.BukkitSpawnMaterialHolder;
+import at.pavlov.bukkit.container.holders.BukkitEntityHolder;
+import at.pavlov.bukkit.container.holders.BukkitItemHolder;
+import at.pavlov.bukkit.container.holders.BukkitSpawnMaterialHolder;
 import at.pavlov.cannons.Cannons;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;

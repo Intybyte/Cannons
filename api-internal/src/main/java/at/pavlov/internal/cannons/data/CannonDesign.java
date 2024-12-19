@@ -4,9 +4,9 @@ import at.pavlov.internal.CannonLogger;
 import at.pavlov.internal.cannons.holders.CannonMainDataHolder;
 import at.pavlov.internal.cannons.holders.CannonPositionHolder;
 import at.pavlov.internal.container.CannonBlocks;
-import at.pavlov.internal.container.ItemHolder;
-import at.pavlov.internal.container.SimpleBlock;
-import at.pavlov.internal.container.SoundHolder;
+import at.pavlov.internal.container.holders.ItemHolder;
+import at.pavlov.internal.container.holders.BlockHolder;
+import at.pavlov.internal.container.holders.SoundHolder;
 import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.container.location.Coordinate;
 import at.pavlov.internal.projectile.Projectile;
@@ -23,7 +23,7 @@ import java.util.List;
         Material,
         IH extends ItemHolder<Material>,
         SH extends SoundHolder<?>,
-        SB extends SimpleBlock<Block>,
+        SB extends BlockHolder<Block>,
         CB extends CannonBlocks<SB>
         > {
 	//general

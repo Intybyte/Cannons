@@ -1,7 +1,7 @@
-package at.pavlov.bukkit.container;
+package at.pavlov.bukkit.container.holders;
 
 import at.pavlov.internal.CannonLogger;
-import at.pavlov.internal.container.ItemHolder;
+import at.pavlov.internal.container.holders.ItemHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

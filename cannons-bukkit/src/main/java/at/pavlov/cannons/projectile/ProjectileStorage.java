@@ -1,8 +1,8 @@
 package at.pavlov.cannons.projectile;
 
 import at.pavlov.bukkit.builders.ParticleBuilder;
-import at.pavlov.bukkit.container.BukkitItemHolder;
-import at.pavlov.bukkit.container.BukkitSoundHolder;
+import at.pavlov.bukkit.container.holders.BukkitItemHolder;
+import at.pavlov.bukkit.container.holders.BukkitSoundHolder;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.bukkit.utils.FileReadUtils;
 import at.pavlov.cannons.Cannons;

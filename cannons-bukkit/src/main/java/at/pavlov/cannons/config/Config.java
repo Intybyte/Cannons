@@ -2,7 +2,7 @@ package at.pavlov.cannons.config;
 
 
 import at.pavlov.bukkit.builders.ParticleBuilder;
-import at.pavlov.bukkit.container.BukkitItemHolder;
+import at.pavlov.bukkit.container.holders.BukkitItemHolder;
 import at.pavlov.bukkit.utils.FileReadUtils;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.multiversion.ParticleResolver;
