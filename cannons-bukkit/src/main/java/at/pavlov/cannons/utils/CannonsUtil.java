@@ -1,5 +1,6 @@
 package at.pavlov.cannons.utils;
 
+import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
@@ -7,8 +8,9 @@ import at.pavlov.cannons.TargetManager;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.bukkit.container.BukkitTarget;
-import at.pavlov.cannons.projectile.FlyingProjectile;
+import at.pavlov.cannons.projectile.BukkitFlyingProjectile;
 import at.pavlov.internal.container.location.CannonVector;
+import at.pavlov.internal.container.location.Coordinate;
 import at.pavlov.internal.enums.ProjectileProperties;
 import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
@@ -276,6 +278,26 @@ public class CannonsUtil
         return center.clone().add(x,z,y);
     }
 
+    /**
+     * returns a random point in a sphere
+     * @param center center location
+     * @param radius radius of the sphere
+     * @return returns a random point in a sphere
+     */
+    public static Coordinate randomPointInSphere(Coordinate center, double radius) {
+        double r = radius*random.nextDouble();
+        double polar = Math.PI*random.nextDouble();
+        double azi = Math.PI*(random.nextDouble()*2.0-1.0);
+        //sphere coordinates
+        double x = r*Math.sin(polar)*Math.cos(azi);
+        double y = r*Math.sin(polar)*Math.sin(azi);
+        double z = r*Math.cos(polar);
+
+        Coordinate coordinate = center.clone();
+        coordinate.getVector().add(x,z,y);
+        return coordinate;
+    }
+
 
     /**
      * returns a random number in the given range
@@ -292,7 +314,7 @@ public class CannonsUtil
      * teleports the player back to the starting point if the cannonball has the property 'observer'
      * @param cannonball the flying projectile
      */
-    public static void teleportBack(FlyingProjectile cannonball) {
+    public static void teleportBack(BukkitFlyingProjectile cannonball) {
         if (cannonball == null)
             return;
 
@@ -305,7 +327,7 @@ public class CannonsUtil
         Location teleLoc = null;
         //teleport the player back to the location before firing
         if(projectile.hasProperty(ProjectileProperties.OBSERVER)) {
-            teleLoc = cannonball.getPlayerlocation();
+            teleLoc = CoordinateUtil.toLoc(cannonball.getPlayerlocation());
         }
         //teleport to this location
         if (teleLoc == null) {

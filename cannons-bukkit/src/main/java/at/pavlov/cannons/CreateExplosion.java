@@ -3,6 +3,8 @@ package at.pavlov.cannons;
 import at.pavlov.bukkit.container.holders.BukkitEntityHolder;
 import at.pavlov.bukkit.container.holders.BukkitSoundHolder;
 import at.pavlov.bukkit.container.holders.BukkitSpawnMaterialHolder;
+import at.pavlov.bukkit.factory.CoordinateUtil;
+import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.bukkit.container.BukkitDeathCause;
@@ -14,7 +16,7 @@ import at.pavlov.cannons.event.ProjectileImpactEvent;
 import at.pavlov.cannons.event.ProjectilePiercingEvent;
 import at.pavlov.cannons.multiversion.EntityTypeResolver;
 import at.pavlov.cannons.multiversion.EventResolver;
-import at.pavlov.cannons.projectile.FlyingProjectile;
+import at.pavlov.cannons.projectile.BukkitFlyingProjectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
@@ -22,6 +24,8 @@ import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.cannons.utils.SoundUtils;
+import at.pavlov.internal.container.location.CannonVector;
+import at.pavlov.internal.container.location.Coordinate;
 import at.pavlov.internal.enums.DamageType;
 import at.pavlov.internal.enums.EntityDataType;
 import at.pavlov.internal.enums.FakeBlockType;
@@ -75,7 +79,7 @@ public class CreateExplosion {
     private final Cannons plugin;
     private final Config config;
 
-    private FlyingProjectile currentCannonball;
+    private BukkitFlyingProjectile currentCannonball;
 
     private final HashSet<Entity> affectedEntities = new HashSet<>();
     // the entity is used in 1 tick. There should be no garbage collector problem
@@ -161,7 +165,7 @@ public class CreateExplosion {
      * @param cannonball
      * @return the location after the piercing event
      */
-    private Location blockBreaker(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
+    private Location blockBreaker(BukkitFlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
         BukkitProjectile projectile = cannonball.getProjectile();
 
 
@@ -288,9 +292,9 @@ public class CreateExplosion {
      * @param entityVelocity how fast the entity is push away
      * @param entityHolder   type of entity to spawn
      */
-    private void spawnEntity(FlyingProjectile cannonball, Location loc, double entityVelocity,
+    private void spawnEntity(BukkitFlyingProjectile cannonball, Location loc, double entityVelocity,
                              BukkitEntityHolder entityHolder) {
-        Location impactLoc = cannonball.getImpactLocation();
+        Location impactLoc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
         World world = impactLoc.getWorld();
 
         // move cloud to the ground
@@ -450,13 +454,13 @@ public class CreateExplosion {
      *
      * @param cannonball involved projectile
      */
-    private void spreadEntities(FlyingProjectile cannonball) {
+    private void spreadEntities(BukkitFlyingProjectile cannonball) {
 
         if (!cannonball.getProjectile().isSpawnEnabled())
             return;
 
         BukkitProjectile projectile = cannonball.getProjectile();
-        Location impactLoc = cannonball.getImpactLocation();
+        Location impactLoc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
 
         Location placeLoc;
 
@@ -520,12 +524,12 @@ public class CreateExplosion {
      *
      * @param cannonball the fired cannonball
      */
-    private void spreadBlocks(FlyingProjectile cannonball) {
+    private void spreadBlocks(BukkitFlyingProjectile cannonball) {
         if (!cannonball.getProjectile().isSpawnEnabled())
             return;
 
         BukkitProjectile projectile = cannonball.getProjectile();
-        Location impactLoc = cannonball.getImpactLocation();
+        Location impactLoc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
 
         Location placeLoc;
 
@@ -612,7 +616,7 @@ public class CreateExplosion {
      * @param next
      * @param cannonball
      */
-    private void applyPotionEffect(Location impactLoc, Entity next, FlyingProjectile cannonball) {
+    private void applyPotionEffect(Location impactLoc, Entity next, BukkitFlyingProjectile cannonball) {
         BukkitProjectile projectile = cannonball.getProjectile();
 
         if (!(next instanceof LivingEntity living)) {
@@ -657,7 +661,7 @@ public class CreateExplosion {
      * @param cannonball
      * @return - damage done to the entity
      */
-    private double getExplosionDamage(Location impactLoc, Entity next, FlyingProjectile cannonball) {
+    private double getExplosionDamage(Location impactLoc, Entity next, BukkitFlyingProjectile cannonball) {
         BukkitProjectile projectile = cannonball.getProjectile();
 
         if (!(next instanceof LivingEntity living)) {
@@ -704,7 +708,7 @@ public class CreateExplosion {
      * @param target
      * @return return the amount of damage done to the living entity
      */
-    private double getDirectHitDamage(FlyingProjectile cannonball, Entity target) {
+    private double getDirectHitDamage(BukkitFlyingProjectile cannonball, Entity target) {
         BukkitProjectile projectile = cannonball.getProjectile();
 
         // if (cannonball.getProjectileEntity()==null)
@@ -756,7 +760,7 @@ public class CreateExplosion {
      * @param cannonball cannonball which hit the entity
      * @param entity     entity hit
      */
-    public void directHit(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity, Entity entity) {
+    public void directHit(BukkitFlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity, Entity entity) {
         // add damage to map - it will be applied later to the player
         double directHit = this.getDirectHitDamage(cannonball, entity);
         this.damageMap.put(entity, directHit);
@@ -771,7 +775,7 @@ public class CreateExplosion {
      *
      * @param cannonball cannonball which will explode
      */
-    public void detonate(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
+    public void detonate(BukkitFlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
         this.plugin.logDebug("detonate cannonball");
 
         BukkitProjectile projectile = cannonball.getProjectile().clone();
@@ -782,14 +786,14 @@ public class CreateExplosion {
         // explosion
         Location impactLoc = this.blockBreaker(cannonball, projectile_entity);
         // impactLoc = projectile_entity.getLocation();
-        cannonball.setImpactLocation(impactLoc);
+        cannonball.setImpactLocation(CoordinateUtil.fromLoc(impactLoc));
         World world = impactLoc.getWorld();
 
 
         // find block which caused the shell impact
         Location impactBlock = CannonsUtil.findFirstBlock(impactLoc, cannonball.getVelocity());
         if (impactBlock != null) {
-            cannonball.setImpactBlock(impactBlock);
+            cannonball.setImpactBlock(CoordinateUtil.fromLoc(impactBlock));
             //this.plugin.logDebug("todo: impact block: " + impactBlock.getBlock());
         }
 
@@ -884,7 +888,7 @@ public class CreateExplosion {
         this.spreadEntities(cannonball);
     }
 
-    private void fireEntityDeathEvent(FlyingProjectile cannonball) {
+    private void fireEntityDeathEvent(BukkitFlyingProjectile cannonball) {
         LinkedList<LivingEntity> lEntities = new LinkedList<>();
         // check which entities are affected by the event
         for (Entity entity : this.affectedEntities) {
@@ -928,7 +932,7 @@ public class CreateExplosion {
      *
      * @param cannonball exploding cannonball
      */
-    private void clusterExplosions(FlyingProjectile cannonball) {
+    private void clusterExplosions(BukkitFlyingProjectile cannonball) {
         final BukkitProjectile projectile = cannonball.getProjectile();
 
         if (!projectile.isClusterExplosionsEnabled()) {
@@ -941,15 +945,20 @@ public class CreateExplosion {
                     * (projectile.getClusterExplosionsMaxDelay() - projectile.getClusterExplosionsMinDelay());
 
 
-            taskManager.scheduler.runTaskLater(cannonball.getImpactLocation(),
+            Location loc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
+
+            taskManager.scheduler.runTaskLater(loc,
                 new DelayedTask(cannonball) {
                     @Override
                     public void run(Object object) {
-                        FlyingProjectile cannonball = (FlyingProjectile) object;
+                        BukkitFlyingProjectile cannonball = (BukkitFlyingProjectile) object;
                         BukkitProjectile proj = cannonball.getProjectile();
 
-                        Location expLoc = CannonsUtil.randomPointInSphere(cannonball.getImpactLocation(),
-                                proj.getClusterExplosionsRadius());
+                        Location expLoc = CannonsUtil.randomPointInSphere(
+                                loc,
+                                proj.getClusterExplosionsRadius()
+                        );
+
                         // only do if explosion in blocks are allowed
                         if (proj.isClusterExplosionsInBlocks() || expLoc.getBlock().isEmpty()
                                 || (expLoc.getBlock().isLiquid() && proj.isUnderwaterDamage())) {
@@ -970,12 +979,12 @@ public class CreateExplosion {
      * @param cannonball the flying projectile
      * @param player     the one to teleport
      */
-    private void teleportPlayer(FlyingProjectile cannonball, Player player) {
+    private void teleportPlayer(BukkitFlyingProjectile cannonball, Player player) {
         if (player == null || cannonball == null)
             return;
 
         BukkitProjectile projectile = cannonball.getProjectile();
-        Location impactLoc = cannonball.getImpactLocation();
+        Location impactLoc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
 
         Location teleLoc = null;
         // teleport to impact and reset speed - make a soft landing
@@ -985,7 +994,7 @@ public class CreateExplosion {
         }
         // teleport the player back to the location before firing
         else if (projectile.hasProperty(ProjectileProperties.OBSERVER)) {
-            teleLoc = cannonball.getPlayerlocation();
+            teleLoc = CoordinateUtil.toLoc(cannonball.getPlayerlocation());
         }
         // teleport to this location
         if (teleLoc == null) {
@@ -1005,9 +1014,9 @@ public class CreateExplosion {
      *
      * @param cannonball the flying projectile
      */
-    private void damageEntity(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
+    private void damageEntity(BukkitFlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
         BukkitProjectile projectile = cannonball.getProjectile();
-        Location impactLoc = cannonball.getImpactLocation();
+        Location impactLoc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
 
         // explosion effect
         double effectRange = projectile.getPlayerDamageRange();
@@ -1075,13 +1084,13 @@ public class CreateExplosion {
      *
      * @param cannonball the flying projectile
      */
-    private boolean deflectProjectile(FlyingProjectile cannonball) {
+    private boolean deflectProjectile(BukkitFlyingProjectile cannonball) {
         // todo deflect projectiles
         // if (!cannonball.getProjectile().isSpawnEnabled())
         // return;
 
         //Location impactLoc = cannonball.getImpactLocation();
-        Location impactBlock = cannonball.getImpactBlock();
+        Location impactBlock = CoordinateUtil.toLoc(cannonball.getImpactBlock());
         if (impactBlock == null)
             return false;
 
@@ -1105,12 +1114,14 @@ public class CreateExplosion {
 
         this.plugin.logDebug("Deflection valid");
         // spawn a new deflected cannnonball
-        Location impactLoc = cannonball.getImpactLocation()
-                .subtract(cannonball.getVelocity().normalize().multiply(0.3));
+        Vector subVector = cannonball.getVelocity().normalize().multiply(0.3);
+        Location baseImpactLoc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
+        Location impactLoc = baseImpactLoc.subtract(subVector);
+
         taskManager.scheduler.runTaskLater(impactLoc, new DelayedTask(cannonball) {
             @Override
             public void run(Object object) {
-                FlyingProjectile cannonball = (FlyingProjectile) object;
+                BukkitFlyingProjectile cannonball = (BukkitFlyingProjectile) object;
 
                 BukkitProjectile projectile = cannonball.getProjectile();
 
@@ -1128,7 +1139,8 @@ public class CreateExplosion {
                 CreateExplosion.this.plugin.logDebug("Deflect projectile: " + vectdeflect);
 
                 ProjectileManager.getInstance().spawnProjectile(projectile,
-                        cannonball.getShooterUID(), cannonball.getSource(), cannonball.getPlayerlocation(),
+                        cannonball.getShooterUID(), cannonball.getSource(),
+                        CoordinateUtil.toLoc(cannonball.getPlayerlocation()),
                         impactLoc.clone(), vectdeflect, cannonball.getCannonUID(), ProjectileCause.DeflectedProjectile);
             }
         }, 1L);
@@ -1141,15 +1153,15 @@ public class CreateExplosion {
      *
      * @param cannonball the flying projectile
      */
-    private void spawnProjectiles(FlyingProjectile cannonball) {
+    private void spawnProjectiles(BukkitFlyingProjectile cannonball) {
         if (!cannonball.getProjectile().isSpawnEnabled())
             return;
 
-        Location impactLoc = cannonball.getImpactLocation();
+        Location impactLoc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
         taskManager.scheduler.runTaskLater(impactLoc, new DelayedTask(cannonball) {
             @Override
             public void run(Object object) {
-                FlyingProjectile cannonball = (FlyingProjectile) object;
+                BukkitFlyingProjectile cannonball = (BukkitFlyingProjectile) object;
 
                 BukkitProjectile projectile = cannonball.getProjectile();
 
@@ -1183,7 +1195,7 @@ public class CreateExplosion {
      *
      * @param cannonball the flying projectile
      */
-    private void spawnFireworks(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
+    private void spawnFireworks(BukkitFlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
         World world = cannonball.getWorld();
         BukkitProjectile projectile = cannonball.getProjectile();
 
@@ -1286,7 +1298,7 @@ public class CreateExplosion {
         this.killedPlayers.remove(playerUID);
     }
 
-    public FlyingProjectile getCurrentCannonball() {
+    public BukkitFlyingProjectile getCurrentCannonball() {
         return currentCannonball;
     }
 }

@@ -28,6 +28,14 @@ import org.jetbrains.annotations.NotNull;
 
 
     @NotNull
+    public CannonVector add(double x, double y, double z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+        return this;
+    }
+
+    @NotNull
     public CannonVector add(@NotNull CannonVector vec) {
         this.x += vec.x;
         this.y += vec.y;

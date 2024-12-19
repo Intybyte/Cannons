@@ -1,73 +1,29 @@
 package at.pavlov.cannons.projectile;
 
+import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.bukkit.container.BukkitMovingObject;
+import at.pavlov.internal.container.location.CannonVector;
+import at.pavlov.internal.container.location.Coordinate;
 import at.pavlov.internal.enums.ProjectileCause;
+import at.pavlov.internal.projectile.FlyingProjectile;
 import io.papermc.lib.PaperLib;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
 
-public class FlyingProjectile {
-    @Getter
-    private final long spawnTime;
+public class BukkitFlyingProjectile extends FlyingProjectile<Projectile, BukkitProjectile, BukkitMovingObject, ProjectileSource> {
 
-    @Getter
-    private final UUID entityUID;
-    @Getter
-    private final UUID shooterUID;
-    @Getter
-    private final UUID worldUID;
-    @Setter
-    @Getter
-    private UUID cannonUID;
-    @Getter
-    private final BukkitProjectile projectile;
-    @Getter
-    private final org.bukkit.projectiles.ProjectileSource source;
-    //location of the shooterUID before firing - important for teleporting the player back - observer property
-    @Getter
-    private final Location playerlocation;
-    @Setter
-    @Getter
-    private Location impactLocation;
-    //block which caused the cannonball explosion - can be null
-    @Setter
-    @Getter
-    private Location impactBlock;
-    @Setter
-    @Getter
-    private Location lastSmokeTrailLocation;
-    //Important for visual splash effect when the cannonball hits the water surface
-    @Getter
-    private boolean inWater;
-    @Setter
-    @Getter
-    private boolean wasInWater;
-    //if the teleport was already performed
-    @Setter
-    @Getter
-    private boolean teleported;
-    //was the projectile fired by a player, redstone or a sentry
-    @Getter
-    private final ProjectileCause projectileCause;
-    @Setter
-    @Getter
-    private boolean detonated;
-    private final BukkitMovingObject predictor;
-
-
-    public FlyingProjectile(BukkitProjectile projectile, Projectile projectile_entity, UUID shooterUID, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, UUID cannonId, ProjectileCause projectileCause) {
+    public BukkitFlyingProjectile(BukkitProjectile projectile, Projectile projectile_entity, UUID shooterUID, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, UUID cannonId, ProjectileCause projectileCause) {
         //Validate.notNull(shooterUID, "shooterUID for the projectile can't be null");
         this.entityUID = projectile_entity.getUniqueId();
         this.worldUID = projectile_entity.getWorld().getUID();
@@ -76,7 +32,7 @@ public class FlyingProjectile {
         this.projectile = projectile;
         this.cannonUID = cannonId;
         this.shooterUID = shooterUID;
-        this.playerlocation = playerLoc;
+        this.playerlocation = CoordinateUtil.fromLoc(playerLoc);
         this.source = source;
         if (source != null)
             projectile_entity.setShooter(source);
@@ -89,16 +45,10 @@ public class FlyingProjectile {
         Location new_loc = projectile_entity.getLocation();
         predictor = new BukkitMovingObject(new_loc, projectile_entity.getVelocity(), projectile.getProjectileEntity());
 
-        this.lastSmokeTrailLocation = new_loc;
+        this.lastSmokeTrailLocation = CoordinateUtil.fromLoc(new_loc);
     }
 
-    /*
-     * Returns the entity of the flying projectile
-     * This is time consuming, the projectile should be cached
-     *
-     *
-     * @return
-     */
+    @Override
     public Projectile getProjectileEntity() {
         Entity e = Bukkit.getEntity(entityUID);
         if (e == null)
@@ -112,33 +62,12 @@ public class FlyingProjectile {
      *
      * @return true if the projectile is in a liquid
      */
-    private boolean isInWaterCheck(Projectile projectile_entity) {
+    public boolean isInWaterCheck(Projectile projectile_entity) {
         if (projectile_entity != null) {
             Block block = projectile_entity.getLocation().getBlock();
             return block.isLiquid();
         }
         return false;
-    }
-
-    /**
-     * returns if the projectile has entered the water surface and updates also inWater
-     *
-     * @return true if the projectile has entered water
-     */
-    public boolean updateWaterSurfaceCheck(Projectile projectile_entity) {
-        inWater = isInWaterCheck(projectile_entity);
-        boolean isSurface = !wasInWater && inWater;
-        wasInWater = inWater;
-        return isSurface;
-    }
-
-    /**
-     * searches for the projectile and checks if the projectile is still alive and valid
-     *
-     * @return returns false if the projectile entity is null
-     */
-    public boolean isValid() {
-        return isValid(getProjectileEntity());
     }
 
     /**
@@ -149,20 +78,6 @@ public class FlyingProjectile {
      */
     public boolean isValid(Projectile projectile_entity) {
         return (projectile_entity != null && projectile_entity.getLocation().getBlockY() > -64 && System.currentTimeMillis() < getSpawnTime() + 3600000);
-    }
-
-    /**
-     * updated the location and speed of the projectile to the expected values
-     */
-    public void update() {
-        predictor.updateProjectileLocation(isInWater());
-    }
-
-    /**
-     * revert update of the location
-     */
-    public void revertUpdate() {
-        predictor.revertProjectileLocation(isInWater());
     }
 
     /**
@@ -202,6 +117,11 @@ public class FlyingProjectile {
         projectile_entity.setVelocity(VectorUtils.toBaseVector(predictor.getVel()));
     }
 
+    @Override
+    public void teleport(Coordinate loc, CannonVector vel) {
+        teleport(CoordinateUtil.toLoc(loc), VectorUtils.toBaseVector(vel));
+    }
+
     /**
      * teleports the projectile to the given location
      *
@@ -212,22 +132,6 @@ public class FlyingProjectile {
         this.predictor.setLocation(loc);
         this.predictor.setVel(VectorUtils.fromBaseVector(vel));
         teleportToPrediction(getProjectileEntity());
-    }
-
-    @Override
-    public int hashCode() {
-        //compare projectile entities
-        return entityUID.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        //equal if the projectile entities are equal
-        if (!(obj instanceof FlyingProjectile fp)) {
-            return false;
-        }
-
-        return this.getEntityUID().equals(fp.getEntityUID());
     }
 
     public World getWorld() {

@@ -24,7 +24,7 @@ public class ProjectileManager {
     private static ProjectileManager instance = null;
 
     private final Cannons plugin;
-    private final ConcurrentHashMap<UUID, FlyingProjectile> flyingProjectilesMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, BukkitFlyingProjectile> flyingProjectilesMap = new ConcurrentHashMap<>();
 
     public static void initialize(Cannons plugin) {
         if (instance != null)
@@ -71,7 +71,7 @@ public class ProjectileManager {
 
 
         //create a new flying projectile container
-        FlyingProjectile cannonball = new FlyingProjectile(projectile, projectileEntity, shooter, source, playerLoc, cannonId, projectileCause);
+        BukkitFlyingProjectile cannonball = new BukkitFlyingProjectile(projectile, projectileEntity, shooter, source, playerLoc, cannonId, projectileCause);
 
 
         flyingProjectilesMap.put(cannonball.getEntityUID(), cannonball);
@@ -88,7 +88,7 @@ public class ProjectileManager {
      *
      * @param cannonball - the cannonball to detonate
      */
-    private void detonateTimefuse(final FlyingProjectile cannonball) {
+    private void detonateTimefuse(final BukkitFlyingProjectile cannonball) {
         if (cannonball.getProjectile().getTimefuse() <= 0) {
             return;
         }
@@ -97,7 +97,7 @@ public class ProjectileManager {
         AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask(cannonball.getEntityUID()) {
             public void run(Object object) {
                 //find given UID in list
-                FlyingProjectile fproj = flyingProjectilesMap.get(object);
+                BukkitFlyingProjectile fproj = flyingProjectilesMap.get(object);
 
                 if (fproj != null) {
                     //detonate timefuse
@@ -123,7 +123,7 @@ public class ProjectileManager {
         if (projectile == null || !(projectile instanceof Projectile))
             return;
 
-        FlyingProjectile fproj = flyingProjectilesMap.get(projectile.getUniqueId());
+        BukkitFlyingProjectile fproj = flyingProjectilesMap.get(projectile.getUniqueId());
         if (fproj != null) {
             CreateExplosion.getInstance().detonate(fproj, (Projectile) projectile);
             projectile.remove();
@@ -140,7 +140,7 @@ public class ProjectileManager {
     public void directHitProjectile(Entity cannonball, Entity target) {
         if (cannonball == null || target == null) return;
 
-        FlyingProjectile fproj = flyingProjectilesMap.get(cannonball.getUniqueId());
+        BukkitFlyingProjectile fproj = flyingProjectilesMap.get(cannonball.getUniqueId());
         if (fproj == null) {
             return;
         }
@@ -162,7 +162,7 @@ public class ProjectileManager {
      * @return true if cannonball projectile
      */
     public boolean isFlyingProjectile(Entity projectile) {
-        FlyingProjectile fproj = flyingProjectilesMap.get(projectile.getUniqueId());
+        BukkitFlyingProjectile fproj = flyingProjectilesMap.get(projectile.getUniqueId());
         return fproj != null;
     }
 
@@ -172,7 +172,7 @@ public class ProjectileManager {
      *
      * @return - the list of all flying projectiles
      */
-    public ConcurrentHashMap<UUID, FlyingProjectile> getFlyingProjectiles() {
+    public ConcurrentHashMap<UUID, BukkitFlyingProjectile> getFlyingProjectiles() {
         return flyingProjectilesMap;
     }
 
@@ -183,12 +183,12 @@ public class ProjectileManager {
      * @param player is the passenger
      * @return the projectile or null
      */
-    public FlyingProjectile getAttachedProjectile(Player player) {
+    public BukkitFlyingProjectile getAttachedProjectile(Player player) {
         if (player == null) {
             return null;
         }
 
-        for (FlyingProjectile proj : flyingProjectilesMap.values())
+        for (BukkitFlyingProjectile proj : flyingProjectilesMap.values())
             if (proj.getShooterUID().equals(player.getUniqueId()))
                 return proj;
         return null;

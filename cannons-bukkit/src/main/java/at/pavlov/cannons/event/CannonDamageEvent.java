@@ -1,7 +1,9 @@
 package at.pavlov.cannons.event;
 
-import at.pavlov.cannons.projectile.FlyingProjectile;
+import at.pavlov.bukkit.factory.CoordinateUtil;
+import at.pavlov.cannons.projectile.BukkitFlyingProjectile;
 import at.pavlov.internal.enums.DamageType;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -10,14 +12,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class CannonDamageEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final FlyingProjectile cannonball;
+    private final BukkitFlyingProjectile cannonball;
     private final LivingEntity target;
     private double damage;
     private double reduction;
     private Double distance;
     private final DamageType type;
 
-    public CannonDamageEvent(FlyingProjectile cannonball, LivingEntity target, double damage, double reduction, @Nullable Double distance, DamageType type) {
+    public CannonDamageEvent(BukkitFlyingProjectile cannonball, LivingEntity target, double damage, double reduction, @Nullable Double distance, DamageType type) {
         this.cannonball = cannonball;
         this.target = target;
         this.damage = damage;
@@ -35,7 +37,7 @@ public class CannonDamageEvent extends Event {
         return handlers;
     }
 
-    public FlyingProjectile getCannonball() {
+    public BukkitFlyingProjectile getCannonball() {
         return cannonball;
     }
 
@@ -64,8 +66,10 @@ public class CannonDamageEvent extends Event {
     }
 
     public double getDistance() {
-        if (distance == null && type == DamageType.DIRECT)
-            distance = cannonball.getImpactLocation().distance(target.getLocation());
+        if (distance == null && type == DamageType.DIRECT) {
+            Location impactLocation = CoordinateUtil.toLoc(cannonball.getImpactLocation());
+            distance = impactLocation.distance(target.getLocation());
+        }
 
         return distance;
     }

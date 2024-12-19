@@ -6,10 +6,12 @@ import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.dao.AsyncTaskManager;
-import at.pavlov.cannons.projectile.FlyingProjectile;
+import at.pavlov.cannons.projectile.BukkitFlyingProjectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
+import at.pavlov.internal.container.location.CannonVector;
+import at.pavlov.internal.container.location.Coordinate;
 import at.pavlov.internal.enums.FakeBlockType;
 import at.pavlov.internal.enums.ProjectileProperties;
 import io.papermc.lib.PaperLib;
@@ -52,7 +54,7 @@ public class ProjectileObserver {
                     .getFlyingProjectiles();
 
             for(var entry : projectiles.entrySet()) {
-                FlyingProjectile cannonball = entry.getValue();
+                BukkitFlyingProjectile cannonball = entry.getValue();
                 org.bukkit.entity.Projectile projectile_entity = cannonball.getProjectileEntity();
 
                 Executor executor = (task) -> {
@@ -101,7 +103,7 @@ public class ProjectileObserver {
      * if cannonball enters water it will spawn a splash effect
      * @param cannonball the projectile to check
      */
-    private void checkWaterImpact(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
+    private void checkWaterImpact(BukkitFlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
 
         //the projectile has passed the water surface, make a splash
         if (!cannonball.updateWaterSurfaceCheck(projectile_entity)) {
@@ -151,7 +153,7 @@ public class ProjectileObserver {
      * teleports the player to new position of the cannonball
      * @param cannonball the FlyingProjectile to check
      */
-    private void updateTeleporter(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity)
+    private void updateTeleporter(BukkitFlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity)
     {
         //do nothing if the teleport was already performed
         if (cannonball.isTeleported())
@@ -197,7 +199,7 @@ public class ProjectileObserver {
      * @param cannonball projectile to update
      * @return true if the projectile must be removed
      */
-    private boolean updateProjectileLocation(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity)
+    private boolean updateProjectileLocation(BukkitFlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity)
     {
         if (!plugin.getMyConfig().isKeepAliveEnabled())
             return false;
@@ -231,18 +233,25 @@ public class ProjectileObserver {
      * @param cannonball the cannonball entity entry of cannons
      * @param projectile_entity the entity of the projectile
      */
-    private void updateSmokeTrail(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
+    private void updateSmokeTrail(BukkitFlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
         BukkitProjectile proj = cannonball.getProjectile();
         int maxDist = plugin.getMyConfig().getImitatedBlockMaximumDistance();
         double smokeDist = proj.getSmokeTrailDistance()*(0.5 + random.nextDouble());
         double smokeDuration = proj.getSmokeTrailDuration()*(0.5 + random.nextGaussian());
 
-        if (!proj.isSmokeTrailEnabled() || !(cannonball.getExpectedLocation().distance(cannonball.getLastSmokeTrailLocation()) > smokeDist)) {
+
+        if (!proj.isSmokeTrailEnabled()) {
+            return;
+        }
+
+        CannonVector expectedVector = cannonball.getExpectedCoordinate().getVector();
+        CannonVector smokeTrailVector = cannonball.getLastSmokeTrailLocation().getVector();
+        if (!(expectedVector.distance(smokeTrailVector) > smokeDist)) {
             return;
         }
         //create a new smoke trail cloud
         Location newLoc = cannonball.getExpectedLocation();
-        cannonball.setLastSmokeTrailLocation(newLoc);
+        cannonball.setLastSmokeTrailLocation(cannonball.getExpectedCoordinate());
         plugin.logDebug("smoke trail at: " +  newLoc.getBlockX() + "," + newLoc.getBlockY() + "," + newLoc.getBlockZ());
 
         if (proj.isSmokeTrailParticleEnabled()) {

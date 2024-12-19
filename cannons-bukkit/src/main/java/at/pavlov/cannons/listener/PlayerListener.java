@@ -11,7 +11,7 @@ import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.multiversion.PotionTypeResolver;
-import at.pavlov.cannons.projectile.FlyingProjectile;
+import at.pavlov.cannons.projectile.BukkitFlyingProjectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonSelector;
@@ -76,7 +76,7 @@ public class PlayerListener implements Listener
 //            if (cause.getShooterUID() != null)
 //                shooter = Bukkit.getPlayer(cause.getShooterUID());
 //            Cannon cannon = plugin.getCannon(cause.getCannonUID());
-            FlyingProjectile c = explosion.getCurrentCannonball();
+            BukkitFlyingProjectile c = explosion.getCurrentCannonball();
             Cannon cannon = CannonManager.getCannon(c.getCannonUID());
             String message = userMessages.getDeathMessage(killedUID, c.getShooterUID(), cannon, c.getProjectile());
             if (message != null && !message.equals(" "))

@@ -1,6 +1,7 @@
 package at.pavlov.internal.container;
 
 import at.pavlov.internal.container.location.CannonVector;
+import at.pavlov.internal.container.location.Coordinate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -77,6 +78,10 @@ import java.util.UUID;
         this.vel.multiply(1.0 / multiplier);
         //update location
         this.loc.subtract(this.vel);
+    }
+
+    public Coordinate getCoordinate() {
+        return new Coordinate(loc, world);
     }
 
     public abstract Entity arrow();
