@@ -24,21 +24,6 @@ public abstract class Target<Entity> {
     protected final Coordinate centerLocation;
     protected final CannonVector velocity;
 
-    /*
-    public Target(Entity entity) {
-        this(
-                entity.getName(),
-                entityTrasformer(entity),
-                entity.getType(),
-                entity.getUniqueId(),
-                entity.getLocation().clone(),
-                entity instanceof LivingEntity livingEntity ?
-                        livingEntity.getEyeLocation().clone().add(0.0, -0.5, 0.0) :
-                        entity.getLocation().clone().add(0.0, 0.5, 0.0),
-                entity.getVelocity()
-        );
-    }*/
-
     public <T extends CannonMainDataHolder & CannonPositionHolder<?>> Target(T cannon) {
         this(
                 cannon.getCannonName(),
