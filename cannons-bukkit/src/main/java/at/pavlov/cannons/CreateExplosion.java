@@ -1,13 +1,12 @@
 package at.pavlov.cannons;
 
+import at.pavlov.bukkit.container.BukkitDeathCause;
 import at.pavlov.bukkit.container.holders.BukkitEntityHolder;
 import at.pavlov.bukkit.container.holders.BukkitSoundHolder;
 import at.pavlov.bukkit.container.holders.BukkitSpawnMaterialHolder;
 import at.pavlov.bukkit.factory.CoordinateUtil;
-import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.config.Config;
-import at.pavlov.bukkit.container.BukkitDeathCause;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.event.CannonDamageEvent;
@@ -24,8 +23,6 @@ import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.cannons.utils.SoundUtils;
-import at.pavlov.internal.container.location.CannonVector;
-import at.pavlov.internal.container.location.Coordinate;
 import at.pavlov.internal.enums.DamageType;
 import at.pavlov.internal.enums.EntityDataType;
 import at.pavlov.internal.enums.FakeBlockType;

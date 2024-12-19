@@ -1,8 +1,8 @@
 package at.pavlov.cannons.scheduler;
 
+import at.pavlov.bukkit.container.BukkitFakeBlockEntry;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.config.Config;
-import at.pavlov.bukkit.container.BukkitFakeBlockEntry;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.internal.enums.FakeBlockType;
 import lombok.Getter;

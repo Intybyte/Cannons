@@ -5,8 +5,6 @@ import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.container.location.Coordinate;
 import org.bukkit.Location;
-import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.HashSet;

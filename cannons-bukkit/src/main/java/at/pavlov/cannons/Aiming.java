@@ -1,6 +1,8 @@
 package at.pavlov.cannons;
 
 import at.pavlov.bukkit.cannons.data.BukkitCannonDesign;
+import at.pavlov.bukkit.container.BukkitMovingObject;
+import at.pavlov.bukkit.container.BukkitTarget;
 import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
@@ -11,8 +13,6 @@ import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
-import at.pavlov.bukkit.container.BukkitMovingObject;
-import at.pavlov.bukkit.container.BukkitTarget;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.event.CannonLinkAimingEvent;
 import at.pavlov.cannons.event.CannonTargetEvent;

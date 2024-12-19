@@ -1,7 +1,7 @@
 package at.pavlov.cannons.event;
 
-import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.bukkit.container.BukkitTarget;
+import at.pavlov.cannons.cannon.Cannon;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

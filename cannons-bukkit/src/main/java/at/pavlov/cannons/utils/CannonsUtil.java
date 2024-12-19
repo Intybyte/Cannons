@@ -1,5 +1,6 @@
 package at.pavlov.cannons.utils;
 
+import at.pavlov.bukkit.container.BukkitTarget;
 import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
@@ -7,7 +8,6 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.TargetManager;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
-import at.pavlov.bukkit.container.BukkitTarget;
 import at.pavlov.cannons.projectile.BukkitFlyingProjectile;
 import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.container.location.Coordinate;

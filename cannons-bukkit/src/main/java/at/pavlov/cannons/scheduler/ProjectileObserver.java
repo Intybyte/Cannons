@@ -11,7 +11,6 @@ import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
 import at.pavlov.internal.container.location.CannonVector;
-import at.pavlov.internal.container.location.Coordinate;
 import at.pavlov.internal.enums.FakeBlockType;
 import at.pavlov.internal.enums.ProjectileProperties;
 import io.papermc.lib.PaperLib;

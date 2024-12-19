@@ -4,7 +4,6 @@ import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
-import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.internal.utils.FileUtils;
 import lombok.Getter;
