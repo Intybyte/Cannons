@@ -7,7 +7,6 @@ import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.Config;
-import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.MainTaskManager;
 import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
 import at.pavlov.cannons.event.CannonFireEvent;

@@ -1,6 +1,4 @@
-package at.pavlov.cannons.scheduler;
-
-import at.pavlov.cannons.dao.AsyncTaskManager;
+package at.pavlov.internal.async;
 
 import java.util.concurrent.Future;
 

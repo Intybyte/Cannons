@@ -1,7 +1,6 @@
 package at.pavlov.cannons.utils;
 
 import at.pavlov.bukkit.container.holders.BukkitSoundHolder;
-import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.MainTaskManager;
 import org.bukkit.Location;
 import org.bukkit.Sound;

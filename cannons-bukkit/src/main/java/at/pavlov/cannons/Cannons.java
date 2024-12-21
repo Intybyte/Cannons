@@ -8,7 +8,7 @@ import at.pavlov.cannons.commands.CannonsCommandManager;
 import at.pavlov.cannons.commands.Commands;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
-import at.pavlov.cannons.dao.AsyncTaskManager;
+import at.pavlov.internal.async.AsyncTaskManager;
 import at.pavlov.cannons.dao.MainTaskManager;
 import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.hooks.VaultHook;

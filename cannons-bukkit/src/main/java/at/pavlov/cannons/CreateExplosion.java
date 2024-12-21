@@ -7,7 +7,6 @@ import at.pavlov.bukkit.container.holders.BukkitSpawnMaterialHolder;
 import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.config.Config;
-import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.MainTaskManager;
 import at.pavlov.cannons.event.CannonDamageEvent;
 import at.pavlov.cannons.event.CannonsEntityDeathEvent;

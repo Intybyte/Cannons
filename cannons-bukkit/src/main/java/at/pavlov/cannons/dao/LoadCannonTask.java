@@ -6,7 +6,7 @@ import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.CreateCannon;
-import at.pavlov.cannons.scheduler.RunnableAsync;
+import at.pavlov.internal.async.RunnableAsync;
 import at.pavlov.internal.container.location.CannonVector;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

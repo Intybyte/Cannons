@@ -4,7 +4,7 @@ import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
-import at.pavlov.cannons.scheduler.RunnableAsync;
+import at.pavlov.internal.async.RunnableAsync;
 
 import java.sql.PreparedStatement;
 import java.util.UUID;

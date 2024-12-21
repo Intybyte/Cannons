@@ -4,7 +4,6 @@ import at.pavlov.bukkit.projectile.BukkitFlyingProjectile;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
-import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.MainTaskManager;
 import at.pavlov.internal.enums.ProjectileCause;
 import lombok.Getter;

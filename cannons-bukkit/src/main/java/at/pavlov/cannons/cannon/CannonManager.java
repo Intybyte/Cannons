@@ -9,7 +9,6 @@ import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
-import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.LoadWhitelistTask;
 import at.pavlov.cannons.dao.MainTaskManager;
 import at.pavlov.cannons.dao.wrappers.RemoveTaskWrapper;

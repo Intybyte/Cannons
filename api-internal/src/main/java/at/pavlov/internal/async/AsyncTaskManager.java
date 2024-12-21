@@ -1,4 +1,4 @@
-package at.pavlov.cannons.dao;
+package at.pavlov.internal.async;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
