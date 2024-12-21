@@ -8,7 +8,7 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.TargetManager;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
-import at.pavlov.cannons.projectile.BukkitFlyingProjectile;
+import at.pavlov.bukkit.projectile.BukkitFlyingProjectile;
 import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.container.location.Coordinate;
 import at.pavlov.internal.enums.ProjectileProperties;

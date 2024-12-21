@@ -1,7 +1,7 @@
 package at.pavlov.cannons.event;
 
 import at.pavlov.bukkit.factory.CoordinateUtil;
-import at.pavlov.cannons.projectile.BukkitFlyingProjectile;
+import at.pavlov.bukkit.projectile.BukkitFlyingProjectile;
 import at.pavlov.internal.enums.DamageType;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;

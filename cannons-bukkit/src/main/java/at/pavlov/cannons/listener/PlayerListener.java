@@ -11,7 +11,7 @@ import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.multiversion.PotionTypeResolver;
-import at.pavlov.cannons.projectile.BukkitFlyingProjectile;
+import at.pavlov.bukkit.projectile.BukkitFlyingProjectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonSelector;

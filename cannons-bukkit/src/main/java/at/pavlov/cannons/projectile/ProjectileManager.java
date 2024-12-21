@@ -1,5 +1,6 @@
 package at.pavlov.cannons.projectile;
 
+import at.pavlov.bukkit.projectile.BukkitFlyingProjectile;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;

@@ -6,7 +6,7 @@ import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.dao.AsyncTaskManager;
-import at.pavlov.cannons.projectile.BukkitFlyingProjectile;
+import at.pavlov.bukkit.projectile.BukkitFlyingProjectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;

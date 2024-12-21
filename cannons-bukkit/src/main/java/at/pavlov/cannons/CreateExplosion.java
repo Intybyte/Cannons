@@ -15,7 +15,7 @@ import at.pavlov.cannons.event.ProjectileImpactEvent;
 import at.pavlov.cannons.event.ProjectilePiercingEvent;
 import at.pavlov.cannons.multiversion.EntityTypeResolver;
 import at.pavlov.cannons.multiversion.EventResolver;
-import at.pavlov.cannons.projectile.BukkitFlyingProjectile;
+import at.pavlov.bukkit.projectile.BukkitFlyingProjectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;

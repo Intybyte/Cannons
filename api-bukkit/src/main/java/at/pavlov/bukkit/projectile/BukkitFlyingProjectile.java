@@ -1,9 +1,8 @@
-package at.pavlov.cannons.projectile;
+package at.pavlov.bukkit.projectile;
 
 import at.pavlov.bukkit.container.BukkitMovingObject;
 import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.factory.VectorUtils;
-import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.container.location.Coordinate;
 import at.pavlov.internal.enums.ProjectileCause;
