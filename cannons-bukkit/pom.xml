@@ -127,12 +127,6 @@
             <version>0.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>io.papermc</groupId>
-            <artifactId>paperlib</artifactId>
-            <version>1.0.7</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>net.countercraft</groupId>
             <artifactId>movecraft</artifactId>
             <version>8.0.0_beta-5</version>
