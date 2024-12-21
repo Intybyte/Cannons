@@ -215,7 +215,7 @@ public class CannonManager {
                     }
                 }
 
-                MessageEnum message = cannon.destroyCannon(task.breakCannon(), task.canExplode(), cause);
+                MessageEnum message = cannon.destroyCannon(task.isBreakCannon(), task.isCanExplode(), cause);
                 if (player != null)
                     userMessages.sendMessage(message, player, cannon);
 
@@ -230,7 +230,7 @@ public class CannonManager {
                 Aiming.getInstance().removeCannon(cannon);
 
                 //remove entry
-                if (task.removeEntry())
+                if (task.isRemoveEntry())
                     cannonList.remove(cannon.getUID());
 
             }

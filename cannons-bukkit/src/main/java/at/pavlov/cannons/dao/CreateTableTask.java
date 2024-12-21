@@ -1,11 +1,10 @@
 package at.pavlov.cannons.dao;
 
 import at.pavlov.cannons.Cannons;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Statement;
 
-public class CreateTableTask extends BukkitRunnable {
+public class CreateTableTask implements Runnable {
     @Override
     public void run() {
         String sql1 = String.format("CREATE TABLE IF NOT EXISTS %s (" +
