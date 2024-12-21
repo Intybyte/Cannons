@@ -8,7 +8,6 @@ import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.dao.AsyncTaskManager;
-import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.event.CannonDamageEvent;
 import at.pavlov.cannons.event.CannonsEntityDeathEvent;
 import at.pavlov.cannons.event.ProjectileImpactEvent;
@@ -945,9 +944,7 @@ public class CreateExplosion {
             Location loc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
 
             taskManager.scheduler.runTaskLater(loc,
-                new DelayedTask<>(cannonball) {
-                    @Override
-                    public void run(BukkitFlyingProjectile cannonball) {
+                    () -> {
                         BukkitProjectile proj = cannonball.getProjectile();
 
                         Location expLoc = CannonsUtil.randomPointInSphere(
@@ -962,8 +959,7 @@ public class CreateExplosion {
                             CreateExplosion.this.sendExplosionToPlayers(null, expLoc,
                                     projectile.getSoundImpact());
                         }
-                    }
-                }, (long) (delay * 20.0)
+                    }, (long) (delay * 20.0)
             );
         }
     }
@@ -1114,29 +1110,26 @@ public class CreateExplosion {
         Location baseImpactLoc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
         Location impactLoc = baseImpactLoc.subtract(subVector);
 
-        taskManager.scheduler.runTaskLater(impactLoc, new DelayedTask<>(cannonball) {
-            @Override
-            public void run(BukkitFlyingProjectile cannonball) {
-                BukkitProjectile projectile = cannonball.getProjectile();
+        taskManager.scheduler.runTaskLater(impactLoc, () -> {
+            BukkitProjectile projectile = cannonball.getProjectile();
 
-                /*
-                Location impactBlock = cannonball.getImpactBlock();
-                Vector vnormal = CannonsUtil.detectImpactSurfaceNormal(cannonball.getImpactLocation().toVector(),
-                        cannonball.getVelocity().clone());
+            /*
+            Location impactBlock = cannonball.getImpactBlock();
+            Vector vnormal = CannonsUtil.detectImpactSurfaceNormal(cannonball.getImpactLocation().toVector(),
+                    cannonball.getVelocity().clone());
 
-                 */
+             */
 
-                Vector vectdeflect = cannonball.getVelocity().multiply(.5);
-                // vectdeflect.add(new
-                // Vector(vectdeflect.length()*r.nextGaussian()*0.2,vectdeflect.length()*r.nextGaussian()*0.2,vectdeflect.length()*r.nextGaussian()*0.2));
-                vectdeflect.setY(-vectdeflect.getY());
-                CreateExplosion.this.plugin.logDebug("Deflect projectile: " + vectdeflect);
+            Vector vectdeflect1 = cannonball.getVelocity().multiply(.5);
+            // vectdeflect.add(new
+            // Vector(vectdeflect.length()*r.nextGaussian()*0.2,vectdeflect.length()*r.nextGaussian()*0.2,vectdeflect.length()*r.nextGaussian()*0.2));
+            vectdeflect1.setY(-vectdeflect1.getY());
+            CreateExplosion.this.plugin.logDebug("Deflect projectile: " + vectdeflect1);
 
-                ProjectileManager.getInstance().spawnProjectile(projectile,
-                        cannonball.getShooterUID(), cannonball.getSource(),
-                        CoordinateUtil.toLoc(cannonball.getPlayerlocation()),
-                        impactLoc.clone(), vectdeflect, cannonball.getCannonUID(), ProjectileCause.DeflectedProjectile);
-            }
+            ProjectileManager.getInstance().spawnProjectile(projectile,
+                    cannonball.getShooterUID(), cannonball.getSource(),
+                    CoordinateUtil.toLoc(cannonball.getPlayerlocation()),
+                    impactLoc.clone(), vectdeflect1, cannonball.getCannonUID(), ProjectileCause.DeflectedProjectile);
         }, 1L);
 
         return true;
@@ -1152,30 +1145,27 @@ public class CreateExplosion {
             return;
 
         Location impactLoc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
-        taskManager.scheduler.runTaskLater(impactLoc, new DelayedTask<>(cannonball) {
-            @Override
-            public void run(BukkitFlyingProjectile cannonball) {
-                BukkitProjectile projectile = cannonball.getProjectile();
+        taskManager.scheduler.runTaskLater(impactLoc, () -> {
+            BukkitProjectile projectile = cannonball.getProjectile();
 
-                for (String strProj : projectile.getSpawnProjectiles()) {
-                    BukkitProjectile newProjectiles = ProjectileStorage.getInstance().getByName(strProj);
-                    if (newProjectiles == null) {
-                        CreateExplosion.this.plugin.logSevere(
-                                "Can't use spawnProjectile " + strProj + " because Projectile does not exist");
-                        continue;
-                    }
+            for (String strProj : projectile.getSpawnProjectiles()) {
+                BukkitProjectile newProjectiles = ProjectileStorage.getInstance().getByName(strProj);
+                if (newProjectiles == null) {
+                    CreateExplosion.this.plugin.logSevere(
+                            "Can't use spawnProjectile " + strProj + " because Projectile does not exist");
+                    continue;
+                }
 
-                    for (int i = 0; i < newProjectiles.getNumberOfBullets(); i++) {
-                        Vector vect = new Vector(r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5);
-                        vect = vect.normalize().multiply(newProjectiles.getVelocity());
+                for (int i = 0; i < newProjectiles.getNumberOfBullets(); i++) {
+                    Vector vect = new Vector(r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5);
+                    vect = vect.normalize().multiply(newProjectiles.getVelocity());
 
-                        // don't spawn the projectile in the center
-                        Location spawnLoc = impactLoc.clone().add(vect.clone().normalize().multiply(3.0));
+                    // don't spawn the projectile in the center
+                    Location spawnLoc = impactLoc.clone().add(vect.clone().normalize().multiply(3.0));
 
-                        ProjectileManager.getInstance().spawnProjectile(newProjectiles,
-                                cannonball.getShooterUID(), cannonball.getSource(), null, spawnLoc, vect,
-                                cannonball.getCannonUID(), ProjectileCause.SpawnedProjectile);
-                    }
+                    ProjectileManager.getInstance().spawnProjectile(newProjectiles,
+                            cannonball.getShooterUID(), cannonball.getSource(), null, spawnLoc, vect,
+                            cannonball.getCannonUID(), ProjectileCause.SpawnedProjectile);
                 }
             }
         }, 1L);
@@ -1206,12 +1196,7 @@ public class CreateExplosion {
 
         // detonate firework after 1tick. This seems to works much better than
         // detonating instantaneously
-        taskManager.scheduler.runTaskLater(fw, new DelayedTask<>(fw) {
-            @Override
-            public void run(Firework object) {
-                fw.detonate();
-            }
-        }, 1L);
+        taskManager.scheduler.runTaskLater(fw, fw::detonate, 1L);
     }
 
     /**

@@ -5,7 +5,6 @@ import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.dao.AsyncTaskManager;
-import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.internal.enums.ProjectileCause;
 import lombok.Getter;
 import org.apache.commons.lang3.Validate;
@@ -95,21 +94,20 @@ public class ProjectileManager {
         }
 
         //Delayed Task
-        AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask<>(cannonball.getEntityUID()) {
-            public void run(UUID object) {
-                //find given UID in list
-                BukkitFlyingProjectile fproj = flyingProjectilesMap.get(object);
+        final UUID uuid = cannonball.getEntityUID();
+        AsyncTaskManager.get().scheduler.runTaskLater(() -> {
+            //find given UID in list
+            BukkitFlyingProjectile fproj = flyingProjectilesMap.get(uuid);
 
-                if (fproj != null) {
-                    //detonate timefuse
-                    Projectile projectile_entity = fproj.getProjectileEntity();
-                    //the projectile might be null
-                    if (projectile_entity != null) {
-                        CreateExplosion.getInstance().detonate(cannonball, projectile_entity);
-                        projectile_entity.remove();
-                    }
-                    flyingProjectilesMap.remove(cannonball.getEntityUID());
+            if (fproj != null) {
+                //detonate timefuse
+                Projectile projectile_entity = fproj.getProjectileEntity();
+                //the projectile might be null
+                if (projectile_entity != null) {
+                    CreateExplosion.getInstance().detonate(cannonball, projectile_entity);
+                    projectile_entity.remove();
                 }
+                flyingProjectilesMap.remove(cannonball.getEntityUID());
             }
         }, (long) (cannonball.getProjectile().getTimefuse() * 20));
     }
