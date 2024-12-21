@@ -95,8 +95,8 @@ public class ProjectileManager {
         }
 
         //Delayed Task
-        AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask(cannonball.getEntityUID()) {
-            public void run(Object object) {
+        AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask<>(cannonball.getEntityUID()) {
+            public void run(UUID object) {
                 //find given UID in list
                 BukkitFlyingProjectile fproj = flyingProjectilesMap.get(object);
 

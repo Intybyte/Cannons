@@ -306,9 +306,8 @@ public class FireCannon {
                 double randomess = 1. + design.getFuseBurnTimeRandomness() * random.nextDouble();
                 long delayTime = (long) (randomess * design.getFuseBurnTime() * 20.0 + i * projectile.getAutomaticFiringDelay() * 20.0);
                 FireTaskWrapper fireTask = new FireTaskWrapper(cannon, playerUid, lastRound, projectileCause);
-                scheduler.runTaskLater(cannon.getLocation(), new DelayedTask(fireTask) {
-                    public void run(Object object) {
-                        FireTaskWrapper fireTask = (FireTaskWrapper) object;
+                scheduler.runTaskLater(cannon.getLocation(), new DelayedTask<>(fireTask) {
+                    public void run(FireTaskWrapper fireTask) {
                         fireTask(fireTask.getCannon(), fireTask.getPlayer(), fireTask.isRemoveCharge(), projectileCause);
                     }
                 }, delayTime);

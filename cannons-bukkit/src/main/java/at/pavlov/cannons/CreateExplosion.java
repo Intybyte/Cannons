@@ -945,10 +945,9 @@ public class CreateExplosion {
             Location loc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
 
             taskManager.scheduler.runTaskLater(loc,
-                new DelayedTask(cannonball) {
+                new DelayedTask<>(cannonball) {
                     @Override
-                    public void run(Object object) {
-                        BukkitFlyingProjectile cannonball = (BukkitFlyingProjectile) object;
+                    public void run(BukkitFlyingProjectile cannonball) {
                         BukkitProjectile proj = cannonball.getProjectile();
 
                         Location expLoc = CannonsUtil.randomPointInSphere(
@@ -1115,11 +1114,9 @@ public class CreateExplosion {
         Location baseImpactLoc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
         Location impactLoc = baseImpactLoc.subtract(subVector);
 
-        taskManager.scheduler.runTaskLater(impactLoc, new DelayedTask(cannonball) {
+        taskManager.scheduler.runTaskLater(impactLoc, new DelayedTask<>(cannonball) {
             @Override
-            public void run(Object object) {
-                BukkitFlyingProjectile cannonball = (BukkitFlyingProjectile) object;
-
+            public void run(BukkitFlyingProjectile cannonball) {
                 BukkitProjectile projectile = cannonball.getProjectile();
 
                 /*
@@ -1155,13 +1152,10 @@ public class CreateExplosion {
             return;
 
         Location impactLoc = CoordinateUtil.toLoc(cannonball.getImpactLocation());
-        taskManager.scheduler.runTaskLater(impactLoc, new DelayedTask(cannonball) {
+        taskManager.scheduler.runTaskLater(impactLoc, new DelayedTask<>(cannonball) {
             @Override
-            public void run(Object object) {
-                BukkitFlyingProjectile cannonball = (BukkitFlyingProjectile) object;
-
+            public void run(BukkitFlyingProjectile cannonball) {
                 BukkitProjectile projectile = cannonball.getProjectile();
-
 
                 for (String strProj : projectile.getSpawnProjectiles()) {
                     BukkitProjectile newProjectiles = ProjectileStorage.getInstance().getByName(strProj);
@@ -1212,10 +1206,9 @@ public class CreateExplosion {
 
         // detonate firework after 1tick. This seems to works much better than
         // detonating instantaneously
-        taskManager.scheduler.runTaskLater(fw, new DelayedTask(fw) {
+        taskManager.scheduler.runTaskLater(fw, new DelayedTask<>(fw) {
             @Override
-            public void run(Object object) {
-                Firework fw = (Firework) object;
+            public void run(Firework object) {
                 fw.detonate();
             }
         }, 1L);

@@ -1,9 +1,9 @@
 package at.pavlov.cannons.dao;
 
-public abstract class DelayedTask implements Runnable {
-	private final Object wrapper;
+public abstract class DelayedTask<Wrapped> implements Runnable {
+	private final Wrapped wrapper;
 
-    public DelayedTask(Object wrapper) {
+    public DelayedTask(Wrapped wrapper) {
         this.wrapper = wrapper;
     }
    
@@ -12,5 +12,5 @@ public abstract class DelayedTask implements Runnable {
         run(wrapper);
     }
    
-    public abstract void run(Object wrapper2);
+    public abstract void run(Wrapped wrapper2);
 }

@@ -192,9 +192,8 @@ public class CannonManager {
 
         //delay the remove task, so it fits to the sound
         RemoveTaskWrapper task = new RemoveTaskWrapper(cannon, breakCannon, canExplode, cause, removeEntry, ignoreInvalid);
-        AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask(task) {
-            public void run(Object object) {
-                RemoveTaskWrapper task = (RemoveTaskWrapper) object;
+        AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask<>(task) {
+            public void run(RemoveTaskWrapper task) {
                 Cannon cannon = task.getCannon();
                 BreakCause cause = task.getCause();
                 UUID owner = cannon.getOwner();
