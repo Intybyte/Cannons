@@ -33,7 +33,7 @@ public class LoadCannonTask implements RunnableAsync {
             );
 
             // found cannons - load them
-            var taskManager = AsyncTaskManager.get();
+            MainTaskManager taskManager = MainTaskManager.get();
             while (rs.next()) {
                 UUID cannon_id = UUID.fromString(rs.getString("id"));
                 //check if cannon design exists

@@ -4,6 +4,7 @@ import at.pavlov.bukkit.container.BukkitFakeBlockEntry;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.dao.AsyncTaskManager;
+import at.pavlov.cannons.dao.MainTaskManager;
 import at.pavlov.internal.enums.FakeBlockType;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -26,7 +27,7 @@ public class FakeBlockHandler {
 
     private long lastAiming;
     private long lastImpactPredictor;
-    private final AsyncTaskManager taskManager;
+    private final MainTaskManager taskManager;
 
     @Getter
     private static FakeBlockHandler instance = null;
@@ -35,7 +36,7 @@ public class FakeBlockHandler {
 
     private FakeBlockHandler(Cannons plugin) {
         this.plugin = plugin;
-        taskManager = AsyncTaskManager.get();
+        taskManager = MainTaskManager.get();
     }
 
     public static void initialize(Cannons plugin) {

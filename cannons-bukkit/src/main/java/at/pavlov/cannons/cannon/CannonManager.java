@@ -11,6 +11,7 @@ import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.LoadWhitelistTask;
+import at.pavlov.cannons.dao.MainTaskManager;
 import at.pavlov.cannons.dao.wrappers.RemoveTaskWrapper;
 import at.pavlov.cannons.event.CannonAfterCreateEvent;
 import at.pavlov.cannons.event.CannonBeforeCreateEvent;
@@ -191,7 +192,7 @@ public class CannonManager {
 
         //delay the remove task, so it fits to the sound
         final RemoveTaskWrapper removeTaskWrapper = new RemoveTaskWrapper(cannon, breakCannon, canExplode, cause, removeEntry, ignoreInvalid);
-        AsyncTaskManager.get().scheduler.runTaskLater(() -> {
+        MainTaskManager.get().scheduler.runTaskLater(() -> {
             Cannon cannon1 = removeTaskWrapper.getCannon();
             BreakCause cause1 = removeTaskWrapper.getCause();
             UUID owner = cannon1.getOwner();
@@ -415,7 +416,7 @@ public class CannonManager {
     }
 
     public void dismantleCannonsInBox(Player player, Location center, int size) {
-        var taskManager = AsyncTaskManager.get();
+        var taskManager = MainTaskManager.get();
         taskManager.scheduler.runTask(center, () -> {
             var cannonHashSet = getCannonsInBox(center, size, size, size);
             for (Cannon cannon : cannonHashSet) {
@@ -566,8 +567,7 @@ public class CannonManager {
         startCannonCreation(cannon, message, owner, silent);
 
         Cannon finalCannon = cannon;
-        var taskManager = AsyncTaskManager.get();
-        taskManager.fireSyncRunnable(() -> {
+        MainTaskManager.get().fireSyncRunnable(() -> {
             CannonAfterCreateEvent caceEvent = new CannonAfterCreateEvent(finalCannon, player.getUniqueId());
             Bukkit.getServer().getPluginManager().callEvent(caceEvent);
         });
@@ -581,7 +581,7 @@ public class CannonManager {
         plugin.logDebug("CannonBeforeCreateEvent Cannon: " + cannon + "message: " + message + " player: " + player);
         plugin.logDebug("player.getUniqueId(): " + player.getUniqueId());
 
-        var taskManager = AsyncTaskManager.get();
+        var taskManager = MainTaskManager.get();
         CannonBeforeCreateEvent cbceEvent = taskManager.fireSyncSupplier(() -> {
             CannonBeforeCreateEvent event = new CannonBeforeCreateEvent(cannon, message, player.getUniqueId());
             Bukkit.getServer().getPluginManager().callEvent(event);
@@ -610,7 +610,7 @@ public class CannonManager {
         createCannon(cannon, true);
 
         //send messages
-        var taskManager = AsyncTaskManager.get();
+        var taskManager = MainTaskManager.get();
         if (!silent) {
             Player player = Bukkit.getPlayer(owner);
             taskManager.scheduler.runTask(player, () -> {

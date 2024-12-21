@@ -9,6 +9,7 @@ import at.pavlov.cannons.commands.Commands;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.dao.AsyncTaskManager;
+import at.pavlov.cannons.dao.MainTaskManager;
 import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.hooks.VaultHook;
 import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
@@ -96,7 +97,8 @@ public final class Cannons extends JavaPlugin implements CannonDatabase
 	public void onLoad() {
 		CannonLogger.instantiate(this.getLogger());
 		// must be done in onLoad because "movecraft"
-		AsyncTaskManager.initialize(this);
+		MainTaskManager.initialize(this);
+		AsyncTaskManager.initialize(2);
 		UserMessages.initialize(this);
 		Config.initialize(this);
 		CannonManager.initialize(this);
@@ -130,7 +132,7 @@ public final class Cannons extends JavaPlugin implements CannonDatabase
 	}
 
 	public void onDisable() {
-		AsyncTaskManager.get().scheduler.cancelTasks();
+		MainTaskManager.get().scheduler.cancelTasks();
 		AsyncTaskManager.get().async.shutdown();
 
 		// save database on shutdown
@@ -216,7 +218,7 @@ public final class Cannons extends JavaPlugin implements CannonDatabase
 		startTime = System.nanoTime();
 
 
-		var taskManager = AsyncTaskManager.get();
+		var taskManager = MainTaskManager.get();
 		//load some global variables
 		try
 		{
@@ -230,7 +232,7 @@ public final class Cannons extends JavaPlugin implements CannonDatabase
 
 
 			// Initialize the database
-			taskManager.async.submit(() -> {
+			AsyncTaskManager.get().async.submit(() -> {
                 try {
                     openConnection();
                     Statement statement = connection.createStatement();
@@ -253,7 +255,7 @@ public final class Cannons extends JavaPlugin implements CannonDatabase
             FakeBlockHandler.getInstance().setupScheduler();
 
 			// save cannons
-			AsyncTaskManager.get().scheduler.runTaskTimer(() -> persistenceDatabase.saveAllCannons(true), 6000L, 6000L);
+			MainTaskManager.get().scheduler.runTaskTimer(() -> persistenceDatabase.saveAllCannons(true), 6000L, 6000L);
 
 			Metrics metrics = new Metrics(this, 23139);
 			metrics.addCustomChart(

@@ -8,6 +8,7 @@ import at.pavlov.bukkit.factory.CoordinateUtil;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.dao.AsyncTaskManager;
+import at.pavlov.cannons.dao.MainTaskManager;
 import at.pavlov.cannons.event.CannonDamageEvent;
 import at.pavlov.cannons.event.CannonsEntityDeathEvent;
 import at.pavlov.cannons.event.ProjectileImpactEvent;
@@ -83,7 +84,7 @@ public class CreateExplosion {
     // players killed by cannons <Player, Cannon>
     private final HashMap<UUID, BukkitDeathCause> killedPlayers = new HashMap<>();
 
-    private final AsyncTaskManager taskManager = AsyncTaskManager.get();
+    private final MainTaskManager taskManager = MainTaskManager.get();
     private final Random r = new Random();
 
     @Getter

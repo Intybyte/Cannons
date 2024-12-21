@@ -8,6 +8,7 @@ import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.dao.AsyncTaskManager;
+import at.pavlov.cannons.dao.MainTaskManager;
 import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
 import at.pavlov.cannons.event.CannonFireEvent;
 import at.pavlov.cannons.event.CannonLinkFiringEvent;
@@ -23,6 +24,7 @@ import at.pavlov.internal.enums.InteractAction;
 import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.internal.enums.ProjectileCause;
 import at.pavlov.internal.enums.ProjectileProperties;
+import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
@@ -296,7 +298,7 @@ public class FireCannon {
 
         }
 
-        var scheduler = AsyncTaskManager.get().scheduler;
+        TaskScheduler scheduler = MainTaskManager.get().scheduler;
         try {
             //set up delayed task with automatic firing. Several bullets with time delay for one loaded projectile
             for (int i = 0; i < projectile.getAutomaticFiringMagazineSize(); i++) {

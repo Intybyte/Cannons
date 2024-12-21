@@ -11,6 +11,7 @@ import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.dao.AsyncTaskManager;
+import at.pavlov.cannons.dao.MainTaskManager;
 import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonSelector;
@@ -56,7 +57,7 @@ public class Commands extends BaseCommand {
     private static PersistenceDatabase persistenceDatabase;
     private static CannonManager cannonManager;
     private static CannonSelector cannonSelector;
-    private static AsyncTaskManager taskManager;
+    private static MainTaskManager taskManager;
 
     public Commands(Cannons plugin) {
         cannons = plugin;
@@ -67,7 +68,7 @@ public class Commands extends BaseCommand {
         persistenceDatabase = cannons.getPersistenceDatabase();
         cannonSelector = CannonSelector.getInstance();
 
-        taskManager = AsyncTaskManager.get();
+        taskManager = MainTaskManager.get();
     }
 
     @HelpCommand
@@ -429,7 +430,7 @@ public class Commands extends BaseCommand {
             taskManager.scheduler.runTask(player, () -> {
                 userMessages.sendMessage(MessageEnum.CmdClaimCannonsFinished, player);
             });
-        }, taskManager.async);
+        }, AsyncTaskManager.get().async);
     }
 
     @Subcommand("resetarea")
@@ -449,7 +450,7 @@ public class Commands extends BaseCommand {
             taskManager.scheduler.runTask(player, () -> {
                 player.sendMessage("N: " + cannonList.size() + " cannons nearby have been deleted");
             });
-        }, taskManager.async);
+        }, AsyncTaskManager.get().async);
 
     }
 
@@ -469,7 +470,7 @@ public class Commands extends BaseCommand {
                 var location = cannon.getLocation();
                 taskManager.scheduler.runTask(location, () -> cannonManager.dismantleCannon(cannon, player));
             }
-        }, taskManager.async);
+        }, AsyncTaskManager.get().async);
     }
 
     @Subcommand("scanArea")

@@ -7,6 +7,7 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.bukkit.projectile.BukkitFlyingProjectile;
+import at.pavlov.cannons.dao.MainTaskManager;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
@@ -45,7 +46,7 @@ public class ProjectileObserver {
     public void setupScheduler()
     {
         //changing angles for aiming mode
-        var taskManager = AsyncTaskManager.get();
+        MainTaskManager taskManager = MainTaskManager.get();
         taskManager.scheduler.runTaskTimer(() -> {
             //get projectiles
             var projectiles = ProjectileManager
