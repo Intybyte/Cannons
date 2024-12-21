@@ -29,13 +29,11 @@ public class DeleteCannonTask implements RunnableAsync {
     @Override
     public void run() {
         try (Statement statement = Cannons.getPlugin().getConnection().createStatement()) {
-            if (cannonId == null && playerId == null){
+            if (cannonId == null && playerId == null) {
                 statement.executeUpdate(String.format("DELETE FROM %s", Cannons.getPlugin().getCannonDatabase()));
-            }
-            else if (cannonId != null) {
+            } else if (cannonId != null) {
                 statement.executeUpdate(String.format("DELETE FROM %s WHERE id='%s'", Cannons.getPlugin().getCannonDatabase(), cannonId));
-            }
-            else{
+            } else {
                 statement.executeUpdate(String.format("DELETE FROM %s WHERE owner='%s'", Cannons.getPlugin().getCannonDatabase(), playerId));
             }
         } catch (Exception e) {

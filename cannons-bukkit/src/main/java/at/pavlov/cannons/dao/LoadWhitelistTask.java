@@ -10,9 +10,9 @@ import java.sql.Statement;
 import java.util.UUID;
 
 public class LoadWhitelistTask implements RunnableAsync {
-    private UUID cannonId;
+    private final UUID cannonId;
 
-    public LoadWhitelistTask(UUID cannonId){
+    public LoadWhitelistTask(UUID cannonId) {
         this.cannonId = cannonId;
     }
 
@@ -25,12 +25,12 @@ public class LoadWhitelistTask implements RunnableAsync {
             );
 
             Cannon cannon = CannonManager.getCannon(cannonId);
-            if (cannon == null){
+            if (cannon == null) {
                 return;
             }
 
             while (rs.next()) {
-                if (rs.getString("player") !=null)
+                if (rs.getString("player") != null)
                     cannon.addWhitelistPlayer(UUID.fromString(rs.getString("player")));
             }
             rs.close();
