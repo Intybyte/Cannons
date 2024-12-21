@@ -25,6 +25,7 @@ import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.scheduler.ProjectileObserver;
 import at.pavlov.cannons.utils.CannonSelector;
+import at.pavlov.internal.CannonDatabase;
 import at.pavlov.internal.CannonLogger;
 import at.pavlov.internal.ModrinthUpdateChecker;
 import at.pavlov.internal.enums.MessageEnum;
@@ -51,7 +52,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public final class Cannons extends JavaPlugin
+public final class Cannons extends JavaPlugin implements CannonDatabase
 {
 	private PluginManager pm;
 	private final Logger logger = Logger.getLogger("Minecraft");

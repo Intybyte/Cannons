@@ -1,10 +1,14 @@
 package at.pavlov.cannons.dao;
 
-import at.pavlov.cannons.Cannons;
+import at.pavlov.internal.CannonDatabase;
+import lombok.AllArgsConstructor;
 
 import java.sql.Statement;
 
+@AllArgsConstructor
 public class CreateTableTask implements Runnable {
+    private final CannonDatabase cannonDatabase;
+
     @Override
     public void run() {
         String sql1 = String.format("CREATE TABLE IF NOT EXISTS %s (" +
@@ -31,7 +35,7 @@ public class CreateTableTask implements Runnable {
                         "target_cannon BOOLEAN," +
                         "target_other BOOLEAN," +
                         "paid BOOLEAN)"
-                , Cannons.getPlugin().getCannonDatabase());
+                , cannonDatabase.getCannonDatabase());
         String sql2 = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                         "cannon_bean_id VARCHAR(40) NOT NULL," +
                         "player VARCHAR(40) NOT NULL," +
@@ -40,8 +44,8 @@ public class CreateTableTask implements Runnable {
                         "ON UPDATE CASCADE " +
                         "ON DELETE CASCADE" +
                         ")"
-                , Cannons.getPlugin().getWhitelistDatabase(), Cannons.getPlugin().getCannonDatabase());
-        try (Statement statement = Cannons.getPlugin().getConnection().createStatement()) {
+                , cannonDatabase.getWhitelistDatabase(), cannonDatabase.getCannonDatabase());
+        try (Statement statement = cannonDatabase.getConnection().createStatement()) {
             statement.execute(sql1);
             statement.execute(sql2);
         } catch (Exception e) {
