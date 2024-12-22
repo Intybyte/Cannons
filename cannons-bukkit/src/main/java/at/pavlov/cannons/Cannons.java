@@ -183,7 +183,6 @@ public final class Cannons extends JavaPlugin
 		this.cannonsAPI = new CannonsAPI(this);
 
 		this.persistenceDatabase = new PersistenceDatabase(this);
-        RedstoneListener redstoneListener = new RedstoneListener(this);
 
 		long startTime = System.currentTimeMillis();
 		hookManager = new HookManager();
@@ -216,7 +215,7 @@ public final class Cannons extends JavaPlugin
 			pm.registerEvents(new BlockListener(this), this);
 			pm.registerEvents(new PlayerListener(this), this);
 			pm.registerEvents(new EntityListener(this), this);
-			pm.registerEvents(redstoneListener, this);
+			pm.registerEvents(new RedstoneListener(this), this);
 			pm.registerEvents(new UpdateNotifier(this), this);
 			//call command executer
 			initializeCommands();
