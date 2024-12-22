@@ -1,20 +1,14 @@
 package at.pavlov.cannons.utils;
 
-import at.pavlov.bukkit.container.BukkitTarget;
 import at.pavlov.bukkit.factory.CoordinateUtil;
-import at.pavlov.bukkit.factory.VectorUtils;
 import at.pavlov.bukkit.projectile.BukkitProjectile;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.TargetManager;
-import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.bukkit.projectile.BukkitFlyingProjectile;
 import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.container.location.Coordinate;
 import at.pavlov.internal.enums.ProjectileProperties;
 import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -23,14 +17,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -339,81 +330,6 @@ public class CannonsUtil
         PaperLib.teleportAsync(player, teleLoc);
         player.setVelocity(new Vector(0,0,0));
         cannonball.setTeleported(true);
-    }
-
-    /**
-     * returns all entity in a given radius
-     * @param l center location
-     * @param minRadius minimum radius for search
-     * @param maxRadius radius for search
-     * @return hashmap of Entities in area
-     */
-    public static HashMap<UUID, Entity> getNearbyEntities(Location l, int minRadius, int maxRadius){
-        int chunkRadius = maxRadius < 16 ? 1 : (maxRadius - (maxRadius % 16))/16;
-        HashMap<UUID, Entity> radiusEntities = new HashMap<>();
-        for (int chX = -chunkRadius; chX <= chunkRadius; chX ++){
-            for (int chZ = -chunkRadius; chZ <= chunkRadius; chZ++){
-                int x=(int) l.getX(),y=(int) l.getY(),z=(int) l.getZ();
-                for (Entity e : new Location(l.getWorld(),x+(chX*16),y,z+(chZ*16)).getChunk().getEntities()){
-                    double dist = e.getLocation().distance(l);
-                    if (minRadius <= dist && dist <= maxRadius && e.getLocation().getBlock() != l.getBlock())
-                        radiusEntities.put(e.getUniqueId(), e);
-                }
-            }
-        }
-        return radiusEntities;
-    }
-
-    /**
-     * This method searches in the nearby chunks in a square and
-     * returns all targets (entity and cannons) in a given radius
-     * @param l center location
-     * @param minRadius minimum radius for search
-     * @param maxRadius radius for search
-     * @return array of Entities in area
-     */
-    public static HashMap<UUID, BukkitTarget> getNearbyTargets(Location l, int minRadius, int maxRadius){
-        int chunkTargets = maxRadius < 16 ? 1 : (maxRadius - (maxRadius % 16))/16;
-        HashMap<UUID, BukkitTarget> radiusTargets = new HashMap<>();
-
-        for (int chX = -chunkTargets; chX <= chunkTargets; chX++){
-            for (int chZ = -chunkTargets; chZ <= chunkTargets; chZ++){
-
-                int x=(int) l.getX(), y=(int) l.getY(), z=(int) l.getZ();
-
-                for (Entity e : new Location(l.getWorld(),x+(chX*16),y,z+(chZ*16)).getChunk().getEntities()){
-                    if (!e.getWorld().equals(l.getWorld())) {
-                        continue;
-                    }
-
-
-                    if (!(e instanceof LivingEntity) || e.isDead() || e.getLocation().getBlock() == l.getBlock()) {
-                        continue;
-                    }
-
-                    double dist = e.getLocation().distanceSquared(l);
-                    if (maxRadius * maxRadius < dist || dist < minRadius * minRadius) {
-                        continue;
-                    }
-
-                    if (e instanceof Player p){
-                        if (p.getGameMode() == GameMode.CREATIVE || p.hasPermission("cannons.admin.notarget"))
-                            continue;
-                    }
-
-                    radiusTargets.put(e.getUniqueId(), new BukkitTarget(e));
-                }
-            }
-        }
-        for (Cannon cannon : CannonManager.getInstance().getCannonsInSphere(l, maxRadius))
-            if (cannon.getRandomBarrelBlock().distanceSquared(l) > minRadius * minRadius)
-                radiusTargets.put(cannon.getUID(), new BukkitTarget(cannon));
-
-        // additional targets from different plugins e.g. ships
-        for (BukkitTarget target : TargetManager.getTargetsInSphere(l, maxRadius))
-            if (target.centerLocation().getVector().distanceSquared(VectorUtils.fromLoc(l)) > minRadius * minRadius)
-                radiusTargets.put(target.uniqueId(), target);
-        return radiusTargets;
     }
 
 
