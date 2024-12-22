@@ -70,7 +70,6 @@ public final class Cannons extends JavaPlugin
 	private VaultHook vaultHook;
 	
 	//Listener
-    private BlockListener blockListener;
 	private PlayerListener playerListener;
 	private EntityListener entityListener;
 
@@ -189,7 +188,6 @@ public final class Cannons extends JavaPlugin
 
 		this.persistenceDatabase = new PersistenceDatabase(this);
 
-		this.blockListener = new BlockListener(this);
 		this.playerListener = new PlayerListener(this);
 		this.entityListener = new EntityListener(this);
         RedstoneListener redstoneListener = new RedstoneListener(this);
@@ -222,7 +220,7 @@ public final class Cannons extends JavaPlugin
 		//load some global variables
 		try
 		{
-			pm.registerEvents(blockListener, this);
+			pm.registerEvents(new BlockListener(this), this);
 			pm.registerEvents(playerListener, this);
 			pm.registerEvents(entityListener, this);
 			pm.registerEvents(redstoneListener, this);
