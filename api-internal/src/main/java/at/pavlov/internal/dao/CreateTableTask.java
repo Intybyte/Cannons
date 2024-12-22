@@ -1,4 +1,4 @@
-package at.pavlov.cannons.dao;
+package at.pavlov.internal.dao;
 
 import at.pavlov.internal.CannonDatabase;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 @AllArgsConstructor
 public class CreateTableTask implements Runnable {
-    private final CannonDatabase cannonDatabase = CannonDatabase.getInstance();
+    private static final CannonDatabase cannonDatabase = CannonDatabase.getInstance();
 
     @Override
     public void run() {

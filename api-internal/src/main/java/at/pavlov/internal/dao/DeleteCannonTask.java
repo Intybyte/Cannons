@@ -1,12 +1,13 @@
-package at.pavlov.cannons.dao;
+package at.pavlov.internal.dao;
 
-import at.pavlov.cannons.Cannons;
+import at.pavlov.internal.CannonDatabase;
 import at.pavlov.internal.async.RunnableAsync;
 
 import java.sql.Statement;
 import java.util.UUID;
 
 public class DeleteCannonTask implements RunnableAsync {
+    private static final CannonDatabase cannonDatabase = CannonDatabase.getInstance();
     private final UUID cannonId;
     private final UUID playerId;
 
@@ -28,13 +29,13 @@ public class DeleteCannonTask implements RunnableAsync {
 
     @Override
     public void run() {
-        try (Statement statement = Cannons.getPlugin().getConnection().createStatement()) {
+        try (Statement statement = cannonDatabase.connection.createStatement()) {
             if (cannonId == null && playerId == null) {
-                statement.executeUpdate(String.format("DELETE FROM %s", Cannons.getPlugin().getCannonDatabase()));
+                statement.executeUpdate(String.format("DELETE FROM %s", cannonDatabase.cannonsDb));
             } else if (cannonId != null) {
-                statement.executeUpdate(String.format("DELETE FROM %s WHERE id='%s'", Cannons.getPlugin().getCannonDatabase(), cannonId));
+                statement.executeUpdate(String.format("DELETE FROM %s WHERE id='%s'", cannonDatabase.cannonsDb, cannonId));
             } else {
-                statement.executeUpdate(String.format("DELETE FROM %s WHERE owner='%s'", Cannons.getPlugin().getCannonDatabase(), playerId));
+                statement.executeUpdate(String.format("DELETE FROM %s WHERE owner='%s'", cannonDatabase.cannonsDb, playerId));
             }
         } catch (Exception e) {
             e.printStackTrace();

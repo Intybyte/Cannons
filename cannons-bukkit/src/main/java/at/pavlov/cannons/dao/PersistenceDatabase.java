@@ -3,6 +3,10 @@ package at.pavlov.cannons.dao;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
+import at.pavlov.internal.dao.CreateTableTask;
+import at.pavlov.internal.dao.DeleteCannonTask;
+import at.pavlov.internal.dao.LoadCannonTask;
+import at.pavlov.internal.dao.SaveCannonTask;
 
 import java.util.UUID;
 import java.util.concurrent.Future;
