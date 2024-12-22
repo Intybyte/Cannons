@@ -7,6 +7,7 @@ import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.multiversion.EventResolver;
 import at.pavlov.cannons.utils.CannonSelector;
+import at.pavlov.cannons.utils.EntityUtil;
 import at.pavlov.internal.enums.BreakCause;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -59,7 +60,7 @@ public class BlockListener implements Listener {
         }
 
         //search for destroyed cannons
-        plugin.getEntityListener().ExplosionEventHandler(event.blockList());
+        EntityUtil.handleExplosionEvent(event.blockList());
     }
 
     /**
