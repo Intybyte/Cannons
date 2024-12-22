@@ -69,6 +69,8 @@ public class Aiming {
 
     private final Random random = new Random();
 
+    private final CannonManager cannonManager = CannonManager.getInstance();
+
     @Getter
     private static Aiming instance = null;
 
@@ -412,7 +414,7 @@ public class Aiming {
         if (player == null)
             return null;
         //return the cannon of the player if he is in aiming mode
-        return CannonManager.getCannon(inAimingMode.get(player));
+        return cannonManager.getCannon(inAimingMode.get(player));
     }
 
 
@@ -462,7 +464,7 @@ public class Aiming {
 
 
             //find the cannon with this id
-            Cannon cannon = CannonManager.getCannon(entry.getValue());
+            Cannon cannon = cannonManager.getCannon(entry.getValue());
             if (cannon == null) {
                 iter.remove();
                 continue;
@@ -507,7 +509,7 @@ public class Aiming {
         }
 
         int d = cannon.getCannonDesign().getLinkCannonsDistance() * 2;
-        for (Cannon fcannon : CannonManager.getCannonsInBox(cannon.getLocation(), d, d, d)) {
+        for (Cannon fcannon : cannonManager.getCannonsInBox(cannon.getLocation(), d, d, d)) {
             // if the design is the same, and the player is allowed to use the cannon
             boolean checkDesign = fcannon.getCannonDesign().equals(cannon.getCannonDesign());
             boolean canAccess = cannon.isAccessLinkingAllowed(fcannon, player);
@@ -523,7 +525,7 @@ public class Aiming {
     private void updateSentryMode() {
         Iterator<UUID> iter = sentryCannons.iterator();
         while (iter.hasNext()) {
-            Cannon cannon = CannonManager.getCannon(iter.next());
+            Cannon cannon = cannonManager.getCannon(iter.next());
             if (cannon == null) {
                 //this cannon does not exist
                 iter.remove();
@@ -678,7 +680,7 @@ public class Aiming {
                         continue;
                     }
 
-                    Cannon tCannon = CannonManager.getCannon(t.uniqueId());
+                    Cannon tCannon = cannonManager.getCannon(t.uniqueId());
                     //check if the owner is whitelisted
                     if (tCannon == null || cannon.isWhitelisted(tCannon.getOwner())) {
                         continue;
@@ -698,7 +700,7 @@ public class Aiming {
                         continue;
                     }
 
-                    Cannon tCannon = CannonManager.getCannon(t.uniqueId());
+                    Cannon tCannon = cannonManager.getCannon(t.uniqueId());
                     //check if the owner is whitelisted
                     if (tCannon == null || cannon.isWhitelisted(tCannon.getOwner())) {
                         continue;
@@ -949,7 +951,7 @@ public class Aiming {
             return;
 
         for (UUID sentryCannon : sentryCannons) {
-            Cannon cannon = CannonManager.getCannon(sentryCannon);
+            Cannon cannon = cannonManager.getCannon(sentryCannon);
             if (cannon.getSentryEntity() != null && cannon.getSentryEntity().equals(entity.getUniqueId())) {
                 cannon.setSentryEntity(null);
             }
@@ -1036,7 +1038,7 @@ public class Aiming {
         }
 
         int d = cannon.getCannonDesign().getLinkCannonsDistance() * 2;
-        LinkedList<Cannon> cannonList = new LinkedList<>(CannonManager.getCannonsInBox(cannon.getLocation(), d, d, d));
+        LinkedList<Cannon> cannonList = new LinkedList<>(cannonManager.getCannonsInBox(cannon.getLocation(), d, d, d));
 
         CannonLinkAimingEvent event = new CannonLinkAimingEvent(cannon, player, cannonList, false);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -1092,7 +1094,7 @@ public class Aiming {
         }
 
         int d = cannon.getCannonDesign().getLinkCannonsDistance() * 2;
-        for (Cannon fcannon : CannonManager.getCannonsInBox(cannon.getLocation(), d, d, d)) {
+        for (Cannon fcannon : cannonManager.getCannonsInBox(cannon.getLocation(), d, d, d)) {
             if (fcannon.getCannonDesign().equals(cannon.getCannonDesign()))
                 cannon.removeCannonOperator();
         }
@@ -1241,7 +1243,7 @@ public class Aiming {
      * @param player this player will be removed from the lists
      */
     public void removeObserverForAllCannons(Player player) {
-        for (Cannon cannon : CannonManager.getCannonList().values()) {
+        for (Cannon cannon : cannonManager.getCannonList().values()) {
             cannon.removeObserver(player.getUniqueId());
             userMessages.sendMessage(MessageEnum.CannonObserverRemoved, player, cannon);
         }
@@ -1291,7 +1293,7 @@ public class Aiming {
         Iterator<Map.Entry<UUID, Long>> iter = lastAimed.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<UUID, Long> last = iter.next();
-            Cannon cannon = CannonManager.getCannon(last.getKey());
+            Cannon cannon = cannonManager.getCannon(last.getKey());
             if (cannon == null) {
                 iter.remove();
                 continue;

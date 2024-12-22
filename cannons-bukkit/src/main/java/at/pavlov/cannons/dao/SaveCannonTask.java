@@ -33,7 +33,7 @@ public class SaveCannonTask implements RunnableAsync {
                 , Cannons.getPlugin().getCannonDatabase());
         try (PreparedStatement preparedStatement = Cannons.getPlugin().getConnection().prepareStatement(insert)) {
             Cannons.getPlugin().logDebug("save Task start");
-            for (Cannon cannon : CannonManager.getCannonList().values()) {
+            for (Cannon cannon : CannonManager.getInstance().getCannonList().values()) {
                 // in case we want to save just one cannon
                 if (this.cannonId != null && cannon.getUID() != this.cannonId) {
                     continue;
@@ -121,7 +121,7 @@ public class SaveCannonTask implements RunnableAsync {
                         "(?,?)"
                 , Cannons.getPlugin().getWhitelistDatabase());
         try (PreparedStatement preparedStatement = Cannons.getPlugin().getConnection().prepareStatement(insert)) {
-            for (Cannon cannon : CannonManager.getCannonList().values()) {
+            for (Cannon cannon : CannonManager.getInstance().getCannonList().values()) {
                 if (cannon.isWhitelistUpdated()) {
                     cannon.setWhitelistUpdated(false);
                     for (UUID player : cannon.getWhitelist()) {

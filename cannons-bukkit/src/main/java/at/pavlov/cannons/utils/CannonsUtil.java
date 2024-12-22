@@ -405,7 +405,7 @@ public class CannonsUtil
                 }
             }
         }
-        for (Cannon cannon : CannonManager.getCannonsInSphere(l, maxRadius))
+        for (Cannon cannon : CannonManager.getInstance().getCannonsInSphere(l, maxRadius))
             if (cannon.getRandomBarrelBlock().distanceSquared(l) > minRadius * minRadius)
                 radiusTargets.put(cannon.getUID(), new BukkitTarget(cannon));
 

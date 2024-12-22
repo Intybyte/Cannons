@@ -81,7 +81,7 @@ public class CannonsAPI {
      */
     public static HashSet<Cannon> getCannonsInSphere(Location center, double sphereRadius)
     {
-        return CannonManager.getCannonsInSphere(center, sphereRadius);
+        return CannonManager.getInstance().getCannonsInSphere(center, sphereRadius);
     }
 
     /**
@@ -94,7 +94,7 @@ public class CannonsAPI {
      */
     public static HashSet<Cannon> getCannonsInBox(Location center, double lengthX, double lengthY, double lengthZ)
     {
-        return CannonManager.getCannonsInBox(center, lengthX, lengthY, lengthZ);
+        return CannonManager.getInstance().getCannonsInBox(center, lengthX, lengthY, lengthZ);
     }
 
     /**
@@ -168,7 +168,7 @@ public class CannonsAPI {
      */
     public static Cannon getCannon(UUID uid)
     {
-        return CannonManager.getCannon(uid);
+        return CannonManager.getInstance().getCannon(uid);
     }
 
 

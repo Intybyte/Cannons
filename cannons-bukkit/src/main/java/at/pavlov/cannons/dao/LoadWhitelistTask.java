@@ -24,7 +24,7 @@ public class LoadWhitelistTask implements RunnableAsync {
                     String.format("SELECT * FROM %s WHERE cannon_bean_id='%s'", Cannons.getPlugin().getWhitelistDatabase(), cannonId)
             );
 
-            Cannon cannon = CannonManager.getCannon(cannonId);
+            Cannon cannon = CannonManager.getInstance().getCannon(cannonId);
             if (cannon == null) {
                 return;
             }

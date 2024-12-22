@@ -151,7 +151,7 @@ public class FireCannon {
         int d = design.getLinkCannonsDistance() * 2;
 
         LinkedList<Cannon> linkedCannons = new LinkedList<>();
-        for (Cannon fcannon : CannonManager.getCannonsInBox(cannon.getLocation(), d, d, d)) {
+        for (Cannon fcannon : CannonManager.getInstance().getCannonsInBox(cannon.getLocation(), d, d, d)) {
             plugin.logDebug(fcannon.getCannonName() + " is cannon operator: " + fcannon.isCannonOperator(player.getUniqueId()));
             boolean allowedToFire = cannon.isAccessLinkingAllowed(fcannon, player);
 

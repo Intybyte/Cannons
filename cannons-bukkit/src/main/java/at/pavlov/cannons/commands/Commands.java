@@ -152,7 +152,7 @@ public class Commands extends BaseCommand {
             }
 
             sendMessage(sender, ChatColor.GREEN + "Cannon list for " + ChatColor.GOLD + offplayer.getName() + ChatColor.GREEN + ":");
-            for (Cannon cannon : CannonManager.getCannonList().values()) {
+            for (Cannon cannon : cannonManager.getCannonList().values()) {
                 if (cannon.getOwner() != null && cannon.getOwner().equals(offplayer.getUniqueId()))
                     sendMessage(sender, ChatColor.GREEN + "Name:" + ChatColor.GOLD + cannon.getCannonName() + ChatColor.GREEN + " design:" + ChatColor.GOLD + cannon.getCannonDesign().getDesignName() + ChatColor.GREEN + " location:" + ChatColor.GOLD + cannon.getOffset().toString());
             }
@@ -161,7 +161,7 @@ public class Commands extends BaseCommand {
 
         //plot all cannons
         sendMessage(sender, ChatColor.GREEN + "List of all cannons:");
-        for (Cannon cannon : CannonManager.getCannonList().values()) {
+        for (Cannon cannon : cannonManager.getCannonList().values()) {
             if (cannon.getOwner() != null) {
                 OfflinePlayer owner = Bukkit.getOfflinePlayer(cannon.getOwner());
                 sendMessage(sender, ChatColor.GREEN + "Name:" + ChatColor.GOLD + cannon.getCannonName() + ChatColor.GREEN + " owner:" + ChatColor.GOLD + owner.getName() + ChatColor.GREEN + " location:" + ChatColor.GOLD + cannon.getOffset().toString());
@@ -289,7 +289,7 @@ public class Commands extends BaseCommand {
         }
 
         //selection done by a string '/cannons rename OLD NEW'
-        Cannon cannon = CannonManager.getCannon(args[0]);
+        Cannon cannon = cannonManager.getCannon(args[0]);
         if (cannon == null) {
             sendMessage(player, ChatColor.RED + "Cannon not found");
             return;
@@ -312,7 +312,7 @@ public class Commands extends BaseCommand {
             Aiming.getInstance().removeObserverForAllCannons(player);
         else {
             //selection done by a string '/cannons observer CANNON_NAME'
-            Cannon cannon = CannonManager.getCannon(args[0]);
+            Cannon cannon = cannonManager.getCannon(args[0]);
             if (cannon != null)
                 cannon.toggleObserver(player.getUniqueId(), false);
             else
@@ -381,7 +381,7 @@ public class Commands extends BaseCommand {
     @CommandPermission("cannons.player.list")
     public static void onMyList(Player player) {
         sendMessage(player, ChatColor.GREEN + "Cannon list for " + ChatColor.GOLD + player.getName() + ChatColor.GREEN + ":");
-        for (Cannon cannon : CannonManager.getCannonList().values()) {
+        for (Cannon cannon : cannonManager.getCannonList().values()) {
             if (cannon.getOwner() != null && cannon.getOwner().equals(player.getUniqueId()))
                 sendMessage(player, ChatColor.GREEN + "Name:" + ChatColor.GOLD + cannon.getCannonName() + ChatColor.GREEN + " design:" +
                         ChatColor.GOLD + cannon.getCannonDesign().getDesignName() + ChatColor.GREEN + " loc: " + ChatColor.GOLD + cannon.getOffset().toString());
@@ -438,7 +438,7 @@ public class Commands extends BaseCommand {
     public static void onResetArea(Player player, @Default("20") int size) {
 
         CompletableFuture.runAsync(() -> {
-            final HashSet<Cannon> cannonList = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
+            final HashSet<Cannon> cannonList = cannonManager.getCannonsInBox(player.getLocation(), size, size, size);
 
             for (Cannon cannon : cannonList) {
                 taskManager.scheduler.runTask(cannon.getLocation(), () -> {
@@ -465,7 +465,7 @@ public class Commands extends BaseCommand {
         }
 
         CompletableFuture.runAsync(() -> {
-            var cannonHashSet = CannonManager.getCannonsInBox(player.getLocation(), size, size, size);
+            var cannonHashSet = cannonManager.getCannonsInBox(player.getLocation(), size, size, size);
             for (Cannon cannon : cannonHashSet) {
                 var location = cannon.getLocation();
                 taskManager.scheduler.runTask(location, () -> cannonManager.dismantleCannon(cannon, player));
@@ -476,7 +476,7 @@ public class Commands extends BaseCommand {
     @Subcommand("scanArea")
     @CommandPermission("cannons.admin.reload")
     public static void scanArea(Player player, @Default("20") int size) {
-        int found = CannonManager.getCannonsInBox(player.getLocation(), size , size, size).size();
+        int found = cannonManager.getCannonsInBox(player.getLocation(), size , size, size).size();
         player.sendMessage("Cannons found: " + found);
     }
 
@@ -541,7 +541,7 @@ public class Commands extends BaseCommand {
         if (cannonSelector.containsTarget(player.getUniqueId()))
             choice = cannonSelector.getTarget(player.getUniqueId());
 
-        HashSet<Cannon> list = CannonManager.getCannonsInBox(player.getLocation(), length, length, length);
+        HashSet<Cannon> list = cannonManager.getCannonsInBox(player.getLocation(), length, length, length);
         for (Cannon cannon : list) {
             cannonSelector.setSelectedCannon(player, cannon, cmd, choice);
         }

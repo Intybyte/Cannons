@@ -77,7 +77,7 @@ public class PlayerListener implements Listener
 //                shooter = Bukkit.getPlayer(cause.getShooterUID());
 //            Cannon cannon = plugin.getCannon(cause.getCannonUID());
             BukkitFlyingProjectile c = explosion.getCurrentCannonball();
-            Cannon cannon = CannonManager.getCannon(c.getCannonUID());
+            Cannon cannon = CannonManager.getInstance().getCannon(c.getCannonUID());
             String message = userMessages.getDeathMessage(killedUID, c.getShooterUID(), cannon, c.getProjectile());
             if (message != null && !message.equals(" "))
                 event.setDeathMessage(message);
@@ -320,7 +320,7 @@ public class PlayerListener implements Listener
         final BukkitCannonDesign design = cannon.getCannonDesign();
         if (design.isLinkCannonsEnabled() ) {
             int d = design.getLinkCannonsDistance() * 2;
-            for (Cannon fcannon : CannonManager.getCannonsInBox(cannon.getLocation(), d, d, d)) {
+            for (Cannon fcannon : CannonManager.getInstance().getCannonsInBox(cannon.getLocation(), d, d, d)) {
                 if (fcannon.getCannonDesign().equals(cannon.getCannonDesign()) &&  cannon.isAccessLinkingAllowed(fcannon, player))
                     fcannon.useRamRod(player);
             }

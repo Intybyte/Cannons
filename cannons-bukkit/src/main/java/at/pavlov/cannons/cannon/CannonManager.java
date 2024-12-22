@@ -42,8 +42,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 public class CannonManager {
-    private static final ConcurrentHashMap<UUID, Cannon> cannonList = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, UUID> cannonNameMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Cannon> cannonList = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, UUID> cannonNameMap = new ConcurrentHashMap<>();
 
     private final Cannons plugin;
     private final UserMessages userMessages;
@@ -240,7 +240,7 @@ public class CannonManager {
      * @param name name of the cannon
      * @return true if the name is unique
      */
-    private static boolean isCannonNameUnique(String name) {
+    private boolean isCannonNameUnique(String name) {
         if (name == null)
             return false;
 
@@ -354,7 +354,7 @@ public class CannonManager {
      * @param sphereRadius - radius of the sphere in blocks
      * @return - list of all cannons in this sphere
      */
-    public static HashSet<Cannon> getCannonsInSphere(Location center, double sphereRadius) {
+    public HashSet<Cannon> getCannonsInSphere(Location center, double sphereRadius) {
         HashSet<Cannon> newCannonList = new HashSet<>();
 
         for (Cannon cannon : getCannonList().values()) {
@@ -381,7 +381,7 @@ public class CannonManager {
      * @param lengthZ - box length in Z
      * @return - list of all cannons in this sphere
      */
-    public static HashSet<Cannon> getCannonsInBox(Location center, double lengthX, double lengthY, double lengthZ) {
+    public HashSet<Cannon> getCannonsInBox(Location center, double lengthX, double lengthY, double lengthZ) {
         HashSet<Cannon> newCannonList = new HashSet<>();
 
         for (Cannon cannon : getCannonList().values()) {
@@ -433,7 +433,7 @@ public class CannonManager {
      * @param locations - a list of location to search for cannons
      * @return - list of all cannons in this sphere
      */
-    public static HashSet<Cannon> getCannonsByLocations(List<Location> locations) {
+    public HashSet<Cannon> getCannonsByLocations(List<Location> locations) {
         HashSet<Cannon> newCannonList = new HashSet<>();
         for (Cannon cannon : getCannonList().values()) {
             for (Location loc : locations) {
@@ -470,7 +470,7 @@ public class CannonManager {
      * @param cannonName name of the cannon
      * @return the cannon with this name
      */
-    public static Cannon getCannon(String cannonName) {
+    public Cannon getCannon(String cannonName) {
         if (cannonName == null) return null;
 
         UUID uid = cannonNameMap.get(cannonName);
@@ -625,7 +625,7 @@ public class CannonManager {
      * @param uid UUID of the cannon
      * @return the cannon from the storage
      */
-    public static Cannon getCannon(UUID uid) {
+    public Cannon getCannon(UUID uid) {
         if (uid == null)
             return null;
 
@@ -718,7 +718,7 @@ public class CannonManager {
     /**
      * @return List of cannons
      */
-    public static ConcurrentHashMap<UUID, Cannon> getCannonList() {
+    public ConcurrentHashMap<UUID, Cannon> getCannonList() {
         return cannonList;
     }
 
