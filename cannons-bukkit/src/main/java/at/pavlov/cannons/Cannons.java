@@ -53,7 +53,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public final class Cannons extends JavaPlugin implements CannonDatabase
+public final class Cannons extends JavaPlugin
 {
 	private PluginManager pm;
 	private final Logger logger = Logger.getLogger("Minecraft");
@@ -346,6 +346,7 @@ public final class Cannons extends JavaPlugin implements CannonDatabase
 			}
 			Class.forName(driver);
 			connection = DriverManager.getConnection(url, username, password);
+			CannonDatabase.instantiate(connection, whitelistDatabase, cannonDatabase);
 		}
     }
 
@@ -353,19 +354,9 @@ public final class Cannons extends JavaPlugin implements CannonDatabase
 		return this.connection != null;
 	}
 
-	public boolean isPluginEnabled()
-	{
-		return this.isEnabled();
-	}
-
 	public final Config getMyConfig()
 	{
 		return config;
-	}
-
-	public void disablePlugin()
-	{
-		pm.disablePlugin(this);
 	}
 
 	private String getLogPrefix()
@@ -394,11 +385,6 @@ public final class Cannons extends JavaPlugin implements CannonDatabase
 	public static void logSDebug(String msg) {
 		if (getPlugin().isDebugMode())
 			Cannons.logger().info(msg);
-	}
-
-	public void broadcast(String msg)
-	{
-		this.getServer().broadcastMessage(msg);
 	}
 
 	public PluginDescriptionFile getPluginDescription()

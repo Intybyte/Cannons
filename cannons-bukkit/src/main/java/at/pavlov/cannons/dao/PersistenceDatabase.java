@@ -16,7 +16,7 @@ public class PersistenceDatabase {
     }
 
     public void createTables() {
-        CreateTableTask createTableTask = new CreateTableTask(plugin);
+        CreateTableTask createTableTask = new CreateTableTask();
         createTableTask.run();
     }
 

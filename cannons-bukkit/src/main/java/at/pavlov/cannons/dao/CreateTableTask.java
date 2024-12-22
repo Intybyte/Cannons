@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 @AllArgsConstructor
 public class CreateTableTask implements Runnable {
-    private final CannonDatabase cannonDatabase;
+    private final CannonDatabase cannonDatabase = CannonDatabase.getInstance();
 
     @Override
     public void run() {
@@ -35,7 +35,7 @@ public class CreateTableTask implements Runnable {
                         "target_cannon BOOLEAN," +
                         "target_other BOOLEAN," +
                         "paid BOOLEAN)"
-                , cannonDatabase.getCannonDatabase());
+                , cannonDatabase.cannonsDb);
         String sql2 = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                         "cannon_bean_id VARCHAR(40) NOT NULL," +
                         "player VARCHAR(40) NOT NULL," +
@@ -44,8 +44,8 @@ public class CreateTableTask implements Runnable {
                         "ON UPDATE CASCADE " +
                         "ON DELETE CASCADE" +
                         ")"
-                , cannonDatabase.getWhitelistDatabase(), cannonDatabase.getCannonDatabase());
-        try (Statement statement = cannonDatabase.getConnection().createStatement()) {
+                , cannonDatabase.whitelistDb, cannonDatabase.cannonsDb);
+        try (Statement statement = cannonDatabase.connection.createStatement()) {
             statement.execute(sql1);
             statement.execute(sql2);
         } catch (Exception e) {
