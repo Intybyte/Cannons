@@ -19,6 +19,7 @@ import at.pavlov.cannons.event.CannonTargetEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.CannonsUtil;
+import at.pavlov.cannons.utils.EntityUtil;
 import at.pavlov.cannons.utils.SoundUtils;
 import at.pavlov.internal.container.location.CannonVector;
 import at.pavlov.internal.container.location.Coordinate;
@@ -645,7 +646,7 @@ public class Aiming {
 
         cannon.setLastSentryUpdate(System.currentTimeMillis());
 
-        HashMap<UUID, BukkitTarget> targets = CannonsUtil.getNearbyTargets(cannon.getMuzzle(), design.getSentryMinRange(), design.getSentryMaxRange());
+        HashMap<UUID, BukkitTarget> targets = EntityUtil.getNearbyTargets(cannon.getMuzzle(), design.getSentryMinRange(), design.getSentryMaxRange());
         //old target - is this still valid?
         if (isOldTargetValid(cannon, targets))
             return;

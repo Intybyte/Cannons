@@ -68,11 +68,6 @@ public final class Cannons extends JavaPlugin
 	@Getter
     private HookManager hookManager;
 	private VaultHook vaultHook;
-	
-	//Listener
-    private BlockListener blockListener;
-	private PlayerListener playerListener;
-	private EntityListener entityListener;
 
     // database
 	private PersistenceDatabase persistenceDatabase;
@@ -189,11 +184,6 @@ public final class Cannons extends JavaPlugin
 
 		this.persistenceDatabase = new PersistenceDatabase(this);
 
-		this.blockListener = new BlockListener(this);
-		this.playerListener = new PlayerListener(this);
-		this.entityListener = new EntityListener(this);
-        RedstoneListener redstoneListener = new RedstoneListener(this);
-
 		long startTime = System.currentTimeMillis();
 		hookManager = new HookManager();
 
@@ -222,10 +212,10 @@ public final class Cannons extends JavaPlugin
 		//load some global variables
 		try
 		{
-			pm.registerEvents(blockListener, this);
-			pm.registerEvents(playerListener, this);
-			pm.registerEvents(entityListener, this);
-			pm.registerEvents(redstoneListener, this);
+			pm.registerEvents(new BlockListener(this), this);
+			pm.registerEvents(new PlayerListener(this), this);
+			pm.registerEvents(new EntityListener(this), this);
+			pm.registerEvents(new RedstoneListener(this), this);
 			pm.registerEvents(new UpdateNotifier(this), this);
 			//call command executer
 			initializeCommands();
@@ -405,16 +395,6 @@ public final class Cannons extends JavaPlugin
 	{
 		return fireCannon;
 	}
-
-	public PlayerListener getPlayerListener()
-	{
-		return playerListener;
-	}
-
-	public EntityListener getEntityListener()
-	{
-		return entityListener;
-	}
 	
 	public void sendMessage(Player player, Cannon cannon, MessageEnum message)
 	{
@@ -428,10 +408,6 @@ public final class Cannons extends JavaPlugin
 
     public ProjectileObserver getProjectileObserver() {
         return observer;
-    }
-
-    public BlockListener getBlockListener() {
-        return blockListener;
     }
 
     public Economy getEconomy(){
