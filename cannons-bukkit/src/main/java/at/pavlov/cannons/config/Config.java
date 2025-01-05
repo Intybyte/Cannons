@@ -5,11 +5,11 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.builders.ParticleBuilder;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.container.ItemHolder;
-import at.pavlov.cannons.multiversion.ParticleResolver;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.FileUtils;
 import at.pavlov.cannons.utils.ParseUtils;
+import com.cryptomorin.xseries.particles.XParticle;
 import lombok.Data;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -174,7 +174,7 @@ import java.util.List;
         }
         catch(Exception e){
             plugin.logSevere("Type for Explosion particle  is not correct. Please check spelling of " + config.getString("imitatedEffects.explosionParticles.type"));
-            setImitatedExplosionParticlesType(ParticleResolver.getExplosion());
+            setImitatedExplosionParticlesType(XParticle.EXPLOSION.get());
         }
         setImitatedExplosionParticlesCount(config.getInt("imitatedEffects.explosionParticles.count", 5));
         setImitatedExplosionParticlesDiameter(config.getDouble("imitatedEffects.explosionParticles.diameter", 1));
