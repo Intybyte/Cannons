@@ -225,6 +225,10 @@
                             <pattern>com.cryptomorin.xseries</pattern>
                             <shadedPattern>at.pavlov.cannons.shaded.xseries</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>io.papermc.lib</pattern>
+                            <shadedPattern>at.pavlov.cannons.shaded.paperlib</shadedPattern>
+                        </relocation>
                     </relocations>
                     <filters>
                         <filter>
