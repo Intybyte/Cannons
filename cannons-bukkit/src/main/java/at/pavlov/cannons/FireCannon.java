@@ -13,7 +13,6 @@ import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.event.CannonFireEvent;
 import at.pavlov.cannons.event.CannonLinkFiringEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
-import at.pavlov.cannons.multiversion.PotionTypeResolver;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileProperties;
@@ -21,6 +20,7 @@ import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.SoundUtils;
+import com.cryptomorin.xseries.XPotion;
 import com.cryptomorin.xseries.particles.XParticle;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -488,7 +488,7 @@ public class FireCannon {
             LivingEntity livingEntity = (LivingEntity) next;
             if (livingEntity.getLocation().distance(firingLoc) < 5.0)
                 livingEntity.damage(1);
-            livingEntity.addPotionEffect(new PotionEffect(PotionTypeResolver.getNausea(), (int) confuseTime * 20, 0));
+            livingEntity.addPotionEffect(new PotionEffect(XPotion.NAUSEA.get(), (int) confuseTime * 20, 0));
 
         }
     }
