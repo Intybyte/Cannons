@@ -15,7 +15,6 @@ import at.pavlov.cannons.event.CannonDamageEvent;
 import at.pavlov.cannons.event.CannonsEntityDeathEvent;
 import at.pavlov.cannons.event.ProjectileImpactEvent;
 import at.pavlov.cannons.event.ProjectilePiercingEvent;
-import at.pavlov.cannons.multiversion.EntityTypeResolver;
 import at.pavlov.cannons.multiversion.EventResolver;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
@@ -27,6 +26,7 @@ import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.cannons.utils.SoundUtils;
+import com.cryptomorin.xseries.XEntityType;
 import io.papermc.lib.PaperLib;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -1203,7 +1203,7 @@ public class CreateExplosion {
         }
 
         // apply to rocket
-        final Firework fw = (Firework) world.spawnEntity(projectile_entity.getLocation(), EntityTypeResolver.getFirework());
+        final Firework fw = (Firework) world.spawnEntity(projectile_entity.getLocation(), XEntityType.FIREWORK_ROCKET.get());
         FireworkMeta meta = fw.getFireworkMeta();
 
         meta.addEffect(fwb.build());

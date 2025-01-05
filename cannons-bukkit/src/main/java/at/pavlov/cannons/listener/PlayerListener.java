@@ -11,7 +11,6 @@ import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
-import at.pavlov.cannons.multiversion.PotionTypeResolver;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
@@ -19,6 +18,7 @@ import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
+import com.cryptomorin.xseries.XPotion;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -409,7 +409,7 @@ public class PlayerListener implements Listener
         if (design.getBurnDamage() > 0)
             player.damage(design.getBurnDamage()*2);
         if (design.getBurnSlowing() > 0)
-            PotionTypeResolver.getSlow().createEffect((int) (design.getBurnSlowing()*20.0), 0).apply(player);
+            XPotion.SLOWNESS.get().createEffect((int) (design.getBurnSlowing()*20.0), 0).apply(player);
 
         Location effectLoc = clickedBlock.getRelative(clickedFace).getLocation();
         effectLoc.getWorld().playEffect(effectLoc, Effect.SMOKE, BlockFace.UP);
