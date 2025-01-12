@@ -487,7 +487,7 @@ public class Commands extends BaseCommand {
         }
 
         player.sendMessage(
-                tag + "The config entry you should use for this item is: " + output
+                tag + "In loadingItem for this item you should use this entry: " + output
         );
     }
 
