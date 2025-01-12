@@ -1,9 +1,7 @@
 package at.pavlov.cannons.container;
 
-import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.multiversion.VersionHandler;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,11 +12,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
-import java.util.logging.Level;
 
 
 //small class as at.pavlov.cannons.container for item id and data
@@ -31,7 +26,7 @@ public class ItemHolder {
         if (item == null) {
             material = Material.AIR;
             displayName = "";
-            lore = new ArrayList<String>();
+            lore = new ArrayList<>();
             return;
         }
 
