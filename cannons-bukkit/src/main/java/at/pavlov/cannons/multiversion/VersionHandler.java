@@ -1,8 +1,10 @@
 package at.pavlov.cannons.multiversion;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 
 public final class VersionHandler {
+    @Getter
     private static int[] version;
 
     static {
@@ -23,7 +25,15 @@ public final class VersionHandler {
         }
     }
 
-    public static int[] getVersion() {
-        return version;
+    public static boolean isGreaterThan1_20_5() {
+        if (version[1] >= 21) {
+            return true;
+        }
+
+        if (version[1] == 20 && version[2] >= 5) {
+            return true;
+        }
+
+        return false;
     }
 }
