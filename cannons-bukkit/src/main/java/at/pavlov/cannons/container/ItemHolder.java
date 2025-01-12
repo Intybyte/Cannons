@@ -1,6 +1,7 @@
 package at.pavlov.cannons.container;
 
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.multiversion.VersionHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,6 +44,8 @@ public class ItemHolder {
         ItemMeta meta = item.getItemMeta();
         if (meta.hasDisplayName() && meta.getDisplayName() != null) {
             displayName = meta.getDisplayName();
+        } else if (VersionHandler.isGreaterThan1_20_5() && meta.hasItemName()) {
+            displayName = meta.getItemName();
         } else if (!meta.hasDisplayName()) {
             displayName = getFriendlyName(item, true);
             //Cannons.getPlugin().logDebug("display name: " + displayName);
