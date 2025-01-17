@@ -69,7 +69,7 @@ public class ItemHolder {
         // id;DESCRIPTION;LORE1;LORE2
         // HOE;COOL Item;Looks so cool;Fancy
         String[] entries = str.split(";");
-		lore = new ArrayList<>(entries.length - 2);
+		lore = new ArrayList<>();
 		for (int i = 0; i < entries.length; i++) {
 			switch (i) {
 				case 0 -> {
