@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +21,7 @@ import java.util.Objects;
 public class ItemHolder {
     private Material material;
     private String displayName;
-    private List<String> lore;
+    @NotNull private List<String> lore;
 
     public ItemHolder(ItemStack item) {
         if (item == null) {
@@ -33,6 +34,8 @@ public class ItemHolder {
         material = item.getType();
 
         if (!item.hasItemMeta()) {
+            displayName = null;
+            lore = new ArrayList<>();
             return;
         }
 
