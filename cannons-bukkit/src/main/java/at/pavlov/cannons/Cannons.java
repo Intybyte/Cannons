@@ -262,7 +262,7 @@ public final class Cannons extends JavaPlugin
 
 					for (Hook<?> hook : hookManager.hookMap().values()) {
 						final int status = hook.active() ? 1 : 0;
-						result.put(hook.getTypeClass().getName(), status);
+						result.put(hook.getTypeClass().getSimpleName(), status);
 					}
 
 					return result;
