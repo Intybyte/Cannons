@@ -12,6 +12,7 @@ import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.cannon.DesignStorage;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
+import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.projectile.Projectile;
@@ -34,7 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 @CommandAlias("cannons")
 @SuppressWarnings("deprecation")
@@ -468,6 +468,27 @@ public class Commands extends BaseCommand {
     public static void scanArea(Player player, @Default("20") int size) {
         int found = CannonManager.getCannonsInBox(player.getLocation(), size , size, size).size();
         player.sendMessage("Cannons found: " + found);
+    }
+
+    @Subcommand("itemInfo")
+    @CommandPermission("cannons.admin.reload")
+    @Description("Use this command for custom items, otherwise you might add more data than necessary to the config entry.")
+    public static void itemInfo(Player player) {
+        var mainHand = player.getInventory().getItemInMainHand();
+        if (mainHand.getType().isAir()) {
+            player.sendMessage(tag + "You need to hold an item while executing this command");
+            return;
+        }
+
+        ItemHolder holder = new ItemHolder(mainHand);
+        StringBuilder output = new StringBuilder(String.join(";", "minecraft:" + holder.getType().toString().toLowerCase(), holder.getDisplayName()));
+        for (String line : holder.getLore()) {
+            output.append(";").append(line);
+        }
+
+        player.sendMessage(
+                tag + "In loadingItem for this item you should use this entry: " + output
+        );
     }
 
     @Subcommand("version")
