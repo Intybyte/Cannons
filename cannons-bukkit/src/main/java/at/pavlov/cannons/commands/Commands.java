@@ -298,15 +298,16 @@ public class Commands extends BaseCommand {
             return;
         }
 
-        if (args[0].equalsIgnoreCase("off") || args[0].equalsIgnoreCase("disable") || args[0].equalsIgnoreCase("remove"))
+        if (args[0].equalsIgnoreCase("off") || args[0].equalsIgnoreCase("disable") || args[0].equalsIgnoreCase("remove")) {
             Aiming.getInstance().removeObserverForAllCannons(player);
-        else {
+        } else {
             //selection done by a string '/cannons observer CANNON_NAME'
             Cannon cannon = CannonManager.getCannon(args[0]);
-            if (cannon != null)
+            if (cannon != null) {
                 cannon.toggleObserver(player, false);
-            else
+            } else {
                 userMessages.sendMessage(MessageEnum.CmdCannonNotFound, player);
+            }
         }
         //this never gets called
         //sendMessage(sender, ChatColor.RED + "Usage '/cannons observer' or '/cannons observer <off|disable>' or '/cannons observer <CANNON NAME>'");
@@ -325,10 +326,11 @@ public class Commands extends BaseCommand {
         public static void onAdd(Player player, String subject) {
             OfflinePlayer offPlayer = CannonsUtil.getOfflinePlayer(subject);
 
-            if (offPlayer != null && offPlayer.hasPlayedBefore())
+            if (offPlayer != null && offPlayer.hasPlayedBefore()) {
                 cannonSelector.toggleCannonSelector(player, SelectCannon.WHITELIST_ADD, offPlayer);
-            else
+            } else {
                 userMessages.sendMessage(MessageEnum.ErrorPlayerNotFound, player);
+            }
         }
 
         @Subcommand("remove")
@@ -337,8 +339,9 @@ public class Commands extends BaseCommand {
 
             if (offPlayer != null && offPlayer.hasPlayedBefore()) {
                 cannonSelector.toggleCannonSelector(player, SelectCannon.WHITELIST_REMOVE, offPlayer);
-            } else
+            } else {
                 userMessages.sendMessage(MessageEnum.ErrorPlayerNotFound, player);
+            }
         }
     }
 

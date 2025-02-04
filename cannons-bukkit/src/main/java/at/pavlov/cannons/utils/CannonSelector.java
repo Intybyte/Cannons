@@ -47,12 +47,16 @@ public class CannonSelector {
         if (player == null || cmd == null)
             return;
 
-        if (!isSelectingMode(player)) {
-            cannonSelector.put(player.getUniqueId(), cmd);
-            if (isBlockSelectingMode(player))
-                userMessages.sendMessage(MessageEnum.CmdSelectBlock, player);
-            else
-                userMessages.sendMessage(MessageEnum.CmdSelectCannon, player);
+        if (isSelectingMode(player)) {
+            return;
+        }
+
+        cannonSelector.put(player.getUniqueId(), cmd);
+
+        if (isBlockSelectingMode(player)) {
+            userMessages.sendMessage(MessageEnum.CmdSelectBlock, player);
+        } else {
+            userMessages.sendMessage(MessageEnum.CmdSelectCannon, player);
         }
     }
 
@@ -89,10 +93,11 @@ public class CannonSelector {
         if (player == null)
             return;
 
-        if (isSelectingMode(player))
+        if (isSelectingMode(player)) {
             removeCannonSelector(player);
-        else
+        } else {
             addCannonSelector(player, cmd);
+        }
     }
 
     /**
@@ -136,10 +141,11 @@ public class CannonSelector {
         if (player == null)
             return;
 
-        if (isSelectingMode(player))
+        if (isSelectingMode(player)) {
             removeBuyCannon(player);
-        else
+        } else {
             addBuyCannon(player, cmd);
+        }
     }
 
 
@@ -200,22 +206,19 @@ public class CannonSelector {
         }
 
         switch (cmd) {
-            case OBSERVER: {
+            case OBSERVER -> {
                 MessageEnum message = cannon.toggleObserver(player, false);
                 userMessages.sendMessage(message, player, cannon);
                 SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundSelected());
-                break;
             }
-            case INFO: {
+            case INFO -> {
                 userMessages.sendMessage(MessageEnum.CannonInfo, player, cannon);
                 SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundSelected());
-                break;
             }
-            case DISMANTLE: {
+            case DISMANTLE -> {
                 CannonManager.getInstance().dismantleCannon(cannon, player);
-                break;
             }
-            case WHITELIST_ADD: {
+            case WHITELIST_ADD -> {
                 if (!cannon.getCannonDesign().isSentry()) {
                     userMessages.sendMessage(MessageEnum.CmdNoSentryWhitelist, player, cannon);
                     SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -231,9 +234,8 @@ public class CannonSelector {
                     userMessages.sendMessage(MessageEnum.CmdAddedWhitelist, player, cannon);
                     SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundSelected());
                 }
-                break;
             }
-            case WHITELIST_REMOVE: {
+            case WHITELIST_REMOVE -> {
                 if (!cannon.getCannonDesign().isSentry()) {
                     userMessages.sendMessage(MessageEnum.CmdNoSentryWhitelist, player, cannon);
                     SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -246,7 +248,7 @@ public class CannonSelector {
                     break;
                 }
 
-                if (player.getUniqueId() != cannon.getOwner()) {
+                if (!player.getUniqueId().equals(cannon.getOwner())) {
                     cannon.removeWhitelistPlayer(whitelistPlayer.get(player.getUniqueId()));
                     whitelistPlayer.remove(player.getUniqueId());
                     userMessages.sendMessage(MessageEnum.CmdRemovedWhitelist, player, cannon);
@@ -254,9 +256,8 @@ public class CannonSelector {
                     userMessages.sendMessage(MessageEnum.CmdRemovedWhitelistOwner, player, cannon);
                 }
                 SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundSelected());
-                break;
             }
-            case TARGET_MOB: {
+            case TARGET_MOB -> {
                 if (!player.getUniqueId().equals(cannon.getOwner())) {
                     userMessages.sendMessage(MessageEnum.ErrorNotTheOwner, player, cannon);
                     SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -274,9 +275,8 @@ public class CannonSelector {
                 userMessages.sendMessage(MessageEnum.CmdToggledTargetMob, player, cannon);
                 SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundSelected());
 
-                break;
             }
-            case TARGET_PLAYER: {
+            case TARGET_PLAYER -> {
                 if (!player.getUniqueId().equals(cannon.getOwner())) {
                     userMessages.sendMessage(MessageEnum.ErrorNotTheOwner, player, cannon);
                     SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -294,9 +294,8 @@ public class CannonSelector {
                 userMessages.sendMessage(MessageEnum.CmdToggledTargetPlayer, player, cannon);
                 SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundSelected());
 
-                break;
             }
-            case TARGET_CANNON: {
+            case TARGET_CANNON -> {
                 if (cannon.getCannonDesign().isSentry() && !player.getUniqueId().equals(cannon.getOwner())) {
                     userMessages.sendMessage(MessageEnum.ErrorNotTheOwner, player, cannon);
                     SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -313,9 +312,8 @@ public class CannonSelector {
                 userMessages.sendMessage(MessageEnum.CmdToggledTargetCannon, player, cannon);
                 SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundSelected());
 
-                break;
             }
-            case TARGET_OTHER: {
+            case TARGET_OTHER -> {
                 if (cannon.getCannonDesign().isSentry() && !player.getUniqueId().equals(cannon.getOwner())) {
                     userMessages.sendMessage(MessageEnum.ErrorNotTheOwner, player, cannon);
                     SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -333,9 +331,8 @@ public class CannonSelector {
                 userMessages.sendMessage(MessageEnum.CmdToggledTargetOther, player, cannon);
                 SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundSelected());
 
-                break;
             }
-            case BUY_CANNON: {
+            case BUY_CANNON -> {
                 if (cannon.isPaid()) {
                     userMessages.sendMessage(MessageEnum.ErrorAlreadyPaid, player, cannon);
                     SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -357,7 +354,6 @@ public class CannonSelector {
                     userMessages.sendMessage(MessageEnum.CmdPaidCannon, player, cannon);
                     SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundSelected());
                 }
-                break;
             }
         }
         selectTargetBoolean.remove(player.getUniqueId());
