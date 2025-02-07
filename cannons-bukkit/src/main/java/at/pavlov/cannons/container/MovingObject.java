@@ -43,7 +43,9 @@ import java.util.UUID;
     public double getGravity() {
         return switch (entityType) {
             case ARROW -> 0.05000000074505806;
-            case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL -> 0.0;
+            case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL,
+                 WITHER_SKULL,
+                 SHULKER_BULLET -> 0.0;
             default -> 0.03;
         };
     }
