@@ -46,6 +46,7 @@ import java.util.UUID;
             case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL,
                  WITHER_SKULL,
                  SHULKER_BULLET -> 0.0;
+            case FISHING_BOBBER -> 0.08;
             default -> 0.03;
         };
     }
@@ -54,15 +55,16 @@ import java.util.UUID;
         return switch (entityType) {
             case ARROW -> {
                 if (inWater) {
-                    yield 0.6F;
+                    yield 0.6;
                 }
 
-                yield 0.99F;
+                yield 0.99;
             }
             case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL ,
                  WITHER_SKULL,
-                 SHULKER_BULLET -> 0.95F;
-            default -> inWater ? 0.8F : 0.99F; // Air Drag - Water Drag
+                 SHULKER_BULLET -> 0.95;
+            case FISHING_BOBBER -> 0.92;
+            default -> inWater ? 0.8 : 0.99; // Air Drag - Water Drag
         };
     }
 
