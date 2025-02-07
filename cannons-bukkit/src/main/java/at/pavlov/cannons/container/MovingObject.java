@@ -16,8 +16,7 @@ public class MovingObject {
     private EntityType entityType;
 
 
-    public MovingObject(Location loc, Vector vel, EntityType entityType)
-    {
+    public MovingObject(Location loc, Vector vel, EntityType entityType) {
         world = loc.getWorld().getUID();
         this.loc = loc.toVector();
         this.vel = vel;
@@ -30,25 +29,36 @@ public class MovingObject {
      */
     public void updateProjectileLocation(boolean inWater)
     {
-        double f2 = 0.99F;
-        if (inWater)
-            f2 = 0.8F;
-        double f3 = 0.03F;
-        if (entityType.equals(EntityType.ARROW)){
-            f3 = 0.05000000074505806D;
-            if (inWater)
-                f2 = 0.6F;
-        }
-        if (entityType.equals(EntityType.FIREBALL) || entityType.equals(EntityType.SMALL_FIREBALL)){
-            f2 = 0.95F;
-            f3 = 0.0;
-        }
+        double drag = getDrag(inWater);
+        double gravity = getGravity();
         //update location
         this.loc.add(this.vel);
         //slow down projectile
-        this.vel.multiply(f2);
+        this.vel.multiply(drag);
         //apply gravity
-        this.vel.subtract(new Vector(0,f3,0));
+        this.vel.subtract(new Vector(0,gravity,0));
+    }
+
+    public double getGravity() {
+        return switch (entityType) {
+            case ARROW -> 0.05000000074505806;
+            case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL -> 0.0;
+            default -> 0.03;
+        };
+    }
+
+    public double getDrag(boolean inWater) {
+        return switch (entityType) {
+            case ARROW -> {
+                if (inWater) {
+                    yield 0.6F;
+                }
+
+                yield 0.99F;
+            }
+            case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL -> 0.95F;
+            default -> inWater ? 0.8F : 0.99F;
+        };
     }
 
     /**
