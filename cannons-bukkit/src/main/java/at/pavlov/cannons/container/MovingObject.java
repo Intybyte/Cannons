@@ -59,8 +59,10 @@ import java.util.UUID;
 
                 yield 0.99F;
             }
-            case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL -> 0.95F;
-            default -> inWater ? 0.8F : 0.99F;
+            case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL ,
+                 WITHER_SKULL,
+                 SHULKER_BULLET-> 0.95F;
+            default -> inWater ? 0.8F : 0.99F; // Air Drag - Water Drag
         };
     }
 
