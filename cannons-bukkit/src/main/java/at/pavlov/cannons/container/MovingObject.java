@@ -1,5 +1,6 @@
 package at.pavlov.cannons.container;
 
+import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -7,13 +8,13 @@ import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
-public class MovingObject {
+@Data public class MovingObject {
 
     //location and speed
     private UUID world;
     private Vector loc;
     private Vector vel;
-    private EntityType entityType;
+    private final EntityType entityType;
 
 
     public MovingObject(Location loc, Vector vel, EntityType entityType) {
@@ -25,10 +26,10 @@ public class MovingObject {
 
     /**
      * calculates the new position for the projectile
+     *
      * @param inWater the projectile is in water
      */
-    public void updateProjectileLocation(boolean inWater)
-    {
+    public void updateProjectileLocation(boolean inWater) {
         double drag = getDrag(inWater);
         double gravity = getGravity();
         //update location
@@ -36,7 +37,7 @@ public class MovingObject {
         //slow down projectile
         this.vel.multiply(drag);
         //apply gravity
-        this.vel.subtract(new Vector(0,gravity,0));
+        this.vel.subtract(new Vector(0, gravity, 0));
     }
 
     public double getGravity() {
@@ -63,29 +64,27 @@ public class MovingObject {
 
     /**
      * reverts and update of the projectile position
+     *
      * @param inWater the projectile is in water
      */
-    public void revertProjectileLocation(boolean inWater)
-    {
-        double f2 = 0.99F;
-        if (inWater)
-            f2 = 0.8F;
-        double f3 = 0.03F;
+    public void revertProjectileLocation(boolean inWater) {
+        double drag = getDrag(inWater);
+        double gravity = getGravity();
         //apply gravity
-        this.vel.add(new Vector(0, f3, 0));
+        this.vel.add(new Vector(0, gravity, 0));
         //slow down projectile
-        this.vel.multiply(1.0 / f2);
+        this.vel.multiply(1.0 / drag);
         //update location
         this.loc.subtract(this.vel);
     }
 
     /**
      * teleports the projectile to this location
+     *
      * @param loc the projectile will be teleported to this location
      * @param vel velocity of the object
      */
-    public void teleport(Location loc, Vector vel)
-    {
+    public void teleport(Location loc, Vector vel) {
         this.loc = loc.toVector();
         this.vel = vel;
         this.world = loc.getWorld().getUID();
@@ -93,41 +92,16 @@ public class MovingObject {
 
     /**
      * returns the calculated location of the projectile
+     *
      * @return the location where the projectile should be
      */
-    public Location getLocation()
-    {
+    public Location getLocation() {
         return loc.toLocation(Bukkit.getWorld(world));
     }
 
-    public void setLocation(Location loc)
-    {
+    public void setLocation(Location loc) {
         this.loc = loc.toVector();
         this.world = loc.getWorld().getUID();
-    }
-
-    public UUID getWorld() {
-        return world;
-    }
-
-    public void setWorld(UUID world) {
-        this.world = world;
-    }
-
-    public Vector getLoc() {
-        return loc;
-    }
-
-    public void setLoc(Vector loc) {
-        this.loc = loc;
-    }
-
-    public Vector getVel() {
-        return vel;
-    }
-
-    public void setVel(Vector vel) {
-        this.vel = vel;
     }
 }
 
