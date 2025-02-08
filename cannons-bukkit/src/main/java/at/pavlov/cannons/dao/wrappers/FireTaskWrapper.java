@@ -31,6 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Wrapper for executing the fire task, this is used internally by cannons,
+ * for normal use please use FireCannon#fire instead of using this, use this
+ * class only if you need for some reason to bypass some checks
+ */
 public record FireTaskWrapper(
         Cannon cannon,
         UUID shooter,
@@ -75,28 +80,7 @@ public record FireTaskWrapper(
             cannon.automaticCooling();
 
         //for each bullet, but at least once
-        for (int i = 0; i < Math.max(projectile.getNumberOfBullets(), 1); i++) {
-            org.bukkit.projectiles.ProjectileSource source = null;
-            Location playerLoc = null;
-            if (onlinePlayer != null) {
-                source = onlinePlayer;
-                playerLoc = onlinePlayer.getLocation();
-            }
-
-            Vector vect = cannon.getFiringVector(true, true);
-
-            org.bukkit.entity.Projectile projectileEntity = ProjectileManager.getInstance().spawnProjectile(projectile, shooter, source, playerLoc, firingLoc, vect, cannon.getUID(), projectileCause);
-
-            if (i == 0 && projectile.hasProperty(ProjectileProperties.SHOOTER_AS_PASSENGER) && onlinePlayer != null)
-                projectileEntity.setPassenger(onlinePlayer);
-
-            //confuse all entity which wear no helmets due to the blast of the cannon
-            List<Entity> living = projectileEntity.getNearbyEntities(8, 8, 8);
-            //do only once
-            if (i == 0) {
-                confuseShooter(living, firingLoc, design.getBlastConfusion());
-            }
-        }
+        fireProjectiles(projectile, onlinePlayer);
 
         //check if the temperature exceeds the limit and overloading
         if (cannon.checkHeatManagement() || cannon.isExplodedDueOverloading()) {
@@ -121,8 +105,42 @@ public record FireTaskWrapper(
     }
 
     /**
-     * creates a imitated explosion made of blocks which is transmitted to shooter in a give distance
+     * Use this method when you want to force shot a cannon without the checks
+     * such as: Temperature, Gunpowder, Soot etc.
      *
+     * @param projectile shooter projectile
+     * @param onlinePlayer shooter
+     */
+    public void fireProjectiles(Projectile projectile, Player onlinePlayer) {
+        var design = cannon.getCannonDesign();
+        var firingLoc = cannon.getMuzzle();
+
+        for (int i = 0; i < Math.max(projectile.getNumberOfBullets(), 1); i++) {
+            org.bukkit.projectiles.ProjectileSource source = null;
+            Location playerLoc = null;
+            if (onlinePlayer != null) {
+                source = onlinePlayer;
+                playerLoc = onlinePlayer.getLocation();
+            }
+
+            Vector vect = cannon.getFiringVector(true, true);
+
+            org.bukkit.entity.Projectile projectileEntity = ProjectileManager.getInstance().spawnProjectile(projectile, shooter, source, playerLoc, firingLoc, vect, cannon.getUID(), projectileCause);
+
+            if (i == 0 && projectile.hasProperty(ProjectileProperties.SHOOTER_AS_PASSENGER) && onlinePlayer != null)
+                projectileEntity.setPassenger(onlinePlayer);
+
+            //confuse all entity which wear no helmets due to the blast of the cannon
+            List<Entity> living = projectileEntity.getNearbyEntities(8, 8, 8);
+            //do only once
+            if (i == 0) {
+                confuseShooter(living, firingLoc, design.getBlastConfusion());
+            }
+        }
+    }
+
+    /**
+     * creates an imitated explosion made of blocks which is transmitted to shooter in a give distance
      */
     public void muzzleFire() {
         var config = plugin.getMyConfig();
@@ -156,7 +174,6 @@ public record FireTaskWrapper(
 
     /**
      * creates a sphere of fake block and sends it to the given shooter
-     *
      */
     public void imitateSmoke(List<Player> players) {
         var config = plugin.getMyConfig();
@@ -180,7 +197,7 @@ public record FireTaskWrapper(
      *
      * @param living      entity to confuse
      * @param firingLoc   distance to the muzzle
-     * @param confuseTime how long the enitity is confused in seconds
+     * @param confuseTime how long the entity is confused in seconds
      */
     private void confuseShooter(List<Entity> living, Location firingLoc, double confuseTime) {
         //confuse shooter if he wears no helmet (only for one projectile and if its configured)
