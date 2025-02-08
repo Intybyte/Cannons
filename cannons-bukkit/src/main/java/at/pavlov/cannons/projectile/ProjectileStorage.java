@@ -29,6 +29,7 @@ public class ProjectileStorage
 	@Getter
 	private static ProjectileStorage instance = null;
 
+	@Getter
 	private static List<Projectile> projectileList;
 
 	private ProjectileStorage(Cannons plugin)
