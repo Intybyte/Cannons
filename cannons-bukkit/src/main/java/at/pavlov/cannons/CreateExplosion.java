@@ -166,7 +166,7 @@ public class CreateExplosion {
 
 
         // has this projectile the super breaker property and makes block damage
-        Boolean superbreaker = projectile.hasProperty(ProjectileProperties.SUPERBREAKER);
+        Boolean superbreaker = projectile.hasProperty(ProjectileProperties.SUPER_BREAKER);
         Boolean doesBlockDamage = projectile.getPenetrationDamage();
 
         // list of destroy blocks
@@ -1096,7 +1096,7 @@ public class CreateExplosion {
             return false;
 
         // no deflection if the projectile pierces the block
-        if (cannonball.getProjectile().hasProperty(ProjectileProperties.SUPERBREAKER))
+        if (cannonball.getProjectile().hasProperty(ProjectileProperties.SUPER_BREAKER))
             return false;
 
         if (impactBlock.getBlock().getType() != Material.OBSIDIAN

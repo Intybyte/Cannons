@@ -1,38 +1,32 @@
 package at.pavlov.cannons.projectile;
 
-public enum ProjectileProperties
-{
-	SUPERBREAKER("SUPERBREAKER"), 
-	INCENDIARY("INCENDIARY"),
+import lombok.Getter;
+
+@Getter
+public enum ProjectileProperties {
+    SUPER_BREAKER("SUPER_BREAKER"),
+    INCENDIARY("INCENDIARY"),
     SHOOTER_AS_PASSENGER("SHOOTER_AS_PASSENGER"),
-	HUMAN_CANNONBALL("HUMAN_CANNONBALL"),
-	TELEPORT("TELEPORT"),
+    HUMAN_CANNONBALL("HUMAN_CANNONBALL"),
+    TELEPORT("TELEPORT"),
     OBSERVER("OBSERVER");
 
-	private final String string;
+    private final String name;
 
-	ProjectileProperties(String str)
-	{
-		this.string = str;
-	}
+    ProjectileProperties(String str) {
+        this.name = str;
+    }
 
-	String getString()
-	{
-		return string;
-	}
+    public static ProjectileProperties getByName(String str) {
+        if (str == null) {
+            return null;
+        }
 
-	public static ProjectileProperties getByName(String str)
-	{
-		if (str != null)
-		{
-			for (ProjectileProperties p : ProjectileProperties.values())
-			{
-				if (str.equalsIgnoreCase(p.getString()))
-				{
-					return p;
-				}
-			}
-		}
-		return null;
-	}
+        for (ProjectileProperties p : ProjectileProperties.values()) {
+            if (str.equalsIgnoreCase(p.getName())) {
+                return p;
+            }
+        }
+        return null;
+    }
 }
