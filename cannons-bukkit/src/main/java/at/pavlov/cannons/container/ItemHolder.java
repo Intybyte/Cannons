@@ -1,6 +1,7 @@
 package at.pavlov.cannons.container;
 
 import at.pavlov.cannons.multiversion.VersionHandler;
+import at.pavlov.cannons.utils.ParseUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -221,26 +222,6 @@ public class ItemHolder {
         return this.lore != null && this.lore.size() > 0;
     }
 
-    private static String capitalizeFully(String name) {
-        if (name == null) {
-            return "";
-        }
-
-        if (name.length() <= 1) {
-            return name.toUpperCase();
-        }
-
-        if (!name.contains("_")) {
-            return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
-        }
-
-        StringBuilder sbName = new StringBuilder();
-        for (String subName : name.split("_"))
-            sbName.append(subName.substring(0, 1).toUpperCase() + subName.substring(1).toLowerCase()).append(" ");
-
-        return sbName.substring(0, sbName.length() - 1);
-    }
-
     private static String getFriendlyName(Material material) {
         return material == null ? "Air" : getFriendlyName(new ItemStack(material), false);
     }
@@ -252,6 +233,6 @@ public class ItemHolder {
             return itemStack.getItemMeta().getDisplayName();
         }
 
-        return capitalizeFully(itemStack.getType().name().replace("_", " ").toLowerCase());
+        return ParseUtils.normalizeName(itemStack.getType().name());
     }
 }
