@@ -13,7 +13,6 @@ import at.pavlov.cannons.dao.LoadWhitelistTask;
 import at.pavlov.cannons.event.CannonAfterCreateEvent;
 import at.pavlov.cannons.event.CannonBeforeCreateEvent;
 import at.pavlov.cannons.event.CannonRenameEvent;
-import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.dao.wrappers.RemoveTaskWrapper;
 import at.pavlov.cannons.utils.SoundUtils;
 import lombok.Getter;
@@ -34,7 +33,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -188,48 +186,45 @@ public class CannonManager {
 
         //delay the remove task, so it fits to the sound
         RemoveTaskWrapper task = new RemoveTaskWrapper(cannon, breakCannon, canExplode, cause, removeEntry, ignoreInvalid);
-        AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask(task) {
-            public void run(Object object) {
-                RemoveTaskWrapper task = (RemoveTaskWrapper) object;
-                Cannon cannon = task.getCannon();
-                BreakCause cause = task.getCause();
-                UUID owner = cannon.getOwner();
+        AsyncTaskManager.get().scheduler.runTaskLater( () -> {
+            Cannon cannon1 = task.getCannon();
+            BreakCause cause1 = task.getCause();
+            UUID owner = cannon1.getOwner();
 
-                // send message to the owner
-                Player player = null;
-                if (owner != null) {
-                    player = Bukkit.getPlayer(owner);
+            // send message to the owner
+            Player player = null;
+            if (owner != null) {
+                player = Bukkit.getPlayer(owner);
 
-                    OfflinePlayer offplayer = Bukkit.getOfflinePlayer(owner);
-                    // return message
-                    if (offplayer.hasPlayedBefore() && plugin.getEconomy() != null && cannon.isPaid()) {
-                        double funds = switch (cause) {
-                            case Other, Dismantling -> cannon.getCannonDesign().getEconomyDismantlingRefund();
-                            default -> cannon.getCannonDesign().getEconomyDestructionRefund();
-                        };
-                        plugin.getEconomy().depositPlayer(offplayer, funds);
-                    }
+                OfflinePlayer offplayer = Bukkit.getOfflinePlayer(owner);
+                // return message
+                if (offplayer.hasPlayedBefore() && plugin.getEconomy() != null && cannon1.isPaid()) {
+                    double funds = switch (cause1) {
+                        case Other, Dismantling -> cannon1.getCannonDesign().getEconomyDismantlingRefund();
+                        default -> cannon1.getCannonDesign().getEconomyDestructionRefund();
+                    };
+                    plugin.getEconomy().depositPlayer(offplayer, funds);
                 }
-
-                MessageEnum message = cannon.destroyCannon(task.breakCannon(), task.canExplode(), cause);
-                if (player != null)
-                    userMessages.sendMessage(message, player, cannon);
-
-                //remove from database
-                plugin.getPersistenceDatabase().deleteCannon(cannon.getUID());
-                //remove cannon name
-                cannonNameMap.remove(cannon.getCannonName());
-                //remove sentry
-                if (cannon.getCannonDesign().isSentry())
-                    Aiming.getInstance().removeSentryCannon(cannon.getUID());
-                //remove all entries for this cannon in the aiming class
-                Aiming.getInstance().removeCannon(cannon);
-
-                //remove entry
-                if (task.removeEntry())
-                    cannonList.remove(cannon.getUID());
-
             }
+
+            MessageEnum message = cannon1.destroyCannon(task.breakCannon(), task.canExplode(), cause1);
+            if (player != null)
+                userMessages.sendMessage(message, player, cannon1);
+
+            //remove from database
+            plugin.getPersistenceDatabase().deleteCannon(cannon1.getUID());
+            //remove cannon name
+            cannonNameMap.remove(cannon1.getCannonName());
+            //remove sentry
+            if (cannon1.getCannonDesign().isSentry())
+                Aiming.getInstance().removeSentryCannon(cannon1.getUID());
+            //remove all entries for this cannon in the aiming class
+            Aiming.getInstance().removeCannon(cannon1);
+
+            //remove entry
+            if (task.removeEntry())
+                cannonList.remove(cannon1.getUID());
+
         }, delay);
     }
 

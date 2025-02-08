@@ -16,7 +16,6 @@ import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileProperties;
-import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.SoundUtils;
@@ -295,12 +294,7 @@ public class FireCannon {
                 double randomess = 1. + design.getFuseBurnTimeRandomness() * random.nextDouble();
                 long delayTime = (long) (randomess * design.getFuseBurnTime() * 20.0 + i * projectile.getAutomaticFiringDelay() * 20.0);
                 FireTaskWrapper fireTask = new FireTaskWrapper(cannon, playerUid, lastRound, projectileCause);
-                scheduler.runTaskLater(cannon.getLocation(), new DelayedTask(fireTask) {
-                    public void run(Object object) {
-                        FireTaskWrapper fireTask = (FireTaskWrapper) object;
-                        fireTask(fireTask.getCannon(), fireTask.getPlayer(), fireTask.isRemoveCharge(), projectileCause);
-                    }
-                }, delayTime);
+                scheduler.runTaskLater(cannon.getLocation(), () -> fireTask(fireTask.getCannon(), fireTask.getPlayer(), fireTask.isRemoveCharge(), projectileCause), delayTime);
             }
         } catch (Exception e) {
             e.printStackTrace();
