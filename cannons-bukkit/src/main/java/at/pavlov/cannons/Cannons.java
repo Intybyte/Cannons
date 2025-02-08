@@ -250,24 +250,8 @@ public final class Cannons extends JavaPlugin
 			// save cannons
 			AsyncTaskManager.get().scheduler.runTaskTimer(() -> persistenceDatabase.saveAllCannons(true), 6000L, 6000L);
 
-			Metrics metrics = new Metrics(this, 23139);
-			metrics.addCustomChart(
-				new AdvancedPie("hooks", () -> {
-
-					Map<String, Integer> result = new HashMap<>();
-					if (!hookManager.isActive()) {
-						result.put("None", 1);
-						return result;
-					}
-
-					for (Hook<?> hook : hookManager.hookMap().values()) {
-						final int status = hook.active() ? 1 : 0;
-						result.put(hook.getTypeClass().getSimpleName(), status);
-					}
-
-					return result;
-				})
-			);
+			CannonMetrics metrics = new CannonMetrics(this);
+			metrics.setupCharts();
 
             logDebug("Time to enable cannons: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
 
