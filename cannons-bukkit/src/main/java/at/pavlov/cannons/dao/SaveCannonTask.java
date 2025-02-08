@@ -26,6 +26,11 @@ public class SaveCannonTask implements RunnableAsync {
         if (Cannons.getPlugin().getConnection() == null)
             return;
 
+        saveCannons();
+        saveWhitelist();
+    }
+
+    public void saveCannons() {
         String insert = String.format("REPLACE INTO %s " +
                 "(id, name, owner, world, cannon_direction, loc_x, loc_y, loc_Z, soot, gunpowder, projectile_id, projectile_pushed, cannon_temperature, cannon_temperature_timestamp, horizontal_angle, vertical_angle, design_id, fired_cannonballs, target_mob, target_player, target_cannon, target_other, paid) VALUES" +
                 "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
@@ -112,10 +117,11 @@ public class SaveCannonTask implements RunnableAsync {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
-
+    public void saveWhitelist() {
         //Whitelist
-        insert = String.format("REPLACE INTO %s " +
+        String insert = String.format("REPLACE INTO %s " +
                         "(cannon_bean_id, player) VALUES" +
                         "(?,?)"
                 , Cannons.getPlugin().getWhitelistDatabase());
