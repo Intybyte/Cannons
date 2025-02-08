@@ -10,12 +10,10 @@ import java.util.UUID;
 
 @Data public class MovingObject {
 
-    //location and speed
     private UUID world;
     private Vector loc;
     private Vector vel;
     private final EntityType entityType;
-
 
     public MovingObject(Location loc, Vector vel, EntityType entityType) {
         world = loc.getWorld().getUID();
@@ -40,6 +38,12 @@ import java.util.UUID;
         this.vel.subtract(new Vector(0, gravity, 0));
     }
 
+    /**
+     * Returns a normalized positive value of the gravity, used with Vector#subtract,
+     * higher values mean the projectile falls faster (duh)
+     *
+     * @return gravity to subtract to a specific entity type matching vanilla implementation
+     */
     public double getGravity() {
         return switch (entityType) {
             case ARROW -> 0.05000000074505806;
@@ -51,10 +55,18 @@ import java.util.UUID;
         };
     }
 
+    /**
+     * Returns a value between 0 and 0.99, the smaller the number the stronger the drag
+     * which means the projectile will get slowed down, used with Vector#multiply
+     *
+     * @param inWater the projectile is in water, in this case the drag is stronger
+     *
+     * @return drag multiplier for a specific entity matching vanilla implementation
+     */
     public double getDrag(boolean inWater) {
         return switch (entityType) {
             case ARROW -> inWater ? 0.6 : 0.99;
-            case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL ,
+            case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL,
                  WITHER_SKULL,
                  SHULKER_BULLET -> 0.95;
             case FISHING_BOBBER -> 0.92;
