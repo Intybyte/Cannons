@@ -70,7 +70,7 @@ import java.util.UUID;
                  WITHER_SKULL,
                  SHULKER_BULLET -> 0.95;
             case FISHING_BOBBER -> 0.92;
-            default -> inWater ? 0.8 : 0.99; // Air Drag - Water Drag
+            default -> inWater ? 0.8 : 0.99; // Water Drag - Air Drag
         };
     }
 
