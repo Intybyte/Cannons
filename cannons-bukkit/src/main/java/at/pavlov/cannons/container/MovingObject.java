@@ -53,13 +53,7 @@ import java.util.UUID;
 
     public double getDrag(boolean inWater) {
         return switch (entityType) {
-            case ARROW -> {
-                if (inWater) {
-                    yield 0.6;
-                }
-
-                yield 0.99;
-            }
+            case ARROW -> inWater ? 0.6 : 0.99;
             case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL ,
                  WITHER_SKULL,
                  SHULKER_BULLET -> 0.95;
