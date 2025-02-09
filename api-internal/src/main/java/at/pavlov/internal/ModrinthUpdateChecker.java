@@ -55,8 +55,9 @@ public class ModrinthUpdateChecker {
             return true;
         }
 
+        downloadUrl = DOWNLOAD + latestVersionNumber;
         logger.info(YELLOW + "A new version is available: " + current + " --> " + latestVersionNumber + RESET);
-        logger.info(YELLOW + "Download it here: " + DOWNLOAD + latestVersionNumber + RESET);
+        logger.info(YELLOW + "Download it here: " + downloadUrl + RESET);
         return false;
     }
 
