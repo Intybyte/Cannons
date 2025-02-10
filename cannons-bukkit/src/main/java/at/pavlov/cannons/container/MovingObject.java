@@ -50,7 +50,6 @@ import java.util.UUID;
             case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL,
                  WITHER_SKULL,
                  SHULKER_BULLET -> 0.0;
-            case FISHING_BOBBER -> 0.08;
             default -> 0.03;
         };
     }
@@ -69,7 +68,6 @@ import java.util.UUID;
             case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL,
                  WITHER_SKULL,
                  SHULKER_BULLET -> 0.95;
-            case FISHING_BOBBER -> 0.92;
             default -> inWater ? 0.8 : 0.99; // Water Drag - Air Drag
         };
     }
