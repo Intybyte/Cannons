@@ -49,17 +49,17 @@ public class ModrinthUpdateChecker {
 
         JsonObject latestVersion = extractLatest(versions);
         String latestVersionNumber = latestVersion.get("version_number").getAsString();
-        logger.info(GREEN + "Latest version: " + latestVersionNumber + RESET);
+        logger.info(() -> GREEN + "Latest version: " + latestVersionNumber + RESET);
 
         // Compare versions
         if (latestVersionNumber.equals(current)) {
-            logger.info(GREEN + "You are using the latest version" + RESET);
+            logger.info(() -> GREEN + "You are using the latest version" + RESET);
             return true;
         }
 
         downloadUrl = DOWNLOAD + latestVersionNumber;
-        logger.info(YELLOW + "A new version is available: " + current + " --> " + latestVersionNumber + RESET);
-        logger.info(YELLOW + "Download it here: " + downloadUrl + RESET);
+        logger.info(() -> YELLOW + "A new version is available: " + current + " --> " + latestVersionNumber + RESET);
+        logger.info(() -> YELLOW + "Download it here: " + downloadUrl + RESET);
         return false;
     }
 
