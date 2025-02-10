@@ -150,7 +150,6 @@ public record FireTaskWrapper(
         Location loc = cannon.getMuzzle();
 
         //simple particle effects for close distance
-        //loc.getWorld().createExplosion(loc, 0F, false);
         loc.getWorld().spawnParticle(XParticle.EXPLOSION.get(), loc, 1);
         //fake blocks effects for far distance
         if (!config.isImitatedFiringEffectEnabled()) {
@@ -206,9 +205,10 @@ public record FireTaskWrapper(
         }
 
         PotionEffect confusionEffect = new PotionEffect(XPotion.NAUSEA.get(), (int) confuseTime * 20, 0);
-        for (Entity next : living) {
-            if (isHarmEntity(next)) {//damage living entities and unprotected players
-                LivingEntity livingEntity = (LivingEntity) next;
+        //damage living entities and unprotected players
+        for (Entity entity : living) {
+            if (isHarmEntity(entity)) {
+                LivingEntity livingEntity = (LivingEntity) entity;
                 if (livingEntity.getLocation().distance(firingLoc) < 5.0)
                     livingEntity.damage(1);
                 livingEntity.addPotionEffect(confusionEffect);
@@ -219,14 +219,13 @@ public record FireTaskWrapper(
     private boolean isHarmEntity(Entity next) {
         if (next instanceof Player player) {
             //if shooter has no helmet and is not in creative and there are confusion effects - harm him
-            return player.isOnline() && !CheckHelmet(player) && player.getGameMode() != GameMode.CREATIVE;
+            return player.isOnline() && !checkHelmet(player) && player.getGameMode() != GameMode.CREATIVE;
         }
 
         return next instanceof LivingEntity;
     }
 
-    private boolean CheckHelmet(Player player) {
-        ItemStack helmet = player.getInventory().getHelmet();
-        return helmet != null;
+    private boolean checkHelmet(Player player) {
+        return player.getInventory().getHelmet() != null;
     }
 }
