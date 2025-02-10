@@ -3,6 +3,8 @@ package at.pavlov.internal;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +19,7 @@ public class ModrinthUpdateChecker {
     private static final String DOWNLOAD = "https://modrinth.com/plugin/cannons-revamped/version/";
 
     private final Logger logger;
-    private String downloadUrl = null;
+    private @Nullable String downloadUrl = null;
 
     public static final String YELLOW = "\u001B[33m";
     public static final String GREEN = "\u001B[32m";
@@ -27,7 +29,7 @@ public class ModrinthUpdateChecker {
         this.logger = logger;
     }
 
-    public Boolean isLatest(String current) {
+    public @Nullable Boolean isLatest(String current) {
         String response;
 
         try(BufferedReader in = getBufferedReader()) {
@@ -61,11 +63,11 @@ public class ModrinthUpdateChecker {
         return false;
     }
 
-    public String getDownloadUrl() {
-        return downloadUrl;
+    public @NotNull String getDownloadUrl() {
+        return downloadUrl==null ? "ERROR" : downloadUrl;
     }
 
-    private static BufferedReader getBufferedReader() throws IOException {
+    private static @NotNull BufferedReader getBufferedReader() throws IOException {
         URL url = new URL(API_URL);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -80,7 +82,7 @@ public class ModrinthUpdateChecker {
         return new BufferedReader(new InputStreamReader(connection.getInputStream()));
     }
 
-    private static JsonObject extractLatest(JsonArray versions) {
+    private static JsonObject extractLatest(@NotNull JsonArray versions) {
         return versions.get(0).getAsJsonObject();
     }
 }

@@ -1,5 +1,7 @@
 package at.pavlov.internal;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,11 +12,11 @@ public class HookManager {
     /**
      * @return A defensive copy of the hook map
      */
-    public Map<Class<? extends Hook<?>>, Hook<?>> hookMap() {
+    public @NotNull Map<Class<? extends Hook<?>>, Hook<?>> hookMap() {
         return Collections.unmodifiableMap(hooks);
     }
 
-    public boolean isRegistered(Class<? extends Hook<?>> type) {
+    public boolean isRegistered(@NotNull Class<? extends Hook<?>> type) {
         if (this.hooks.containsKey(type)) {
             return true;
         }
@@ -28,7 +30,7 @@ public class HookManager {
         return false;
     }
 
-    public <T extends Hook<?>> T getHook(Class<T> type) {
+    public <T extends Hook<?>> @NotNull T getHook(@NotNull Class<T> type) {
         Hook<?> hook = this.hooks.get(type);
         if (hook != null) {
             return type.cast(hook);
@@ -53,7 +55,7 @@ public class HookManager {
         return hooks.values().stream().anyMatch(Hook::active);
     }
 
-    public void registerHook(Hook<?> hook) {
+    public void registerHook(@NotNull Hook<?> hook) {
         hook.onEnable();
         this.hooks.put(hook.getTypeClass(), hook);
     }
