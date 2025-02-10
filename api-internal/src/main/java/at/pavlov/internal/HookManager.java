@@ -30,7 +30,7 @@ public class HookManager {
         return false;
     }
 
-    public <H, T extends Hook<H>> @NotNull T getHook(@NotNull Class<T> type) {
+    public <T extends Hook<?>> @NotNull T getHook(@NotNull Class<T> type) {
         Hook<?> hook = this.hooks.get(type);
         if (hook != null) {
             return type.cast(hook);
