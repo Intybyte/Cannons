@@ -624,7 +624,7 @@ public class Aiming {
         }
         Target target = targets.get(cannon.getSentryEntity());
         // find exact solution for the cannon
-        if (!calculateTargetSolution(cannon, target, target.velocity(), true)) {
+        if (!calculateTargetSolution(cannon, target, true)) {
             //no exact solution found for this target. So skip it and try it again in the next run
             cannon.setSentryEntity(null);
             return;
@@ -648,42 +648,34 @@ public class Aiming {
         }
 
         ArrayList<Target> possibleTargets = new ArrayList<>();
+
         for (Target t : targets.values()) {
+            TargetType type = t.targetType();
+            if (!type.isAllowed(cannon)) continue;
             //Monster
-            if (t.targetType() == TargetType.MONSTER && cannon.isTargetMob()) {
-                if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
-                    possibleTargets.add(t);
-                }
+            if (type == TargetType.MONSTER) {
+                handlePossibleTarget(cannon, t, possibleTargets);
+                continue;
             }
+
+
+            if (checkScoreboard(cannon, t)) continue;
             //Player
-            else if (t.targetType() == TargetType.PLAYER && cannon.isTargetPlayer() && !cannon.isWhitelisted(t.uniqueId())) {
-                // ignore if target and player are in the same team
-                if (checkScoreboard(cannon, t)) continue;
+            if (type == TargetType.PLAYER && !cannon.isWhitelisted(t.uniqueId())) {
                 // get solution
-                if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
-                    possibleTargets.add(t);
-                }
+                handlePossibleTarget(cannon, t, possibleTargets);
+                continue;
             }
-            //Cannons
-            else if (t.targetType() == TargetType.CANNON && cannon.isTargetCannon()) {
-                Cannon tCannon = CannonManager.getCannon(t.uniqueId());
+
+            Cannon tCannon = CannonManager.getCannon(t.uniqueId());
+            if (tCannon == null) continue;
+            //Cannons & Other have same handling
+            //check if the owner is whitelisted
+            if (type == TargetType.CANNON || type == TargetType.OTHER) {
+
                 //check if the owner is whitelisted
-                if (tCannon != null && !cannon.isWhitelisted(tCannon.getOwner())) {
-                    if (checkScoreboard(cannon, t)) continue;
-                    if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
-                        possibleTargets.add(t);
-                    }
-                }
-            }
-            //Other
-            else if (t.targetType() == TargetType.OTHER && cannon.isTargetOther()) {
-                Cannon tCannon = CannonManager.getCannon(t.uniqueId());
-                //check if the owner is whitelisted
-                if (tCannon != null && !cannon.isWhitelisted(tCannon.getOwner())) {
-                    if (checkScoreboard(cannon, t)) continue;
-                    if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
-                        possibleTargets.add(t);
-                    }
+                if (!cannon.isWhitelisted(tCannon.getOwner())) {
+                    handlePossibleTarget(cannon, t, possibleTargets);
                 }
             }
         }
@@ -700,6 +692,12 @@ public class Aiming {
                 .ifPresent(cannon::setSentryEntity);
         if (!cannon.hasSentryEntity()) {
             cannon.setSentryEntity(possibleTargets.get(0).uniqueId());
+        }
+    }
+
+    private void handlePossibleTarget(Cannon cannon, Target t, ArrayList<Target> possibleTargets) {
+        if (canFindTargetSolution(cannon, t)) {
+            possibleTargets.add(t);
         }
     }
 
@@ -722,10 +720,14 @@ public class Aiming {
         Target target = targets.get(cannon.getSentryEntity());
         if (System.currentTimeMillis() > cannon.getSentryTargetingTime() + cannon.getCannonDesign().getSentrySwapTime() || !targets.containsKey(cannon.getSentryEntity())) {
             cannon.setSentryEntity(null);
-        } else if (!canFindTargetSolution(cannon, target, target.centerLocation(), target.velocity())) {
+        } else if (!canFindTargetSolution(cannon, target)) {
             //is the previous target still valid
             cannon.setSentryEntity(null);
         }
+    }
+
+    private boolean canFindTargetSolution(Cannon cannon, Target target) {
+        return canFindTargetSolution(cannon, target, target.centerLocation());
     }
 
     /**
@@ -733,10 +735,9 @@ public class Aiming {
      *
      * @param cannon         the cannon which is operated
      * @param loctarget      lcoation of the target
-     * @param targetVelocity how fast the target is moving
      * @return true if the cannon can fire on this target
      */
-    private boolean canFindTargetSolution(Cannon cannon, Target target, Location loctarget, Vector targetVelocity) {
+    private boolean canFindTargetSolution(Cannon cannon, Target target, Location loctarget) {
         if (!cannon.getWorld().equals(loctarget.getWorld().getUID()))
             return false;
 
@@ -780,16 +781,15 @@ public class Aiming {
      *
      * @param cannon         the cannon which is operated
      * @param target         lcoation of the target
-     * @param targetVelocity how fast the target is moving
      * @return true if a solution was found
      */
-    private boolean calculateTargetSolution(Cannon cannon, Target target, Vector targetVelocity, boolean addSpread) {
+    private boolean calculateTargetSolution(Cannon cannon, Target target, boolean addSpread) {
         Location targetLoc = target.centerLocation();
         //aim for the center of the target if there is an area effect of the projectile
         if (cannon.getLoadedProjectile() != null && (cannon.getLoadedProjectile().getExplosionPower() > 2. || (cannon.getLoadedProjectile().getPlayerDamage() > 1. && cannon.getLoadedProjectile().getPlayerDamageRange() > 2.)))
             targetLoc = target.groundLocation();
 
-        if (!canFindTargetSolution(cannon, target, target.centerLocation(), targetVelocity))
+        if (!canFindTargetSolution(cannon, target))
             return false;
 
         if (cannon.getCannonballVelocity() < 0.01)
@@ -831,7 +831,7 @@ public class Aiming {
                 cannon.setAimingPitch(cannon.getAimingPitch() + sign * step);
             }
 
-            if (!(step < cannon.getCannonDesign().getAngleStepSize())) {
+            if (step >= cannon.getCannonDesign().getAngleStepSize()) {
                 continue;
             }
 
