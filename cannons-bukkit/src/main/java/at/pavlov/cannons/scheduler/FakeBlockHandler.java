@@ -254,11 +254,12 @@ public class FakeBlockHandler {
     }
 
     private void processParticle(final Location location, FakeBlockType type) {
+        Config config = Cannons.getPlugin().getMyConfig();
         if (type == FakeBlockType.IMPACT_PREDICTOR)
             lastImpactPredictor = System.currentTimeMillis();
         if (type == FakeBlockType.AIMING)
             lastAiming = System.currentTimeMillis();
-        location.getWorld().spawnParticle(Particle.WAX_ON, location, 20, 0, 0, 0, 2.5);
+        config.getImitatedAimingParticle().at(location);
     }
 
     /**
