@@ -65,6 +65,10 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>glaremasters repo</id>
+            <url>https://repo.glaremasters.me/repository/towny/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -147,6 +151,12 @@
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.11.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.palmergames.bukkit.towny</groupId>
+            <artifactId>towny</artifactId>
+            <version>0.101.1.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

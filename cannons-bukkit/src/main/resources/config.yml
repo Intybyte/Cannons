@@ -21,6 +21,8 @@ hooks:
     enabled: true
   movecraftCombat:
     enabled: true
+  towny:
+    enabled: true
 
 
 cannonLimits:

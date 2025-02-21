@@ -39,6 +39,8 @@ import java.util.List;
     //movecraft
     private boolean movecraftEnabled;
     private boolean movecraftCannonEnabled;
+
+    private boolean isTownyEnabled;
     //endregion
 	
 	//build limits
@@ -132,6 +134,7 @@ import java.util.List;
         setEconomyDisabled(!config.getBoolean("hooks.vault.enabled", true));
         setMovecraftEnabled(config.getBoolean("hooks.movecraft.enabled", true));
         setMovecraftCannonEnabled(config.getBoolean("hooks.movecraftCombat.enabled", true));
+        setTownyEnabled(config.getBoolean("hooks.towny.enabled", true));
 
         setRelayExplosionEvent(config.getBoolean("general.relayExplosionEvent", false));
         setClaimEdgeLength(config.getInt("general.claimEdgeLength", 60));
