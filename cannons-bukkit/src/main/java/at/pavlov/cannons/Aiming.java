@@ -556,7 +556,11 @@ public class Aiming {
     private void sentryAiming(Cannon cannon) {
         //aim at the found solution
         // only update if since the last update some ticks have past (updateSpeed is in ticks = 50ms)
-        if (System.currentTimeMillis() < cannon.getLastAimed() + cannon.getCannonDesign().getAngleUpdateSpeed() || (!cannon.hasSentryEntity() && cannon.isSentryHomedAfterFiring())) {
+        if (System.currentTimeMillis() < cannon.getLastAimed() + cannon.getCannonDesign().getAngleUpdateSpeed()) {
+            return;
+        }
+
+        if (!cannon.hasSentryEntity() && cannon.isSentryHomedAfterFiring()) {
             return;
         }
         // autoaming or fineadjusting
@@ -660,8 +664,9 @@ public class Aiming {
 
 
             if (checkScoreboard(cannon, t)) continue;
+            if (cannon.isWhitelisted(t.uniqueId())) continue;
             //Player
-            if (type == TargetType.PLAYER && !cannon.isWhitelisted(t.uniqueId())) {
+            if (type == TargetType.PLAYER) {
                 // get solution
                 handlePossibleTarget(cannon, t, possibleTargets);
                 continue;
@@ -672,11 +677,8 @@ public class Aiming {
             //Cannons & Other have same handling
             //check if the owner is whitelisted
             if (type == TargetType.CANNON || type == TargetType.OTHER) {
-
                 //check if the owner is whitelisted
-                if (!cannon.isWhitelisted(tCannon.getOwner())) {
-                    handlePossibleTarget(cannon, t, possibleTargets);
-                }
+                handlePossibleTarget(cannon, t, possibleTargets);
             }
         }
         //so we have some targets

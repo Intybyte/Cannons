@@ -421,8 +421,12 @@ public class CannonsUtil
                         continue;
                     }
 
-                    double dist = e.getLocation().distanceSquared(l);
-                    if (!(e instanceof LivingEntity) || e.isDead() || !(minRadius*minRadius <= dist) || !(dist <= maxRadius*maxRadius) || e.getLocation().getBlock() == l.getBlock()) {
+                    double dist = e.getLocation().distance(l);
+                    if (!(e instanceof LivingEntity) || e.isDead()) {
+                        continue;
+                    }
+
+                    if (minRadius > dist || dist > maxRadius || e.getLocation().getBlock() == l.getBlock()) {
                         continue;
                     }
 
