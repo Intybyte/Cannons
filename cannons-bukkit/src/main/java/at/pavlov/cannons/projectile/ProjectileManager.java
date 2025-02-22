@@ -4,7 +4,6 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.dao.AsyncTaskManager;
-import at.pavlov.cannons.dao.DelayedTask;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -93,31 +92,28 @@ public class ProjectileManager
      * detonate a timefused projectile mid air
      * @param cannonball - the cannonball to detonate
      */
-    private void detonateTimefuse(final FlyingProjectile cannonball)
-    {
+    private void detonateTimefuse(final FlyingProjectile cannonball) {
         if (cannonball.getProjectile().getTimefuse() <= 0) {
             return;
         }
 
         //Delayed Task
-        AsyncTaskManager.get().scheduler.runTaskLater(new DelayedTask(cannonball.getUID())
-        {
-            public void run(Object object)
-            {
-                //find given UID in list
-                FlyingProjectile fproj = flyingProjectilesMap.get(object);
+        AsyncTaskManager.get().scheduler.runTaskLater(() -> {
+            //find given UID in list
+            FlyingProjectile fproj = flyingProjectilesMap.get(cannonball.getUID());
 
-                if(fproj != null) {
-                    //detonate timefuse
-                    org.bukkit.entity.Projectile projectile_entity = fproj.getProjectileEntity();
-                    //the projectile might be null
-                    if (projectile_entity != null) {
-                        CreateExplosion.getInstance().detonate(cannonball, projectile_entity);
-                        projectile_entity.remove();
-                    }
-                    flyingProjectilesMap.remove(cannonball.getUID());
-                }
-            }}, (long) (cannonball.getProjectile().getTimefuse()*20));
+            if (fproj == null) {
+                return;
+            }
+            //detonate timefuse
+            org.bukkit.entity.Projectile projectile_entity = fproj.getProjectileEntity();
+            //the projectile might be null
+            if (projectile_entity != null) {
+                CreateExplosion.getInstance().detonate(cannonball, projectile_entity);
+                projectile_entity.remove();
+            }
+            flyingProjectilesMap.remove(cannonball.getUID());
+        }, (long) (cannonball.getProjectile().getTimefuse()*20));
     }
 
 

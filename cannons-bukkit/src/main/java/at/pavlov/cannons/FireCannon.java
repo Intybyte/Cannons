@@ -1,7 +1,5 @@
 package at.pavlov.cannons;
 
-import at.pavlov.cannons.Enum.BreakCause;
-import at.pavlov.cannons.Enum.FakeBlockType;
 import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.Enum.ProjectileCause;
@@ -14,27 +12,14 @@ import at.pavlov.cannons.event.CannonFireEvent;
 import at.pavlov.cannons.event.CannonLinkFiringEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.projectile.Projectile;
-import at.pavlov.cannons.projectile.ProjectileManager;
-import at.pavlov.cannons.projectile.ProjectileProperties;
-import at.pavlov.cannons.dao.DelayedTask;
 import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
-import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.SoundUtils;
-import com.cryptomorin.xseries.XPotion;
-import com.cryptomorin.xseries.particles.XParticle;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -161,10 +146,11 @@ public class FireCannon {
         CannonLinkFiringEvent event = new CannonLinkFiringEvent(cannon, linkedCannons, player.getUniqueId());
         Bukkit.getPluginManager().callEvent(event);
 
-        if (!event.isCancelled())
+        if (!event.isCancelled()) {
             for (var fcannon : event.getLinkedCannons()) {
                 this.fire(fcannon, player.getUniqueId(), autoreload, !design.isAmmoInfiniteForPlayer(), action);
             }
+        }
 
         return this.fire(cannon, player.getUniqueId(), autoreload, !design.isAmmoInfiniteForPlayer(), action);
     }
@@ -212,22 +198,8 @@ public class FireCannon {
             cannon.setLoadedGunpowder(design.getMaxLoadableGunpowderNormal());
 
 
-        //no charge try some autoreload from chests
-        if (!cannon.isLoaded() && !cannon.isLoading() && autoload) {
-            MessageEnum messageEnum = cannon.reloadFromChests(playerUid, consumesAmmo);
-            //try to load some projectiles
-            if (messageEnum.isError()) {
-                //there is not enough gunpowder or no projectile in the chest
-                plugin.logDebug("Can't reload cannon, because there is no valid charge in the chests");
-                SoundUtils.playErrorSound(cannon.getMuzzle());
-                return messageEnum;
-            } else {
-                //everything went fine - next click on torch will fire the cannon
-                //if fire after reloading is active, it will fire automatically. This can be a problem for the impact predictor
-                if (!design.isFireAfterLoading())
-                    return MessageEnum.loadProjectile;
-            }
-        }
+        MessageEnum messageEnum = tryAutoload(cannon, playerUid, autoload, consumesAmmo, design);
+        if (messageEnum != null) return messageEnum;
 
         //check for all permissions
         MessageEnum message = getPrepareFireMessage(cannon, player);
@@ -262,29 +234,12 @@ public class FireCannon {
             SoundUtils.playSound(torchLoc, design.getSoundIgnite());
         }
 
-        final ProjectileCause projectileCause;
-        switch (action) {
-            case fireRightClickTigger:
-            case fireAutoaim:
-            case fireRedstoneTrigger:
-            case fireAfterLoading: {
-                projectileCause = ProjectileCause.PlayerFired;
-                break;
-            }
-            case fireRedstone: {
-                projectileCause = ProjectileCause.RedstoneFired;
-                break;
-            }
-            case fireSentry: {
-                projectileCause = ProjectileCause.SentryFired;
-                break;
-            }
-            default: {
-                projectileCause = ProjectileCause.UnknownFired;
-                break;
-            }
-
-        }
+        final ProjectileCause projectileCause = switch (action) {
+            case fireRightClickTigger, fireAutoaim, fireRedstoneTrigger, fireAfterLoading -> ProjectileCause.PlayerFired;
+            case fireRedstone -> ProjectileCause.RedstoneFired;
+            case fireSentry -> ProjectileCause.SentryFired;
+            default -> ProjectileCause.UnknownFired;
+        };
 
         var scheduler = AsyncTaskManager.get().scheduler;
         try {
@@ -294,13 +249,8 @@ public class FireCannon {
                 boolean lastRound = i == (projectile.getAutomaticFiringMagazineSize() - 1);
                 double randomess = 1. + design.getFuseBurnTimeRandomness() * random.nextDouble();
                 long delayTime = (long) (randomess * design.getFuseBurnTime() * 20.0 + i * projectile.getAutomaticFiringDelay() * 20.0);
-                FireTaskWrapper fireTask = new FireTaskWrapper(cannon, playerUid, lastRound, projectileCause);
-                scheduler.runTaskLater(cannon.getLocation(), new DelayedTask(fireTask) {
-                    public void run(Object object) {
-                        FireTaskWrapper fireTask = (FireTaskWrapper) object;
-                        fireTask(fireTask.getCannon(), fireTask.getPlayer(), fireTask.isRemoveCharge(), projectileCause);
-                    }
-                }, delayTime);
+                FireTaskWrapper fireTaskWrapper = new FireTaskWrapper(cannon, playerUid, lastRound, projectileCause);
+                scheduler.runTaskLater(cannon.getLocation(), fireTaskWrapper::fireTask, delayTime);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -309,194 +259,22 @@ public class FireCannon {
         return message;
     }
 
-
-    /**
-     * fires a cannon and removes the charge from the player
-     *
-     * @param cannon          - the fired cannon
-     * @param shooter         - the player firing the cannon
-     * @param removeCharge    - if the charge is removed after firing
-     * @param projectileCause - how the projectile was fired (by a player, redstone, or sentry)
-     */
-    private void fireTask(Cannon cannon, UUID shooter, boolean removeCharge, ProjectileCause projectileCause) {
-        CannonDesign design = cannon.getCannonDesign();
-        Projectile projectile = cannon.getLoadedProjectile();
-
-        //the player might be null if not online
-        Player onlinePlayer = Bukkit.getPlayer(shooter);
-
-        // no projectile no cannon firing
-        if (projectile == null) return;
-        // no gunpowder no cannon firing
-        if (cannon.getLoadedGunpowder() <= 0) return;
-
-        //increased fired cannonballs
-        cannon.incrementFiredCannonballs();
-
-        //get firing location
-        Location firingLoc = design.getMuzzle(cannon);
-        World world = cannon.getWorldBukkit();
-
-        //Muzzle flash + effects
-        if (projectile.getProjectileEntity().equals(EntityType.ARROW))
-            world.playEffect(firingLoc, Effect.BOW_FIRE, 10);
-        MuzzleFire(cannon);
-        world.playEffect(firingLoc, Effect.SMOKE, cannon.getCannonDirection());
-
-        //increase heat of the cannon
-        if (design.isHeatManagementEnabled())
-            cannon.setTemperature(cannon.getTemperature() + design.getHeatIncreasePerGunpowder() / projectile.getAutomaticFiringMagazineSize() * cannon.getLoadedGunpowder());
-        //automatic cool down
-        if (design.isAutomaticCooling())
-            cannon.automaticCooling();
-
-        //for each bullet, but at least once
-        for (int i = 0; i < Math.max(projectile.getNumberOfBullets(), 1); i++) {
-            org.bukkit.projectiles.ProjectileSource source = null;
-            Location playerLoc = null;
-            if (onlinePlayer != null) {
-                source = onlinePlayer;
-                playerLoc = onlinePlayer.getLocation();
-            }
-
-            Vector vect = cannon.getFiringVector(true, true);
-
-            org.bukkit.entity.Projectile projectileEntity = ProjectileManager.getInstance().spawnProjectile(projectile, shooter, source, playerLoc, firingLoc, vect, cannon.getUID(), projectileCause);
-
-            if (i == 0 && projectile.hasProperty(ProjectileProperties.SHOOTER_AS_PASSENGER) && onlinePlayer != null)
-                projectileEntity.setPassenger(onlinePlayer);
-
-            //confuse all entity which wear no helmets due to the blast of the cannon
-            List<Entity> living = projectileEntity.getNearbyEntities(8, 8, 8);
-            //do only once
-            if (i == 0) {
-                confuseShooter(living, firingLoc, design.getBlastConfusion());
-            }
+    private @Nullable MessageEnum tryAutoload(Cannon cannon, UUID playerUid, boolean autoload, boolean consumesAmmo, CannonDesign design) {
+        //no charge try some autoreload from chests
+        if (cannon.isLoaded() || cannon.isLoading() || !autoload) {
+            return null;
         }
 
-        //check if the temperature exceeds the limit and overloading
-        if (cannon.checkHeatManagement() || cannon.isExplodedDueOverloading()) {
-            CannonManager.getInstance().removeCannon(cannon, true, true, BreakCause.Overheating);
-            return;
+        MessageEnum messageEnum = cannon.reloadFromChests(playerUid, consumesAmmo);
+        //try to load some projectiles
+        if (messageEnum.isError()) {
+            //there is not enough gunpowder or no projectile in the chest
+            plugin.logDebug("Can't reload cannon, because there is no valid charge in the chests");
+            SoundUtils.playErrorSound(cannon.getMuzzle());
+            return messageEnum;
         }
-
-        //reset after firing
-        cannon.setLastFired(System.currentTimeMillis());
-        cannon.setSoot(cannon.getSoot() + design.getSootPerGunpowder() * cannon.getLoadedGunpowder());
-
-        if (!removeCharge) {
-            return;
-        }
-
-        cannon.setProjectilePushed(design.getProjectilePushing());
-
-        plugin.logDebug("fire event complete, charge removed from the cannon");
-        //removes the gunpowder and projectile loaded in the cannon if not set otherwise
-        if (design.isRemoveChargeAfterFiring())
-            cannon.removeCharge();
-    }
-
-    /**
-     * creates a imitated explosion made of blocks which is transmitted to player in a give distance
-     *
-     * @param c operated cannon
-     */
-    public void MuzzleFire(Cannon c) {
-        double minDist = config.getImitatedBlockMinimumDistance();
-        double maxDist = config.getImitatedBlockMaximumDistance();
-        float maxVol = config.getImitatedSoundMaximumVolume();
-        Location loc = c.getMuzzle();
-
-        //simple particle effects for close distance
-        //loc.getWorld().createExplosion(loc, 0F, false);
-        loc.getWorld().spawnParticle(XParticle.EXPLOSION.get(), loc, 1);
-        //fake blocks effects for far distance
-        if (!config.isImitatedFiringEffectEnabled()) {
-            return;
-        }
-
-        int maxSoundDist = config.getImitatedSoundMaximumDistance();
-        SoundUtils.imitateSound(loc, c.getCannonDesign().getSoundFiring(), maxSoundDist, maxVol);
-
-        List<Player> players = new ArrayList<>();
-        for (Player p : loc.getWorld().getPlayers()) {
-            Location pl = p.getLocation();
-            double distance = pl.distance(loc);
-
-            if (distance >= minDist && distance <= maxDist) {
-                players.add(p);
-            }
-        }
-        imitateSmoke(c, players);
-    }
-
-
-    /**
-     * creates a sphere of fake block and sends it to the given player
-     *
-     * @param cannon - cannon in usage
-     */
-    public void imitateSmoke(Cannon cannon, List<Player> players) {
-        if (!config.isImitatedFiringEffectEnabled())
-            return;
-
-        Vector aimingVector = cannon.getAimingVector().clone();
-        Location loc = cannon.getMuzzle();
-
-        double duration = config.getImitatedFiringTime();
-
-        for (Player name : players) {
-            //make smoke and fire effects for large distance
-            FakeBlockHandler.getInstance().imitateLine(name, loc, aimingVector, 0, 1, config.getImitatedFireMaterial(), FakeBlockType.MUZZLE_FIRE, duration);
-            FakeBlockHandler.getInstance().imitatedSphere(name, loc.clone().add(aimingVector.clone().normalize()), 2, config.getImitatedSmokeMaterial(), FakeBlockType.MUZZLE_FIRE, duration);
-        }
-    }
-
-
-    /**
-     * confuses an entity to simulate the blast of a cannon
-     *
-     * @param living      entity to confuse
-     * @param firingLoc   distance to the muzzle
-     * @param confuseTime how long the enitity is confused in seconds
-     */
-    private void confuseShooter(List<Entity> living, Location firingLoc, double confuseTime) {
-        //confuse shooter if he wears no helmet (only for one projectile and if its configured)
-        if (!(confuseTime > 0)) {
-            return;
-        }
-
-        for (Entity next : living) {
-            boolean harmEntity = false;
-            if (next instanceof Player) {
-
-                Player player = (Player) next;
-                if (player.isOnline() && !CheckHelmet(player) && player.getGameMode() != GameMode.CREATIVE) {
-                    //if player has no helmet and is not in creative and there are confusion effects - harm him
-                    harmEntity = true;
-                }
-            } else if (next instanceof LivingEntity) {
-                //damage entity
-                harmEntity = true;
-            }
-
-            if (!harmEntity) {
-                continue;
-            }
-
-            //damage living entities and unprotected players
-            LivingEntity livingEntity = (LivingEntity) next;
-            if (livingEntity.getLocation().distance(firingLoc) < 5.0)
-                livingEntity.damage(1);
-            livingEntity.addPotionEffect(new PotionEffect(XPotion.NAUSEA.get(), (int) confuseTime * 20, 0));
-
-        }
-    }
-
-
-    //############## CheckHelmet   ################################
-    private boolean CheckHelmet(Player player) {
-        ItemStack helmet = player.getInventory().getHelmet();
-        return helmet != null;
+        //everything went fine - next click on torch will fire the cannon
+        //if fire after reloading is active, it will fire automatically. This can be a problem for the impact predictor
+        return design.isFireAfterLoading() ? null : MessageEnum.loadProjectile;
     }
 }
