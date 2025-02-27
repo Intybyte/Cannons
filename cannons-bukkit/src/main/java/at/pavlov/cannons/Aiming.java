@@ -536,202 +536,200 @@ public class Aiming {
             if (!cannon.isSentryAutomatic() || !cannon.isPaid())
                 return;
 
-            // load from chest if the cannon is in automatic mode
-            if (!cannon.isLoaded() && !cannon.isLoading() && !cannon.isFiring() && System.currentTimeMillis() > cannon.getSentryLastLoadingFailed() + 5000) {
-                MessageEnum messageEnum = cannon.reloadFromChests(null, !cannon.getCannonDesign().isAmmoInfiniteForRedstone());
-                if (messageEnum.isError()) {
-                    cannon.setSentryLastLoadingFailed(System.currentTimeMillis());
-                    SoundUtils.playErrorSound(cannon.getMuzzle());
-                    plugin.logDebug("Sentry " + cannon.getCannonName() + " loading message: " + messageEnum);
-                }
-            }
+            sentryLoadChest(cannon);
 
-            // calculate a firing solution
             calculateFiringSolution(cannon);
 
-            //aim at the found solution
-            // only update if since the last update some ticks have past (updateSpeed is in ticks = 50ms)
-            boolean sentryCheck = (cannon.hasSentryEntity() || !cannon.isSentryHomedAfterFiring());
-            boolean timeCheck = System.currentTimeMillis() >= cannon.getLastAimed() + cannon.getCannonDesign().getAngleUpdateSpeed();
-            // autoaming or fineadjusting
-            if (sentryCheck && timeCheck && cannon.isValid()) {
-                updateAngle(null, cannon, null, InteractAction.adjustSentry);
-            }
+            sentryAiming(cannon);
             //ready to fire. Fire!
-            boolean sentryAndInSight = cannon.hasSentryEntity() && cannon.targetInSight();
-            boolean ready = cannon.isReadyToFire() && System.currentTimeMillis() > cannon.getSentryLastFiringFailed() + 2000;
-            MessageEnum messageEnum = plugin.getFireCannon().sentryFiring(cannon);
-
-            if (sentryAndInSight && ready && messageEnum != null) {
-                plugin.logDebug("Sentry " + cannon.getCannonName() + " firing message: " + messageEnum);
-                if (messageEnum.isError()) {
-                    cannon.setSentryLastFiringFailed(System.currentTimeMillis());
-                    SoundUtils.playErrorSound(cannon.getMuzzle());
-                }
-            }
+            sentryFiring(cannon);
 
             //no targets found, return to default angles
-            if (cannon.hasSentryEntity()) {
-                continue;
+            if (!cannon.hasSentryEntity()) {
+                cannon.setAimingYaw(cannon.getHomeYaw());
+                cannon.setAimingPitch(cannon.getHomePitch());
+                cannon.setSentryHomedAfterFiring(false);
             }
-
-            cannon.setAimingYaw(cannon.getHomeYaw());
-            cannon.setAimingPitch(cannon.getHomePitch());
-            cannon.setSentryHomedAfterFiring(false);
         }
     }
 
-    private boolean scoreboardCheck(Player p, Cannon cannon) {
-        Scoreboard s = getScoreboard();
-
-        if (p == null || s == null) {
-            return false;
+    private void sentryAiming(Cannon cannon) {
+        //aim at the found solution
+        // only update if since the last update some ticks have past (updateSpeed is in ticks = 50ms)
+        if (System.currentTimeMillis() < cannon.getLastAimed() + cannon.getCannonDesign().getAngleUpdateSpeed()) {
+            return;
         }
 
-        Team team = s.getPlayerTeam(p);
-        return team != null && team.hasPlayer(Bukkit.getOfflinePlayer(cannon.getOwner()));
+        if (!cannon.hasSentryEntity() && cannon.isSentryHomedAfterFiring()) {
+            return;
+        }
+        // autoaming or fineadjusting
+        if (cannon.isValid()) {
+            updateAngle(null, cannon, null, InteractAction.adjustSentry);
+        }
     }
 
-    private boolean isOldTargetValid(Cannon cannon, HashMap<UUID, Target> targets) {
+    private void sentryLoadChest(Cannon cannon) {
+        // load from chest if the cannon is in automatic mode
+        if (cannon.isLoaded() || cannon.isLoading() || cannon.isFiring() || System.currentTimeMillis() <= cannon.getSentryLastLoadingFailed() + 5000) {
+            return;
+        }
+
+        MessageEnum messageEnum = cannon.reloadFromChests(null, !cannon.getCannonDesign().isAmmoInfiniteForRedstone());
+        if (messageEnum.isError()) {
+            cannon.setSentryLastLoadingFailed(System.currentTimeMillis());
+            SoundUtils.playErrorSound(cannon.getMuzzle());
+            plugin.logDebug("Sentry " + cannon.getCannonName() + " loading message: " + messageEnum);
+        }
+    }
+
+    private void sentryFiring(Cannon cannon) {
+        if (!cannon.hasSentryEntity() || !cannon.targetInSight()) {
+            return;
+        }
+
+        if (!cannon.isReadyToFire() || System.currentTimeMillis() <= cannon.getSentryLastFiringFailed() + 2000) {
+            return;
+        }
+
+        MessageEnum messageEnum = plugin.getFireCannon().sentryFiring(cannon);
+        if (messageEnum == null) {
+            return;
+        }
+
+        plugin.logDebug("Sentry " + cannon.getCannonName() + " firing message: " + messageEnum);
+        if (messageEnum.isError()) {
+            cannon.setSentryLastFiringFailed(System.currentTimeMillis());
+            SoundUtils.playErrorSound(cannon.getMuzzle());
+        }
+    }
+
+    private void calculateFiringSolution(Cannon cannon) {
+        // calculate a firing solution
+        if (!cannon.isChunkLoaded() || System.currentTimeMillis() <= (cannon.getLastSentryUpdate() + cannon.getCannonDesign().getSentryUpdateTime())) {
+            return;
+        }
+        cannon.setLastSentryUpdate(System.currentTimeMillis());
+
+        HashMap<UUID, Target> targets = CannonsUtil.getNearbyTargets(cannon.getMuzzle(), cannon.getCannonDesign().getSentryMinRange(), cannon.getCannonDesign().getSentryMaxRange());
         //old target - is this still valid?
-        if (!cannon.hasSentryEntity()) {
-            return false;
-        }
+        handleOldTarget(cannon, targets);
 
-        CannonDesign design = cannon.getCannonDesign();
-        Target target = targets.get(cannon.getSentryEntity());
-
-        if (System.currentTimeMillis() > cannon.getSentryTargetingTime() + design.getSentrySwapTime() || !targets.containsKey(cannon.getSentryEntity())) {
-            cannon.setSentryEntity(null);
-        } else if (!canFindTargetSolution(cannon, target, target.centerLocation(), target.velocity())) { //is the previous target still valid
-            cannon.setSentryEntity(null);
-        }
+        // find a suitable target
+        findSuitableTarget(cannon, targets);
 
         //find target solution
+        processExistingSentryEntity(cannon, targets);
+    }
+
+    private void processExistingSentryEntity(Cannon cannon, HashMap<UUID, Target> targets) {
+        if (!cannon.hasSentryEntity()) {
+            return;
+        }
+        Target target = targets.get(cannon.getSentryEntity());
         // find exact solution for the cannon
-        if (!calculateTargetSolution(cannon, target, target.velocity(), true)) {//no exact solution found for this target. So skip it and try it again in the next run
+        if (!calculateTargetSolution(cannon, target, true)) {
+            //no exact solution found for this target. So skip it and try it again in the next run
             cannon.setSentryEntity(null);
-            return true;
+            return;
+            //cannon.setLastSentryUpdate(System.currentTimeMillis() - cannon.getCannonDesign().getSentryUpdateTime());
         }
 
         CannonTargetEvent targetEvent = new CannonTargetEvent(cannon, target);
         Bukkit.getServer().getPluginManager().callEvent(targetEvent);
-
-        if (!targetEvent.isCancelled()) {
-            cannon.setSentryEntity(target.uniqueId());
-        } else {
+        if (targetEvent.isCancelled()) {
             //event cancelled
             plugin.logDebug("can't find solution for target");
             cannon.setSentryEntity(null);
+        } else {
+            cannon.setSentryEntity(target.uniqueId());
         }
-
-        cannon.setLastSentryUpdate(System.currentTimeMillis() - cannon.getCannonDesign().getSentryUpdateTime());
-        return true;
     }
 
-    private void calculateFiringSolution(Cannon cannon) {
-
-        CannonDesign design = cannon.getCannonDesign();
-
-        if (!cannon.isChunkLoaded() || System.currentTimeMillis() <= (cannon.getLastSentryUpdate() + design.getSentryUpdateTime())) {
+    private void findSuitableTarget(Cannon cannon, Map<UUID, Target> targets) {
+        if (cannon.hasSentryEntity()) {
             return;
         }
 
-        cannon.setLastSentryUpdate(System.currentTimeMillis());
-
-        HashMap<UUID, Target> targets = CannonsUtil.getNearbyTargets(cannon.getMuzzle(), design.getSentryMinRange(), design.getSentryMaxRange());
-        //old target - is this still valid?
-        if (isOldTargetValid(cannon, targets))
-            return;
-
-        // find a suitable target
         ArrayList<Target> possibleTargets = new ArrayList<>();
+
         for (Target t : targets.values()) {
-            switch (t.targetType()) {
-                case MONSTER -> {
-                    if (cannon.isTargetMob() && canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
-                        possibleTargets.add(t);
-                    }
-                }
+            TargetType type = t.targetType();
+            if (!type.isAllowed(cannon)) continue;
+            //Monster
+            if (type == TargetType.MONSTER) {
+                handlePossibleTarget(cannon, t, possibleTargets);
+                continue;
+            }
 
-                case PLAYER -> {
-                    if (!cannon.isTargetPlayer() || cannon.isWhitelisted(t.uniqueId())) {
-                        continue;
-                    }
 
-                    Player p = Bukkit.getPlayer(t.uniqueId());
-                    if (scoreboardCheck(p, cannon))
-                        continue;
+            if (checkScoreboard(cannon, t)) continue;
+            if (cannon.isWhitelisted(t.uniqueId())) continue;
+            //Player
+            if (type == TargetType.PLAYER) {
+                // get solution
+                handlePossibleTarget(cannon, t, possibleTargets);
+                continue;
+            }
 
-                    // get solution
-                    if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
-                        possibleTargets.add(t);
-                    }
-                }
-
-                case CANNON -> {
-                    if (!cannon.isTargetCannon()) {
-                        continue;
-                    }
-
-                    Cannon tCannon = CannonManager.getCannon(t.uniqueId());
-                    //check if the owner is whitelisted
-                    if (tCannon == null || cannon.isWhitelisted(tCannon.getOwner())) {
-                        continue;
-                    }
-
-                    Player p = Bukkit.getPlayer(t.uniqueId());
-                    if (scoreboardCheck(p, cannon))
-                        continue;
-
-                    if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
-                        possibleTargets.add(t);
-                    }
-                }
-
-                case OTHER -> {
-                    if (!cannon.isTargetOther()) {
-                        continue;
-                    }
-
-                    Cannon tCannon = CannonManager.getCannon(t.uniqueId());
-                    //check if the owner is whitelisted
-                    if (tCannon == null || cannon.isWhitelisted(tCannon.getOwner())) {
-                        continue;
-                    }
-
-                    Player p = Bukkit.getPlayer(t.uniqueId());
-                    if (scoreboardCheck(p, cannon))
-                        continue;
-
-                    if (canFindTargetSolution(cannon, t, t.centerLocation(), t.velocity())) {
-                        possibleTargets.add(t);
-                    }
-                }
-
+            Cannon tCannon = CannonManager.getCannon(t.uniqueId());
+            if (tCannon == null) continue;
+            //Cannons & Other have same handling
+            //check if the owner is whitelisted
+            if (type == TargetType.CANNON || type == TargetType.OTHER) {
+                //check if the owner is whitelisted
+                handlePossibleTarget(cannon, t, possibleTargets);
             }
         }
-
-
         //so we have some targets
         if (possibleTargets.isEmpty()) {
             return;
         }
 
-        for (Target t : possibleTargets) {
-            //select one target
-            if (cannon.wasSentryTarget(t.uniqueId())) {
-                continue;
-            }
-
-            cannon.setSentryEntity(t.uniqueId());
-            break;
-        }
-
+        //select one target
+        possibleTargets.stream()
+                .map(Target::uniqueId)
+                .filter(t -> !cannon.wasSentryTarget(t))
+                .findFirst()
+                .ifPresent(cannon::setSentryEntity);
         if (!cannon.hasSentryEntity()) {
             cannon.setSentryEntity(possibleTargets.get(0).uniqueId());
         }
+    }
 
+    private void handlePossibleTarget(Cannon cannon, Target t, ArrayList<Target> possibleTargets) {
+        if (canFindTargetSolution(cannon, t)) {
+            possibleTargets.add(t);
+        }
+    }
+
+    private boolean checkScoreboard(Cannon cannon, Target t) {
+        Player p = Bukkit.getPlayer(t.uniqueId());
+        Scoreboard scoreboard = getScoreboard();
+        // check team board
+        if (p != null && scoreboard != null) {
+            Team team = scoreboard.getPlayerTeam(p);
+            return team != null && team.hasPlayer(Bukkit.getOfflinePlayer(cannon.getOwner()));
+        }
+        return false;
+    }
+
+    private void handleOldTarget(Cannon cannon, Map<UUID, Target> targets) {
+        if (!cannon.hasSentryEntity()) {
+            return;
+        }
+
+        Target target = targets.get(cannon.getSentryEntity());
+        if (System.currentTimeMillis() > cannon.getSentryTargetingTime() + cannon.getCannonDesign().getSentrySwapTime() || !targets.containsKey(cannon.getSentryEntity())) {
+            cannon.setSentryEntity(null);
+        } else if (!canFindTargetSolution(cannon, target)) {
+            //is the previous target still valid
+            cannon.setSentryEntity(null);
+        }
+    }
+
+    private boolean canFindTargetSolution(Cannon cannon, Target target) {
+        return canFindTargetSolution(cannon, target, target.centerLocation());
     }
 
     /**
@@ -739,10 +737,9 @@ public class Aiming {
      *
      * @param cannon         the cannon which is operated
      * @param loctarget      lcoation of the target
-     * @param targetVelocity how fast the target is moving
      * @return true if the cannon can fire on this target
      */
-    private boolean canFindTargetSolution(Cannon cannon, Target target, Location loctarget, Vector targetVelocity) {
+    private boolean canFindTargetSolution(Cannon cannon, Target target, Location loctarget) {
         if (!cannon.getWorld().equals(loctarget.getWorld().getUID()))
             return false;
 
@@ -786,16 +783,15 @@ public class Aiming {
      *
      * @param cannon         the cannon which is operated
      * @param target         lcoation of the target
-     * @param targetVelocity how fast the target is moving
      * @return true if a solution was found
      */
-    private boolean calculateTargetSolution(Cannon cannon, Target target, Vector targetVelocity, boolean addSpread) {
+    private boolean calculateTargetSolution(Cannon cannon, Target target, boolean addSpread) {
         Location targetLoc = target.centerLocation();
         //aim for the center of the target if there is an area effect of the projectile
         if (cannon.getLoadedProjectile() != null && (cannon.getLoadedProjectile().getExplosionPower() > 2. || (cannon.getLoadedProjectile().getPlayerDamage() > 1. && cannon.getLoadedProjectile().getPlayerDamageRange() > 2.)))
             targetLoc = target.groundLocation();
 
-        if (!canFindTargetSolution(cannon, target, target.centerLocation(), targetVelocity))
+        if (!canFindTargetSolution(cannon, target))
             return false;
 
         if (cannon.getCannonballVelocity() < 0.01)
@@ -837,7 +833,7 @@ public class Aiming {
                 cannon.setAimingPitch(cannon.getAimingPitch() + sign * step);
             }
 
-            if (!(step < cannon.getCannonDesign().getAngleStepSize())) {
+            if (step >= cannon.getCannonDesign().getAngleStepSize()) {
                 continue;
             }
 
