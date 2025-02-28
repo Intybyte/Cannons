@@ -18,6 +18,7 @@ import at.pavlov.cannons.hooks.papi.PlaceholderAPIHook;
 import at.pavlov.cannons.hooks.VaultHook;
 import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsProperty;
 import at.pavlov.cannons.hooks.movecraftcombat.MovecraftCombatHook;
+import at.pavlov.cannons.hooks.towny.TownyHook;
 import at.pavlov.cannons.listener.*;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
@@ -206,6 +207,10 @@ public final class Cannons extends JavaPlugin
 		PlaceholderAPIHook placeholderAPIHook = new PlaceholderAPIHook(this);
 		hookManager.registerHook(placeholderAPIHook);
 
+		logDebug("Loading TownyHook");
+		TownyHook townyHook = new TownyHook(this);
+		hookManager.registerHook(townyHook);
+
 		logDebug("Time to enable hooks: " + new DecimalFormat("0.00").format(System.currentTimeMillis() - startTime) + "ms");
 
 		startTime = System.nanoTime();
@@ -306,10 +311,7 @@ public final class Cannons extends JavaPlugin
                     " You don't need to add Movecraft-Cannons anymore as Movecraft support is now embedded," +
                     " we suggest you stop using it as in the future it might stop work properly.");
 
-			if (hookManager.isRegistered(MovecraftCombatHook.class)) {
-
-			}
-			movecraftHook.onDisable();
+            movecraftHook.onDisable();
         }, 1L);
     }
 
