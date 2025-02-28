@@ -18,10 +18,12 @@ import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.event.CannonLinkAimingEvent;
 import at.pavlov.cannons.event.CannonTargetEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
+import at.pavlov.cannons.hooks.towny.TownyHook;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
+import com.palmergames.bukkit.towny.object.Resident;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -42,7 +44,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -651,7 +655,7 @@ public class Aiming {
             return;
         }
 
-        ArrayList<Target> possibleTargets = new ArrayList<>();
+        LinkedList<Target> possibleTargets = new LinkedList<>();
 
         for (Target t : targets.values()) {
             TargetType type = t.targetType();
@@ -667,6 +671,21 @@ public class Aiming {
             if (cannon.isWhitelisted(t.uniqueId())) continue;
             //Player
             if (type == TargetType.PLAYER) {
+                LinkedList<Target> gracedPlayer = new LinkedList<>();
+
+                Cannons.getPlugin().getHookManager().processIfPresent(TownyHook.class, townyApi -> {
+                    var town = townyApi.getTown(cannon.getLocation());
+                    if (town == null) {
+                        return;
+                    }
+
+                    town.getResidents().stream()
+                            .map(Resident::getPlayer)
+                            .filter(Objects::nonNull)
+                            .map(Target::new)
+                            .forEach(gracedPlayer::add);
+                });
+                possibleTargets.removeAll(gracedPlayer);
                 // get solution
                 handlePossibleTarget(cannon, t, possibleTargets);
                 continue;
@@ -697,7 +716,7 @@ public class Aiming {
         }
     }
 
-    private void handlePossibleTarget(Cannon cannon, Target t, ArrayList<Target> possibleTargets) {
+    private void handlePossibleTarget(Cannon cannon, Target t, List<Target> possibleTargets) {
         if (canFindTargetSolution(cannon, t)) {
             possibleTargets.add(t);
         }
