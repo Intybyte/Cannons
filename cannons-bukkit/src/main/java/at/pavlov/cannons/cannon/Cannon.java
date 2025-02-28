@@ -192,7 +192,7 @@ public class Cannon implements ICannon, Rotational {
                 if (projectile == null)
                     continue;
 
-                MessageEnum message = CheckPermProjectile(projectile, player);
+                MessageEnum message = checkPermProjectile(projectile, player);
                 if (message != MessageEnum.loadProjectile) {
                     continue;
                 }
@@ -390,7 +390,7 @@ public class Cannon implements ICannon, Rotational {
         int maximumLoadableAbsolute = design.getMaxLoadableGunpowderOverloaded() - getLoadedGunpowder();
 
         //check if the player has permissions for this cannon
-        MessageEnum returnVal = CheckPermGunpowder(player);
+        MessageEnum returnVal = checkPermGunpowder(player);
 
         //the player seems to have all rights to load the cannon.
         if (returnVal.equals(MessageEnum.loadGunpowder)) {
@@ -462,7 +462,7 @@ public class Cannon implements ICannon, Rotational {
 
         CannonPreLoadEvent event = new CannonPreLoadEvent(this, projectile, player);
         Bukkit.getServer().getPluginManager().callEvent(event);
-        returnVal = CheckPermProjectile(projectile, player);
+        returnVal = checkPermProjectile(projectile, player);
 
         // check if loading of projectile was successful
         if (!returnVal.equals(MessageEnum.loadProjectile) && !returnVal.equals(MessageEnum.loadGunpowderAndProjectile)) {
@@ -498,7 +498,7 @@ public class Cannon implements ICannon, Rotational {
      * @param player - check permissions of this player
      * @return - true if the cannon can be loaded
      */
-    private MessageEnum CheckPermGunpowder(Player player) {
+    private MessageEnum checkPermGunpowder(Player player) {
 
         if (player != null) {
             //if the player is not the owner of this gun
@@ -513,22 +513,26 @@ public class Cannon implements ICannon, Rotational {
     }
 
     /**
-     * Check the if the cannons can be loaded
+     * Check if the cannons can be loaded
      *
      * @param playerUid - whose permissions are checked
      * @return true if the player and cannons can load the projectile
      */
-    private MessageEnum CheckPermProjectile(Projectile projectile, UUID playerUid) {
-        return CheckPermProjectile(projectile, Bukkit.getPlayer(playerUid));
+    private MessageEnum checkPermProjectile(Projectile projectile, UUID playerUid) {
+        if (playerUid == null) {
+            return checkPermProjectile(projectile, (Player) null);
+        }
+
+        return checkPermProjectile(projectile, Bukkit.getPlayer(playerUid));
     }
 
     /**
-     * Check the if the cannons can be loaded
+     * Check if the cannons can be loaded
      *
      * @param player - whose permissions are checked
      * @return true if the player and cannons can load the projectile
      */
-    private MessageEnum CheckPermProjectile(Projectile projectile, Player player) {
+    private MessageEnum checkPermProjectile(Projectile projectile, Player player) {
         if (player != null) {
             //if the player is not the owner of this gun
             if (this.getOwner() != null && !this.getOwner().equals(player.getUniqueId()) && design.isAccessForOwnerOnly())
