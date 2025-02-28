@@ -40,7 +40,7 @@ import java.util.List;
     private boolean movecraftEnabled;
     private boolean movecraftCannonEnabled;
 
-    private boolean isTownyEnabled;
+    private boolean townyEnabled;
     //endregion
 	
 	//build limits
