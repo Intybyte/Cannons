@@ -49,7 +49,7 @@ public class HookManager {
 
     public <C, T extends Hook<C>> void processIfPresent(@NotNull Class<T> type, Consumer<C> consumer) {
         T hook = getHook(type);
-        if (hook == null) {
+        if (hook == null || !hook.active()) {
             return;
         }
 
