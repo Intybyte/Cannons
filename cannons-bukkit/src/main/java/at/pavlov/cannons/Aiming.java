@@ -24,6 +24,7 @@ import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.utils.CombatUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -39,14 +40,12 @@ import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -671,21 +670,26 @@ public class Aiming {
             if (cannon.isWhitelisted(t.uniqueId())) continue;
             //Player
             if (type == TargetType.PLAYER) {
-                LinkedList<Target> gracedPlayer = new LinkedList<>();
 
+                final boolean[] skip = new boolean[1];
                 Cannons.getPlugin().getHookManager().processIfPresent(TownyHook.class, townyApi -> {
-                    var town = townyApi.getTown(cannon.getLocation());
-                    if (town == null) {
+                    Resident ownerResident = townyApi.getResident(cannon.getOwner());
+                    if (ownerResident == null) {
                         return;
                     }
 
-                    town.getResidents().stream()
-                            .map(Resident::getPlayer)
-                            .filter(Objects::nonNull)
-                            .map(Target::new)
-                            .forEach(gracedPlayer::add);
+                    Resident residentTarget = townyApi.getResident(t.uniqueId());
+                    if (residentTarget == null) {
+                        return;
+                    }
+
+                    if (CombatUtil.isAlly(residentTarget, ownerResident)) {
+                        skip[0] = true;
+                    }
                 });
-                possibleTargets.removeAll(gracedPlayer);
+
+                if (skip[0]) continue;
+
                 // get solution
                 handlePossibleTarget(cannon, t, possibleTargets);
                 continue;
