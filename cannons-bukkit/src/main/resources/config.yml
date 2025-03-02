@@ -23,6 +23,11 @@ hooks:
     enabled: true
   towny:
     enabled: true
+    # Possible values of allowedPlayers:
+    # ALL : all player can use cannons in a town.
+    # TOWN : all residents can use the cannons in a town.
+    # ALLIES : all residents and allies can use the cannons in a town.
+    allowedPlayers: TOWN
 
 
 cannonLimits:
