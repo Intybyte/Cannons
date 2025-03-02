@@ -4,15 +4,10 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.hooks.BukkitHook;
 import at.pavlov.internal.Hook;
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.object.TownBlockType;
-import com.palmergames.bukkit.towny.object.TownBlockTypeHandler;
-import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.plugin.PluginManager;
 
 public class TownyHook extends BukkitHook<TownyAPI> {
-    @Getter
-    private static TownBlockType artilleryType;
 
     public TownyHook(Cannons plugin) {
         super(plugin);
@@ -33,8 +28,7 @@ public class TownyHook extends BukkitHook<TownyAPI> {
         }
 
         hook = TownyAPI.getInstance();
-        artilleryType = new TownBlockType("Artillery Position");
-        TownBlockTypeHandler.registerType(artilleryType);
+        pluginManager.registerEvents(new TownyListeners(), plugin);
     }
 
     @Override

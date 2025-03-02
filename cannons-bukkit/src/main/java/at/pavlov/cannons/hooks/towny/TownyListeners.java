@@ -1,29 +1,65 @@
 package at.pavlov.cannons.hooks.towny;
 
-import at.pavlov.cannons.cannon.CannonManager;
+import at.pavlov.cannons.config.Config;
+import at.pavlov.cannons.event.CannonUseEvent;
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.event.actions.TownyActionEvent;
-import com.palmergames.bukkit.towny.object.TownBlock;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.utils.CombatUtil;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class TownyListeners implements Listener {
+import java.util.UUID;
 
-    private static final CannonManager manager = CannonManager.getInstance();
+public class TownyListeners implements Listener {
+    private static final Config config = Config.getInstance();
+    private static final TownyAPI api = TownyAPI.getInstance();
 
     @EventHandler
-    public void onAction(TownyActionEvent event) {
-        TownyAPI api = TownyAPI.getInstance();
-        Location location = event.getLocation();
-        TownBlock townBlock = api.getTownBlock(location);
-        if (townBlock == null) return;
-
-        if (!townBlock.getType().equals(TownyHook.getArtilleryType())) return;
-
-        boolean isCannon = manager.getCannon(location, event.getPlayer().getUniqueId()) != null;
-        if (isCannon) {
-            event.setCancelled(false);
+    public void onAction(CannonUseEvent event) {
+        Location location = event.getCannon().getLocation();
+        TownyAllowCannon tac = config.getTownyAllowedPlayers();
+        if (tac == TownyAllowCannon.ALL) {
+            return;
         }
+
+        Town town = api.getTown(location);
+        if (town == null) {
+            return;
+        }
+
+        UUID playerUUID = event.getPlayer();
+        for (Resident resident : town.getResidents()) {
+            if (resident.getUUID() == playerUUID) {
+                return;
+            }
+        }
+
+        if (tac == TownyAllowCannon.TOWN) {
+            event.setCancelled(true);
+            return;
+        }
+
+        Resident resident = api.getResident(playerUUID);
+        if (resident == null) {
+            //this shouldn't happen tbh
+            return;
+        }
+
+        Town otherTown;
+        try {
+            otherTown = resident.getTown();
+        } catch (Exception e) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (CombatUtil.isAlly(town, otherTown)) {
+            return;
+        }
+
+        event.setCancelled(true);
     }
+
 }
