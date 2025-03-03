@@ -36,6 +36,7 @@ public class TownyListeners implements Listener {
             }
         }
 
+        // we already did town check, if it failed and tac is set to TOWN we are done here
         if (tac == TownyAllowCannon.TOWN) {
             event.setCancelled(true);
             return;
