@@ -35,9 +35,6 @@ public class VaultHook extends BukkitHook<Economy> {
     }
 
     @Override
-    public void onDisable() { }
-
-    @Override
     public Class<? extends Hook<?>> getTypeClass() {
         return VaultHook.class;
     }

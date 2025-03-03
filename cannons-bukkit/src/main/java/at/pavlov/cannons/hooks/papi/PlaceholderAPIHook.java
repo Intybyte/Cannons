@@ -30,11 +30,6 @@ public class PlaceholderAPIHook extends BukkitHook<Void> {
     }
 
     @Override
-    public void onDisable() {
-
-    }
-
-    @Override
     public boolean active() {
         return working;
     }

@@ -32,11 +32,6 @@ public class TownyHook extends BukkitHook<TownyAPI> {
     }
 
     @Override
-    public void onDisable() {
-
-    }
-
-    @Override
     public Class<? extends Hook<?>> getTypeClass() {
         return TownyHook.class;
     }

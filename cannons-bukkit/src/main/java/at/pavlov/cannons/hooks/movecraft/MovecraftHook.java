@@ -44,13 +44,6 @@ public class MovecraftHook extends BukkitHook<Movecraft> {
     }
 
     @Override
-    public void onDisable() {
-        HandlerList.unregisterAll(new CraftDetectListener());
-        HandlerList.unregisterAll(new TranslationListener());
-        HandlerList.unregisterAll(new RotationListener());
-    }
-
-    @Override
     public Class<? extends Hook<?>> getTypeClass() {
         return MovecraftHook.class;
     }
