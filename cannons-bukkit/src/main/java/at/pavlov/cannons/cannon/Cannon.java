@@ -1586,7 +1586,7 @@ public class Cannon implements ICannon, Rotational {
     }
 
     public double horizontalAngleToYaw(double horizontal) {
-        double yaw = horizontal + this.getHorizontalAngle() + CannonsUtil.directionToYaw(getCannonDirection());
+        double yaw = horizontal + this.getAdditionalHorizontalAngle() + CannonsUtil.directionToYaw(getCannonDirection());
 
         yaw %= 360;
         while (yaw < -180)
