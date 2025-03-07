@@ -687,11 +687,10 @@ public class Aiming {
         }
 
         //select one target
-        for (Target possibleTarget : possibleTargets) {
-            UUID uniqueId = possibleTarget.uniqueId();
-            cannon.setSentryEntity(uniqueId);
-            break;
-        }
+        possibleTargets.stream()
+                .map(Target::uniqueId)
+                .findFirst()
+                .ifPresent(cannon::setSentryEntity);
 
         if (!cannon.hasSentryEntity()) {
             cannon.setSentryEntity(possibleTargets.get(0).uniqueId());
