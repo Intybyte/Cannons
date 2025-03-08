@@ -46,7 +46,7 @@ import java.util.UUID;
      */
     public double getGravity() {
         return switch (entityType) {
-            case ARROW -> 0.05000000074505806;
+            case ARROW, TRIDENT, SPECTRAL_ARROW -> 0.05;
             case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL,
                  WITHER_SKULL,
                  SHULKER_BULLET -> 0.0;
@@ -64,10 +64,11 @@ import java.util.UUID;
      */
     public double getDrag(boolean inWater) {
         return switch (entityType) {
-            case ARROW -> inWater ? 0.6 : 0.99;
+            case ARROW, SPECTRAL_ARROW -> inWater ? 0.6 : 0.99;
             case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL,
                  WITHER_SKULL,
                  SHULKER_BULLET -> 0.95;
+            case TRIDENT -> 0.99;
             default -> inWater ? 0.8 : 0.99; // Water Drag - Air Drag
         };
     }

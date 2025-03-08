@@ -38,6 +38,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -313,6 +314,9 @@ public class CreateExplosion {
         // add some specific data values
         // TNT
         var entityData = entityHolder.getData();
+        if (entity instanceof AbstractArrow abstractArrow) {
+            abstractArrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
+        }
 
         if (entity instanceof TNTPrimed tnt) {
             try {
@@ -837,18 +841,14 @@ public class CreateExplosion {
             // plugin
             world.createExplosion(impactLoc.getX(), impactLoc.getY(), impactLoc.getZ(), 0, false, false, cannonball.getProjectileEntity());
             this.sendExplosionToPlayers(projectile, impactLoc, projectile.getSoundImpactProtected());
-        } else {
-            // if the explosion power is negative there will be only a arrow impact sound
-            if (explosion_power >= 0) {
-                // get affected entities
-                for (Entity cEntity : projectile_entity.getNearbyEntities(explosion_power, explosion_power,
-                        explosion_power)) {
-                    this.addAffectedEntity(cEntity);
-                }
-                // make the explosion
-                canceled = !world.createExplosion(impactLoc.getX(), impactLoc.getY(), impactLoc.getZ(), explosion_power,
-                        incendiary, blockDamage, cannonball.getProjectileEntity());
+        } else if (explosion_power >= 0) { // if the explosion power is negative there will be only a arrow impact sound
+            // get affected entities
+            for (Entity cEntity : projectile_entity.getNearbyEntities(explosion_power, explosion_power, explosion_power)) {
+                this.addAffectedEntity(cEntity);
             }
+            // make the explosion
+            canceled = !world.createExplosion(impactLoc.getX(), impactLoc.getY(), impactLoc.getZ(), explosion_power,
+                    incendiary, blockDamage, cannonball.getProjectileEntity());
         }
 
         // send a message about the impact (only if the projectile has enabled this
@@ -940,18 +940,18 @@ public class CreateExplosion {
                     * (projectile.getClusterExplosionsMaxDelay() - projectile.getClusterExplosionsMinDelay());
 
             taskManager.scheduler.runTaskLater(cannonball.getImpactLocation(), () -> {
-                    Projectile proj = cannonball.getProjectile();
+                        Projectile proj = cannonball.getProjectile();
 
-                    Location expLoc = CannonsUtil.randomPointInSphere(cannonball.getImpactLocation(),
-                            proj.getClusterExplosionsRadius());
-                    // only do if explosion in blocks are allowed
-                    if (proj.isClusterExplosionsInBlocks() || expLoc.getBlock().isEmpty()
-                            || (expLoc.getBlock().isLiquid() && proj.isUnderwaterDamage())) {
-                        expLoc.getWorld().createExplosion(expLoc, (float) proj.getClusterExplosionsPower(), projectile.hasProperty(ProjectileProperties.INCENDIARY), true, cannonball.getProjectileEntity());
-                        CreateExplosion.this.sendExplosionToPlayers(null, expLoc,
-                                projectile.getSoundImpact());
-                    }
-                }, (long) (delay * 20.0)
+                        Location expLoc = CannonsUtil.randomPointInSphere(cannonball.getImpactLocation(),
+                                proj.getClusterExplosionsRadius());
+                        // only do if explosion in blocks are allowed
+                        if (proj.isClusterExplosionsInBlocks() || expLoc.getBlock().isEmpty()
+                                || (expLoc.getBlock().isLiquid() && proj.isUnderwaterDamage())) {
+                            expLoc.getWorld().createExplosion(expLoc, (float) proj.getClusterExplosionsPower(), projectile.hasProperty(ProjectileProperties.INCENDIARY), true, cannonball.getProjectileEntity());
+                            CreateExplosion.this.sendExplosionToPlayers(null, expLoc,
+                                    projectile.getSoundImpact());
+                        }
+                    }, (long) (delay * 20.0)
             );
         }
     }
@@ -1030,11 +1030,10 @@ public class CreateExplosion {
             double damage = entry.getValue();
             Entity entity = entry.getKey();
 
-            if (!(damage >= 1) || !(entity instanceof LivingEntity)) {
+            if (!(damage >= 1) || !(entity instanceof LivingEntity living)) {
                 continue;
             }
 
-            LivingEntity living = (LivingEntity) entity;
             this.plugin.logDebug(
                     "apply damage to entity " + living.getType() + " by " + String.format("%.2f", damage));
             double health = living.getHealth();
