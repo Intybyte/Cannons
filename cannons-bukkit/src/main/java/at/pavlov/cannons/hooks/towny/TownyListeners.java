@@ -6,11 +6,16 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.UUID;
+
+import static at.pavlov.cannons.Enum.InteractAction.adjustPlayer;
+import static at.pavlov.cannons.Enum.InteractAction.fireRightClickTigger;
 
 public class TownyListeners implements Listener {
     private static final Config config = Config.getInstance();
@@ -30,29 +35,41 @@ public class TownyListeners implements Listener {
         }
 
         UUID playerUUID = event.getPlayer();
-        for (Resident resident : town.getResidents()) {
-            if (resident.getUUID() == playerUUID) {
-                return;
-            }
+        if (playerUUID == null) {
+            return;
         }
 
-        // we already did town check, if it failed and tac is set to TOWN we are done here
+        Player player = Bukkit.getPlayer(playerUUID);
+        if (player == null) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (player.hasPermission("cannons.admin.*")) {
+            return;
+        }
+
+        if (town.hasResident(playerUUID)) {
+            return;
+        }
+
+        // we already did town check,
+        // if it failed and tac is set to TOWN we are done here
         if (tac == TownyAllowCannon.TOWN) {
             event.setCancelled(true);
+            player.sendMessage("§4[Cannons] No permission to interact with this cannons. (TownyAllowCannon.TOWN)");
             return;
         }
 
         Resident resident = api.getResident(playerUUID);
-        if (resident == null) {
-            //this shouldn't happen tbh
+        if (resident == null) { //this shouldn't happen tbh
             return;
         }
 
-        Town otherTown;
-        try {
-            otherTown = resident.getTown();
-        } catch (Exception e) {
+        Town otherTown = resident.getTownOrNull();;
+        if (otherTown == null) {
             event.setCancelled(true);
+            player.sendMessage("§4[Cannons] No permission to interact with this cannons. (No town)");
             return;
         }
 
@@ -61,6 +78,7 @@ public class TownyListeners implements Listener {
         }
 
         event.setCancelled(true);
+        player.sendMessage("§4[Cannons] No permission to interact with this cannons. (TownyAllowCannon.ALLY)");
     }
 
 }
