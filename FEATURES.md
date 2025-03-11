@@ -1,6 +1,8 @@
 New features/fixes:
 ---------------
 - 1.20.6 + Support
+- Correct projectile behaviour for projectiles like ender dragon fireballs, tridents etc.
+- Fix the ability to pickup projectiles like arrows
 - Requires Java 17
 - Added Netherite and newer armor protection support
 - Simplified Chinese Translation by [SnowCutieOwO](https://github.com/SnowCutieOwO)
@@ -11,7 +13,7 @@ New features/fixes:
 Hooks:
 ---------------
 - Vault hook to buy cannons (was there even before fork)
-- Movecraft-Cannons support is now integrated
+- Movecraft-Cannons support is now integrated (Movecraft Combat hook + Movecraft hook)
 - [PlaceholderAPI](./PLACEHOLDERS.md) hook
 
 Optimizations:
