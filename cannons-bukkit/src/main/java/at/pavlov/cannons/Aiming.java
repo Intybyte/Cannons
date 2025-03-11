@@ -697,6 +697,7 @@ public class Aiming {
 
             Cannon tCannon = CannonManager.getCannon(t.uniqueId());
             if (tCannon == null) continue;
+            if (cannon.isWhitelisted(tCannon.getOwner())) continue;
             //Cannons & Other have same handling
             //check if the owner is whitelisted
             if (type == TargetType.CANNON || type == TargetType.OTHER) {
