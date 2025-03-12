@@ -9,7 +9,7 @@ public interface Hook<H> {
     }
 
     void onEnable();
-    void onDisable();
+    default void onDisable() {}
     Class<? extends Hook<?>> getTypeClass();
 
     default @NotNull String enabledMessage() {

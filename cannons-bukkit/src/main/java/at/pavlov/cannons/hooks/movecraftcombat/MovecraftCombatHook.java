@@ -30,11 +30,6 @@ public class MovecraftCombatHook extends BukkitHook<MovecraftCombat> {
     }
 
     @Override
-    public void onDisable() {
-        HandlerList.unregisterAll(new ProjectileImpactListener());
-    }
-
-    @Override
     public Class<? extends Hook<?>> getTypeClass() {
         return MovecraftCombatHook.class;
     }

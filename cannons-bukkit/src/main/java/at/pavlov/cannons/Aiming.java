@@ -18,10 +18,13 @@ import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.event.CannonLinkAimingEvent;
 import at.pavlov.cannons.event.CannonTargetEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
+import at.pavlov.cannons.hooks.towny.TownyHook;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.utils.CombatUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -37,11 +40,11 @@ import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -651,7 +654,7 @@ public class Aiming {
             return;
         }
 
-        ArrayList<Target> possibleTargets = new ArrayList<>();
+        LinkedList<Target> possibleTargets = new LinkedList<>();
 
         for (Target t : targets.values()) {
             TargetType type = t.targetType();
@@ -667,6 +670,26 @@ public class Aiming {
             if (cannon.isWhitelisted(t.uniqueId())) continue;
             //Player
             if (type == TargetType.PLAYER) {
+
+                final boolean[] skip = new boolean[1];
+                Cannons.getPlugin().getHookManager().processIfPresent(TownyHook.class, townyApi -> {
+                    Resident ownerResident = townyApi.getResident(cannon.getOwner());
+                    if (ownerResident == null) {
+                        return;
+                    }
+
+                    Resident residentTarget = townyApi.getResident(t.uniqueId());
+                    if (residentTarget == null) {
+                        return;
+                    }
+
+                    if (CombatUtil.isAlly(residentTarget, ownerResident)) {
+                        skip[0] = true;
+                    }
+                });
+
+                if (skip[0]) continue;
+
                 // get solution
                 handlePossibleTarget(cannon, t, possibleTargets);
                 continue;
@@ -674,6 +697,7 @@ public class Aiming {
 
             Cannon tCannon = CannonManager.getCannon(t.uniqueId());
             if (tCannon == null) continue;
+            if (cannon.isWhitelisted(tCannon.getOwner())) continue;
             //Cannons & Other have same handling
             //check if the owner is whitelisted
             if (type == TargetType.CANNON || type == TargetType.OTHER) {
@@ -697,7 +721,7 @@ public class Aiming {
         }
     }
 
-    private void handlePossibleTarget(Cannon cannon, Target t, ArrayList<Target> possibleTargets) {
+    private void handlePossibleTarget(Cannon cannon, Target t, List<Target> possibleTargets) {
         if (canFindTargetSolution(cannon, t)) {
             possibleTargets.add(t);
         }

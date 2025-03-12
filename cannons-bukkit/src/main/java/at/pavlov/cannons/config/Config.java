@@ -5,6 +5,7 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.builders.ParticleBuilder;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.container.ItemHolder;
+import at.pavlov.cannons.hooks.towny.TownyAllowCannon;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.FileUtils;
@@ -39,6 +40,9 @@ import java.util.List;
     //movecraft
     private boolean movecraftEnabled;
     private boolean movecraftCannonEnabled;
+
+    private boolean townyEnabled;
+    private TownyAllowCannon townyAllowedPlayers;
     //endregion
 	
 	//build limits
@@ -132,6 +136,9 @@ import java.util.List;
         setEconomyDisabled(!config.getBoolean("hooks.vault.enabled", true));
         setMovecraftEnabled(config.getBoolean("hooks.movecraft.enabled", true));
         setMovecraftCannonEnabled(config.getBoolean("hooks.movecraftCombat.enabled", true));
+
+        setTownyEnabled(config.getBoolean("hooks.towny.enabled", true));
+        setTownyAllowedPlayers(TownyAllowCannon.fromConfig(config, "hooks.towny"));
 
         setRelayExplosionEvent(config.getBoolean("general.relayExplosionEvent", false));
         setClaimEdgeLength(config.getInt("general.claimEdgeLength", 60));
