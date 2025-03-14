@@ -112,6 +112,7 @@ import java.util.List;
     private double overloadingChanceOfExplosionPerGunpowder;
     private boolean overloadingDependsOfTemperature;
 
+	//economy handling
 	private double economyBuildingCost;
 	private double economyDismantlingRefund;
 	private double economyDestructionRefund;
