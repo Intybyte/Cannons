@@ -14,6 +14,8 @@ import at.pavlov.cannons.event.CannonAfterCreateEvent;
 import at.pavlov.cannons.event.CannonBeforeCreateEvent;
 import at.pavlov.cannons.event.CannonRenameEvent;
 import at.pavlov.cannons.dao.wrappers.RemoveTaskWrapper;
+import at.pavlov.cannons.exchange.BExchanger;
+import at.pavlov.cannons.exchange.EmptyExchanger;
 import at.pavlov.cannons.utils.SoundUtils;
 import lombok.Getter;
 import org.apache.commons.lang3.Validate;
@@ -199,11 +201,12 @@ public class CannonManager {
                 OfflinePlayer offplayer = Bukkit.getOfflinePlayer(owner);
                 // return message
                 if (offplayer.hasPlayedBefore() && plugin.getEconomy() != null && cannon1.isPaid()) {
-                    double funds = switch (cause1) {
+                    BExchanger funds = switch (cause1) {
                         case Other, Dismantling -> cannon1.getCannonDesign().getEconomyDismantlingRefund();
                         default -> cannon1.getCannonDesign().getEconomyDestructionRefund();
                     };
-                    plugin.getEconomy().depositPlayer(offplayer, funds);
+
+                    funds.execute(offplayer, cannon);
                 }
             }
 
@@ -312,7 +315,7 @@ public class CannonManager {
         }
 
         //ignore paid if there is no economy
-        if (plugin.getEconomy() == null || cannon.getCannonDesign().getEconomyBuildingCost() <= 0)
+        if (cannon.getCannonDesign().getEconomyBuildingCost() instanceof EmptyExchanger)
             cannon.setPaid(true);
 
         //add owner to whitelist for sentry
@@ -832,8 +835,11 @@ public class CannonManager {
             Cannon cannon = iter.next();
             OfflinePlayer offplayer = Bukkit.getOfflinePlayer(cannon.getOwner());
             // return money to the player if the cannon was paid
-            if (offplayer != null && offplayer.hasPlayedBefore() && plugin.getEconomy() != null && cannon.isPaid())
-                plugin.getEconomy().depositPlayer(offplayer, cannon.getCannonDesign().getEconomyBuildingCost());
+            var buildingCost = cannon.getCannonDesign().getEconomyBuildingCost();
+
+            if (offplayer != null && offplayer.hasPlayedBefore() && cannon.isPaid()) {
+                buildingCost.execute(offplayer, cannon);
+            }
             cannon.destroyCannon(false, false, BreakCause.Other);
             iter.remove();
         }

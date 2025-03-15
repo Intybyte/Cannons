@@ -13,6 +13,7 @@ import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.PersistenceDatabase;
+import at.pavlov.cannons.exchange.ExchangeLoader;
 import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
 import at.pavlov.cannons.hooks.papi.PlaceholderAPIHook;
 import at.pavlov.cannons.hooks.VaultHook;
@@ -93,6 +94,7 @@ public final class Cannons extends JavaPlugin
 		// must be done in onLoad because "movecraft"
 		AsyncTaskManager.initialize(this);
 		UserMessages.initialize(this);
+		ExchangeLoader.registerDefaults();
 		Config.initialize(this);
 		CannonManager.initialize(this);
 		this.config = Config.getInstance();
