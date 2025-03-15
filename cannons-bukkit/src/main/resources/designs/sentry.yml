@@ -90,6 +90,8 @@ angles:
 
 #the impact predictor will show the impact location of a loaded cannon
 impactPredictor:
+  # default types are cannons:vault and cannons:empty
+  type: "cannons:vault"
   #enable the impact predictor
   enabled: true
   #the impact location will be shown after the last angle change of the cannon [s]
