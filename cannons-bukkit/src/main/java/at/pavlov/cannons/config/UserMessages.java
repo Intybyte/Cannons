@@ -358,9 +358,9 @@ public class UserMessages {
         message = message.replace("PUSHING_LEFT", Integer.toString(cannon.getProjectilePushed()));
         //economy
         if (plugin.getEconomy() != null) {
-            message = message.replace("BUILD_COSTS", plugin.getEconomy().format(cannon.getCannonDesign().getEconomyBuildingCost()));
-            message = message.replace("DISMANTLING_REFUND", plugin.getEconomy().format(cannon.getCannonDesign().getEconomyDismantlingRefund()));
-            message = message.replace("DESTRUCTION_REFUND", plugin.getEconomy().format(cannon.getCannonDesign().getEconomyDestructionRefund()));
+            message = message.replace("BUILD_COSTS", cannon.getCannonDesign().getEconomyBuildingCost().successMessage());
+            message = message.replace("DISMANTLING_REFUND", cannon.getCannonDesign().getEconomyDismantlingRefund().successMessage());
+            message = message.replace("DESTRUCTION_REFUND", cannon.getCannonDesign().getEconomyDestructionRefund().successMessage());
         }
         // show the name of the last whitelisted player
         if (cannon.getLastWhitelisted() != null) {
