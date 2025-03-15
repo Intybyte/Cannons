@@ -1,6 +1,12 @@
 package at.pavlov.internal;
 
-public interface Exchanger<Subject> {
-    void take(Subject subject);
-    void give(Subject subject);
+import org.jetbrains.annotations.NotNull;
+
+public interface Exchanger<Subject, Cannon> {
+
+    enum Type { WITHDRAW, DEPOSIT, UNDEFINED }
+
+    boolean execute(Subject subject, Cannon cannon);
+    @NotNull String successMessage();
+    @NotNull Type type();
 }

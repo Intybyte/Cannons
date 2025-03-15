@@ -1,15 +1,23 @@
 package at.pavlov.cannons.exchange;
 
-import org.bukkit.entity.Player;
+import at.pavlov.cannons.cannon.Cannon;
+import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 
 public class EmptyExchanger implements BExchanger {
-    @Override
-    public void take(Player player) {
 
+    @Override
+    public boolean execute(OfflinePlayer player, Cannon cannon) {
+        return true;
     }
 
     @Override
-    public void give(Player player) {
+    public @NotNull String successMessage() {
+        return "Nothing";
+    }
 
+    @Override
+    public @NotNull Type type() {
+        return Type.UNDEFINED;
     }
 }
