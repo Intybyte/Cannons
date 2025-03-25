@@ -340,10 +340,6 @@ public class CannonSelector {
                     SoundUtils.playErrorSound(cannon.getMuzzle());
                     break;
                 }
-                //redraw money if required
-                if (plugin.getEconomy() == null || !(cannon.getCannonDesign().getEconomyBuildingCost() instanceof EmptyExchanger)) {
-                    break;
-                }
 
                 var result = cannon.getCannonDesign().getEconomyBuildingCost().execute(player, cannon);
 
