@@ -7,6 +7,6 @@ public interface Exchanger<Subject, Cannon> {
     enum Type { WITHDRAW, DEPOSIT, UNDEFINED }
 
     boolean execute(Subject subject, Cannon cannon);
-    @NotNull String successMessage();
+    @NotNull String formatted();
     @NotNull Type type();
 }

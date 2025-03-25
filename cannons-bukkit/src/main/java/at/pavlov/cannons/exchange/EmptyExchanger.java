@@ -12,7 +12,7 @@ public class EmptyExchanger implements BExchanger {
     }
 
     @Override
-    public @NotNull String successMessage() {
+    public @NotNull String formatted() {
         return "Nothing";
     }
 

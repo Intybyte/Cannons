@@ -44,7 +44,7 @@ public record VaultExchanger(double money, Type type) implements BExchanger {
     }
 
     @Override
-    public @NotNull String successMessage() {
+    public @NotNull String formatted() {
         return economy.format(money);
     }
 }
