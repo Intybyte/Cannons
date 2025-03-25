@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class HookManager {
     private final Map<Class<? extends Hook<?>>, Hook<?>> hooks = new HashMap<>();
@@ -43,7 +44,21 @@ public class HookManager {
             }
         }
 
-       return null;
+        return null;
+    }
+
+    public <C, T extends Hook<C>> void processIfPresent(@NotNull Class<T> type, Consumer<C> consumer) {
+        T hook = getHook(type);
+        if (hook == null || !hook.active()) {
+            return;
+        }
+
+        C hookContent = hook.hook();
+        if (hookContent == null) {
+            return;
+        }
+
+        consumer.accept(hookContent);
     }
 
     /**
