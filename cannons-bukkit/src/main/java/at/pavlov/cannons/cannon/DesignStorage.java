@@ -299,7 +299,7 @@ public class DesignStorage
 		BExchanger dismantlingRefund = ExchangeLoader.of(economyKey, cannonDesignConfig, "economy.dismantlingRefund", Exchanger.Type.DEPOSIT);
         cannonDesign.setEconomyDismantlingRefund(dismantlingRefund);
 
-		BExchanger destroyRefund = ExchangeLoader.of(economyKey, cannonDesignConfig, "economy.dismantlingRefund", Exchanger.Type.DEPOSIT);
+		BExchanger destroyRefund = ExchangeLoader.of(economyKey, cannonDesignConfig, "economy.destructionRefund", Exchanger.Type.DEPOSIT);
         cannonDesign.setEconomyDestructionRefund(destroyRefund);
 
         // realisticBehaviour
