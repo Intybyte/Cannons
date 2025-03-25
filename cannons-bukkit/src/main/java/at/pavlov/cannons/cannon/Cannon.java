@@ -88,11 +88,11 @@ public class Cannon implements ICannon, Rotational {
 
         this.design = design;
         this.cannonPosition = new CannonPosition(cannonDirection, cannonOffset, world, false, noVelocity.clone());
-        boolean feePresent = design.getEconomyBuildingCost() instanceof EmptyExchanger;
-        this.mainData = new CannonMainData( UUID.randomUUID(),null, feePresent, owner, true);
+        boolean noFee = design.getEconomyBuildingCost() instanceof EmptyExchanger;
+        this.mainData = new CannonMainData( UUID.randomUUID(),null, noFee, owner, true);
 
         // set owner in the whitelist
-        if (feePresent)
+        if (noFee)
             whitelistData.add(owner);
 
         this.sentryData.setSentryEntity(null);
