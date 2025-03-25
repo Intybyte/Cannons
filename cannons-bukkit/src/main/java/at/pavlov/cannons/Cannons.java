@@ -94,7 +94,6 @@ public final class Cannons extends JavaPlugin
 		// must be done in onLoad because "movecraft"
 		AsyncTaskManager.initialize(this);
 		UserMessages.initialize(this);
-		ExchangeLoader.registerDefaults();
 		Config.initialize(this);
 		CannonManager.initialize(this);
 		this.config = Config.getInstance();
@@ -208,6 +207,7 @@ public final class Cannons extends JavaPlugin
 		PlaceholderAPIHook placeholderAPIHook = new PlaceholderAPIHook(this);
 		hookManager.registerHook(placeholderAPIHook);
 
+		ExchangeLoader.registerDefaults();
 		logDebug("Time to enable hooks: " + new DecimalFormat("0.00").format(System.currentTimeMillis() - startTime) + "ms");
 
 		startTime = System.nanoTime();
