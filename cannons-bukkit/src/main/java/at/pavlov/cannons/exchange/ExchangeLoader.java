@@ -1,6 +1,7 @@
 package at.pavlov.cannons.exchange;
 
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.hooks.VaultHook;
 import at.pavlov.internal.Exchanger;
 import at.pavlov.internal.Key;
 import org.bukkit.Bukkit;
@@ -46,10 +47,11 @@ public class ExchangeLoader {
 
     @ApiStatus.Internal
     public static void registerDefaults() {
-        //Cannons.getPlugin().getHookManager().
-        register(Key.cannons("vault"), (config, key, typeExchange) -> {
-            double amount = config.getDouble(key, 0.0);
-            return new VaultExchanger(amount, typeExchange);
+        Cannons.getPlugin().getHookManager().processIfPresent(VaultHook.class, (economy) -> {
+            register(Key.cannons("vault"), (config, key, typeExchange) -> {
+                double amount = config.getDouble(key, 0.0);
+                return new VaultExchanger(amount, typeExchange);
+            });
         });
 
         register(Key.cannons("empty"), (config, key, typeExchange) -> new EmptyExchanger());
