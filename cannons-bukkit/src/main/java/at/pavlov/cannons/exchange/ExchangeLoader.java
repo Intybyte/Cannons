@@ -39,7 +39,7 @@ public class ExchangeLoader {
     // You will probably need to load registry entries in the onLoad part of your plugin
     public static void register(Key key, Supplier supplier) {
         if (registry.containsKey(key)) {
-            throw new RuntimeException(key + " for ExchangeLoader is already taken.");
+            throw new IllegalArgumentException(key + " for ExchangeLoader is already taken.");
         }
 
         registry.put(key, supplier);
