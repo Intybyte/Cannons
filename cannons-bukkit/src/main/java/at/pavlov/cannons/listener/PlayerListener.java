@@ -87,7 +87,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void PlayerDeath(PlayerDeathEvent event) {
+    public void playerDeath(PlayerDeathEvent event) {
         UUID killedUID = event.getEntity().getUniqueId();
         var explosion = CreateExplosion.getInstance();
         if (explosion.wasAffectedByCannons(event.getEntity())) {
@@ -100,13 +100,12 @@ public class PlayerListener implements Listener {
             FlyingProjectile c = explosion.getCurrentCannonball();
             Cannon cannon = CannonManager.getCannon(c.getCannonUID());
             String message = userMessages.getDeathMessage(killedUID, c.getShooterUID(), cannon, c.getProjectile());
-            if (message != null && !message.equals(" "))
-                event.setDeathMessage(message);
+            if (message != null && !message.equals(" ")) event.setDeathMessage(message);
         }
     }
 
     @EventHandler
-    public void PlayerMove(PlayerMoveEvent event) {
+    public void playerMove(PlayerMoveEvent event) {
         // only active if the player is in aiming mode
         Cannon cannon = aiming.getCannonInAimingMode(event.getPlayer());
         if (!aiming.distanceCheck(event.getPlayer(), cannon) && (System.currentTimeMillis() - cannon.getTimestampAimingMode()) > 1000) {
@@ -121,7 +120,7 @@ public class PlayerListener implements Listener {
      * @param event - PlayerQuitEvent
      */
     @EventHandler
-    public void LogoutEvent(PlayerQuitEvent event) {
+    public void logoutEvent(PlayerQuitEvent event) {
         aiming.removePlayer(event.getPlayer());
     }
 
@@ -130,7 +129,7 @@ public class PlayerListener implements Listener {
      * @param event - PlayerBucketEmptyEvent
      */
     @EventHandler
-    public void PlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+    public void playerBucketEmpty(PlayerBucketEmptyEvent event) {
         // if player loads a lava/water bucket in the cannon
         Location blockLoc = event.getBlockClicked().getLocation();
 
@@ -150,7 +149,7 @@ public class PlayerListener implements Listener {
      * @param event BlockPlaceEvent
      */
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void BlockPlace(BlockPlaceEvent event) {
+    public void blockPlace(BlockPlaceEvent event) {
         if (event.isCancelled()) return;
 
         Block block = event.getBlockPlaced();
@@ -221,7 +220,7 @@ public class PlayerListener implements Listener {
      * @param event
      */
     @EventHandler
-    public void PlayerInteract(PlayerInteractEvent event) {
+    public void playerInteract(PlayerInteractEvent event) {
         Action action = event.getAction();
 
         final Player player = event.getPlayer();
@@ -239,8 +238,7 @@ public class PlayerListener implements Listener {
         final Cannon cannon = cannonManager.getCannon(barrel, player.getUniqueId(), false);
 
         // ############ select a cannon ####################
-        if (isCannonSelect(event, clickedBlock, cannon))
-            return;
+        if (isCannonSelect(event, clickedBlock, cannon)) return;
 
         if (event.getHand() != EquipmentSlot.HAND) {
             return;
@@ -249,8 +247,7 @@ public class PlayerListener implements Listener {
         boolean isRMB = action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;
         if ((isRMB || event.getAction() == Action.PHYSICAL) && cannon != null) {
             // prevent eggs and snowball from firing when loaded into the gun
-            if (config.isCancelItem(eventitem))
-                event.setCancelled(true);
+            if (config.isCancelItem(eventitem)) event.setCancelled(true);
 
             // I used here System.out.println to display the correct color code
             if (event.getItem() != null && event.getItem().getItemMeta() != null && event.getItem().getItemMeta().hasDisplayName()) {
@@ -302,8 +299,7 @@ public class PlayerListener implements Listener {
         //no cannon found - maybe the player has click into the air to stop aiming
         else if (cannon == null && action == Action.RIGHT_CLICK_AIR) {
             // stop aiming mode when right clicking in the air
-            if (config.getToolAutoaim().equalsFuzzy(eventitem))
-                aiming.aimingMode(player, null, false);
+            if (config.getToolAutoaim().equalsFuzzy(eventitem)) aiming.aimingMode(player, null, false);
             selector.removeCannonSelector(player);
         }
         //fire cannon
@@ -421,8 +417,7 @@ public class PlayerListener implements Listener {
 
         plugin.logDebug("someone touched a hot cannon");
         userMessages.sendMessage(MessageEnum.HeatManagementBurn, player, cannon);
-        if (design.getBurnDamage() > 0)
-            player.damage(design.getBurnDamage() * 2);
+        if (design.getBurnDamage() > 0) player.damage(design.getBurnDamage() * 2);
         if (design.getBurnSlowing() > 0)
             XPotion.SLOWNESS.get().createEffect((int) (design.getBurnSlowing() * 20.0), 0).apply(player);
 

@@ -1,6 +1,5 @@
 package at.pavlov.cannons.listener;
 
-
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.BreakCause;
@@ -8,6 +7,7 @@ import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.multiversion.EventResolver;
 import at.pavlov.cannons.utils.CannonSelector;
+import at.pavlov.cannons.utils.EventUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -37,7 +37,6 @@ public class BlockListener implements Listener {
         this.cannonManager = CannonManager.getInstance();
     }
 
-
     @EventHandler
     public void blockExplodeEvent(BlockExplodeEvent event) {
         if (plugin.getMyConfig().isRelayExplosionEvent()) {
@@ -59,7 +58,7 @@ public class BlockListener implements Listener {
         }
 
         //search for destroyed cannons
-        plugin.getEntityListener().ExplosionEventHandler(event.blockList());
+        EventUtils.handleExplosion(event.blockList());
     }
 
     /**
@@ -68,13 +67,13 @@ public class BlockListener implements Listener {
      * @param event
      */
     @EventHandler
-    public void BlockFromTo(BlockFromToEvent event) {
+    public void blockFromTo(BlockFromToEvent event) {
         Block block = event.getToBlock();
         Cannon cannon = cannonManager.getCannon(block.getLocation(), null);
-        if (cannon == null)//block.getType() == Material.STONE_BUTTON || block.getType() == Material.WOOD_BUTTON || block.getType() == Material.   || block.getType() == Material.TORCH)
-        {
+        if (cannon == null) {
             return;
         }
+        
         if (cannon.isCannonBlock(block)) {
             event.setCancelled(true);
         }
@@ -86,7 +85,7 @@ public class BlockListener implements Listener {
      * @param event
      */
     @EventHandler
-    public void BlockSpread(BlockSpreadEvent event) {
+    public void blockSpread(BlockSpreadEvent event) {
         Block block = event.getBlock().getRelative(BlockFace.DOWN);
         Cannon cannon = cannonManager.getCannon(block.getLocation(), null);
 
@@ -95,14 +94,13 @@ public class BlockListener implements Listener {
         }
     }
 
-
     /**
      * retraction pistons will trigger this event. If the pulled block is part of a cannon, it is canceled
      *
      * @param event - BlockPistonRetractEvent
      */
     @EventHandler
-    public void BlockPistonRetract(BlockPistonRetractEvent event) {
+    public void blockPistonRetract(BlockPistonRetractEvent event) {
         // when piston is sticky and has a cannon block attached delete the
         // cannon
         if (!event.isSticky()) {
@@ -122,7 +120,7 @@ public class BlockListener implements Listener {
      * @param event - BlockPistonExtendEvent
      */
     @EventHandler
-    public void BlockPistonExtend(BlockPistonExtendEvent event) {
+    public void blockPistonExtend(BlockPistonExtendEvent event) {
         // when the moved block is a cannonblock
         for (Iterator<Block> iter = event.getBlocks().iterator(); iter.hasNext(); ) {
             // if moved block is cannonBlock delete cannon
@@ -139,7 +137,7 @@ public class BlockListener implements Listener {
      * @param event - BlockBurnEvent
      */
     @EventHandler
-    public void BlockBurn(BlockBurnEvent event) {
+    public void blockBurn(BlockBurnEvent event) {
         // the cannon will not burn down
         if (cannonManager.getCannon(event.getBlock().getLocation(), null) != null) {
             event.setCancelled(true);
@@ -152,7 +150,7 @@ public class BlockListener implements Listener {
      * @param event - BlockBreakEvent
      */
     @EventHandler
-    public void BlockBreak(BlockBreakEvent event) {
+    public void blockBreak(BlockBreakEvent event) {
 
         Block block = event.getBlock();
         Location location = block.getLocation();
@@ -167,7 +165,7 @@ public class BlockListener implements Listener {
             if (Aiming.getInstance().isInAimingMode(event.getPlayer().getUniqueId()))
                 aimingCannon = Aiming.getInstance().getCannonInAimingMode(event.getPlayer());
 
-            if (cannon.isDestructibleBlock(location) && (aimingCannon == null || !cannon.equals(aimingCannon)) && !CannonSelector.getInstance().isSelectingMode(event.getPlayer())) {
+            if (cannon.isDestructibleBlock(location) && (!cannon.equals(aimingCannon)) && !CannonSelector.getInstance().isSelectingMode(event.getPlayer())) {
                 cannonManager.removeCannon(cannon, false, true, BreakCause.PlayerBreak);
                 plugin.logDebug("cannon broken:  " + cannon.isDestructibleBlock(location));
             } else {
