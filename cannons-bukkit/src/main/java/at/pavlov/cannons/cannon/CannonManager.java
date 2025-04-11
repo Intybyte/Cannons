@@ -200,7 +200,7 @@ public class CannonManager {
 
                 OfflinePlayer offplayer = Bukkit.getOfflinePlayer(owner);
                 // return message
-                if (offplayer.hasPlayedBefore() && plugin.getEconomy() != null && cannon1.isPaid()) {
+                if (offplayer.hasPlayedBefore() && cannon1.isPaid()) {
                     BExchanger funds = switch (cause1) {
                         case Other, Dismantling -> cannon1.getCannonDesign().getEconomyDismantlingRefund();
                         default -> cannon1.getCannonDesign().getEconomyDestructionRefund();

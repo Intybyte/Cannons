@@ -357,11 +357,10 @@ public class UserMessages {
         //pushing projectile
         message = message.replace("PUSHING_LEFT", Integer.toString(cannon.getProjectilePushed()));
         //economy
-        if (plugin.getEconomy() != null) {
-            message = message.replace("BUILD_COSTS", cannon.getCannonDesign().getEconomyBuildingCost().formatted());
-            message = message.replace("DISMANTLING_REFUND", cannon.getCannonDesign().getEconomyDismantlingRefund().formatted());
-            message = message.replace("DESTRUCTION_REFUND", cannon.getCannonDesign().getEconomyDestructionRefund().formatted());
-        }
+        message = message.replace("BUILD_COSTS", cannon.getCannonDesign().getEconomyBuildingCost().formatted());
+        message = message.replace("DISMANTLING_REFUND", cannon.getCannonDesign().getEconomyDismantlingRefund().formatted());
+        message = message.replace("DESTRUCTION_REFUND", cannon.getCannonDesign().getEconomyDestructionRefund().formatted());
+
         // show the name of the last whitelisted player
         if (cannon.getLastWhitelisted() != null) {
             OfflinePlayer whiteplayer = Bukkit.getOfflinePlayer(cannon.getLastWhitelisted());

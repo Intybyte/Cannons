@@ -43,8 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.UUID;
 
-public class PlayerListener implements Listener
-{
+public class PlayerListener implements Listener {
     private final Config config;
     private final UserMessages userMessages;
     private final Cannons plugin;
@@ -53,8 +52,7 @@ public class PlayerListener implements Listener
     private final Aiming aiming;
     private final CannonSelector selector;
 
-    public PlayerListener(Cannons plugin)
-    {
+    public PlayerListener(Cannons plugin) {
         this.plugin = plugin;
         this.config = this.plugin.getMyConfig();
         this.userMessages = UserMessages.getInstance();
@@ -64,12 +62,35 @@ public class PlayerListener implements Listener
         this.selector = CannonSelector.getInstance();
     }
 
+    private static @Nullable Block getBlock(Block eventClickedBlock, Player player) {
+        Block clickedBlock = null;
+        if (eventClickedBlock != null) {
+            return eventClickedBlock;
+        }
+
+        // no clicked block - get block player is looking at
+        Location location = player.getEyeLocation();
+        BlockIterator blocksToAdd = new BlockIterator(location, 0, 5);
+        Block block = null;
+        while (blocksToAdd.hasNext()) {
+            block = blocksToAdd.next();
+            if (!block.getType().isAir()) {
+                clickedBlock = block;
+            }
+        }
+
+        if (clickedBlock == null) {
+            return block;
+        }
+
+        return clickedBlock;
+    }
+
     @EventHandler
-    public void PlayerDeath(PlayerDeathEvent event)
-    {
+    public void PlayerDeath(PlayerDeathEvent event) {
         UUID killedUID = event.getEntity().getUniqueId();
         var explosion = CreateExplosion.getInstance();
-        if (explosion.wasAffectedByCannons(event.getEntity())){
+        if (explosion.wasAffectedByCannons(event.getEntity())) {
             //DeathCause cause = plugin.getExplosion().getDeathCause(killedUID);
             explosion.removeKilledPlayer(killedUID);
 
@@ -85,23 +106,22 @@ public class PlayerListener implements Listener
     }
 
     @EventHandler
-    public void PlayerMove(PlayerMoveEvent event)
-    {
+    public void PlayerMove(PlayerMoveEvent event) {
         // only active if the player is in aiming mode
-        Cannon cannon =  aiming.getCannonInAimingMode(event.getPlayer());
-        if (!aiming.distanceCheck(event.getPlayer(), cannon) && (System.currentTimeMillis() - cannon.getTimestampAimingMode()) > 1000){
+        Cannon cannon = aiming.getCannonInAimingMode(event.getPlayer());
+        if (!aiming.distanceCheck(event.getPlayer(), cannon) && (System.currentTimeMillis() - cannon.getTimestampAimingMode()) > 1000) {
             userMessages.sendMessage(MessageEnum.AimingModeTooFarAway, event.getPlayer());
             MessageEnum message = aiming.disableAimingMode(event.getPlayer());
             userMessages.sendMessage(message, event.getPlayer());
         }
     }
+
     /*
-    * remove Player from auto aiming list
-    * @param event - PlayerQuitEvent
-    */
+     * remove Player from auto aiming list
+     * @param event - PlayerQuitEvent
+     */
     @EventHandler
-    public void LogoutEvent(PlayerQuitEvent event)
-    {
+    public void LogoutEvent(PlayerQuitEvent event) {
         aiming.removePlayer(event.getPlayer());
     }
 
@@ -110,16 +130,14 @@ public class PlayerListener implements Listener
      * @param event - PlayerBucketEmptyEvent
      */
     @EventHandler
-    public void PlayerBucketEmpty(PlayerBucketEmptyEvent event)
-    {
+    public void PlayerBucketEmpty(PlayerBucketEmptyEvent event) {
         // if player loads a lava/water bucket in the cannon
         Location blockLoc = event.getBlockClicked().getLocation();
 
         Cannon cannon = cannonManager.getCannon(blockLoc, event.getPlayer().getUniqueId());
 
         // check if it is a cannon
-        if (cannon != null)
-        {
+        if (cannon != null) {
             // data =-1 means no data check, all buckets are allowed
             Projectile projectile = plugin.getProjectile(cannon, event.getItemStack());
             if (projectile != null) event.setCancelled(true);
@@ -202,13 +220,13 @@ public class PlayerListener implements Listener
      * Handles event if player interacts with the cannon
      * @param event
      */
-	@EventHandler
+    @EventHandler
     public void PlayerInteract(PlayerInteractEvent event) {
         Action action = event.getAction();
 
         final Player player = event.getPlayer();
         Block clickedBlock = getBlock(event.getClickedBlock(), player);
-        if (clickedBlock == null){
+        if (clickedBlock == null) {
             return;
         }
 
@@ -229,9 +247,9 @@ public class PlayerListener implements Listener
         }
 
         boolean isRMB = action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;
-    	if((isRMB || event.getAction() == Action.PHYSICAL) && cannon != null) {
+        if ((isRMB || event.getAction() == Action.PHYSICAL) && cannon != null) {
             // prevent eggs and snowball from firing when loaded into the gun
-            if(config.isCancelItem(eventitem))
+            if (config.isCancelItem(eventitem))
                 event.setCancelled(true);
 
             // I used here System.out.println to display the correct color code
@@ -248,7 +266,7 @@ public class PlayerListener implements Listener
             }
 
             // ############ temperature measurement ################################
-            if(isMeasureTemperature(cannon, eventitem, event)) {
+            if (isMeasureTemperature(cannon, eventitem, event)) {
                 return;
             }
 
@@ -279,22 +297,21 @@ public class PlayerListener implements Listener
 
             // ########## Ramrod ###############################
             if (isRamrod(cannon, eventitem, clickedBlock, event)) {
-                return;
             }
         }
         //no cannon found - maybe the player has click into the air to stop aiming
-        else if(cannon == null && action == Action.RIGHT_CLICK_AIR){
+        else if (cannon == null && action == Action.RIGHT_CLICK_AIR) {
             // stop aiming mode when right clicking in the air
             if (config.getToolAutoaim().equalsFuzzy(eventitem))
                 aiming.aimingMode(player, null, false);
             selector.removeCannonSelector(player);
         }
         //fire cannon
-        else if(event.getAction().equals(Action.LEFT_CLICK_AIR)) //|| event.getAction().equals(Action.LEFT_CLICK_BLOCK))
+        else if (event.getAction().equals(Action.LEFT_CLICK_AIR)) //|| event.getAction().equals(Action.LEFT_CLICK_BLOCK))
         {
             //check if the player is passenger of a projectile, if so he can teleport back by left clicking
             CannonsUtil.teleportBack(ProjectileManager.getInstance().getAttachedProjectile(event.getPlayer()));
-        	aiming.aimingMode(event.getPlayer(), null, true);
+            aiming.aimingMode(event.getPlayer(), null, true);
         }
     }
 
@@ -307,7 +324,7 @@ public class PlayerListener implements Listener
         event.setCancelled(true);
 
         final Player player = event.getPlayer();
-        if (plugin.getEconomy() != null && !cannon.isPaid()){
+        if (!cannon.isPaid()) {
             // cannon fee is not paid
             userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, cannon);
             SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -318,10 +335,10 @@ public class PlayerListener implements Listener
         userMessages.sendMessage(message, player, cannon);
 
         final CannonDesign design = cannon.getCannonDesign();
-        if (design.isLinkCannonsEnabled() ) {
+        if (design.isLinkCannonsEnabled()) {
             int d = design.getLinkCannonsDistance() * 2;
             for (Cannon fcannon : CannonManager.getCannonsInBox(cannon.getLocation(), d, d, d)) {
-                if (fcannon.getCannonDesign().equals(cannon.getCannonDesign()) &&  cannon.isAccessLinkingAllowed(fcannon, player))
+                if (fcannon.getCannonDesign().equals(cannon.getCannonDesign()) && cannon.isAccessLinkingAllowed(fcannon, player))
                     fcannon.useRamRod(player);
             }
         }
@@ -341,7 +358,7 @@ public class PlayerListener implements Listener
         plugin.logDebug("interact event: fire redstone trigger");
 
         final Player player = event.getPlayer();
-        if (plugin.getEconomy() != null && !cannon.isPaid()){
+        if (!cannon.isPaid()) {
             // cannon fee is not paid
             userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, cannon);
             SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -362,7 +379,7 @@ public class PlayerListener implements Listener
         event.setCancelled(true);
 
         final Player player = event.getPlayer();
-        if (plugin.getEconomy() != null && !cannon.isPaid()) {
+        if (!cannon.isPaid()) {
             // cannon fee is not paid
             userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, cannon);
             SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -383,13 +400,11 @@ public class PlayerListener implements Listener
             return false;
         }
 
-        if (selector.isBlockSelectingMode(player)){
+        if (selector.isBlockSelectingMode(player)) {
             selector.setSelectedBlock(player, clickedBlock);
             event.setCancelled(true);
             return true;
-        }
-
-        else if (cannon != null){
+        } else if (cannon != null) {
             selector.setSelectedCannon(player, cannon);
             event.setCancelled(true);
             return true;
@@ -407,9 +422,9 @@ public class PlayerListener implements Listener
         plugin.logDebug("someone touched a hot cannon");
         userMessages.sendMessage(MessageEnum.HeatManagementBurn, player, cannon);
         if (design.getBurnDamage() > 0)
-            player.damage(design.getBurnDamage()*2);
+            player.damage(design.getBurnDamage() * 2);
         if (design.getBurnSlowing() > 0)
-            XPotion.SLOWNESS.get().createEffect((int) (design.getBurnSlowing()*20.0), 0).apply(player);
+            XPotion.SLOWNESS.get().createEffect((int) (design.getBurnSlowing() * 20.0), 0).apply(player);
 
         Location effectLoc = clickedBlock.getRelative(clickedFace).getLocation();
         effectLoc.getWorld().playEffect(effectLoc, Effect.SMOKE, BlockFace.UP);
@@ -466,7 +481,7 @@ public class PlayerListener implements Listener
         event.setCancelled(true);
 
         final Player player = event.getPlayer();
-        if (plugin.getEconomy() != null && !cannon.isPaid()){
+        if (!cannon.isPaid()) {
             // cannon fee is not paid
             userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, cannon);
             SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -488,7 +503,7 @@ public class PlayerListener implements Listener
         plugin.logDebug("load projectile");
         event.setCancelled(true);
         final Player player = event.getPlayer();
-        if (plugin.getEconomy() != null && !cannon.isPaid()){
+        if (!cannon.isPaid()) {
             // cannon fee is not paid
             userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, cannon);
             SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -516,7 +531,7 @@ public class PlayerListener implements Listener
         event.setCancelled(true);
 
         final Player player = event.getPlayer();
-        if (plugin.getEconomy() != null && !cannon.isPaid()){
+        if (!cannon.isPaid()) {
             // cannon fee is not paid
             userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, cannon);
             SoundUtils.playErrorSound(cannon.getMuzzle());
@@ -530,29 +545,5 @@ public class PlayerListener implements Listener
         userMessages.sendMessage(message, player, cannon);
 
         return message != null;
-    }
-
-    private static @Nullable Block getBlock(Block eventClickedBlock, Player player) {
-        Block clickedBlock = null;
-        if (eventClickedBlock != null) {
-            return eventClickedBlock;
-        }
-
-        // no clicked block - get block player is looking at
-        Location location = player.getEyeLocation();
-        BlockIterator blocksToAdd = new BlockIterator(location, 0, 5);
-        Block block = null;
-        while(blocksToAdd.hasNext()) {
-            block = blocksToAdd.next();
-            if (!block.getType().isAir()){
-                clickedBlock = block;
-            }
-        }
-
-        if (clickedBlock == null) {
-            return block;
-        }
-
-        return clickedBlock;
     }
 }

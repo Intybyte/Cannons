@@ -69,7 +69,7 @@ public class FireCannon {
         if (cannon.isFiring())
             return MessageEnum.ErrorFiringInProgress;
         // fee not paid
-        if (plugin.getEconomy() != null && !cannon.isPaid())
+        if (!cannon.isPaid())
             return MessageEnum.ErrorNotPaid;
         //Barrel too hot
         if (cannon.barrelTooHot())
