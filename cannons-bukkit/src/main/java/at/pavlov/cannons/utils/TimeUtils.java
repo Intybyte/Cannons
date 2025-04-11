@@ -10,6 +10,6 @@ public class TimeUtils {
         tested.run();
         long end = System.currentTimeMillis();
         long total = start - end;
-        printer.accept("Execution of " + cause + " completed in " + total + " ms");
+        printer.accept("Execution of \"" + cause + "\" completed in " + total + " ms");
     }
 }
