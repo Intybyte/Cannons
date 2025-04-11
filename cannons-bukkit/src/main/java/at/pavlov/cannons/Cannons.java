@@ -30,11 +30,11 @@ import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.scheduler.ProjectileObserver;
 import at.pavlov.cannons.utils.CannonSelector;
+import at.pavlov.cannons.utils.TimeUtils;
 import at.pavlov.internal.Hook;
 import at.pavlov.internal.HookManager;
 import at.pavlov.internal.ModrinthUpdateChecker;
 import lombok.Getter;
-import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bukkit.Bukkit;
@@ -67,7 +67,7 @@ public final class Cannons extends JavaPlugin {
     private ProjectileObserver observer;
     private CannonsAPI cannonsAPI;
     @Getter
-    private HookManager hookManager;
+    private final HookManager hookManager = new HookManager();
     // database
     private PersistenceDatabase persistenceDatabase;
     private Connection connection = null;
@@ -155,6 +155,7 @@ public final class Cannons extends JavaPlugin {
     }
 
     public void onEnable() {
+        long startTime = System.nanoTime();
         pm = getServer().getPluginManager();
         if (!pm.isPluginEnabled("WorldEdit")) {
             //no worldEdit has been loaded. Disable plugin
@@ -165,27 +166,9 @@ public final class Cannons extends JavaPlugin {
             return;
         }
 
-		long startTime = System.currentTimeMillis();
-		hookManager = new HookManager();
+        TimeUtils.testTime(this::initHooks, this::logDebug, "Hooks initialization");
 
-		logDebug("Loading VaultHook");
-		VaultHook vaultHook = new VaultHook(this);
-		hookManager.registerHook(vaultHook);
-
-		logDebug("Loading MovecraftHook");
-		MovecraftHook movecraftHook = new MovecraftHook(this);
-		hookManager.registerHook(movecraftHook);
-
-		logDebug("Loading MovecraftCombatHook");
-		MovecraftCombatHook movecraftCombatHook = new MovecraftCombatHook(this);
-		hookManager.registerHook(movecraftCombatHook);
-
-		logDebug("Loading PlaceholderAPIHook");
-		PlaceholderAPIHook placeholderAPIHook = new PlaceholderAPIHook(this);
-		hookManager.registerHook(placeholderAPIHook);
-
-		ExchangeLoader.registerDefaults();
-		logDebug("Time to enable hooks: " + new DecimalFormat("0.00").format(System.currentTimeMillis() - startTime) + "ms");
+        ExchangeLoader.registerDefaults();
 
 		DesignStorage.initialize(this);
 		ProjectileStorage.initialize(this);
@@ -206,92 +189,95 @@ public final class Cannons extends JavaPlugin {
 
         this.persistenceDatabase = new PersistenceDatabase(this);
 
+        TimeUtils.testTime(this::initListeners, this::logDebug, "Listeners initialization");
+
+        TimeUtils.testTime(this::initCommands, this::logDebug, "Commands initialization");
+
+        // Initialize the database
+        AsyncTaskManager.get().async.submit(() -> TimeUtils.testTime(() -> {
+            try {
+                openConnection();
+                Statement statement = connection.createStatement();
+                statement.close();
+                getPlugin().logInfo("Connected to database");
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            }
+            //create the tables for the database in case they don't exist
+            persistenceDatabase.createTables();
+            // load cannons from database
+            persistenceDatabase.loadCannons();
+        }, this::logDebug, "Database connection"));
+
+
+        // setting up Aiming Mode Task
+        Aiming.getInstance().initAimingMode();
+        // setting up the Teleporter
+        observer.setupScheduler();
+        FakeBlockHandler.getInstance().setupScheduler();
+
+        // save cannons
+        AsyncTaskManager.get().scheduler.runTaskTimer(() -> persistenceDatabase.saveAllCannons(true), 6000L, 6000L);
+
+        TimeUtils.testTime(this::initMetrics, this::logDebug, "Metrics initialization");
+        logDebug("Time to enable cannons: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime) / 1000000.0) + "ms");
+
+        // Plugin succesfully enabled
+        logger.info(getLogPrefix() + "Cannons plugin v" + getPluginDescription().getVersion() + " has been enabled");
+    }
+
+    private void initMetrics() {
+        Metrics metrics = new Metrics(this, 23139);
+        metrics.addCustomChart(
+                new AdvancedPie("hooks", () -> {
+
+                    Map<String, Integer> result = new HashMap<>();
+                    if (!hookManager.isActive()) {
+                        result.put("None", 1);
+                        return result;
+                    }
+
+                    for (Hook<?> hook : hookManager.hookMap().values()) {
+                        final int status = hook.active() ? 1 : 0;
+                        result.put(hook.getTypeClass().getSimpleName(), status);
+                    }
+
+                    return result;
+                })
+        );
+    }
+
+    private void initListeners() {
         BlockListener blockListener = new BlockListener(this);
         PlayerListener playerListener = new PlayerListener(this);
         EntityListener entityListener = new EntityListener(this);
         RedstoneListener redstoneListener = new RedstoneListener(this);
-		
-        startTime = System.nanoTime();
+        UpdateNotifier updateNotifier = new UpdateNotifier(this);
+        pm.registerEvents(blockListener, this);
+        pm.registerEvents(playerListener, this);
+        pm.registerEvents(entityListener, this);
+        pm.registerEvents(redstoneListener, this);
+        pm.registerEvents(updateNotifier, this);
+    }
 
+    private void initHooks() {
+        logDebug("Loading VaultHook");
+        VaultHook vaultHook = new VaultHook(this);
+        hookManager.registerHook(vaultHook);
 
-        var taskManager = AsyncTaskManager.get();
-        //load some global variables
-        try {
-            pm.registerEvents(blockListener, this);
-            pm.registerEvents(playerListener, this);
-            pm.registerEvents(entityListener, this);
-            pm.registerEvents(redstoneListener, this);
-            pm.registerEvents(new UpdateNotifier(this), this);
-            //call command executer
-            initializeCommands();
+        logDebug("Loading MovecraftHook");
+        MovecraftHook movecraftHook = new MovecraftHook(this);
+        hookManager.registerHook(movecraftHook);
 
+        logDebug("Loading MovecraftCombatHook");
+        MovecraftCombatHook movecraftCombatHook = new MovecraftCombatHook(this);
+        hookManager.registerHook(movecraftCombatHook);
 
-            // Initialize the database
-            taskManager.async.submit(() -> {
-                try {
-                    openConnection();
-                    Statement statement = connection.createStatement();
-                    statement.close();
-                    getPlugin().logInfo("Connected to database");
-                } catch (ClassNotFoundException | SQLException e) {
-                    e.printStackTrace();
-                }
-                //create the tables for the database in case they don't exist
-                persistenceDatabase.createTables();
-                // load cannons from database
-                persistenceDatabase.loadCannons();
-            });
+        logDebug("Loading PlaceholderAPIHook");
+        PlaceholderAPIHook placeholderAPIHook = new PlaceholderAPIHook(this);
+        hookManager.registerHook(placeholderAPIHook);
 
-
-            // setting up Aiming Mode Task
-            Aiming.getInstance().initAimingMode();
-            // setting up the Teleporter
-            observer.setupScheduler();
-            FakeBlockHandler.getInstance().setupScheduler();
-
-            // save cannons
-            AsyncTaskManager.get().scheduler.runTaskTimer(() -> persistenceDatabase.saveAllCannons(true), 6000L, 6000L);
-
-            Metrics metrics = new Metrics(this, 23139);
-            metrics.addCustomChart(
-                    new AdvancedPie("hooks", () -> {
-
-                        Map<String, Integer> result = new HashMap<>();
-                        if (!hookManager.isActive()) {
-                            result.put("None", 1);
-                            return result;
-                        }
-
-                        for (Hook<?> hook : hookManager.hookMap().values()) {
-                            final int status = hook.active() ? 1 : 0;
-                            result.put(hook.getTypeClass().getSimpleName(), status);
-                        }
-
-                        return result;
-                    })
-            );
-
-            logDebug("Time to enable cannons: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime) / 1000000.0) + "ms");
-
-            // Plugin succesfully enabled
-            logger.info(getLogPrefix() + "Cannons plugin v" + getPluginDescription().getVersion() + " has been enabled");
-        } catch (Exception ex) {
-            // Plugin failed to enable
-            logSevere(String.format("[%s v%s] could not be enabled!", getDescription().getName(), getDescription().getVersion()));
-
-            // Print the stack trace of the actual cause
-            Throwable t = ex;
-            while (t != null) {
-                if (t.getCause() == null) {
-                    logSevere(String.format("[%s v%s] exception:", getDescription().getName(), getDescription().getVersion()));
-                    t.printStackTrace();
-                }
-
-                t = t.getCause();
-            }
-        }
-
-        taskManager.scheduler.runTaskLater(() -> {
+        AsyncTaskManager.get().scheduler.runTaskLater(() -> {
             if (!pm.isPluginEnabled("Movecraft-Cannons")) {
                 return;
             }
@@ -311,7 +297,7 @@ public final class Cannons extends JavaPlugin {
         }, 1L);
     }
 
-    private void initializeCommands() {
+    private void initCommands() {
         var cannonsCommandManager = new CannonsCommandManager(this);
         cannonsCommandManager.registerCommand(new Commands(this));
     }
