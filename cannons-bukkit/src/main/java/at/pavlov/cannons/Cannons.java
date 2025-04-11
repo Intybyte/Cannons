@@ -68,7 +68,6 @@ public final class Cannons extends JavaPlugin {
     private CannonsAPI cannonsAPI;
     @Getter
     private HookManager hookManager;
-    private VaultHook vaultHook;
     //Listener
     private BlockListener blockListener;
     private PlayerListener playerListener;
@@ -174,7 +173,7 @@ public final class Cannons extends JavaPlugin {
 		hookManager = new HookManager();
 
 		logDebug("Loading VaultHook");
-		vaultHook = new VaultHook(this);
+		VaultHook vaultHook = new VaultHook(this);
 		hookManager.registerHook(vaultHook);
 
 		logDebug("Loading MovecraftHook");
@@ -487,10 +486,6 @@ public final class Cannons extends JavaPlugin {
     @Deprecated(forRemoval = true)
     public FakeBlockHandler getFakeBlockHandler() {
         return FakeBlockHandler.getInstance();
-    }
-
-    public Economy getEconomy() {
-        return vaultHook.hook();
     }
 
     public String getCannonDatabase() {
