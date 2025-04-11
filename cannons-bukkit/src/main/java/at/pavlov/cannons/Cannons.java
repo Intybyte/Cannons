@@ -68,10 +68,6 @@ public final class Cannons extends JavaPlugin {
     private CannonsAPI cannonsAPI;
     @Getter
     private HookManager hookManager;
-    //Listener
-    private BlockListener blockListener;
-    private PlayerListener playerListener;
-    private EntityListener entityListener;
     // database
     private PersistenceDatabase persistenceDatabase;
     private Connection connection = null;
@@ -210,9 +206,9 @@ public final class Cannons extends JavaPlugin {
 
         this.persistenceDatabase = new PersistenceDatabase(this);
 
-        this.blockListener = new BlockListener(this);
-        this.playerListener = new PlayerListener(this);
-        this.entityListener = new EntityListener(this);
+        BlockListener blockListener = new BlockListener(this);
+        PlayerListener playerListener = new PlayerListener(this);
+        EntityListener entityListener = new EntityListener(this);
         RedstoneListener redstoneListener = new RedstoneListener(this);
 		
         startTime = System.nanoTime();
@@ -413,10 +409,6 @@ public final class Cannons extends JavaPlugin {
         return Aiming.getInstance();
     }
 
-    public PlayerListener getPlayerListener() {
-        return playerListener;
-    }
-
     @Deprecated(forRemoval = true)
     public DesignStorage getDesignStorage() {
         return DesignStorage.getInstance();
@@ -449,10 +441,6 @@ public final class Cannons extends JavaPlugin {
         return CannonManager.getCannon(id);
     }
 
-    public EntityListener getEntityListener() {
-        return entityListener;
-    }
-
     public void sendMessage(Player player, Cannon cannon, MessageEnum message) {
         UserMessages.getInstance().sendMessage(message, player, cannon);
     }
@@ -477,10 +465,6 @@ public final class Cannons extends JavaPlugin {
 
     public CannonsAPI getCannonsAPI() {
         return cannonsAPI;
-    }
-
-    public BlockListener getBlockListener() {
-        return blockListener;
     }
 
     @Deprecated(forRemoval = true)
