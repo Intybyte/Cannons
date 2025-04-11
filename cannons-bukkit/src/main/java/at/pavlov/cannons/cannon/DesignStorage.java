@@ -5,9 +5,13 @@ import at.pavlov.cannons.container.DesignFileName;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.container.SoundHolder;
+import at.pavlov.cannons.exchange.BExchanger;
+import at.pavlov.cannons.exchange.ExchangeLoader;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.DesignComparator;
 import at.pavlov.cannons.utils.ParseUtils;
+import at.pavlov.internal.Exchanger;
+import at.pavlov.internal.Key;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
@@ -286,9 +290,17 @@ public class DesignStorage
         cannonDesign.setOverloadingDependsOfTemperature(cannonDesignConfig.getBoolean("overloading.dependsOfTemperature",false));
 
         //economy
-        cannonDesign.setEconomyBuildingCost(cannonDesignConfig.getDouble("economy.buildingCosts", 0.0));
-        cannonDesign.setEconomyDismantlingRefund(cannonDesignConfig.getDouble("economy.dismantlingRefund", 0.0));
-        cannonDesign.setEconomyDestructionRefund(cannonDesignConfig.getDouble("economy.destructionRefund", 0.0));
+		Key economyKey = Key.from(cannonDesignConfig.getString("economy.type", "cannons:vault"));
+		cannonDesign.setEconomyType(economyKey);
+
+		BExchanger buildCost = ExchangeLoader.of(economyKey, cannonDesignConfig, "economy.buildingCosts", Exchanger.Type.WITHDRAW);
+        cannonDesign.setEconomyBuildingCost(buildCost);
+
+		BExchanger dismantlingRefund = ExchangeLoader.of(economyKey, cannonDesignConfig, "economy.dismantlingRefund", Exchanger.Type.DEPOSIT);
+        cannonDesign.setEconomyDismantlingRefund(dismantlingRefund);
+
+		BExchanger destroyRefund = ExchangeLoader.of(economyKey, cannonDesignConfig, "economy.destructionRefund", Exchanger.Type.DEPOSIT);
+        cannonDesign.setEconomyDestructionRefund(destroyRefund);
 
         // realisticBehaviour
 		cannonDesign.setFiringItemRequired(cannonDesignConfig.getBoolean("realisticBehaviour.isFiringItemRequired", false));

@@ -4,7 +4,9 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.container.SoundHolder;
+import at.pavlov.cannons.exchange.BExchanger;
 import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.internal.Key;
 import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -112,9 +114,11 @@ import java.util.List;
     private double overloadingChanceOfExplosionPerGunpowder;
     private boolean overloadingDependsOfTemperature;
 
-	private double economyBuildingCost;
-	private double economyDismantlingRefund;
-	private double economyDestructionRefund;
+	//economy handling
+	private Key economyType;
+	private BExchanger economyBuildingCost;
+	private BExchanger economyDismantlingRefund;
+	private BExchanger economyDestructionRefund;
 
 	//realisticBehaviour
 	private boolean FiringItemRequired;

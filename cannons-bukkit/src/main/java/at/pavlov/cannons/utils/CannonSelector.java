@@ -6,8 +6,8 @@ import at.pavlov.cannons.Enum.SelectCannon;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.UserMessages;
+import at.pavlov.cannons.exchange.EmptyExchanger;
 import lombok.Getter;
-import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -340,19 +340,14 @@ public class CannonSelector {
                     SoundUtils.playErrorSound(cannon.getMuzzle());
                     break;
                 }
-                //redraw money if required
-                if (plugin.getEconomy() == null || !(cannon.getCannonDesign().getEconomyBuildingCost() > 0)) {
-                    break;
-                }
 
-                EconomyResponse r = plugin.getEconomy().withdrawPlayer(player, cannon.getCannonDesign().getEconomyBuildingCost());
+                var result = cannon.getCannonDesign().getEconomyBuildingCost().execute(player, cannon);
 
-                if (!r.transactionSuccess()) {
+                if (!result) {
                     userMessages.sendMessage(MessageEnum.ErrorNoMoney, player, cannon);
                     SoundUtils.playErrorSound(cannon.getMuzzle());
                 } else {
                     cannon.boughtByPlayer(playerUUID);
-                    //CannonsUtil.playSound();
                     userMessages.sendMessage(MessageEnum.CmdPaidCannon, player, cannon);
                     SoundUtils.playSound(cannon.getMuzzle(), cannon.getCannonDesign().getSoundSelected());
                 }

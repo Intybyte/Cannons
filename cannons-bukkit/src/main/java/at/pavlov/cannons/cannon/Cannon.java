@@ -20,6 +20,7 @@ import at.pavlov.cannons.event.CannonDestroyedEvent;
 import at.pavlov.cannons.event.CannonGunpowderLoadEvent;
 import at.pavlov.cannons.event.CannonPreLoadEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
+import at.pavlov.cannons.exchange.EmptyExchanger;
 import at.pavlov.cannons.interfaces.ICannon;
 import at.pavlov.cannons.interfaces.functionalities.Rotational;
 import at.pavlov.cannons.projectile.Projectile;
@@ -87,11 +88,11 @@ public class Cannon implements ICannon, Rotational {
 
         this.design = design;
         this.cannonPosition = new CannonPosition(cannonDirection, cannonOffset, world, false, noVelocity.clone());
-        boolean feePresent = design.getEconomyBuildingCost() <= 0;
-        this.mainData = new CannonMainData( UUID.randomUUID(),null, feePresent, owner, true);
+        boolean noFee = design.getEconomyBuildingCost() instanceof EmptyExchanger;
+        this.mainData = new CannonMainData( UUID.randomUUID(),null, noFee, owner, true);
 
         // set owner in the whitelist
-        if (feePresent)
+        if (noFee)
             whitelistData.add(owner);
 
         this.sentryData.setSentryEntity(null);

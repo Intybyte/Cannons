@@ -1,10 +1,12 @@
 package at.pavlov.internal;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class HookManager {
     private final Map<Class<? extends Hook<?>>, Hook<?>> hooks = new HashMap<>();
@@ -30,7 +32,7 @@ public class HookManager {
         return false;
     }
 
-    public <T extends Hook<?>> @NotNull T getHook(@NotNull Class<T> type) {
+    public <T extends Hook<?>> @Nullable T getHook(@NotNull Class<T> type) {
         Hook<?> hook = this.hooks.get(type);
         if (hook != null) {
             return type.cast(hook);
@@ -42,7 +44,21 @@ public class HookManager {
             }
         }
 
-        throw new IllegalArgumentException("No registered hook of type " + type.getName() + "!");
+        return null;
+    }
+
+    public <C, T extends Hook<C>> void processIfPresent(@NotNull Class<T> type, Consumer<C> consumer) {
+        T hook = getHook(type);
+        if (hook == null || !hook.active()) {
+            return;
+        }
+
+        C hookContent = hook.hook();
+        if (hookContent == null) {
+            return;
+        }
+
+        consumer.accept(hookContent);
     }
 
     /**

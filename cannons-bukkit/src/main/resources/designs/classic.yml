@@ -229,6 +229,8 @@ overloading:
 
 
 economy:
+  # default types are cannons:vault and cannons:empty
+  type: "cannons:vault"
   #the money the is withdrawn from your account when you build a cannon. If you have not enough - no cannon will be created
   buildingCosts: 100.0
   #how much money you receive if your cannon was deconstructed
