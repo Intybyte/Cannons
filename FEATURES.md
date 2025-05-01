@@ -29,9 +29,19 @@ Optimizations:
 
 API Changes/New Events:
 --------------
+
+Exchange API:
+- You can define your own exchanges for cannons creation requirement, example at [CannonsEXP](https://github.com/Intybyte/CannonsEXP)
+
+Projectiles:
+- Projectile type events now give the FlyingProjectile
 - ProjectilePiercingEvent is now cancellable
+
+Linking:
 - New CannonLinkFiringEvent to handle linked cannons operations
 - New CannonLinkAimingEvent to handle linked cannons aiming
+
+Other:
 - You can now get more data from CannonDestroyEvent, which execute when cannons are broken too
 - New CannonPreLoadEvent 
 - New CannonRenameEvent
