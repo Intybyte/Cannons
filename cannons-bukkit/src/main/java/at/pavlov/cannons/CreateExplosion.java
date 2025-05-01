@@ -232,7 +232,7 @@ public class CreateExplosion {
         }
 
         // fire custom piercing event to notify other plugins (blocks can be removed)
-        ProjectilePiercingEvent piercingEvent = new ProjectilePiercingEvent(projectile, impactLoc, blocklist);
+        ProjectilePiercingEvent piercingEvent = new ProjectilePiercingEvent(cannonball, impactLoc, blocklist);
         this.plugin.getServer().getPluginManager().callEvent(piercingEvent);
 
         if (piercingEvent.isCancelled()) {
@@ -829,8 +829,7 @@ public class CreateExplosion {
                 + impactLoc.getBlockZ() + " direction: " + impactLoc.getYaw() + " Pitch: " + impactLoc.getPitch());
 
         // fire impact event
-        ProjectileImpactEvent impactEvent = new ProjectileImpactEvent(projectile, impactLoc,
-                cannonball.getShooterUID());
+        ProjectileImpactEvent impactEvent = new ProjectileImpactEvent(cannonball, impactLoc);
         Bukkit.getServer().getPluginManager().callEvent(impactEvent);
         canceled = impactEvent.isCancelled();
 

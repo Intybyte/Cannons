@@ -1,47 +1,36 @@
 package at.pavlov.cannons.event;
 
+import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
-import org.antlr.v4.runtime.misc.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@Getter
+@Setter
 public class ProjectilePiercingEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private Projectile projectile;
-    private Location impactLocation;
+    private final FlyingProjectile flyingProjectile;
+    private final Location impactLocation;
     private List<Block> blockList;
     private boolean cancelled;
 
-    public ProjectilePiercingEvent(Projectile projectile, Location impactLocation, List<Block> blockList) {
-        this.projectile = projectile;
+    public ProjectilePiercingEvent(FlyingProjectile flyingProjectile, Location impactLocation, List<Block> blockList) {
+        this.flyingProjectile = flyingProjectile;
         this.impactLocation = impactLocation;
         this.blockList = blockList;
         this.cancelled = false;
     }
 
 
-    public Location getImpactLocation() {
-        return impactLocation;
-    }
-
-    public void setImpactLocation(Location impactLocation) {
-        this.impactLocation = impactLocation;
-    }
-
-    public Projectile getProjectile() {
-        return projectile;
-    }
-
-    public void setProjectile(Projectile projectile) {
-        this.projectile = projectile;
-    }
-
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
@@ -49,21 +38,8 @@ public class ProjectilePiercingEvent extends Event implements Cancellable {
         return handlers;
     }
 
-    public List<Block> getBlockList() {
-        return blockList;
-    }
-
-    public void setBlockList(List<Block> blockList) {
-        this.blockList = blockList;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean b) {
-        cancelled = b;
+    @Deprecated
+    public Projectile getProjectile() {
+        return this.flyingProjectile.getProjectile();
     }
 }
