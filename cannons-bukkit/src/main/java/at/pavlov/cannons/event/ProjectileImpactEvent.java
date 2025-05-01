@@ -18,13 +18,11 @@ public class ProjectileImpactEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private final FlyingProjectile flyingProjectile;
     private final Location impactLocation;
-    private final UUID shooter;
     private boolean cancelled;
 
-    public ProjectileImpactEvent(FlyingProjectile flyingProjectile, Location impactLocation, UUID shooter) {
+    public ProjectileImpactEvent(FlyingProjectile flyingProjectile, Location impactLocation) {
         this.flyingProjectile = flyingProjectile;
         this.impactLocation = impactLocation;
-        this.shooter = shooter;
         this.cancelled = false;
     }
 
@@ -33,7 +31,7 @@ public class ProjectileImpactEvent extends Event implements Cancellable {
      */
     @Deprecated
     public UUID getShooterUID() {
-        return this.shooter;
+        return this.flyingProjectile.getShooterUID();
     }
 
     /**

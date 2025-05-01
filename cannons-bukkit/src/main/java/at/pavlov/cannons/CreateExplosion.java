@@ -829,7 +829,7 @@ public class CreateExplosion {
                 + impactLoc.getBlockZ() + " direction: " + impactLoc.getYaw() + " Pitch: " + impactLoc.getPitch());
 
         // fire impact event
-        ProjectileImpactEvent impactEvent = new ProjectileImpactEvent(cannonball, impactLoc, cannonball.getShooterUID());
+        ProjectileImpactEvent impactEvent = new ProjectileImpactEvent(cannonball, impactLoc);
         Bukkit.getServer().getPluginManager().callEvent(impactEvent);
         canceled = impactEvent.isCancelled();
 
