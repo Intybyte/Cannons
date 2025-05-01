@@ -16,8 +16,8 @@ public class EventUtils {
      * searches for destroyed cannons in the explosion event and removes cannons parts which can't be destroyed in an explosion.
      * @param blocklist list of blocks involved in the event
      */
-    public static void handleExplosion(List<Block> blocklist){
-		CannonManager cannonManager = CannonManager.getInstance();
+    public static void handleExplosion(List<Block> blocklist) {
+        CannonManager cannonManager = CannonManager.getInstance();
         HashSet<UUID> remove = new HashSet<>();
 
         // first search if a barrel block was destroyed.
@@ -51,7 +51,8 @@ public class EventUtils {
         }
 
         //now remove all invalid cannons
-        for (UUID id : remove)
-			cannonManager.removeCannon(id, false, true, BreakCause.Explosion);
+        for (UUID id : remove) {
+            cannonManager.removeCannon(id, false, true, BreakCause.Explosion);
+        }
     }
 }
