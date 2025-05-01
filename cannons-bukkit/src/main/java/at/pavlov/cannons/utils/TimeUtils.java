@@ -9,7 +9,7 @@ public class TimeUtils {
         long start = System.currentTimeMillis();
         tested.run();
         long end = System.currentTimeMillis();
-        long total = start - end;
+        long total = end - start;
         printer.accept("Execution of \"" + cause + "\" completed in " + total + " ms");
     }
 }
