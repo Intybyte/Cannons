@@ -69,7 +69,7 @@ public class CannonManager {
      *
      * @param cause the reason why the cannon is removed
      */
-    private void removeInvalidCannons(BreakCause cause) {
+    public void removeInvalidCannons(BreakCause cause) {
         Iterator<Cannon> iter = cannonList.values().iterator();
 
         while (iter.hasNext()) {
@@ -238,7 +238,7 @@ public class CannonManager {
      * @param name name of the cannon
      * @return true if the name is unique
      */
-    private static boolean isCannonNameUnique(String name) {
+    public static boolean isCannonNameUnique(String name) {
         if (name == null)
             return false;
 
@@ -253,7 +253,7 @@ public class CannonManager {
      *
      * @return name string for the new cannon
      */
-    private String newCannonName(Cannon cannon) {
+    public String newCannonName(Cannon cannon) {
         //check if this cannon has a owner
         if (cannon.getOwner() == null)
             return "missing Owner";
@@ -482,7 +482,7 @@ public class CannonManager {
      * @param loc location of one cannon block
      * @return the cannon at this location
      */
-    private Cannon getCannonFromStorage(Location loc) {
+    public Cannon getCannonFromStorage(Location loc) {
         for (Cannon cannon : cannonList.values()) {
             //To make code faster on servers with a lot of cannons we check the distance squared
             if (loc.toVector().distanceSquared(cannon.getOffset()) <= 1024 && cannon.isCannonBlock(loc.getBlock())) {
@@ -805,7 +805,7 @@ public class CannonManager {
     /**
      * checks if the player can build a cannon, checks permission and builtLimit
      */
-    private MessageEnum canBuildCannon(Cannon cannon, UUID owner) {
+    public MessageEnum canBuildCannon(Cannon cannon, UUID owner) {
         CannonDesign design = cannon.getCannonDesign();
 
         //get the player from the server
