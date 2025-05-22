@@ -1,6 +1,5 @@
 package at.pavlov.cannons.hooks.movecraft.listener;
 
-import at.pavlov.cannons.API.CannonsAPI;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import net.countercraft.movecraft.MovecraftLocation;
@@ -15,7 +14,7 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 public class TranslationListener implements Listener {
-    private static final CannonsAPI cannonsAPI = Cannons.getPlugin().getCannonsAPI();
+    private static final Cannons cannonPlugin = Cannons.getPlugin();
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void translateListener(CraftTranslateEvent e) {
@@ -23,7 +22,7 @@ public class TranslationListener implements Listener {
         if (v == null)
             return;
 
-        Set<Cannon> cannons = cannonsAPI.getCannons(e.getCraft());
+        Set<Cannon> cannons = cannonPlugin.getCannonsAPI().getCannons(e.getCraft());
         if (cannons.isEmpty())
             return;
         for (Cannon c : cannons) {
