@@ -23,8 +23,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -35,14 +35,28 @@ import java.util.UUID;
  * Wrapper for executing the fire task, this is used internally by cannons,
  * for normal use please use FireCannon#fire instead of using this, use this
  * class only if you need for some reason to bypass some checks
+ * <br>
+ * If you want to change the FireTask, and change its logic, extend this class
+ * and change fireTask as that is what is fired when the projectile is actually shot
  */
-public record FireTaskWrapper(
-        Cannon cannon,
-        UUID shooter,
-        boolean removeCharge,
-        ProjectileCause projectileCause
-) {
-    private static final Cannons plugin = Cannons.getPlugin();
+public class FireTaskWrapper implements BaseFireTask {
+    protected static final Cannons plugin = Cannons.getPlugin();
+    protected final Cannon cannon;
+    protected final UUID shooter;
+    protected final boolean removeCharge;
+    protected final ProjectileCause projectileCause;
+
+    public FireTaskWrapper(
+            Cannon cannon,
+            UUID shooter,
+            boolean removeCharge,
+            ProjectileCause projectileCause
+    ) {
+        this.cannon = cannon;
+        this.shooter = shooter;
+        this.removeCharge = removeCharge;
+        this.projectileCause = projectileCause;
+    }
 
     /**
      * fires a cannon and removes the charge from the shooter
@@ -116,7 +130,7 @@ public record FireTaskWrapper(
         var firingLoc = cannon.getMuzzle();
 
         for (int i = 0; i < Math.max(projectile.getNumberOfBullets(), 1); i++) {
-            org.bukkit.projectiles.ProjectileSource source = null;
+            ProjectileSource source = null;
             Location playerLoc = null;
             if (onlinePlayer != null) {
                 source = onlinePlayer;
@@ -198,7 +212,7 @@ public record FireTaskWrapper(
      * @param firingLoc   distance to the muzzle
      * @param confuseTime how long the entity is confused in seconds
      */
-    private void confuseShooter(List<Entity> living, Location firingLoc, double confuseTime) {
+    protected void confuseShooter(List<Entity> living, Location firingLoc, double confuseTime) {
         //confuse shooter if he wears no helmet (only for one projectile and if its configured)
         if (confuseTime <= 0) {
             return;
@@ -216,7 +230,7 @@ public record FireTaskWrapper(
         }
     }
 
-    private boolean isHarmEntity(Entity next) {
+    protected boolean isHarmEntity(Entity next) {
         if (next instanceof Player player) {
             //if shooter has no helmet and is not in creative and there are confusion effects - harm him
             return player.isOnline() && !checkHelmet(player) && player.getGameMode() != GameMode.CREATIVE;
@@ -225,7 +239,32 @@ public record FireTaskWrapper(
         return next instanceof LivingEntity;
     }
 
-    private boolean checkHelmet(Player player) {
+    protected boolean checkHelmet(Player player) {
         return player.getInventory().getHelmet() != null;
+    }
+
+    public Cannon cannon() {
+        return cannon;
+    }
+
+    public UUID shooter() {
+        return shooter;
+    }
+
+    public boolean removeCharge() {
+        return removeCharge;
+    }
+
+    public ProjectileCause projectileCause() {
+        return projectileCause;
+    }
+
+    @Override
+    public String toString() {
+        return "FireTaskWrapper[" +
+                "cannon=" + cannon + ", " +
+                "shooter=" + shooter + ", " +
+                "removeCharge=" + removeCharge + ", " +
+                "projectileCause=" + projectileCause + ']';
     }
 }

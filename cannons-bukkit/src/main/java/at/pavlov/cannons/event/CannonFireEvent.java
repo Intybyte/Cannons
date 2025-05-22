@@ -1,6 +1,10 @@
 package at.pavlov.cannons.event;
 
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.dao.wrappers.FireTaskCreator;
+import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -8,33 +12,25 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+
+/**
+ * If you want to replace cannon's firing with a custom firing mechanic, I suggest using
+ * the builtin FireTaskCreator instead of cancelling the event, as this is a more reliable
+ * and respects the cannon's configuration for delays etc...
+ */
+@Getter
+@Setter
 public class CannonFireEvent extends Event implements Cancellable {
-    private static final HandlerList handlers = new HandlerList();
+    private static final @NotNull HandlerList handlers = new HandlerList();
     private final Cannon cannon;
     private final UUID player;
+    private FireTaskCreator fireTaskCreator = FireTaskWrapper::new;
     private boolean cancelled;
 
-    public CannonFireEvent(Cannon cannon, UUID player)
-    {
+    public CannonFireEvent(Cannon cannon, UUID player) {
         this.cannon = cannon;
         this.player = player;
         this.cancelled = false;
-    }
-
-    public Cannon getCannon() {
-        return cannon;
-    }
-
-    public UUID getPlayer() {
-        return player;
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
     }
 
     public @NotNull HandlerList getHandlers() {

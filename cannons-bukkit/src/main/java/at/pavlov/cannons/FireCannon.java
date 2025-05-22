@@ -8,11 +8,11 @@ import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.dao.AsyncTaskManager;
+import at.pavlov.cannons.dao.wrappers.BaseFireTask;
 import at.pavlov.cannons.event.CannonFireEvent;
 import at.pavlov.cannons.event.CannonLinkFiringEvent;
 import at.pavlov.cannons.event.CannonUseEvent;
 import at.pavlov.cannons.projectile.Projectile;
-import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
 import at.pavlov.cannons.utils.SoundUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -249,7 +249,7 @@ public class FireCannon {
                 boolean lastRound = i == (projectile.getAutomaticFiringMagazineSize() - 1);
                 double randomess = 1. + design.getFuseBurnTimeRandomness() * random.nextDouble();
                 long delayTime = (long) (randomess * design.getFuseBurnTime() * 20.0 + i * projectile.getAutomaticFiringDelay() * 20.0);
-                FireTaskWrapper fireTaskWrapper = new FireTaskWrapper(cannon, playerUid, lastRound, projectileCause);
+                BaseFireTask fireTaskWrapper = fireEvent.getFireTaskCreator().create(cannon, playerUid, lastRound, projectileCause);
                 scheduler.runTaskLater(cannon.getLocation(), fireTaskWrapper::fireTask, delayTime);
             }
         } catch (Exception e) {
