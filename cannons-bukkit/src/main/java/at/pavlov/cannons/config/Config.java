@@ -129,7 +129,7 @@ import java.util.List;
 		setDebugMode(config.getBoolean("general.debugMode", false));
 
         //hooks
-        setEconomyEnabled(!config.getBoolean("hooks.vault.enabled", true));
+        setEconomyEnabled(config.getBoolean("hooks.vault.enabled", true));
         setMovecraftEnabled(config.getBoolean("hooks.movecraft.enabled", true));
         setMovecraftCannonEnabled(config.getBoolean("hooks.movecraftCombat.enabled", true));
 
