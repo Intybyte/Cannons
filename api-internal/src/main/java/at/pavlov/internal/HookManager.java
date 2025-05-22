@@ -61,6 +61,20 @@ public class HookManager {
         consumer.accept(hookContent);
     }
 
+    public <C, T extends Hook<C>> void processIfPresent(@NotNull Class<T> type, Runnable runnable) {
+        T hook = getHook(type);
+        if (hook == null || !hook.active()) {
+            return;
+        }
+
+        C hookContent = hook.hook();
+        if (hookContent == null) {
+            return;
+        }
+
+        runnable.run();
+    }
+
     /**
      * @return true if at least one hook in the manager is working
      */

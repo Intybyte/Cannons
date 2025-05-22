@@ -47,7 +47,7 @@ public class ExchangeLoader {
 
     @ApiStatus.Internal
     public static void registerDefaults() {
-        Cannons.getPlugin().getHookManager().processIfPresent(VaultHook.class, (economy) -> {
+        Cannons.getPlugin().getHookManager().processIfPresent(VaultHook.class, () -> {
             register(Key.cannons("vault"), (config, key, typeExchange) -> {
                 double amount = config.getDouble(key, 0.0);
                 return new VaultExchanger(amount, typeExchange);
