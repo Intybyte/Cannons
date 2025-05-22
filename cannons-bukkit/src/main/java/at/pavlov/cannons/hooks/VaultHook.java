@@ -14,7 +14,7 @@ public class VaultHook extends BukkitHook<Economy> {
 
     @Override
     public void onEnable() {
-        if (plugin.getMyConfig().isEconomyDisabled()) {
+        if (!plugin.getMyConfig().isEconomyEnabled()) {
             hook = null;
             return;
         }

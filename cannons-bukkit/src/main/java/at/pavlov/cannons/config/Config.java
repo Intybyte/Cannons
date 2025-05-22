@@ -34,7 +34,7 @@ import java.util.List;
     private int claimEdgeLength;
 
     //region hooks
-    private boolean economyDisabled;
+    private boolean economyEnabled;
 
     //movecraft
     private boolean movecraftEnabled;
@@ -129,7 +129,7 @@ import java.util.List;
 		setDebugMode(config.getBoolean("general.debugMode", false));
 
         //hooks
-        setEconomyDisabled(!config.getBoolean("hooks.vault.enabled", true));
+        setEconomyEnabled(!config.getBoolean("hooks.vault.enabled", true));
         setMovecraftEnabled(config.getBoolean("hooks.movecraft.enabled", true));
         setMovecraftCannonEnabled(config.getBoolean("hooks.movecraftCombat.enabled", true));
 
