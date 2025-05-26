@@ -13,9 +13,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-@Data public class SpawnEntityHolder{
+@Data public class SpawnEntityHolder {
     private EntityType type;
     private int minAmount;
     private int maxAmount;
@@ -57,6 +61,45 @@ import java.util.*;
         this.data = data;
     }
 
+    // TODO make a json utils
+    public static PotionEffectType getPotionType(JsonElement element) {
+        try {
+            int id = getNumber(element);
+            return PotionEffectType.getById(id);
+        } catch (NumberFormatException e) {
+            String str = element.getAsString();
+            if (str == null) {
+                Bukkit.getLogger().severe("Effect type string cannot be null");
+                return null;
+            }
+
+            NamespacedKey potionKey = NamespacedKey.fromString(str);
+            if (potionKey == null) {
+                Bukkit.getLogger().severe("Effect type key not found, format should be something like: minecraft:strength");
+                return null;
+            }
+
+            return Registry.EFFECT.get(potionKey);
+        }
+    }
+
+    public static int getNumber(JsonElement element) throws NumberFormatException {
+        var str = element.getAsString();
+        if (str.endsWith("b")) {
+            return Integer.parseInt(str.substring(0, str.length() - 1));
+        }
+
+        return Integer.parseInt(str);
+    }
+
+    public static boolean getBoolean(JsonObject obj, String key, boolean default_value) {
+        if (!obj.has(key)) {
+            return default_value;
+        }
+
+        return getNumber(obj.get(key)) == 1;
+    }
+
     public void resetEntityData() {
         this.type = null;
         this.minAmount = 0;
@@ -74,7 +117,7 @@ import java.util.*;
 
                 if (key.equalsIgnoreCase("effects")) {
                     parsePotionEffects(value);
-                } else if(EntityDataType.has(key)) {
+                } else if (EntityDataType.has(key)) {
                     addEntityData(key, value.getAsString());
                 } else {
                     throw new Exception("Invalid key: " + key);
@@ -104,7 +147,6 @@ import java.util.*;
             maxAmount = Math.min(100, Integer.parseInt(range[1]));
         } catch (Exception e) {
             Bukkit.getLogger().severe("Invalid max format: " + range[1] + " must be an integer");
-            return;
         }
     }
 
@@ -159,44 +201,5 @@ import java.util.*;
             Bukkit.getLogger().severe("Invalid potion effect attributes: " + attributes.toString());
             e.printStackTrace();
         }
-    }
-
-    // TODO make a json utils
-    public static PotionEffectType getPotionType(JsonElement element) {
-        try {
-            int id = getNumber(element);
-            return PotionEffectType.getById(id);
-        } catch (NumberFormatException e) {
-            String str = element.getAsString();
-            if (str == null) {
-                Bukkit.getLogger().severe("Effect type string cannot be null");
-                return null;
-            }
-
-            NamespacedKey potionKey = NamespacedKey.fromString(str);
-            if (potionKey == null) {
-                Bukkit.getLogger().severe("Effect type key not found, format should be something like: minecraft:strength");
-                return null;
-            }
-
-            return Registry.EFFECT.get(potionKey);
-        }
-    }
-
-    public static int getNumber(JsonElement element) throws NumberFormatException {
-        var str = element.getAsString();
-        if (str.endsWith("b")) {
-            return Integer.parseInt(str.substring(0, str.length() - 1));
-        }
-
-        return Integer.parseInt(str);
-    }
-
-    public static boolean getBoolean(JsonObject obj, String key, boolean default_value) {
-        if (!obj.has(key)) {
-            return default_value;
-        }
-
-        return getNumber(obj.get(key)) == 1;
     }
 }
