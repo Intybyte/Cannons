@@ -1,6 +1,3 @@
-// Example data:
-// 'AREA_EFFECT_CLOUD 1-1 {Particle:"entity_effect",Radius:5f,Duration:300,Color:16711680,Effects:[{Id:2b,Amplifier:3b,Duration:300,ShowParticles:0b},{Id:7b,Amplifier:1b,Duration:20,ShowParticles:0b},{Id:9b,Amplifier:2b,Duration:300,ShowParticles:0b},{Id:19b,Amplifier:2b,Duration:300,ShowParticles:0b}]}'
-
 import at.pavlov.cannons.container.SpawnEntityHolder;
 import mockbukkit.RegistryAccessMock;
 import org.bukkit.Bukkit;
@@ -74,6 +71,12 @@ public class SpawnEntityHolderTest {
     public void testInvalidMinMaxThrowsException() {
         SpawnEntityHolder holder = new SpawnEntityHolder("ZOMBIE invalid-range {}");
         assertEquals(0, holder.getMinAmount());
+    }
+
+    @Test
+    public void testNormalData() {
+        SpawnEntityHolder holder = new SpawnEntityHolder("AREA_EFFECT_CLOUD 1-1 {}");
+        assertEquals(EntityType.AREA_EFFECT_CLOUD, holder.getType());
     }
 
     @Test
