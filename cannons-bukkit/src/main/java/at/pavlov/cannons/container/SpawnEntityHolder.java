@@ -58,9 +58,9 @@ import java.util.*;
     }
 
     public void resetEntityData() {
-        setType(null);
-        setMinAmount(0);
-        setMaxAmount(0);
+        this.type = null;
+        this.minAmount = 0;
+        this.maxAmount = 0;
     }
 
     public void parseEntityData(String dataStr) {
