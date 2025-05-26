@@ -1,3 +1,5 @@
+package container;
+
 import at.pavlov.cannons.container.SpawnEntityHolder;
 import mockbukkit.RegistryAccessMock;
 import org.bukkit.Bukkit;
