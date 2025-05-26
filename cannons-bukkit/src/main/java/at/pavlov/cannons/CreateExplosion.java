@@ -438,12 +438,12 @@ public class CreateExplosion {
      */
     private Location moveToGround(Location loc, double max_iterations) {
         Location tloc = loc.clone();
-        tloc = tloc.subtract(0, 1, 0);
-        for (int i = 0; i < max_iterations; i++) {
-            tloc = tloc.subtract(0, 1, 0);
-
-            if (tloc.getBlock().getType() != Material.AIR)
+        for (int i = 0; i < max_iterations + 1; i++) {
+            if (tloc.getBlock().getType() != Material.AIR) {
                 return tloc.add(0, 1, 0);
+            } else {
+                tloc = tloc.subtract(0, 1, 0);
+            }
         }
         return tloc;
     }
