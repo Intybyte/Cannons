@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 // 'AREA_EFFECT_CLOUD 1-1 {Particle:"entity_effect",Radius:5f,Duration:300,Color:16711680,Effects:[{Id:2b,Amplifier:3b,Duration:300,ShowParticles:0b},{Id:7b,Amplifier:1b,Duration:20,ShowParticles:0b},{Id:9b,Amplifier:2b,Duration:300,ShowParticles:0b},{Id:19b,Amplifier:2b,Duration:300,ShowParticles:0b}]}'
 public class SpawnEntityHolderTest {
     @BeforeEach
-    public void setupBukkitLoggerMock() {
+    void setupBukkitLoggerMock() {
         Server mockServer = mock(Server.class);
         Logger mockLogger = Logger.getLogger("TEST");
 
@@ -50,7 +50,7 @@ public class SpawnEntityHolderTest {
     }
 
     @Test
-    public void testValidConstructor() {
+    void testValidConstructor() {
         String input = "ZOMBIE 1-3 {}";
         SpawnEntityHolder holder = new SpawnEntityHolder(input);
 
@@ -60,7 +60,7 @@ public class SpawnEntityHolderTest {
     }
 
     @Test
-    public void testInvalidEntityTypeDefaultsToSnowball() {
+    void testInvalidEntityTypeDefaultsToSnowball() {
         String input = "INVALID_TYPE 1-3 {}";
         SpawnEntityHolder holder = new SpawnEntityHolder(input);
 
@@ -68,19 +68,19 @@ public class SpawnEntityHolderTest {
     }
 
     @Test
-    public void testInvalidMinMaxThrowsException() {
+    void testInvalidMinMaxThrowsException() {
         SpawnEntityHolder holder = new SpawnEntityHolder("ZOMBIE invalid-range {}");
         assertEquals(0, holder.getMinAmount());
     }
 
     @Test
-    public void testNormalData() {
+    void testNormalData() {
         SpawnEntityHolder holder = new SpawnEntityHolder("AREA_EFFECT_CLOUD 1-1 {}");
         assertEquals(EntityType.AREA_EFFECT_CLOUD, holder.getType());
     }
 
     @Test
-    public void testMissingDataHandled() {
+    void testMissingDataHandled() {
         String input = "ZOMBIE 2-5";
         SpawnEntityHolder holder = new SpawnEntityHolder(input);
 
@@ -91,7 +91,7 @@ public class SpawnEntityHolderTest {
 
 
     @Test
-    public void testPotionEffectsParsing() {
+    void testPotionEffectsParsing() {
         String json = """
         ZOMBIE 1-2 {
             Effects: [

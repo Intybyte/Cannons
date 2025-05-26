@@ -93,9 +93,9 @@ import java.util.Optional;
         return Integer.parseInt(str);
     }
 
-    public static boolean getBoolean(JsonObject obj, String key, boolean default_value) {
+    public static boolean getBoolean(JsonObject obj, String key, boolean defaultValue) {
         if (!obj.has(key)) {
-            return default_value;
+            return defaultValue;
         }
 
         return getNumber(obj.get(key)) == 1;
@@ -121,7 +121,7 @@ import java.util.Optional;
                 } else if (EntityDataType.has(key)) {
                     addEntityData(key, value.getAsString());
                 } else {
-                    throw new Exception("Invalid key: " + key);
+                    throw new IllegalArgumentException("Invalid key: " + key);
                 }
             }
         } catch (Exception e) {
@@ -176,27 +176,27 @@ import java.util.Optional;
     }
 
     public void parseEntityType(String entityTypeStr) {
-        Optional<XEntityType> type = XEntityType.of(entityTypeStr);
-        if (type.isEmpty()) {
+        Optional<XEntityType> entityType = XEntityType.of(entityTypeStr);
+        if (entityType.isEmpty()) {
             Bukkit.getLogger().severe("Invalid entity type: " + entityTypeStr + ", using snowball instead");
             this.type = XEntityType.SNOWBALL.get();
             return;
         }
 
-        this.type = type.get().get();
+        this.type = entityType.get().get();
     }
 
     public void createPotionEffect(JsonObject attributes) {
         try {
-            PotionEffectType type = getPotionType(attributes.get("Id"));
+            PotionEffectType effectType = getPotionType(attributes.get("Id"));
             int duration = getNumber(attributes.get("Duration"));
             int amplifier = getNumber(attributes.get("Amplifier"));
             boolean ambient = getBoolean(attributes, "Ambient", false);
             boolean particles = getBoolean(attributes, "ShowParticles", false);
             boolean icon = getBoolean(attributes, "Icon", true);
 
-            if (type != null && duration > 0 && amplifier > 0) {
-                potionEffects.add(new PotionEffect(type, duration, amplifier, ambient, particles, icon));
+            if (effectType != null && duration > 0 && amplifier > 0) {
+                potionEffects.add(new PotionEffect(effectType, duration, amplifier, ambient, particles, icon));
             }
         } catch (Exception e) {
             Bukkit.getLogger().severe("Invalid potion effect attributes: " + attributes.toString());
