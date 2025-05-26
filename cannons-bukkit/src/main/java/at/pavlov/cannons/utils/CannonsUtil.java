@@ -341,8 +341,8 @@ public class CannonsUtil
      * @param max largest value
      * @return a integer in the given range
      */
-    public static int getRandomInt(int min, int max)
-    {
+    @Deprecated(forRemoval = true)
+    public static int getRandomInt(int min, int max) {
         return random.nextInt(max+1-min) + min;
     }
 

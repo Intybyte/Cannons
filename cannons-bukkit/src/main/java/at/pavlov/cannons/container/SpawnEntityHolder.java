@@ -1,6 +1,7 @@
 package at.pavlov.cannons.container;
 
 import at.pavlov.cannons.Enum.EntityDataType;
+import at.pavlov.internal.MaxMinRandom;
 import com.cryptomorin.xseries.XEntityType;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Data public class SpawnEntityHolder {
+@Data public class SpawnEntityHolder implements MaxMinRandom {
     private EntityType type;
     private int minAmount;
     private int maxAmount;
