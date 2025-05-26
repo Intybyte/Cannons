@@ -10,15 +10,11 @@ import org.bukkit.Registry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class RegistryAccessMock {
-    private static final Logger logger = Logger.getLogger("TEST_CLASS_KEY");
     public static final NamespacedKey MOB_EFFECT = NamespacedKey.minecraft("mob_effect");
 
     private static final BiMap<NamespacedKey, String> CLASS_NAME_KEY_MAP = createClassToKeyConversions();
@@ -31,31 +27,8 @@ public class RegistryAccessMock {
         return new EmptyRegistry<>();
     }
 
-    private static Class<?> getClass(String className) {
-        try {
-            return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static boolean genericTypeMatches(Field a, Class<?> tClass) {
-        if (a.getGenericType() instanceof ParameterizedType type) {
-            return type.getActualTypeArguments()[0].equals(tClass);
-        }
-        return false;
-    }
-
     private static List<NamespacedKey> getOutlierKeyedRegistryKeys() {
         return List.of(MOB_EFFECT);
-    }
-
-    private static Registry<?> getValue(Field a) {
-        try {
-            return (Registry<?>) a.get(null);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Could not access field " + a.getDeclaringClass().getSimpleName() + "." + a.getName());
-        }
     }
 
     private static @NotNull BiMap<NamespacedKey, String> createClassToKeyConversions() {
