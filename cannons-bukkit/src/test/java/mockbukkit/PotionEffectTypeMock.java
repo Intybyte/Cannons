@@ -146,27 +146,6 @@ public class PotionEffectTypeMock extends PotionEffectType {
         return id;
     }
 
-    /**
-     * Adds an attribute modifier to this potion effect type.
-     *
-     * @param attribute The attribute to modify.
-     * @param modifier  The modifier to apply.
-     */
-    public void addAttributeModifier(Attribute attribute, AttributeModifier modifier) {
-        this.attributeModifiers.put(attribute, modifier);
-    }
-
-    /**
-     * Gets the modifier value with an amplifier.
-     *
-     * @param amplifier The amplifier.
-     * @param modifier  The modifier.
-     * @return The amplified modifier value.
-     */
-    private double getAttributeModifierValue(int amplifier, @NotNull AttributeModifier modifier) {
-        return modifier.getAmount() * (double) (amplifier + 1);
-    }
-
     @Override
     public @NotNull String getTranslationKey() {
         return this.translationKey;
