@@ -1,6 +1,9 @@
 package at.pavlov.cannons.Enum;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum EntityDataType {
     FUSE_TIME ("Fuse"),
     POTION_EFFECT ("Potion"),
@@ -22,6 +25,24 @@ public enum EntityDataType {
     BOOTS_ARMOR_ITEM ("BootsArmorItem");
 
     private final String str;
+    private static final Map<String, EntityDataType> LOOKUP_MAP;
+
+    static {
+        LOOKUP_MAP = new HashMap<>();
+        for (EntityDataType dataType : values()) {
+            LOOKUP_MAP.put(dataType.getString().toLowerCase(), dataType);
+        }
+    }
+
+    public static EntityDataType lookup(String str) {
+        String lookup = str.toLowerCase();
+        return LOOKUP_MAP.get(lookup);
+    }
+
+    public static boolean has(String str) {
+        String lookup = str.toLowerCase();
+        return LOOKUP_MAP.containsKey(lookup);
+    }
 
     EntityDataType(String str)
     {

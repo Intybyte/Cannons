@@ -438,12 +438,12 @@ public class CreateExplosion {
      */
     private Location moveToGround(Location loc, double max_iterations) {
         Location tloc = loc.clone();
-        tloc = tloc.subtract(0, 1, 0);
-        for (int i = 0; i < max_iterations; i++) {
-            tloc = tloc.subtract(0, 1, 0);
-
-            if (tloc.getBlock().getType() != Material.AIR)
+        for (int i = 0; i < max_iterations + 1; i++) {
+            if (tloc.getBlock().getType() != Material.AIR) {
                 return tloc.add(0, 1, 0);
+            } else {
+                tloc = tloc.subtract(0, 1, 0);
+            }
         }
         return tloc;
     }
@@ -467,8 +467,8 @@ public class CreateExplosion {
 
         for (SpawnEntityHolder spawn : projectile.getSpawnEntities()) {
             // add some randomness to the amount of spawned blocks
-            int maxPlacement = CannonsUtil.getRandomInt(spawn.getMinAmount(), spawn.getMaxAmount());
-            plugin.logDebug("spawn Entity: " + spawn.getType() + " min: " + spawn.getMinAmount() + " max: " + spawn.getMaxAmount());
+            int maxPlacement = spawn.getRandomAmount();
+            plugin.logDebug("spawn Entity: " + spawn);
 
             // iterate blocks around to get a good spot
             int placedEntities = 0;
@@ -537,7 +537,7 @@ public class CreateExplosion {
         for (SpawnMaterialHolder spawn : projectile.getSpawnBlocks()) {
 
             // add some randomness to the amount of spawned blocks
-            int maxPlacement = CannonsUtil.getRandomInt(spawn.getMinAmount(), spawn.getMaxAmount());
+            int maxPlacement = spawn.getRandomAmount();
 
             // iterate blocks around to get a good spot
             int placedBlocks = 0;

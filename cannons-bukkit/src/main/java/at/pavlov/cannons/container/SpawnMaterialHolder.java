@@ -1,6 +1,7 @@
 package at.pavlov.cannons.container;
 
 import at.pavlov.cannons.Cannons;
+import at.pavlov.internal.MaxMinRandom;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -9,7 +10,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.regex.MatchResult;
 
-public class SpawnMaterialHolder {
+public class SpawnMaterialHolder implements MaxMinRandom {
     private BlockData material;
     private int minAmount;
     private int maxAmount;
