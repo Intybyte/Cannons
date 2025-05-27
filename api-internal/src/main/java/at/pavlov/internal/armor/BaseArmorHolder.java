@@ -47,7 +47,7 @@ public interface BaseArmorHolder {
 
         double reductionPoints = Math.min(
                 20.0,
-                Math.max(armor / 5.0, armor - damage / (2.0 + toughness / 4.0))
+                Math.max(armor / 5.0, armor - (4 * damage) / (Math.min(toughness, 20) + 8))
         );
 
         return reductionPoints / 25.0; // Convert to [0.0 - 0.8] range
