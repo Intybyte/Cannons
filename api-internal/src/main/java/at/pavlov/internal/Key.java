@@ -8,6 +8,10 @@ public record Key(String namespace, String key) {
         return new Key("cannons", key);
     }
 
+    public static Key mc(String key) {
+        return new Key("minecraft", key);
+    }
+
     public static Key from(String compositeKey) {
         var strings = compositeKey.split(":");
         if (strings.length != 2) {
@@ -15,5 +19,9 @@ public record Key(String namespace, String key) {
         }
 
         return new Key(strings[0], strings[1]);
+    }
+
+    public String full() {
+        return namespace + ":" + key;
     }
 }
