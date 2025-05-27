@@ -129,13 +129,16 @@ public class ArmorCalculationUtil {
             return reduction;
         }
 
+        var protection = XEnchantment.PROTECTION.get();
         int lvl = item.getEnchantmentLevel(special);
         if (lvl > 0)
             reduction += (int) Math.floor((6 + lvl * lvl) * 1.5 / 3);
 
-        lvl = item.getEnchantmentLevel(XEnchantment.PROTECTION.get());
-        if (lvl > 0)
-            reduction += (int) Math.floor((6 + lvl * lvl) * 0.75 / 3);
+        if (!special.equals(protection)) {
+            lvl = item.getEnchantmentLevel(protection);
+            if (lvl > 0)
+                reduction += (int) Math.floor((6 + lvl * lvl) * 0.75 / 3);
+        }
 
         return reduction;
     }
