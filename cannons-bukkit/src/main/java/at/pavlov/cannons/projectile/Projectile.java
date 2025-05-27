@@ -7,6 +7,7 @@ import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
 import at.pavlov.cannons.container.SpawnMaterialHolder;
 import at.pavlov.internal.projectile.ProjectileProperties;
+import at.pavlov.internal.projectile.data.ClusterExplosionData;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.FireworkEffect;
@@ -24,8 +25,6 @@ public class Projectile implements Cloneable {
     private String description;
     private String itemName;
     private ItemHolder loadingItem;
-    //list of items or blocks that can represent this this (e.g. redstone dust may for wire when you click a block)
-    private List<ItemHolder> alternativeItemList = new ArrayList<>();
 
     //properties of the cannonball
     private EntityType projectileEntity;
@@ -329,14 +328,6 @@ public class Projectile implements Cloneable {
         this.loadingItem = loadingItem;
     }
 
-    public List<ItemHolder> getAlternativeItemList() {
-        return alternativeItemList;
-    }
-
-    public void setAlternativeItemList(List<ItemHolder> alternativeItemList) {
-        this.alternativeItemList = alternativeItemList;
-    }
-
     public boolean getExplosionDamage() {
         return explosionDamage;
     }
@@ -496,62 +487,6 @@ public class Projectile implements Cloneable {
 
     public void setExplosionPowerDependsOnVelocity(boolean explosionPowerDependsOnVelocity) {
         this.explosionPowerDependsOnVelocity = explosionPowerDependsOnVelocity;
-    }
-
-    public boolean isClusterExplosionsEnabled() {
-        return clusterExplosionsEnabled;
-    }
-
-    public void setClusterExplosionsEnabled(boolean clusterExplosionsEnabled) {
-        this.clusterExplosionsEnabled = clusterExplosionsEnabled;
-    }
-
-    public int getClusterExplosionsAmount() {
-        return clusterExplosionsAmount;
-    }
-
-    public void setClusterExplosionsAmount(int clusterExplosionsAmount) {
-        this.clusterExplosionsAmount = clusterExplosionsAmount;
-    }
-
-    public double getClusterExplosionsRadius() {
-        return clusterExplosionsRadius;
-    }
-
-    public void setClusterExplosionsRadius(double clusterExplosionsRadius) {
-        this.clusterExplosionsRadius = clusterExplosionsRadius;
-    }
-
-    public boolean isClusterExplosionsInBlocks() {
-        return clusterExplosionsInBlocks;
-    }
-
-    public void setClusterExplosionsInBlocks(boolean clusterExplosionsInBlocks) {
-        this.clusterExplosionsInBlocks = clusterExplosionsInBlocks;
-    }
-
-    public double getClusterExplosionsMinDelay() {
-        return clusterExplosionsMinDelay;
-    }
-
-    public void setClusterExplosionsMinDelay(double clusterExplosionsMinDelay) {
-        this.clusterExplosionsMinDelay = clusterExplosionsMinDelay;
-    }
-
-    public double getClusterExplosionsMaxDelay() {
-        return clusterExplosionsMaxDelay;
-    }
-
-    public void setClusterExplosionsMaxDelay(double clusterExplosionsMaxDelay) {
-        this.clusterExplosionsMaxDelay = clusterExplosionsMaxDelay;
-    }
-
-    public double getClusterExplosionsPower() {
-        return clusterExplosionsPower;
-    }
-
-    public void setClusterExplosionsPower(double clusterExplosionsPower) {
-        this.clusterExplosionsPower = clusterExplosionsPower;
     }
 
     public boolean isSpawnEnabled() {

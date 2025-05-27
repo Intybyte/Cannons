@@ -209,7 +209,6 @@ public class ProjectileStorage
 		projectile.setDescription(projectileConfig.getString("general.description", "no description for this projectile"));
 		projectile.setItemName(projectileConfig.getString("general.itemName", "noItemName"));
 		projectile.setLoadingItem(new ItemHolder(projectileConfig.getString("general.loadingItem", "minecraft:cobblestone")));
-		projectile.setAlternativeItemList(ParseUtils.toItemHolderList(projectileConfig.getStringList("general.alternativeId")));
 
 		//cannonball
 		projectile.setProjectileEntity(getProjectileEntity(projectileConfig.getString("cannonball.entityType", "SNOWBALL")));
