@@ -53,7 +53,7 @@ public class Projectile implements Cloneable {
     //explosion
     @Getter
     @Setter
-    private ExplosionData explosionData;
+    private ExplosionData explosionData = new ExplosionData();
 
     //potion stuff
     private double potionRange;
@@ -65,7 +65,7 @@ public class Projectile implements Cloneable {
     //cluster
     @Getter
     @Setter
-    private ClusterExplosionData clusterExplosionData;
+    private ClusterExplosionData clusterExplosionData = new ClusterExplosionData();
 
     //placeBlock
     private boolean spawnEnabled;
