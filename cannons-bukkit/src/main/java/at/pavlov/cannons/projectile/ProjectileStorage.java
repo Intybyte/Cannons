@@ -8,11 +8,11 @@ import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.FileUtils;
 import at.pavlov.cannons.utils.ParseUtils;
+import at.pavlov.internal.projectile.ProjectileProperties;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
@@ -50,7 +50,7 @@ public class ProjectileStorage
 	public static ArrayList<String> getProjectileIds(){
 		ArrayList<String> list = new ArrayList<>();
 		for (Projectile proj : projectileList){
-			list.add(proj.getProjectileId());
+			list.add(proj.getProjectileID());
 		}
 		return list;
 	}
@@ -209,7 +209,6 @@ public class ProjectileStorage
 		projectile.setDescription(projectileConfig.getString("general.description", "no description for this projectile"));
 		projectile.setItemName(projectileConfig.getString("general.itemName", "noItemName"));
 		projectile.setLoadingItem(new ItemHolder(projectileConfig.getString("general.loadingItem", "minecraft:cobblestone")));
-		projectile.setAlternativeItemList(ParseUtils.toItemHolderList(projectileConfig.getStringList("general.alternativeId")));
 
 		//cannonball
 		projectile.setProjectileEntity(getProjectileEntity(projectileConfig.getString("cannonball.entityType", "SNOWBALL")));
@@ -418,7 +417,7 @@ public class ProjectileStorage
 	{
 		for (Projectile projectile : projectileList)
 		{
-			if (projectile.getProjectileId().equalsIgnoreCase(str))
+			if (projectile.getProjectileID().equalsIgnoreCase(str))
 				return projectile;
 		}
 		return null;

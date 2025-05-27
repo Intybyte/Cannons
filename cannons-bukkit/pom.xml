@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>cannons-bukkit</artifactId>
-    <version>3.2.2</version>
+    <version>3.3.2</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

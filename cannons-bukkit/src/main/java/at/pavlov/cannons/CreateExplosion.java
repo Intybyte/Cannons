@@ -18,7 +18,7 @@ import at.pavlov.cannons.multiversion.EventResolver;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
-import at.pavlov.cannons.projectile.ProjectileProperties;
+import at.pavlov.internal.projectile.ProjectileProperties;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.utils.ArmorCalculationUtil;
@@ -167,7 +167,7 @@ public class CreateExplosion {
 
         // has this projectile the super breaker property and makes block damage
         Boolean superbreaker = projectile.hasProperty(ProjectileProperties.SUPERBREAKER);
-        Boolean doesBlockDamage = projectile.getPenetrationDamage();
+        Boolean doesBlockDamage = projectile.isPenetrationDamage();
 
         // list of destroy blocks
         LinkedList<Block> blocklist = new LinkedList<>();
@@ -326,7 +326,7 @@ public class CreateExplosion {
                 this.plugin.logDebug("reset TNT fuse ticks to: " + fuseTicks + " fusetime " + fusetime);
                 tnt.setFuseTicks(fuseTicks);
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof AreaEffectCloud cloud) {
             try {
@@ -358,14 +358,14 @@ public class CreateExplosion {
                     cloud.addCustomEffect(effect, true);
                 }
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof SpectralArrow arrow) {
             try {
                 arrow.setGlowingTicks(ParseUtils.parseInt(entityData.get(EntityDataType.DURATION),
                         arrow.getGlowingTicks()));
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof Arrow arrow) {
             try {
@@ -377,7 +377,7 @@ public class CreateExplosion {
                     arrow.addCustomEffect(effect, true);
                 }
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof LivingEntity living) {
             try {
@@ -401,7 +401,7 @@ public class CreateExplosion {
                                     equipment.getItemInOffHand())));
                 }
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof ThrownPotion pentity) {
             try {
@@ -420,7 +420,7 @@ public class CreateExplosion {
 
                 pentity.setItem(potion);
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         }
     }
@@ -823,7 +823,7 @@ public class CreateExplosion {
         }
 
         boolean incendiary = projectile.hasProperty(ProjectileProperties.INCENDIARY);
-        boolean blockDamage = projectile.getExplosionDamage();
+        boolean blockDamage = projectile.isExplosionDamage();
 
         this.plugin.logDebug("Projectile impact event: " + impactLoc.getBlockX() + ", " + impactLoc.getBlockY() + ", "
                 + impactLoc.getBlockZ() + " direction: " + impactLoc.getYaw() + " Pitch: " + impactLoc.getPitch());
@@ -934,19 +934,18 @@ public class CreateExplosion {
         }
 
         plugin.logDebug("Number of Cluster explosions: " + projectile.getClusterExplosionsAmount());
-        for (int i = 0; i < projectile.getClusterExplosionsAmount(); i++) {
-            double delay = projectile.getClusterExplosionsMinDelay() + Math.random()
-                    * (projectile.getClusterExplosionsMaxDelay() - projectile.getClusterExplosionsMinDelay());
-
+        var clusterExplosionData = projectile.getClusterExplosionData();
+        for (int i = 0; i < clusterExplosionData.getClusterExplosionsAmount(); i++) {
+            double delay = clusterExplosionData.getRandomDelay();
             taskManager.scheduler.runTaskLater(cannonball.getImpactLocation(), () -> {
                         Projectile proj = cannonball.getProjectile();
 
                         Location expLoc = CannonsUtil.randomPointInSphere(cannonball.getImpactLocation(),
-                                proj.getClusterExplosionsRadius());
+                                clusterExplosionData.getClusterExplosionsRadius());
                         // only do if explosion in blocks are allowed
-                        if (proj.isClusterExplosionsInBlocks() || expLoc.getBlock().isEmpty()
+                        if (clusterExplosionData.isClusterExplosionsInBlocks() || expLoc.getBlock().isEmpty()
                                 || (expLoc.getBlock().isLiquid() && proj.isUnderwaterDamage())) {
-                            expLoc.getWorld().createExplosion(expLoc, (float) proj.getClusterExplosionsPower(), projectile.hasProperty(ProjectileProperties.INCENDIARY), true, cannonball.getProjectileEntity());
+                            expLoc.getWorld().createExplosion(expLoc, (float) clusterExplosionData.getClusterExplosionsPower(), projectile.hasProperty(ProjectileProperties.INCENDIARY), true, cannonball.getProjectileEntity());
                             CreateExplosion.this.sendExplosionToPlayers(null, expLoc,
                                     projectile.getSoundImpact());
                         }

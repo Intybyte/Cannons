@@ -6,10 +6,12 @@ import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
 import at.pavlov.cannons.container.SpawnMaterialHolder;
+import at.pavlov.internal.projectile.ProjectileProperties;
+import at.pavlov.internal.projectile.data.ClusterExplosionData;
+import at.pavlov.internal.projectile.data.ExplosionData;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.FireworkEffect;
-import org.bukkit.Particle;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -18,737 +20,717 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
+public class Projectile implements Cloneable {
+    private String projectileID;
+    private String projectileName;
+    private String description; //unused
+    private String itemName; //unused
+    private ItemHolder loadingItem;
+
+    //properties of the cannonball
+    private EntityType projectileEntity;
+    private boolean projectileOnFire;
+    private double velocity;
+    private double penetration;
+    private double timefuse;
+    private double automaticFiringDelay;
+    private int automaticFiringMagazineSize;
+    private int numberOfBullets;
+    private double spreadMultiplier;
+    private int sentryIgnoredBlocks;
+    private List<ProjectileProperties> propertyList = new ArrayList<>();
+
+    //smokeTrail
+    private boolean smokeTrailEnabled;
+    private int smokeTrailDistance;
+    private BlockData smokeTrailMaterial;
+    private double smokeTrailDuration;
+    private boolean smokeTrailParticleEnabled;
+    @Getter
+    @Setter
+    private ParticleBuilder smokeTrailParticle;
+
+    //explosion
+    @Getter
+    @Setter
+    private ExplosionData explosionData = new ExplosionData();
+
+    //potion stuff
+    private double potionRange;
+    private double potionDuration;
+    private int potionAmplifier;
+    private List<PotionEffectType> potionsEffectList = new ArrayList<>();
+    private boolean impactIndicator;
+
+    //cluster
+    @Getter
+    @Setter
+    private ClusterExplosionData clusterExplosionData = new ClusterExplosionData();
+
+    //placeBlock
+    private boolean spawnEnabled;
+    private double spawnBlockRadius;
+    private double spawnEntityRadius;
+    private double spawnVelocity;
+    private List<SpawnMaterialHolder> spawnBlocks = new ArrayList<>();
+    private List<SpawnEntityHolder> spawnEntities = new ArrayList<>();
+    private List<String> spawnProjectiles;
+
+    //spawn Fireworks
+    private boolean fireworksEnabled;
+    private boolean fireworksFlicker;
+    private boolean fireworksTrail;
+    private FireworkEffect.Type fireworksType;
+    private List<Integer> fireworksColors;
+    private List<Integer> fireworksFadeColors;
+
+    //messages
+    private boolean impactMessage;
+
+    //sounds
+    private SoundHolder soundLoading;
+    private SoundHolder soundImpact;
+    private SoundHolder soundImpactProtected;
+    private SoundHolder soundImpactWater;
+
+    //permissions
+    private List<String> permissionLoad = new ArrayList<>();
+
+    public Projectile(String id) {
+        this.projectileID = id;
+    }
+
+    @Override
+    public Projectile clone() {
+        try {
+            // call clone in Object.
+            return (Projectile) super.clone();
+        } catch (CloneNotSupportedException e) {
+            Cannons.logger().info("Cloning not allowed.");
+            return this;
+        }
+    }
+
+    /**
+     * returns true if both the id and data are equivalent of data == -1
+     * @param materialHolder the material of the loaded item
+     * @return true if the materials match
+     */
+    public boolean equals(ItemHolder materialHolder) {
+        return loadingItem.equalsFuzzy(materialHolder);
+    }
+
+    /**
+     * returns true if both the id and data are equivalent of data == -1
+     * @param projectileID the file name id of the projectile
+     * @return true if the id matches
+     */
+    public boolean equals(String projectileID) {
+        return this.projectileID.equals(projectileID);
+    }
 
 
-public class Projectile implements Cloneable{
-	private String projectileID;
-	private String projectileName;
-	private String description;
-	private String itemName;
-	private ItemHolder loadingItem;
-	//list of items or blocks that can represent this this (e.g. redstone dust may for wire when you click a block)
-	private List<ItemHolder> alternativeItemList = new ArrayList<ItemHolder>();
-
-	//properties of the cannonball
-	private EntityType projectileEntity;
-	private boolean projectileOnFire;
-	private double velocity;
-	private double penetration;
-	private double timefuse;
-	private double automaticFiringDelay;
-	private int automaticFiringMagazineSize;
-	private int numberOfBullets;
-	private double spreadMultiplier;
-	private int sentryIgnoredBlocks;
-	private List<ProjectileProperties> propertyList = new ArrayList<ProjectileProperties>();
-
-	//smokeTrail
-	private boolean smokeTrailEnabled;
-	private int smokeTrailDistance;
-	private BlockData smokeTrailMaterial;
-	private double smokeTrailDuration;
-	private boolean smokeTrailParticleEnabled;
-	@Getter @Setter
-	private ParticleBuilder smokeTrailParticle;
-
-	//explosion
-	private float explosionPower;
-	private boolean explosionPowerDependsOnVelocity;
-	private boolean explosionDamage;
-	private boolean underwaterDamage;
-	private boolean penetrationDamage;
-	private double directHitDamage;
-	private double playerDamageRange;
-	private double playerDamage;
-	private double potionRange;
-	private double potionDuration;
-	private int potionAmplifier;
-	private List<PotionEffectType> potionsEffectList = new ArrayList<PotionEffectType>();
-	private boolean impactIndicator;
-
-	//cluster
-	private boolean clusterExplosionsEnabled;
-	private boolean clusterExplosionsInBlocks;
-	private int clusterExplosionsAmount;
-	private double clusterExplosionsMinDelay;
-	private double clusterExplosionsMaxDelay;
-	private double clusterExplosionsRadius;
-	private double clusterExplosionsPower;
-
-	//placeBlock
-	private boolean spawnEnabled;
-	private double spawnBlockRadius;
-	private double spawnEntityRadius;
-	private double spawnVelocity;
-	private List<SpawnMaterialHolder> spawnBlocks = new ArrayList<SpawnMaterialHolder>();
-	private List<SpawnEntityHolder> spawnEntities = new ArrayList<SpawnEntityHolder>();
-	private List<String> spawnProjectiles;
-
-	//spawn Fireworks
-	private boolean fireworksEnabled;
-	private boolean fireworksFlicker;
-	private boolean fireworksTrail;
-	private FireworkEffect.Type fireworksType;
-	private List<Integer> fireworksColors;
-	private List<Integer> fireworksFadeColors;
-
-	//messages
-	private boolean impactMessage;
-
-	//sounds
-	private SoundHolder soundLoading;
-	private SoundHolder soundImpact;
-	private SoundHolder soundImpactProtected;
-	private SoundHolder soundImpactWater;
-
-	//permissions
-	private List<String> permissionLoad = new ArrayList<String>();
-
-	public Projectile(String id)
-	{
-		this.projectileID = id;
-	}
-
-	@Override
-	public Projectile clone(){
-		try
-		{
-			// call clone in Object.
-			return (Projectile) super.clone();
-		}
-		catch(CloneNotSupportedException e)
-		{
-			Cannons.logger().info("Cloning not allowed.");
-			return this;
-		}
-	}
-
-	/**
-	 * returns true if both the id and data are equivalent of data == -1
-	 * @param materialHolder the material of the loaded item
-	 * @return true if the materials match
-	 */
-	public boolean equals(ItemHolder materialHolder)
-	{
-		return loadingItem.equalsFuzzy(materialHolder);
-	}
-
-	/**
-	 * returns true if both the id and data are equivalent of data == -1
-	 * @param projectileID the file name id of the projectile
-	 * @return true if the id matches
-	 */
-	public boolean equals(String projectileID)
-	{
-		return this.projectileID.equals(projectileID);
-	}
-
-
-
-	/**
-	 * returns ID, Data, name and lore of the projectile loading item
-	 * @return ID, Data, name and lore of the projectile loading item
-	 */
-	public String toString()
-	{
-		return loadingItem.toString();
-	}
-
-	/**
-	 * returns ID and data of the loadingItem
-	 * @return ID and data of the loadingItem
-	 */
-	public String getMaterialInformation() {
-		return loadingItem.getType().toString();
-	}
-
-	/**
-	 * returns true if the projectile has this property
-	 * @param properties properties of the projectile
-	 * @return true if the projectile has this property
-	 */
-	public boolean hasProperty(ProjectileProperties properties)
-	{
-		for (ProjectileProperties propEnum : this.getPropertyList())
-		{
-			if (propEnum.equals(properties))
-				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * returns true if the player has permission to use that projectile
-	 * @param player who tried to load this projectile
-	 * @return true if the player can load this projectile
-	 */
-	public boolean hasPermission(Player player)
-	{
-		if (player == null) return true;
-
-		for (String perm : permissionLoad)
-		{
-			if(!player.hasPermission(perm))
-			{
-				//missing permission
-				return false;
-			}
-		}
-		//player has all permissions
-		return true;
-	}
-
-
-
-	public String getItemName()
-	{
-		return itemName;
-	}
-
-
-	public void setItemName(String itemName)
-	{
-		this.itemName = itemName;
-	}
+    /**
+     * returns ID, Data, name and lore of the projectile loading item
+     * @return ID, Data, name and lore of the projectile loading item
+     */
+    public String toString() {
+        return loadingItem.toString();
+    }
 
-
-	public String getProjectileName()
-	{
-		return projectileName;
-	}
+    /**
+     * returns ID and data of the loadingItem
+     * @return ID and data of the loadingItem
+     */
+    public String getMaterialInformation() {
+        return loadingItem.getType().toString();
+    }
 
+    /**
+     * returns true if the projectile has this property
+     * @param properties properties of the projectile
+     * @return true if the projectile has this property
+     */
+    public boolean hasProperty(ProjectileProperties properties) {
+        for (ProjectileProperties propEnum : this.getPropertyList()) {
+            if (propEnum.equals(properties)) return true;
+        }
+        return false;
+    }
 
-	public void setProjectileName(String projectileName)
-	{
-		this.projectileName = projectileName;
-	}
+    /**
+     * returns true if the player has permission to use that projectile
+     * @param player who tried to load this projectile
+     * @return true if the player can load this projectile
+     */
+    public boolean hasPermission(Player player) {
+        if (player == null) return true;
 
+        for (String perm : permissionLoad) {
+            if (!player.hasPermission(perm)) {
+                //missing permission
+                return false;
+            }
+        }
+        //player has all permissions
+        return true;
+    }
 
-	public double getVelocity()
-	{
-		return velocity;
-	}
 
+    public String getItemName() {
+        return itemName;
+    }
 
-	public void setVelocity(double velocity)
-	{
-		this.velocity = velocity;
-	}
 
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
 
-	public double getPenetration()
-	{
-		return penetration;
-	}
 
+    public String getProjectileName() {
+        return projectileName;
+    }
 
-	public void setPenetration(double penetration)
-	{
-		this.penetration = penetration;
-	}
 
+    public void setProjectileName(String projectileName) {
+        this.projectileName = projectileName;
+    }
 
-	public double getTimefuse()
-	{
-		return timefuse;
-	}
 
+    public double getVelocity() {
+        return velocity;
+    }
 
-	public void setTimefuse(double timefuse)
-	{
-		this.timefuse = timefuse;
-	}
 
+    public void setVelocity(double velocity) {
+        this.velocity = velocity;
+    }
 
-	public int getNumberOfBullets()
-	{
-		return numberOfBullets;
-	}
 
+    public double getPenetration() {
+        return penetration;
+    }
 
-	public void setNumberOfBullets(int numberOfBullets)
-	{
-		this.numberOfBullets = numberOfBullets;
-	}
 
+    public void setPenetration(double penetration) {
+        this.penetration = penetration;
+    }
 
-	public double getSpreadMultiplier()
-	{
-		return spreadMultiplier;
-	}
 
+    public double getTimefuse() {
+        return timefuse;
+    }
 
-	public void setSpreadMultiplier(double spreadMultiplier)
-	{
-		this.spreadMultiplier = spreadMultiplier;
-	}
 
+    public void setTimefuse(double timefuse) {
+        this.timefuse = timefuse;
+    }
 
-	List<ProjectileProperties> getPropertyList()
-	{
-		return propertyList;
-	}
 
+    public int getNumberOfBullets() {
+        return numberOfBullets;
+    }
 
-	public void setPropertyList(List<ProjectileProperties> propertyList)
-	{
-		this.propertyList = propertyList;
-	}
 
+    public void setNumberOfBullets(int numberOfBullets) {
+        this.numberOfBullets = numberOfBullets;
+    }
 
-	public float getExplosionPower()
-	{
-		return explosionPower;
-	}
 
+    public double getSpreadMultiplier() {
+        return spreadMultiplier;
+    }
 
-	public void setExplosionPower(float explosionPower)
-	{
-		this.explosionPower = explosionPower;
-	}
 
+    public void setSpreadMultiplier(double spreadMultiplier) {
+        this.spreadMultiplier = spreadMultiplier;
+    }
 
-	public double getPotionRange()
-	{
-		return potionRange;
-	}
 
+    List<ProjectileProperties> getPropertyList() {
+        return propertyList;
+    }
 
-	public void setPotionRange(double potionRange)
-	{
-		this.potionRange = potionRange;
-	}
 
+    public void setPropertyList(List<ProjectileProperties> propertyList) {
+        this.propertyList = propertyList;
+    }
 
-	public double getPotionDuration()
-	{
-		return potionDuration;
-	}
 
+    public double getPotionRange() {
+        return potionRange;
+    }
 
-	public void setPotionDuration(double potionDuration)
-	{
-		this.potionDuration = potionDuration;
-	}
 
+    public void setPotionRange(double potionRange) {
+        this.potionRange = potionRange;
+    }
 
-	public int getPotionAmplifier()
-	{
-		return potionAmplifier;
-	}
 
+    public double getPotionDuration() {
+        return potionDuration;
+    }
 
-	public void setPotionAmplifier(int potionAmplifier)
-	{
-		this.potionAmplifier = potionAmplifier;
-	}
 
+    public void setPotionDuration(double potionDuration) {
+        this.potionDuration = potionDuration;
+    }
 
-	public List<PotionEffectType> getPotionsEffectList()
-	{
-		return potionsEffectList;
-	}
 
+    public int getPotionAmplifier() {
+        return potionAmplifier;
+    }
 
-	public void setPotionsEffectList(List<PotionEffectType> potionsEffectList)
-	{
-		this.potionsEffectList = potionsEffectList;
-	}
 
-	public String getProjectileId()
-	{
-		return projectileID;
-	}
+    public void setPotionAmplifier(int potionAmplifier) {
+        this.potionAmplifier = potionAmplifier;
+    }
 
-	public void setProjectileID(String projectileID)
-	{
-		this.projectileID = projectileID;
-	}
 
-	public ItemHolder getLoadingItem()
-	{
-		return loadingItem;
-	}
+    public List<PotionEffectType> getPotionsEffectList() {
+        return potionsEffectList;
+    }
 
-	public void setLoadingItem(ItemHolder loadingItem)
-	{
-		this.loadingItem = loadingItem;
-	}
 
-	public List<ItemHolder> getAlternativeItemList()
-	{
-		return alternativeItemList;
-	}
+    public void setPotionsEffectList(List<PotionEffectType> potionsEffectList) {
+        this.potionsEffectList = potionsEffectList;
+    }
 
-	public void setAlternativeItemList(List<ItemHolder> alternativeItemList)
-	{
-		this.alternativeItemList = alternativeItemList;
-	}
+    public String getProjectileID() {
+        return projectileID;
+    }
 
-	public boolean getExplosionDamage()
-	{
-		return explosionDamage;
-	}
+    public void setProjectileID(String projectileID) {
+        this.projectileID = projectileID;
+    }
 
-	public void setExplosionDamage(boolean explosionDamage)
-	{
-		this.explosionDamage = explosionDamage;
-	}
+    // typo of getProjectileID
+    @Deprecated(forRemoval = true)
+    public String getProjectileId() {
+        return projectileID;
+    }
 
-	public boolean getPenetrationDamage()
-	{
-		return penetrationDamage;
-	}
+    public ItemHolder getLoadingItem() {
+        return loadingItem;
+    }
 
-	public void setPenetrationDamage(boolean penetrationDamage)
-	{
-		this.penetrationDamage = penetrationDamage;
-	}
+    public void setLoadingItem(ItemHolder loadingItem) {
+        this.loadingItem = loadingItem;
+    }
 
-	public List<String> getPermissionLoad()
-	{
-		return permissionLoad;
-	}
 
-	public void setPermissionLoad(List<String> permissionLoad)
-	{
-		this.permissionLoad = permissionLoad;
-	}
+    // typo getter for isExplosionDamage
+    @Deprecated(forRemoval = true)
+    public boolean getExplosionDamage() {
+        return explosionData.isExplosionDamage();
+    }
 
-	public double getDirectHitDamage() {
-		return directHitDamage;
-	}
+    // typo getter for isPenetrationDamage
+    @Deprecated(forRemoval = true)
+    public boolean getPenetrationDamage() {
+        return explosionData.isPenetrationDamage();
+    }
 
-	public void setDirectHitDamage(double directHitDamage) {
-		this.directHitDamage = directHitDamage;
-	}
+    public List<String> getPermissionLoad() {
+        return permissionLoad;
+    }
 
-	public double getPlayerDamageRange() {
-		return playerDamageRange;
-	}
+    public void setPermissionLoad(List<String> permissionLoad) {
+        this.permissionLoad = permissionLoad;
+    }
 
-	public void setPlayerDamageRange(double playerDamageRange) {
-		this.playerDamageRange = playerDamageRange;
-	}
+    public boolean isImpactMessage() {
+        return impactMessage;
+    }
 
-	public double getPlayerDamage() {
-		return playerDamage;
-	}
+    public void setImpactMessage(boolean impactMessage) {
+        this.impactMessage = impactMessage;
+    }
 
-	public void setPlayerDamage(double playerDamage) {
-		this.playerDamage = playerDamage;
-	}
+    public boolean isFireworksFlicker() {
+        return fireworksFlicker;
+    }
 
-	public boolean isImpactMessage() {
-		return impactMessage;
-	}
+    public void setFireworksFlicker(boolean fireworksFlicker) {
+        this.fireworksFlicker = fireworksFlicker;
+    }
 
-	public void setImpactMessage(boolean impactMessage) {
-		this.impactMessage = impactMessage;
-	}
+    public FireworkEffect.Type getFireworksType() {
+        return fireworksType;
+    }
 
-	public boolean isUnderwaterDamage() {
-		return underwaterDamage;
-	}
+    public void setFireworksType(FireworkEffect.Type fireworksType) {
+        this.fireworksType = fireworksType;
+    }
 
-	public void setUnderwaterDamage(boolean underwaterDamage) {
-		this.underwaterDamage = underwaterDamage;
-	}
+    public List<Integer> getFireworksColors() {
+        return fireworksColors;
+    }
 
-	public boolean isFireworksFlicker() {
-		return fireworksFlicker;
-	}
+    public void setFireworksColors(List<Integer> fireworksColors) {
+        this.fireworksColors = fireworksColors;
+    }
 
-	public void setFireworksFlicker(boolean fireworksFlicker) {
-		this.fireworksFlicker = fireworksFlicker;
-	}
+    public List<Integer> getFireworksFadeColors() {
+        return fireworksFadeColors;
+    }
 
-	public FireworkEffect.Type getFireworksType() {
-		return fireworksType;
-	}
+    public void setFireworksFadeColors(List<Integer> fireworksFadeColors) {
+        this.fireworksFadeColors = fireworksFadeColors;
+    }
 
-	public void setFireworksType(FireworkEffect.Type fireworksType) {
-		this.fireworksType = fireworksType;
-	}
+    public boolean isFireworksTrail() {
+        return fireworksTrail;
+    }
 
-	public List<Integer> getFireworksColors() {
-		return fireworksColors;
-	}
+    public void setFireworksTrail(boolean fireworksTrail) {
+        this.fireworksTrail = fireworksTrail;
+    }
 
-	public void setFireworksColors(List<Integer> fireworksColors) {
-		this.fireworksColors = fireworksColors;
-	}
+    public double getAutomaticFiringDelay() {
+        return automaticFiringDelay;
+    }
 
-	public List<Integer> getFireworksFadeColors() {
-		return fireworksFadeColors;
-	}
+    public void setAutomaticFiringDelay(double automaticFiringDelay) {
+        this.automaticFiringDelay = automaticFiringDelay;
+    }
 
-	public void setFireworksFadeColors(List<Integer> fireworksFadeColors) {
-		this.fireworksFadeColors = fireworksFadeColors;
-	}
+    public int getAutomaticFiringMagazineSize() {
+        return automaticFiringMagazineSize;
+    }
 
-	public boolean isFireworksTrail() {
-		return fireworksTrail;
-	}
+    public void setAutomaticFiringMagazineSize(int automaticFiringMagazineSize) {
+        this.automaticFiringMagazineSize = automaticFiringMagazineSize;
+    }
 
-	public void setFireworksTrail(boolean fireworksTrail) {
-		this.fireworksTrail = fireworksTrail;
-	}
+    public boolean isFireworksEnabled() {
+        return fireworksEnabled;
+    }
 
-	public double getAutomaticFiringDelay() {
-		return automaticFiringDelay;
-	}
+    public void setFireworksEnabled(boolean fireworksEnabled) {
+        this.fireworksEnabled = fireworksEnabled;
+    }
 
-	public void setAutomaticFiringDelay(double automaticFiringDelay) {
-		this.automaticFiringDelay = automaticFiringDelay;
-	}
+    public EntityType getProjectileEntity() {
+        return projectileEntity;
+    }
 
-	public int getAutomaticFiringMagazineSize() {
-		return automaticFiringMagazineSize;
-	}
+    public void setProjectileEntity(EntityType projectileEntity) {
+        this.projectileEntity = projectileEntity;
+    }
 
-	public void setAutomaticFiringMagazineSize(int automaticFiringMagazineSize) {
-		this.automaticFiringMagazineSize = automaticFiringMagazineSize;
-	}
+    public boolean isProjectileOnFire() {
+        return projectileOnFire;
+    }
 
-	public boolean isFireworksEnabled() {
-		return fireworksEnabled;
-	}
+    public void setProjectileOnFire(boolean projectileOnFire) {
+        this.projectileOnFire = projectileOnFire;
+    }
 
-	public void setFireworksEnabled(boolean fireworksEnabled) {
-		this.fireworksEnabled = fireworksEnabled;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public EntityType getProjectileEntity() {
-		return projectileEntity;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setProjectileEntity(EntityType projectileEntity) {
-		this.projectileEntity = projectileEntity;
-	}
+    public boolean isSpawnEnabled() {
+        return spawnEnabled;
+    }
 
-	public boolean isProjectileOnFire() {
-		return projectileOnFire;
-	}
+    public void setSpawnEnabled(boolean spawnEnabled) {
+        this.spawnEnabled = spawnEnabled;
+    }
 
-	public void setProjectileOnFire(boolean projectileOnFire) {
-		this.projectileOnFire = projectileOnFire;
-	}
+    public double getSpawnVelocity() {
+        return spawnVelocity;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setSpawnVelocity(double spawnVelocity) {
+        this.spawnVelocity = spawnVelocity;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public List<SpawnMaterialHolder> getSpawnBlocks() {
+        return spawnBlocks;
+    }
 
-	public boolean isExplosionPowerDependsOnVelocity()
-	{
-		return explosionPowerDependsOnVelocity;
-	}
+    public void setSpawnBlocks(List<SpawnMaterialHolder> spawnBlocks) {
+        this.spawnBlocks = spawnBlocks;
+    }
 
+    public List<SpawnEntityHolder> getSpawnEntities() {
+        return spawnEntities;
+    }
 
-	public void setExplosionPowerDependsOnVelocity(boolean explosionPowerDependsOnVelocity)
-	{
-		this.explosionPowerDependsOnVelocity = explosionPowerDependsOnVelocity;
-	}
+    public void setSpawnEntities(List<SpawnEntityHolder> spawnEntities) {
+        this.spawnEntities = spawnEntities;
+    }
 
-	public boolean isClusterExplosionsEnabled() {
-		return clusterExplosionsEnabled;
-	}
+    public List<String> getSpawnProjectiles() {
+        return spawnProjectiles;
+    }
 
-	public void setClusterExplosionsEnabled(boolean clusterExplosionsEnabled) {
-		this.clusterExplosionsEnabled = clusterExplosionsEnabled;
-	}
+    public void setSpawnProjectiles(List<String> spawnProjectiles) {
+        this.spawnProjectiles = spawnProjectiles;
+    }
 
-	public int getClusterExplosionsAmount() {
-		return clusterExplosionsAmount;
-	}
+    public double getSpawnEntityRadius() {
+        return spawnEntityRadius;
+    }
 
-	public void setClusterExplosionsAmount(int clusterExplosionsAmount) {
-		this.clusterExplosionsAmount = clusterExplosionsAmount;
-	}
+    public void setSpawnEntityRadius(double spawnEntityRadius) {
+        this.spawnEntityRadius = spawnEntityRadius;
+    }
 
-	public double getClusterExplosionsRadius() {
-		return clusterExplosionsRadius;
-	}
+    public double getSpawnBlockRadius() {
+        return spawnBlockRadius;
+    }
 
-	public void setClusterExplosionsRadius(double clusterExplosionsRadius) {
-		this.clusterExplosionsRadius = clusterExplosionsRadius;
-	}
+    public void setSpawnBlockRadius(double spawnBlockRadius) {
+        this.spawnBlockRadius = spawnBlockRadius;
+    }
 
-	public boolean isClusterExplosionsInBlocks() {
-		return clusterExplosionsInBlocks;
-	}
+    public SoundHolder getSoundLoading() {
+        return soundLoading;
+    }
 
-	public void setClusterExplosionsInBlocks(boolean clusterExplosionsInBlocks) {
-		this.clusterExplosionsInBlocks = clusterExplosionsInBlocks;
-	}
+    public void setSoundLoading(SoundHolder soundLoading) {
+        this.soundLoading = soundLoading;
+    }
 
-	public double getClusterExplosionsMinDelay() {
-		return clusterExplosionsMinDelay;
-	}
+    public SoundHolder getSoundImpact() {
+        return soundImpact;
+    }
 
-	public void setClusterExplosionsMinDelay(double clusterExplosionsMinDelay) {
-		this.clusterExplosionsMinDelay = clusterExplosionsMinDelay;
-	}
+    public void setSoundImpact(SoundHolder soundImpact) {
+        this.soundImpact = soundImpact;
+    }
 
-	public double getClusterExplosionsMaxDelay() {
-		return clusterExplosionsMaxDelay;
-	}
+    public SoundHolder getSoundImpactWater() {
+        return soundImpactWater;
+    }
 
-	public void setClusterExplosionsMaxDelay(double clusterExplosionsMaxDelay) {
-		this.clusterExplosionsMaxDelay = clusterExplosionsMaxDelay;
-	}
+    public void setSoundImpactWater(SoundHolder soundImpactWater) {
+        this.soundImpactWater = soundImpactWater;
+    }
 
-	public double getClusterExplosionsPower() {
-		return clusterExplosionsPower;
-	}
+    public SoundHolder getSoundImpactProtected() {
+        return soundImpactProtected;
+    }
 
-	public void setClusterExplosionsPower(double clusterExplosionsPower) {
-		this.clusterExplosionsPower = clusterExplosionsPower;
-	}
+    public void setSoundImpactProtected(SoundHolder soundImpactProtected) {
+        this.soundImpactProtected = soundImpactProtected;
+    }
 
-	public boolean isSpawnEnabled() {
-		return spawnEnabled;
-	}
+    public boolean isImpactIndicator() {
+        return impactIndicator;
+    }
 
-	public void setSpawnEnabled(boolean spawnEnabled) {
-		this.spawnEnabled = spawnEnabled;
-	}
+    public void setImpactIndicator(boolean impactIndicator) {
+        this.impactIndicator = impactIndicator;
+    }
 
-	public double getSpawnVelocity() {
-		return spawnVelocity;
-	}
+    public boolean isSmokeTrailEnabled() {
+        return smokeTrailEnabled;
+    }
 
-	public void setSpawnVelocity(double spawnVelocity) {
-		this.spawnVelocity = spawnVelocity;
-	}
+    public void setSmokeTrailEnabled(boolean smokeTrailEnabled) {
+        this.smokeTrailEnabled = smokeTrailEnabled;
+    }
 
-	public List<SpawnMaterialHolder> getSpawnBlocks() {
-		return spawnBlocks;
-	}
+    public BlockData getSmokeTrailMaterial() {
+        return smokeTrailMaterial;
+    }
 
-	public void setSpawnBlocks(List<SpawnMaterialHolder> spawnBlocks) {
-		this.spawnBlocks = spawnBlocks;
-	}
+    public void setSmokeTrailMaterial(BlockData smokeTrailMaterial) {
+        this.smokeTrailMaterial = smokeTrailMaterial;
+    }
 
-	public List<SpawnEntityHolder> getSpawnEntities() {
-		return spawnEntities;
-	}
+    public double getSmokeTrailDuration() {
+        return smokeTrailDuration;
+    }
 
-	public void setSpawnEntities(List<SpawnEntityHolder> spawnEntities) {
-		this.spawnEntities = spawnEntities;
-	}
+    public void setSmokeTrailDuration(double smokeTrailDuration) {
+        this.smokeTrailDuration = smokeTrailDuration;
+    }
 
-	public List<String> getSpawnProjectiles() {
-		return spawnProjectiles;
-	}
+    public int getSmokeTrailDistance() {
+        return smokeTrailDistance;
+    }
 
-	public void setSpawnProjectiles(List<String> spawnProjectiles) {
-		this.spawnProjectiles = spawnProjectiles;
-	}
+    public void setSmokeTrailDistance(int smokeTrailDistance) {
+        this.smokeTrailDistance = smokeTrailDistance;
+    }
 
-	public double getSpawnEntityRadius() {
-		return spawnEntityRadius;
-	}
+    public boolean isSmokeTrailParticleEnabled() {
+        return smokeTrailParticleEnabled;
+    }
 
-	public void setSpawnEntityRadius(double spawnEntityRadius) {
-		this.spawnEntityRadius = spawnEntityRadius;
-	}
+    public void setSmokeTrailParticleEnabled(boolean smokeTrailParticleEnabled) {
+        this.smokeTrailParticleEnabled = smokeTrailParticleEnabled;
+    }
 
-	public double getSpawnBlockRadius() {
-		return spawnBlockRadius;
-	}
+    public int getSentryIgnoredBlocks() {
+        return sentryIgnoredBlocks;
+    }
 
-	public void setSpawnBlockRadius(double spawnBlockRadius) {
-		this.spawnBlockRadius = spawnBlockRadius;
-	}
+    public void setSentryIgnoredBlocks(int sentryIgnoredBlocks) {
+        this.sentryIgnoredBlocks = sentryIgnoredBlocks;
+    }
 
-	public SoundHolder getSoundLoading() {
-		return soundLoading;
-	}
+    @Deprecated
+    public double getRandomDelay() {
+        return this.clusterExplosionData.getRandomDelay();
+    }
 
-	public void setSoundLoading(SoundHolder soundLoading) {
-		this.soundLoading = soundLoading;
-	}
+    @Deprecated
+    public boolean isClusterExplosionsEnabled() {
+        return this.clusterExplosionData.isClusterExplosionsEnabled();
+    }
 
-	public SoundHolder getSoundImpact() {
-		return soundImpact;
-	}
+    @Deprecated
+    public void setClusterExplosionsEnabled(boolean clusterExplosionsEnabled) {
+        this.clusterExplosionData.setClusterExplosionsEnabled(clusterExplosionsEnabled);
+    }
 
-	public void setSoundImpact(SoundHolder soundImpact) {
-		this.soundImpact = soundImpact;
-	}
+    @Deprecated
+    public boolean isClusterExplosionsInBlocks() {
+        return this.clusterExplosionData.isClusterExplosionsInBlocks();
+    }
 
-	public SoundHolder getSoundImpactWater() {
-		return soundImpactWater;
-	}
+    @Deprecated
+    public void setClusterExplosionsInBlocks(boolean clusterExplosionsInBlocks) {
+        this.clusterExplosionData.setClusterExplosionsInBlocks(clusterExplosionsInBlocks);
+    }
 
-	public void setSoundImpactWater(SoundHolder soundImpactWater) {
-		this.soundImpactWater = soundImpactWater;
-	}
+    @Deprecated
+    public int getClusterExplosionsAmount() {
+        return this.clusterExplosionData.getClusterExplosionsAmount();
+    }
 
-	public SoundHolder getSoundImpactProtected() {
-		return soundImpactProtected;
-	}
+    @Deprecated
+    public void setClusterExplosionsAmount(int clusterExplosionsAmount) {
+        this.clusterExplosionData.setClusterExplosionsAmount(clusterExplosionsAmount);
+    }
 
-	public void setSoundImpactProtected(SoundHolder soundImpactProtected) {
-		this.soundImpactProtected = soundImpactProtected;
-	}
+    @Deprecated
+    public double getClusterExplosionsMinDelay() {
+        return this.clusterExplosionData.getClusterExplosionsMinDelay();
+    }
 
-	public boolean isImpactIndicator() {
-		return impactIndicator;
-	}
+    @Deprecated
+    public void setClusterExplosionsMinDelay(double clusterExplosionsMinDelay) {
+        this.clusterExplosionData.setClusterExplosionsMinDelay(clusterExplosionsMinDelay);
+    }
 
-	public void setImpactIndicator(boolean impactIndicator) {
-		this.impactIndicator = impactIndicator;
-	}
+    @Deprecated
+    public double getClusterExplosionsMaxDelay() {
+        return this.clusterExplosionData.getClusterExplosionsMaxDelay();
+    }
 
-	public boolean isSmokeTrailEnabled() {
-		return smokeTrailEnabled;
-	}
+    @Deprecated
+    public void setClusterExplosionsMaxDelay(double clusterExplosionsMaxDelay) {
+        this.clusterExplosionData.setClusterExplosionsMaxDelay(clusterExplosionsMaxDelay);
+    }
 
-	public void setSmokeTrailEnabled(boolean smokeTrailEnabled) {
-		this.smokeTrailEnabled = smokeTrailEnabled;
-	}
+    @Deprecated
+    public double getClusterExplosionsRadius() {
+        return this.clusterExplosionData.getClusterExplosionsRadius();
+    }
 
-	public BlockData getSmokeTrailMaterial() {
-		return smokeTrailMaterial;
-	}
+    @Deprecated
+    public void setClusterExplosionsRadius(double clusterExplosionsRadius) {
+        this.clusterExplosionData.setClusterExplosionsRadius(clusterExplosionsRadius);
+    }
 
-	public void setSmokeTrailMaterial(BlockData smokeTrailMaterial) {
-		this.smokeTrailMaterial = smokeTrailMaterial;
-	}
+    @Deprecated
+    public double getClusterExplosionsPower() {
+        return this.clusterExplosionData.getClusterExplosionsPower();
+    }
 
-	public double getSmokeTrailDuration() {
-		return smokeTrailDuration;
-	}
+    @Deprecated
+    public void setClusterExplosionsPower(double clusterExplosionsPower) {
+        this.clusterExplosionData.setClusterExplosionsPower(clusterExplosionsPower);
+    }
 
-	public void setSmokeTrailDuration(double smokeTrailDuration) {
-		this.smokeTrailDuration = smokeTrailDuration;
-	}
+    @Deprecated
+    public float getExplosionPower() {
+        return this.explosionData.getExplosionPower();
+    }
 
-	public int getSmokeTrailDistance() {
-		return smokeTrailDistance;
-	}
+    @Deprecated
+    public void setExplosionPower(float explosionPower) {
+        this.explosionData.setExplosionPower(explosionPower);
+    }
 
-	public void setSmokeTrailDistance(int smokeTrailDistance) {
-		this.smokeTrailDistance = smokeTrailDistance;
-	}
+    @Deprecated
+    public boolean isExplosionPowerDependsOnVelocity() {
+        return this.explosionData.isExplosionPowerDependsOnVelocity();
+    }
 
-	public void setSmokeTrailParticleEnabled(boolean smokeTrailParticleEnabled) {
-		this.smokeTrailParticleEnabled = smokeTrailParticleEnabled;
-	}
+    @Deprecated
+    public void setExplosionPowerDependsOnVelocity(boolean explosionPowerDependsOnVelocity) {
+        this.explosionData.setExplosionPowerDependsOnVelocity(explosionPowerDependsOnVelocity);
+    }
 
-	public boolean isSmokeTrailParticleEnabled() { return smokeTrailParticleEnabled; }
+    @Deprecated
+    public boolean isExplosionDamage() {
+        return this.explosionData.isExplosionDamage();
+    }
 
-	public int getSentryIgnoredBlocks() {
-		return sentryIgnoredBlocks;
-	}
+    @Deprecated
+    public void setExplosionDamage(boolean explosionDamage) {
+        this.explosionData.setExplosionDamage(explosionDamage);
+    }
 
-	public void setSentryIgnoredBlocks(int sentryIgnoredBlocks) {
-		this.sentryIgnoredBlocks = sentryIgnoredBlocks;
-	}
+    @Deprecated
+    public boolean isUnderwaterDamage() {
+        return this.explosionData.isUnderwaterDamage();
+    }
+
+    @Deprecated
+    public void setUnderwaterDamage(boolean underwaterDamage) {
+        this.explosionData.setUnderwaterDamage(underwaterDamage);
+    }
+
+    @Deprecated
+    public boolean isPenetrationDamage() {
+        return this.explosionData.isPenetrationDamage();
+    }
+
+    @Deprecated
+    public void setPenetrationDamage(boolean penetrationDamage) {
+        this.explosionData.setPenetrationDamage(penetrationDamage);
+    }
+
+    @Deprecated
+    public double getDirectHitDamage() {
+        return this.explosionData.getDirectHitDamage();
+    }
+
+    @Deprecated
+    public void setDirectHitDamage(double directHitDamage) {
+        this.explosionData.setDirectHitDamage(directHitDamage);
+    }
+
+    @Deprecated
+    public double getPlayerDamageRange() {
+        return this.explosionData.getPlayerDamageRange();
+    }
+
+    @Deprecated
+    public void setPlayerDamageRange(double playerDamageRange) {
+        this.explosionData.setPlayerDamageRange(playerDamageRange);
+    }
+
+    @Deprecated
+    public double getPlayerDamage() {
+        return this.explosionData.getPlayerDamage();
+    }
+
+    @Deprecated
+    public void setPlayerDamage(double playerDamage) {
+        this.explosionData.setPlayerDamage(playerDamage);
+    }
 }

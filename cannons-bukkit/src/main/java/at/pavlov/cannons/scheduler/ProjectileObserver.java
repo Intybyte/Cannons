@@ -9,7 +9,7 @@ import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
-import at.pavlov.cannons.projectile.ProjectileProperties;
+import at.pavlov.internal.projectile.ProjectileProperties;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
 import io.papermc.lib.PaperLib;

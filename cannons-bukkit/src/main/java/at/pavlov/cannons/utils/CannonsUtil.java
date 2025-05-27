@@ -7,7 +7,7 @@ import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.container.*;
 import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
-import at.pavlov.cannons.projectile.ProjectileProperties;
+import at.pavlov.internal.projectile.ProjectileProperties;
 import io.papermc.lib.PaperLib;
 import org.bukkit.*;
 import org.bukkit.block.Block;

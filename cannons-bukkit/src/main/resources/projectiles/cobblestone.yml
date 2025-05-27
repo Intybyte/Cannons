@@ -11,11 +11,6 @@ general:
   #can be loaded with stone and it will fire an explosive projectile (minimum is minecraft:material. Named items minecraft:material;displayName;lore1;lore2:....)
   #https://www.digminecraft.com/lists/item_id_list_pc.php
   loadingItem: 'minecraft:cobblestone'
-  #some item create a block when placed e.g. redstone dust makes a wire if placed on ground. 
-  #if you load the dust, type in the wire id and data, else there is a wire on the cannon.
-  #minimum is minecraft:material. Named items minecraft:material;displayName;lore1;lore2:....
-  alternativeId:
-    - 'minecraft:stone'
 
 cannonball:
   #the type of the projectile entity
