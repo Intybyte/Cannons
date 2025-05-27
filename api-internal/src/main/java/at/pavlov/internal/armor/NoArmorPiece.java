@@ -10,6 +10,6 @@ public class NoArmorPiece implements BaseArmorPiece {
 
     @Override
     public void damage() {
-
+        //nothing to damage
     }
 }
