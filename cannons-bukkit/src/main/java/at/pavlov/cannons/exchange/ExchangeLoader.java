@@ -25,7 +25,7 @@ public class ExchangeLoader {
     public static BExchanger of(Key type, FileConfiguration config, String key, Exchanger.Type typeExchange) {
         var value = registry.get(type);
         if (value == null) {
-            Bukkit.getLogger().severe(type + " ExchangeLoader not found. Returning empty exchanger as a fallback.");
+            Bukkit.getLogger().warning(type + " ExchangeLoader not found. Returning empty exchanger as a fallback.");
             return new EmptyExchanger();
         }
 
