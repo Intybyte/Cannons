@@ -22,8 +22,8 @@ import java.util.List;
 public class Projectile implements Cloneable {
     private String projectileID;
     private String projectileName;
-    private String description;
-    private String itemName;
+    private String description; //unused
+    private String itemName; //unused
     private ItemHolder loadingItem;
 
     //properties of the cannonball
