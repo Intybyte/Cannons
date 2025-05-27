@@ -16,13 +16,14 @@ import org.jetbrains.annotations.NotNull;
 public class ItemArmorPiece implements BaseArmorPiece {
     private final ItemStack stack;
     private ItemArmorPiece(ItemStack stack) {
-        Preconditions.checkArgument(stack instanceof Damageable);
         Preconditions.checkArgument(stack.getItemMeta() != null);
+        Preconditions.checkArgument(stack.getItemMeta() instanceof Damageable);
         this.stack = stack;
     }
 
     public static @NotNull BaseArmorPiece of(ItemStack stack) {
         if (stack == null) return new NoArmorPiece();
+        if (stack.getType().isAir()) return new NoArmorPiece();
         return new ItemArmorPiece(stack);
     }
 
