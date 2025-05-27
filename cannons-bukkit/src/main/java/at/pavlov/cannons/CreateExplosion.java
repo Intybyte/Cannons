@@ -682,7 +682,7 @@ public class CreateExplosion {
 
         // calculate the armor reduction
         double armorPiercing = Math.max(projectile.getPenetration(), 0);
-        double reduction = new ArmorHolder(living).getExplosionHitReduction(armorPiercing, damage);
+        double reduction = ArmorHolder.of(living).getExplosionHitReduction(armorPiercing, damage);
 
         CannonDamageEvent event = new CannonDamageEvent(cannonball, living, damage, reduction, dist, DamageType.EXPLOSION);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -721,7 +721,7 @@ public class CreateExplosion {
 
         // calculate the armor reduction
         double armorPiercing = Math.max(projectile.getPenetration(), 0);
-        double reduction = new ArmorHolder(living).getDirectHitReduction(armorPiercing, damage);
+        double reduction = ArmorHolder.of(living).getDirectHitReduction(armorPiercing, damage);
 
         CannonDamageEvent event = new CannonDamageEvent(cannonball, living, damage, reduction, null, DamageType.DIRECT);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -1031,7 +1031,7 @@ public class CreateExplosion {
 
             // if player wears armor reduce damage if the player has take damage
             if (health > living.getHealth()) {
-                new ArmorHolder(living).damageArmor();
+                ArmorHolder.of(living).damageArmor();
             }
         }
 

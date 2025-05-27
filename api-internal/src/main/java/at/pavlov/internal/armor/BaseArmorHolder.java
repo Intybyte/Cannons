@@ -9,6 +9,37 @@ import java.util.stream.Stream;
 
 public interface BaseArmorHolder {
     Random random = new Random();
+    BaseArmorHolder EMPTY = new BaseArmorHolder() {
+        @Override
+        public @NotNull BaseArmorPiece getHelmet() {
+            return BaseArmorPiece.EMPTY;
+        }
+
+        @Override
+        public @NotNull BaseArmorPiece getChestplate() {
+            return BaseArmorPiece.EMPTY;
+        }
+
+        @Override
+        public @NotNull BaseArmorPiece getLeggings() {
+            return BaseArmorPiece.EMPTY;
+        }
+
+        @Override
+        public @NotNull BaseArmorPiece getBoots() {
+            return BaseArmorPiece.EMPTY;
+        }
+
+        @Override
+        public double getArmor() {
+            return 0;
+        }
+
+        @Override
+        public double getArmorToughness() {
+            return 0;
+        }
+    };
 
     @NotNull BaseArmorPiece getHelmet();
     @NotNull BaseArmorPiece getChestplate();
