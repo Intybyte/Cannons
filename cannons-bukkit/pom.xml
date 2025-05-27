@@ -256,7 +256,6 @@
                             <artifact>*:*</artifact>
                             <excludes>
                                 <exclude>com/cryptomorin/xseries/XBlock*</exclude>
-                                <exclude>com/cryptomorin/xseries/XAttribute*</exclude>
                                 <exclude>com/cryptomorin/xseries/XItemFlag*</exclude>
                                 <exclude>com/cryptomorin/xseries/XMaterial*</exclude>
                                 <exclude>com/cryptomorin/xseries/XItemStack*</exclude>
