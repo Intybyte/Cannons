@@ -17,7 +17,10 @@ import java.util.Random;
 /**
  * Assist calculations for armor
  * @author Vaan1310/Intybyte
+ *
+ * @deprecated moved to ArmorHolder & ArmorPiece
  */
+@Deprecated(forRemoval = true)
 public class ArmorCalculationUtil {
     private static final Map<Material, Double> ARMOR_REDUCTION_MAP = new HashMap<>();
     private static final Random random = new Random();
