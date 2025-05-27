@@ -6,6 +6,7 @@ import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
 import at.pavlov.cannons.container.SpawnMaterialHolder;
+import at.pavlov.internal.projectile.ProjectileProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.FireworkEffect;

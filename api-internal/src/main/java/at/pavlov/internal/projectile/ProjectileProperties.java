@@ -1,4 +1,4 @@
-package at.pavlov.cannons.projectile;
+package at.pavlov.internal.projectile;
 
 public enum ProjectileProperties
 {
