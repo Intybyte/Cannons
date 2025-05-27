@@ -55,11 +55,6 @@ public class Projectile implements Cloneable {
     @Setter
     private ExplosionData explosionData;
 
-    //damage
-    private double directHitDamage;
-    private double playerDamageRange;
-    private double playerDamage;
-
     //potion stuff
     private double potionRange;
     private double potionDuration;
@@ -342,30 +337,6 @@ public class Projectile implements Cloneable {
 
     public void setPermissionLoad(List<String> permissionLoad) {
         this.permissionLoad = permissionLoad;
-    }
-
-    public double getDirectHitDamage() {
-        return directHitDamage;
-    }
-
-    public void setDirectHitDamage(double directHitDamage) {
-        this.directHitDamage = directHitDamage;
-    }
-
-    public double getPlayerDamageRange() {
-        return playerDamageRange;
-    }
-
-    public void setPlayerDamageRange(double playerDamageRange) {
-        this.playerDamageRange = playerDamageRange;
-    }
-
-    public double getPlayerDamage() {
-        return playerDamage;
-    }
-
-    public void setPlayerDamage(double playerDamage) {
-        this.playerDamage = playerDamage;
     }
 
     public boolean isImpactMessage() {
@@ -731,5 +702,35 @@ public class Projectile implements Cloneable {
     @Deprecated
     public void setPenetrationDamage(boolean penetrationDamage) {
         this.explosionData.setPenetrationDamage(penetrationDamage);
+    }
+
+    @Deprecated
+    public double getDirectHitDamage() {
+        return this.explosionData.getDirectHitDamage();
+    }
+
+    @Deprecated
+    public void setDirectHitDamage(double directHitDamage) {
+        this.explosionData.setDirectHitDamage(directHitDamage);
+    }
+
+    @Deprecated
+    public double getPlayerDamageRange() {
+        return this.explosionData.getPlayerDamageRange();
+    }
+
+    @Deprecated
+    public void setPlayerDamageRange(double playerDamageRange) {
+        this.explosionData.setPlayerDamageRange(playerDamageRange);
+    }
+
+    @Deprecated
+    public double getPlayerDamage() {
+        return this.explosionData.getPlayerDamage();
+    }
+
+    @Deprecated
+    public void setPlayerDamage(double playerDamage) {
+        this.explosionData.setPlayerDamage(playerDamage);
     }
 }

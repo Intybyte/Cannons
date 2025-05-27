@@ -9,4 +9,7 @@ public class ExplosionData {
     private boolean explosionDamage;
     private boolean underwaterDamage;
     private boolean penetrationDamage;
+    private double directHitDamage;
+    private double playerDamageRange;
+    private double playerDamage;
 }
