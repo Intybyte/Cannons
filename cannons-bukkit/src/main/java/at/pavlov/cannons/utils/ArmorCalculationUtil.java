@@ -17,7 +17,10 @@ import java.util.Random;
 /**
  * Assist calculations for armor
  * @author Vaan1310/Intybyte
+ *
+ * @deprecated moved to ArmorHolder & ArmorPiece
  */
+@Deprecated(forRemoval = true)
 public class ArmorCalculationUtil {
     private static final Map<Material, Double> ARMOR_REDUCTION_MAP = new HashMap<>();
     private static final Random random = new Random();
@@ -129,13 +132,16 @@ public class ArmorCalculationUtil {
             return reduction;
         }
 
+        var protection = XEnchantment.PROTECTION.get();
         int lvl = item.getEnchantmentLevel(special);
         if (lvl > 0)
             reduction += (int) Math.floor((6 + lvl * lvl) * 1.5 / 3);
 
-        lvl = item.getEnchantmentLevel(XEnchantment.PROTECTION.get());
-        if (lvl > 0)
-            reduction += (int) Math.floor((6 + lvl * lvl) * 0.75 / 3);
+        if (!special.equals(protection)) {
+            lvl = item.getEnchantmentLevel(protection);
+            if (lvl > 0)
+                reduction += (int) Math.floor((6 + lvl * lvl) * 0.75 / 3);
+        }
 
         return reduction;
     }

@@ -4,6 +4,7 @@ import at.pavlov.cannons.Enum.DamageType;
 import at.pavlov.cannons.Enum.EntityDataType;
 import at.pavlov.cannons.Enum.FakeBlockType;
 import at.pavlov.cannons.Enum.ProjectileCause;
+import at.pavlov.cannons.armor.ArmorHolder;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.container.DeathCause;
 import at.pavlov.cannons.container.SoundHolder;
@@ -21,7 +22,6 @@ import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.internal.projectile.ProjectileProperties;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
-import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.cannons.utils.SoundUtils;
@@ -45,7 +45,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Firework;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpectralArrow;
@@ -656,18 +655,14 @@ public class CreateExplosion {
      * the projectile
      *
      * @param impactLoc
-     * @param next
+     * @param living
      * @param cannonball
      * @return - damage done to the entity
      */
-    private double getExplosionDamage(Location impactLoc, Entity next, FlyingProjectile cannonball) {
+    private double getExplosionDamage(Location impactLoc, LivingEntity living, FlyingProjectile cannonball) {
         Projectile projectile = cannonball.getProjectile();
 
-        if (!(next instanceof LivingEntity living)) {
-            return 0.0;
-        }
-
-        double dist = impactLoc.distance((living).getEyeLocation());
+        double dist = impactLoc.distance(living.getEyeLocation());
         // if the entity is too far away, return
         if (dist > projectile.getPlayerDamageRange())
             return 0.0;
@@ -684,11 +679,8 @@ public class CreateExplosion {
         damage *= (rand + 0.5);
 
         // calculate the armor reduction
-        double reduction = 1.0;
-        if (living instanceof HumanEntity human) {
-            double armorPiercing = Math.max(projectile.getPenetration(), 0);
-            reduction = ArmorCalculationUtil.getExplosionHitReduction(human, armorPiercing);
-        }
+        double armorPiercing = Math.max(projectile.getPenetration(), 0);
+        double reduction = ArmorHolder.of(living).getExplosionHitReduction(armorPiercing, damage);
 
         CannonDamageEvent event = new CannonDamageEvent(cannonball, living, damage, reduction, dist, DamageType.EXPLOSION);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -726,11 +718,8 @@ public class CreateExplosion {
         damage *= (rand + 0.5);
 
         // calculate the armor reduction
-        double reduction = 1.0;
-        if (living instanceof HumanEntity human) {
-            double armorPiercing = Math.max(projectile.getPenetration(), 0);
-            reduction = ArmorCalculationUtil.getDirectHitReduction(human, armorPiercing);
-        }
+        double armorPiercing = Math.max(projectile.getPenetration(), 0);
+        double reduction = ArmorHolder.of(living).getDirectHitReduction(armorPiercing, damage);
 
         CannonDamageEvent event = new CannonDamageEvent(cannonball, living, damage, reduction, null, DamageType.DIRECT);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -1009,7 +998,7 @@ public class CreateExplosion {
         while (it.hasNext()) {
             Entity next = it.next();
 
-            if (!(next instanceof LivingEntity)) {
+            if (!(next instanceof LivingEntity living)) {
                 continue;
             }
             // get previous damage
@@ -1019,7 +1008,7 @@ public class CreateExplosion {
             }
 
             // add explosion damage
-            damage += this.getExplosionDamage(impactLoc, next, cannonball);
+            damage += this.getExplosionDamage(impactLoc, living, cannonball);
             this.damageMap.put(next, damage);
         }
 
@@ -1028,7 +1017,7 @@ public class CreateExplosion {
             double damage = entry.getValue();
             Entity entity = entry.getKey();
 
-            if (!(damage >= 1) || !(entity instanceof LivingEntity living)) {
+            if (damage < 1 || !(entity instanceof LivingEntity living)) {
                 continue;
             }
 
@@ -1039,10 +1028,9 @@ public class CreateExplosion {
             living.damage(damage);
 
             // if player wears armor reduce damage if the player has take damage
-            if (living instanceof HumanEntity humanEntity && health > living.getHealth()) {
-                ArmorCalculationUtil.reduceArmorDurability(humanEntity);
+            if (health > living.getHealth()) {
+                ArmorHolder.of(living).damageArmor();
             }
-
         }
 
         // potion effects
