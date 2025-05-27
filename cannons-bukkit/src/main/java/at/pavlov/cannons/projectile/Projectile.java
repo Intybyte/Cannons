@@ -8,6 +8,7 @@ import at.pavlov.cannons.container.SpawnEntityHolder;
 import at.pavlov.cannons.container.SpawnMaterialHolder;
 import at.pavlov.internal.projectile.ProjectileProperties;
 import at.pavlov.internal.projectile.data.ClusterExplosionData;
+import at.pavlov.internal.projectile.data.ExplosionData;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.FireworkEffect;
@@ -50,11 +51,9 @@ public class Projectile implements Cloneable {
     private ParticleBuilder smokeTrailParticle;
 
     //explosion
-    private float explosionPower;
-    private boolean explosionPowerDependsOnVelocity;
-    private boolean explosionDamage;
-    private boolean underwaterDamage;
-    private boolean penetrationDamage;
+    @Getter
+    @Setter
+    private ExplosionData explosionData;
 
     //damage
     private double directHitDamage;
@@ -263,16 +262,6 @@ public class Projectile implements Cloneable {
     }
 
 
-    public float getExplosionPower() {
-        return explosionPower;
-    }
-
-
-    public void setExplosionPower(float explosionPower) {
-        this.explosionPower = explosionPower;
-    }
-
-
     public double getPotionRange() {
         return potionRange;
     }
@@ -316,14 +305,14 @@ public class Projectile implements Cloneable {
         return projectileID;
     }
 
+    public void setProjectileID(String projectileID) {
+        this.projectileID = projectileID;
+    }
+
     // typo of getProjectileID
     @Deprecated(forRemoval = true)
     public String getProjectileId() {
         return projectileID;
-    }
-
-    public void setProjectileID(String projectileID) {
-        this.projectileID = projectileID;
     }
 
     public ItemHolder getLoadingItem() {
@@ -334,20 +323,17 @@ public class Projectile implements Cloneable {
         this.loadingItem = loadingItem;
     }
 
+
+    // typo getter for isExplosionDamage
+    @Deprecated(forRemoval = true)
     public boolean getExplosionDamage() {
-        return explosionDamage;
+        return explosionData.isExplosionDamage();
     }
 
-    public void setExplosionDamage(boolean explosionDamage) {
-        this.explosionDamage = explosionDamage;
-    }
-
+    // typo getter for isPenetrationDamage
+    @Deprecated(forRemoval = true)
     public boolean getPenetrationDamage() {
-        return penetrationDamage;
-    }
-
-    public void setPenetrationDamage(boolean penetrationDamage) {
-        this.penetrationDamage = penetrationDamage;
+        return explosionData.isPenetrationDamage();
     }
 
     public List<String> getPermissionLoad() {
@@ -388,14 +374,6 @@ public class Projectile implements Cloneable {
 
     public void setImpactMessage(boolean impactMessage) {
         this.impactMessage = impactMessage;
-    }
-
-    public boolean isUnderwaterDamage() {
-        return underwaterDamage;
-    }
-
-    public void setUnderwaterDamage(boolean underwaterDamage) {
-        this.underwaterDamage = underwaterDamage;
     }
 
     public boolean isFireworksFlicker() {
@@ -484,15 +462,6 @@ public class Projectile implements Cloneable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean isExplosionPowerDependsOnVelocity() {
-        return explosionPowerDependsOnVelocity;
-    }
-
-
-    public void setExplosionPowerDependsOnVelocity(boolean explosionPowerDependsOnVelocity) {
-        this.explosionPowerDependsOnVelocity = explosionPowerDependsOnVelocity;
     }
 
     public boolean isSpawnEnabled() {
@@ -712,5 +681,55 @@ public class Projectile implements Cloneable {
     @Deprecated
     public void setClusterExplosionsPower(double clusterExplosionsPower) {
         this.clusterExplosionData.setClusterExplosionsPower(clusterExplosionsPower);
+    }
+
+    @Deprecated
+    public float getExplosionPower() {
+        return this.explosionData.getExplosionPower();
+    }
+
+    @Deprecated
+    public void setExplosionPower(float explosionPower) {
+        this.explosionData.setExplosionPower(explosionPower);
+    }
+
+    @Deprecated
+    public boolean isExplosionPowerDependsOnVelocity() {
+        return this.explosionData.isExplosionPowerDependsOnVelocity();
+    }
+
+    @Deprecated
+    public void setExplosionPowerDependsOnVelocity(boolean explosionPowerDependsOnVelocity) {
+        this.explosionData.setExplosionPowerDependsOnVelocity(explosionPowerDependsOnVelocity);
+    }
+
+    @Deprecated
+    public boolean isExplosionDamage() {
+        return this.explosionData.isExplosionDamage();
+    }
+
+    @Deprecated
+    public void setExplosionDamage(boolean explosionDamage) {
+        this.explosionData.setExplosionDamage(explosionDamage);
+    }
+
+    @Deprecated
+    public boolean isUnderwaterDamage() {
+        return this.explosionData.isUnderwaterDamage();
+    }
+
+    @Deprecated
+    public void setUnderwaterDamage(boolean underwaterDamage) {
+        this.explosionData.setUnderwaterDamage(underwaterDamage);
+    }
+
+    @Deprecated
+    public boolean isPenetrationDamage() {
+        return this.explosionData.isPenetrationDamage();
+    }
+
+    @Deprecated
+    public void setPenetrationDamage(boolean penetrationDamage) {
+        this.explosionData.setPenetrationDamage(penetrationDamage);
     }
 }

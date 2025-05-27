@@ -167,7 +167,7 @@ public class CreateExplosion {
 
         // has this projectile the super breaker property and makes block damage
         Boolean superbreaker = projectile.hasProperty(ProjectileProperties.SUPERBREAKER);
-        Boolean doesBlockDamage = projectile.getPenetrationDamage();
+        Boolean doesBlockDamage = projectile.isPenetrationDamage();
 
         // list of destroy blocks
         LinkedList<Block> blocklist = new LinkedList<>();
@@ -823,7 +823,7 @@ public class CreateExplosion {
         }
 
         boolean incendiary = projectile.hasProperty(ProjectileProperties.INCENDIARY);
-        boolean blockDamage = projectile.getExplosionDamage();
+        boolean blockDamage = projectile.isExplosionDamage();
 
         this.plugin.logDebug("Projectile impact event: " + impactLoc.getBlockX() + ", " + impactLoc.getBlockY() + ", "
                 + impactLoc.getBlockZ() + " direction: " + impactLoc.getYaw() + " Pitch: " + impactLoc.getPitch());
