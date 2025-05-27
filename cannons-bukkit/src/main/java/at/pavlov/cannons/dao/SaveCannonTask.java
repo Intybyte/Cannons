@@ -82,7 +82,7 @@ public class SaveCannonTask implements RunnableAsync {
                 // if no projectile is found, set it to air
                 Projectile projectile = cannon.getLoadedProjectile();
                 if (projectile != null) {
-                    preparedStatement.setString(11,projectile.getProjectileId());
+                    preparedStatement.setString(11,projectile.getProjectileID());
                 } else {
                     preparedStatement.setString(11,"none");
                 }

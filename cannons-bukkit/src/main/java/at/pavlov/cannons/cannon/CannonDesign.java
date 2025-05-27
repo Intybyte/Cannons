@@ -465,7 +465,7 @@ import java.util.List;
     {
     	for (String p : allowedProjectiles)
     	{
-    		if (projectile.getProjectileId().equals(p))
+    		if (projectile.getProjectileID().equals(p))
     			return true;
     	}
     	

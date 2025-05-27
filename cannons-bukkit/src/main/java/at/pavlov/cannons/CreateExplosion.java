@@ -326,7 +326,7 @@ public class CreateExplosion {
                 this.plugin.logDebug("reset TNT fuse ticks to: " + fuseTicks + " fusetime " + fusetime);
                 tnt.setFuseTicks(fuseTicks);
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof AreaEffectCloud cloud) {
             try {
@@ -358,14 +358,14 @@ public class CreateExplosion {
                     cloud.addCustomEffect(effect, true);
                 }
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof SpectralArrow arrow) {
             try {
                 arrow.setGlowingTicks(ParseUtils.parseInt(entityData.get(EntityDataType.DURATION),
                         arrow.getGlowingTicks()));
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof Arrow arrow) {
             try {
@@ -377,7 +377,7 @@ public class CreateExplosion {
                     arrow.addCustomEffect(effect, true);
                 }
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof LivingEntity living) {
             try {
@@ -401,7 +401,7 @@ public class CreateExplosion {
                                     equipment.getItemInOffHand())));
                 }
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         } else if (entity instanceof ThrownPotion pentity) {
             try {
@@ -420,7 +420,7 @@ public class CreateExplosion {
 
                 pentity.setItem(potion);
             } catch (Exception e) {
-                logConvertingError(cannonball.getProjectile().getProjectileId(), e);
+                logConvertingError(cannonball.getProjectile().getProjectileID(), e);
             }
         }
     }

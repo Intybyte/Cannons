@@ -312,6 +312,12 @@ public class Projectile implements Cloneable {
         this.potionsEffectList = potionsEffectList;
     }
 
+    public String getProjectileID() {
+        return projectileID;
+    }
+
+    // typo of getProjectileID
+    @Deprecated(forRemoval = true)
     public String getProjectileId() {
         return projectileID;
     }
