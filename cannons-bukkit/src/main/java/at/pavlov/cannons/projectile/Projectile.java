@@ -55,9 +55,13 @@ public class Projectile implements Cloneable {
     private boolean explosionDamage;
     private boolean underwaterDamage;
     private boolean penetrationDamage;
+
+	//damage
     private double directHitDamage;
     private double playerDamageRange;
     private double playerDamage;
+
+	//potion stuff
     private double potionRange;
     private double potionDuration;
     private int potionAmplifier;
