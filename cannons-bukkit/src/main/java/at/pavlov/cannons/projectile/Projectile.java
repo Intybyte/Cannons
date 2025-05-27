@@ -57,12 +57,12 @@ public class Projectile implements Cloneable {
     private boolean underwaterDamage;
     private boolean penetrationDamage;
 
-	//damage
+    //damage
     private double directHitDamage;
     private double playerDamageRange;
     private double playerDamage;
 
-	//potion stuff
+    //potion stuff
     private double potionRange;
     private double potionDuration;
     private int potionAmplifier;
@@ -70,13 +70,9 @@ public class Projectile implements Cloneable {
     private boolean impactIndicator;
 
     //cluster
-    private boolean clusterExplosionsEnabled;
-    private boolean clusterExplosionsInBlocks;
-    private int clusterExplosionsAmount;
-    private double clusterExplosionsMinDelay;
-    private double clusterExplosionsMaxDelay;
-    private double clusterExplosionsRadius;
-    private double clusterExplosionsPower;
+    @Getter
+    @Setter
+    private ClusterExplosionData clusterExplosionData;
 
     //placeBlock
     private boolean spawnEnabled;
@@ -700,5 +696,80 @@ public class Projectile implements Cloneable {
 
     public void setSentryIgnoredBlocks(int sentryIgnoredBlocks) {
         this.sentryIgnoredBlocks = sentryIgnoredBlocks;
+    }
+
+    @Deprecated
+    public double getRandomDelay() {
+        return this.clusterExplosionData.getRandomDelay();
+    }
+
+    @Deprecated
+    public boolean isClusterExplosionsEnabled() {
+        return this.clusterExplosionData.isClusterExplosionsEnabled();
+    }
+
+    @Deprecated
+    public void setClusterExplosionsEnabled(boolean clusterExplosionsEnabled) {
+        this.clusterExplosionData.setClusterExplosionsEnabled(clusterExplosionsEnabled);
+    }
+
+    @Deprecated
+    public boolean isClusterExplosionsInBlocks() {
+        return this.clusterExplosionData.isClusterExplosionsInBlocks();
+    }
+
+    @Deprecated
+    public void setClusterExplosionsInBlocks(boolean clusterExplosionsInBlocks) {
+        this.clusterExplosionData.setClusterExplosionsInBlocks(clusterExplosionsInBlocks);
+    }
+
+    @Deprecated
+    public int getClusterExplosionsAmount() {
+        return this.clusterExplosionData.getClusterExplosionsAmount();
+    }
+
+    @Deprecated
+    public void setClusterExplosionsAmount(int clusterExplosionsAmount) {
+        this.clusterExplosionData.setClusterExplosionsAmount(clusterExplosionsAmount);
+    }
+
+    @Deprecated
+    public double getClusterExplosionsMinDelay() {
+        return this.clusterExplosionData.getClusterExplosionsMinDelay();
+    }
+
+    @Deprecated
+    public void setClusterExplosionsMinDelay(double clusterExplosionsMinDelay) {
+        this.clusterExplosionData.setClusterExplosionsMinDelay(clusterExplosionsMinDelay);
+    }
+
+    @Deprecated
+    public double getClusterExplosionsMaxDelay() {
+        return this.clusterExplosionData.getClusterExplosionsMaxDelay();
+    }
+
+    @Deprecated
+    public void setClusterExplosionsMaxDelay(double clusterExplosionsMaxDelay) {
+        this.clusterExplosionData.setClusterExplosionsMaxDelay(clusterExplosionsMaxDelay);
+    }
+
+    @Deprecated
+    public double getClusterExplosionsRadius() {
+        return this.clusterExplosionData.getClusterExplosionsRadius();
+    }
+
+    @Deprecated
+    public void setClusterExplosionsRadius(double clusterExplosionsRadius) {
+        this.clusterExplosionData.setClusterExplosionsRadius(clusterExplosionsRadius);
+    }
+
+    @Deprecated
+    public double getClusterExplosionsPower() {
+        return this.clusterExplosionData.getClusterExplosionsPower();
+    }
+
+    @Deprecated
+    public void setClusterExplosionsPower(double clusterExplosionsPower) {
+        this.clusterExplosionData.setClusterExplosionsPower(clusterExplosionsPower);
     }
 }

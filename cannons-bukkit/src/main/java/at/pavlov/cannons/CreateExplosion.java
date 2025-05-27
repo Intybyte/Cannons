@@ -934,19 +934,18 @@ public class CreateExplosion {
         }
 
         plugin.logDebug("Number of Cluster explosions: " + projectile.getClusterExplosionsAmount());
-        for (int i = 0; i < projectile.getClusterExplosionsAmount(); i++) {
-            double delay = projectile.getClusterExplosionsMinDelay() + Math.random()
-                    * (projectile.getClusterExplosionsMaxDelay() - projectile.getClusterExplosionsMinDelay());
-
+        var clusterExplosionData = projectile.getClusterExplosionData();
+        for (int i = 0; i < clusterExplosionData.getClusterExplosionsAmount(); i++) {
+            double delay = clusterExplosionData.getRandomDelay();
             taskManager.scheduler.runTaskLater(cannonball.getImpactLocation(), () -> {
                         Projectile proj = cannonball.getProjectile();
 
                         Location expLoc = CannonsUtil.randomPointInSphere(cannonball.getImpactLocation(),
-                                proj.getClusterExplosionsRadius());
+                                clusterExplosionData.getClusterExplosionsRadius());
                         // only do if explosion in blocks are allowed
-                        if (proj.isClusterExplosionsInBlocks() || expLoc.getBlock().isEmpty()
+                        if (clusterExplosionData.isClusterExplosionsInBlocks() || expLoc.getBlock().isEmpty()
                                 || (expLoc.getBlock().isLiquid() && proj.isUnderwaterDamage())) {
-                            expLoc.getWorld().createExplosion(expLoc, (float) proj.getClusterExplosionsPower(), projectile.hasProperty(ProjectileProperties.INCENDIARY), true, cannonball.getProjectileEntity());
+                            expLoc.getWorld().createExplosion(expLoc, (float) clusterExplosionData.getClusterExplosionsPower(), projectile.hasProperty(ProjectileProperties.INCENDIARY), true, cannonball.getProjectileEntity());
                             CreateExplosion.this.sendExplosionToPlayers(null, expLoc,
                                     projectile.getSoundImpact());
                         }
