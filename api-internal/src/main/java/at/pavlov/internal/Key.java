@@ -14,8 +14,12 @@ public record Key(String namespace, String key) {
 
     public static Key from(String compositeKey) {
         var strings = compositeKey.split(":");
-        if (strings.length != 2) {
+        if (strings.length >= 3) {
             throw new IllegalArgumentException("Invalid NS key: " + compositeKey);
+        }
+
+        if (strings.length == 1) {
+            return Key.mc(strings[0]);
         }
 
         return new Key(strings[0], strings[1]);
