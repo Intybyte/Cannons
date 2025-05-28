@@ -5,7 +5,7 @@ import at.pavlov.cannons.builders.ParticleBuilder;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
-import at.pavlov.cannons.container.SpawnMaterialHolder;
+import at.pavlov.internal.container.SpawnMaterialHolder;
 import at.pavlov.internal.projectile.ProjectileProperties;
 import at.pavlov.internal.projectile.data.ClusterExplosionData;
 import at.pavlov.internal.projectile.data.ExplosionData;

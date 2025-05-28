@@ -9,7 +9,8 @@ import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.container.DeathCause;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
-import at.pavlov.cannons.container.SpawnMaterialHolder;
+import at.pavlov.internal.Key;
+import at.pavlov.internal.container.SpawnMaterialHolder;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.event.CannonDamageEvent;
 import at.pavlov.cannons.event.CannonsEntityDeathEvent;
@@ -522,6 +523,7 @@ public class CreateExplosion {
      *
      * @param cannonball the fired cannonball
      */
+    private static final HashMap<Key, BlockData> bdCache = new HashMap<>();
     private void spreadBlocks(FlyingProjectile cannonball) {
         if (!cannonball.getProjectile().isSpawnEnabled())
             return;
@@ -538,6 +540,13 @@ public class CreateExplosion {
             // add some randomness to the amount of spawned blocks
             int maxPlacement = spawn.getRandomAmount();
 
+            Key materialKey = spawn.getMaterial();
+            if (!bdCache.containsKey(materialKey)) {
+                Material material = Material.matchMaterial(materialKey.full());
+                BlockData bd = material.createBlockData();
+                bdCache.put(materialKey, bd);
+            }
+
             // iterate blocks around to get a good spot
             int placedBlocks = 0;
             int iterations1 = 0;
@@ -551,7 +560,7 @@ public class CreateExplosion {
                 if (this.canPlaceBlock(placeLoc.getBlock())) {
                     placedBlocks++;
                     // place the block
-                    this.spawnFallingBlock(impactLoc, placeLoc, projectile.getSpawnVelocity(), spawn.getMaterial());
+                    this.spawnFallingBlock(impactLoc, placeLoc, projectile.getSpawnVelocity(), bdCache.get(materialKey));
                 }
             } while (iterations1 < maxPlacement * 5 && placedBlocks < maxPlacement);
 
