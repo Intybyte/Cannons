@@ -6,7 +6,7 @@ import at.pavlov.cannons.Enum.FakeBlockType;
 import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.armor.ArmorHolder;
 import at.pavlov.cannons.config.Config;
-import at.pavlov.cannons.container.DeathCause;
+import at.pavlov.internal.container.DeathCause;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
 import at.pavlov.internal.Key;
@@ -894,7 +894,7 @@ public class CreateExplosion {
 
             lEntities.add((LivingEntity) entity);
             if (entity instanceof Player) {
-                this.killedPlayers.put(entity.getUniqueId(), new DeathCause(cannonball.getProjectile(),
+                this.killedPlayers.put(entity.getUniqueId(), new DeathCause(cannonball.getProjectile().getProjectileID(),
                         cannonball.getCannonUID(), cannonball.getShooterUID()));
             }
         }
