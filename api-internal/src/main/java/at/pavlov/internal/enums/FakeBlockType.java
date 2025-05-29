@@ -1,4 +1,4 @@
-package at.pavlov.cannons.Enum;
+package at.pavlov.internal.enums;
 
 /**
  * Created by Peter on 25.04.2014.

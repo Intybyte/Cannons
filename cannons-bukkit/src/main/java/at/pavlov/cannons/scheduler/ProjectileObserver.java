@@ -2,7 +2,7 @@ package at.pavlov.cannons.scheduler;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
-import at.pavlov.cannons.Enum.FakeBlockType;
+import at.pavlov.internal.enums.FakeBlockType;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.dao.AsyncTaskManager;

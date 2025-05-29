@@ -2,7 +2,7 @@ package at.pavlov.cannons.dao.wrappers;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.Enum.BreakCause;
-import at.pavlov.cannons.Enum.FakeBlockType;
+import at.pavlov.internal.enums.FakeBlockType;
 import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonDesign;

@@ -29,35 +29,16 @@ public class ItemArmorPiece implements BaseArmorPiece {
     }
 
     @Override
-    public double getEnchantProtectionReduction(Key key) {
-        int reduction = 0;
-
-        Enchantment protection = XEnchantment.PROTECTION.get();
-        Enchantment ourEnchant = XEnchantment.of(key.full()).orElseThrow().get();
-        int lvl = stack.getEnchantmentLevel(ourEnchant);
-        if (lvl > 0) {
-            reduction += (int) Math.floor((6 + lvl * lvl) * 1.5 / 3);
-        }
-
-        if (!ourEnchant.equals(protection)) {
-            lvl = stack.getEnchantmentLevel(protection);
-            if (lvl > 0) {
-                reduction += (int) Math.floor((6 + lvl * lvl) * 0.75 / 3);
-            }
-        }
-
-        return reduction;
-    }
-
-    @Override
     public void damage() {
-        int lvl = stack.getEnchantmentLevel(XEnchantment.UNBREAKING.get());
-        //chance of breaking in 0-1
-        double breakingChance = 0.6 + 0.4 / (lvl + 1);
-
-        if (BaseArmorHolder.random.nextDouble() < breakingChance) {
+        if (BaseArmorHolder.random.nextDouble() < getBreakingChance()) {
             Damageable itemMeta = (Damageable) stack.getItemMeta();
             itemMeta.setDamage(itemMeta.getDamage() + 1);
         }
+    }
+
+    @Override
+    public int getEnchantmentLevel(Key key) {
+        Enchantment enchant = XEnchantment.of(key.full()).orElseThrow().get();
+        return stack.getEnchantmentLevel(enchant);
     }
 }

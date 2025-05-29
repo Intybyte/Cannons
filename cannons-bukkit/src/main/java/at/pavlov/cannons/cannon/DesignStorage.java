@@ -1,7 +1,7 @@
 package at.pavlov.cannons.cannon;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.container.DesignFileName;
+import at.pavlov.internal.container.DesignFileName;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.container.SoundHolder;
@@ -100,12 +100,12 @@ public class DesignStorage
 			return;
 
 		for (DesignFileName designFile : designFileList) {
-			plugin.logDebug("loading cannon " + designFile.getYmlString());
+			plugin.logDebug("loading cannon " + designFile.ymlString());
 			CannonDesign cannonDesign = new CannonDesign();
 			//load .yml
-			loadDesignYml(cannonDesign, designFile.getYmlString());
+			loadDesignYml(cannonDesign, designFile.ymlString());
 			//load .shematic and add to list if valid
-			if (loadDesignSchematic(cannonDesign, designFile.getSchematicString()))
+			if (loadDesignSchematic(cannonDesign, designFile.schematicString()))
 				cannonDesignList.add(cannonDesign);
 		}
 		

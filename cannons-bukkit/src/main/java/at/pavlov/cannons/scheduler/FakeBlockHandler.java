@@ -1,13 +1,14 @@
 package at.pavlov.cannons.scheduler;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.FakeBlockType;
+import at.pavlov.internal.enums.FakeBlockType;
 import at.pavlov.cannons.config.Config;
-import at.pavlov.cannons.container.FakeBlockEntry;
+import at.pavlov.internal.container.FakeBlockEntry;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
@@ -65,7 +66,7 @@ public class FakeBlockHandler {
         Iterator<FakeBlockEntry> iter = list.iterator();
         while (iter.hasNext()) {
             FakeBlockEntry next = iter.next();
-            Player player = next.getPlayerBukkit();
+            Player player = player(next);
 
             //if player is offline remove this one
             if (player == null) {
@@ -77,7 +78,7 @@ public class FakeBlockHandler {
                 continue;
             }
             //send real block to player
-            Location loc = next.getLocation();
+            Location loc = location(next);
             if (loc != null) {
                 taskManager.scheduler.runTask(loc, () -> {
                     player.sendBlockChange(loc, loc.getBlock().getBlockData());
@@ -104,8 +105,8 @@ public class FakeBlockHandler {
                 continue;
             }
             //send real block to player
-            Player player = next.getPlayerBukkit();
-            Location loc = next.getLocation();
+            Player player = player(next);
+            Location loc = location(next);
             if (player != null && loc != null) {
                 taskManager.scheduler.runTask(loc, () -> {
                     player.sendBlockChange(loc, loc.getBlock().getBlockData());
@@ -226,7 +227,14 @@ public class FakeBlockHandler {
                 return CompletableFuture.completedFuture(null);
             }
 
-            FakeBlockEntry fakeBlockEntry = new FakeBlockEntry(loc, player, type, (long) (duration * 20.0));
+            FakeBlockEntry fakeBlockEntry = new FakeBlockEntry(
+                    loc.getBlockX(),
+                    loc.getBlockY(),
+                    loc.getBlockZ(),
+                    loc.getWorld().getUID(),
+                    player.getUniqueId(),
+                    type, (long) (20.0 * duration)
+            );
 
             boolean found = false;
             for (FakeBlockEntry block : list) {
@@ -293,4 +301,13 @@ public class FakeBlockHandler {
         return dist < plugin.getMyConfig().getImitatedBlockMaximumDistance();
     }
 
+    private static Location location(FakeBlockEntry e) {
+        World world = Bukkit.getWorld(e.getWorld());
+        if (world == null) return null;
+        return new Location(world, e.getLocX(), e.getLocY(), e.getLocZ());
+    }
+
+    private static Player player(FakeBlockEntry e) {
+        return Bukkit.getPlayer(e.getPlayer());
+    }
 }
