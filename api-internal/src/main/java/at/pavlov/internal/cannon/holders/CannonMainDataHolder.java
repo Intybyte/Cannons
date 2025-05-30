@@ -1,4 +1,4 @@
-package at.pavlov.cannons.interfaces.holders;
+package at.pavlov.internal.cannon.holders;
 
 import at.pavlov.internal.cannon.data.CannonMainData;
 import at.pavlov.internal.cannon.functionalities.Updatable;
