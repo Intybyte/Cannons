@@ -1,6 +1,6 @@
 package at.pavlov.cannons.interfaces.functionalities;
 
-import at.pavlov.cannons.Enum.MessageEnum;
+import at.pavlov.internal.enums.MessageEnum;
 import org.bukkit.inventory.Inventory;
 
 import java.util.List;

@@ -1,8 +1,10 @@
-package at.pavlov.cannons.Enum;
+package at.pavlov.internal.enums;
 
 
+import lombok.Getter;
+
+@Getter
 public enum ProjectileCause {
-
     //Error Messages
     PlayerFired("Player fired"),
     RedstoneFired("Redstone fired"),
@@ -11,16 +13,9 @@ public enum ProjectileCause {
     DeflectedProjectile("Deflected projectile"),
     UnknownFired("fired unknown cause");
 
-    private final String str;
+    private final String string;
 
-    ProjectileCause(String str)
-    {
-        this.str = str;
+    ProjectileCause(String str) {
+        this.string = str;
     }
-
-    public String getString()
-    {
-        return str;
-    }
-
 }

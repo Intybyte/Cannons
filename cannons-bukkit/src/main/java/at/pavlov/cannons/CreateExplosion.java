@@ -1,9 +1,9 @@
 package at.pavlov.cannons;
 
-import at.pavlov.cannons.Enum.DamageType;
-import at.pavlov.cannons.Enum.EntityDataType;
+import at.pavlov.internal.enums.DamageType;
+import at.pavlov.internal.enums.EntityDataType;
 import at.pavlov.internal.enums.FakeBlockType;
-import at.pavlov.cannons.Enum.ProjectileCause;
+import at.pavlov.internal.enums.ProjectileCause;
 import at.pavlov.cannons.armor.ArmorHolder;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.internal.container.DeathCause;

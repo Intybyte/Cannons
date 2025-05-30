@@ -1,10 +1,10 @@
 package at.pavlov.cannons.cannon;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.BreakCause;
-import at.pavlov.cannons.Enum.CannonRotation;
-import at.pavlov.cannons.Enum.InteractAction;
-import at.pavlov.cannons.Enum.MessageEnum;
+import at.pavlov.internal.enums.BreakCause;
+import at.pavlov.internal.enums.CannonRotation;
+import at.pavlov.internal.enums.InteractAction;
+import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.internal.cannon.data.AimingData;
 import at.pavlov.cannons.cannon.data.AmmoLoadingData;
 import at.pavlov.internal.cannon.data.AngleData;

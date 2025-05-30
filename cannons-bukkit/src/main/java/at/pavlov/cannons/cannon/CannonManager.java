@@ -2,8 +2,8 @@ package at.pavlov.cannons.cannon;
 
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.BreakCause;
-import at.pavlov.cannons.Enum.MessageEnum;
+import at.pavlov.internal.enums.BreakCause;
+import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.container.ItemHolder;

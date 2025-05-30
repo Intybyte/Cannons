@@ -1,9 +1,9 @@
 package at.pavlov.cannons;
 
 import at.pavlov.internal.enums.FakeBlockType;
-import at.pavlov.cannons.Enum.InteractAction;
-import at.pavlov.cannons.Enum.MessageEnum;
-import at.pavlov.cannons.Enum.TargetType;
+import at.pavlov.internal.enums.InteractAction;
+import at.pavlov.internal.enums.MessageEnum;
+import at.pavlov.internal.enums.TargetType;
 import at.pavlov.cannons.aim.GunAngles;
 import at.pavlov.cannons.aim.GunAnglesWrapper;
 import at.pavlov.cannons.cannon.Cannon;

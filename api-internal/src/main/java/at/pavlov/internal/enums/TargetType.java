@@ -1,4 +1,4 @@
-package at.pavlov.cannons.Enum;
+package at.pavlov.internal.enums;
 
 import at.pavlov.internal.cannon.holders.SentryDataHolder;
 

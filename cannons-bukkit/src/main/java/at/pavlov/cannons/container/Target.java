@@ -1,6 +1,6 @@
 package at.pavlov.cannons.container;
 
-import at.pavlov.cannons.Enum.TargetType;
+import at.pavlov.internal.enums.TargetType;
 import at.pavlov.cannons.cannon.Cannon;
 import org.bukkit.Location;
 import org.bukkit.entity.*;

@@ -1,7 +1,6 @@
-package at.pavlov.cannons.Enum;
+package at.pavlov.internal.enums;
 
-public enum InteractAction
-{
+public enum InteractAction {
     cleaningCannon,
     loadGunpowder,
     loadProjectile,
@@ -17,6 +16,4 @@ public enum InteractAction
     adjustAutoaim,
     adjustSentry,
     adjustOther
-
-
 }

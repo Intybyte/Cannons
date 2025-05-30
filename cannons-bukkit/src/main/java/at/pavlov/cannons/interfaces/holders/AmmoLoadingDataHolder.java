@@ -1,6 +1,6 @@
 package at.pavlov.cannons.interfaces.holders;
 
-import at.pavlov.cannons.Enum.MessageEnum;
+import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.cannon.data.AmmoLoadingData;
 import at.pavlov.internal.cannon.functionalities.Updatable;
 import at.pavlov.cannons.projectile.Projectile;

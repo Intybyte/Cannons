@@ -1,6 +1,6 @@
 package at.pavlov.cannons.utils;
 
-import at.pavlov.cannons.Enum.BreakCause;
+import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import org.bukkit.block.Block;

@@ -2,10 +2,10 @@ package at.pavlov.cannons.commands;
 
 import at.pavlov.cannons.Aiming;
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.BreakCause;
-import at.pavlov.cannons.Enum.CommandList;
-import at.pavlov.cannons.Enum.MessageEnum;
-import at.pavlov.cannons.Enum.SelectCannon;
+import at.pavlov.internal.enums.BreakCause;
+import at.pavlov.internal.enums.CommandList;
+import at.pavlov.internal.enums.MessageEnum;
+import at.pavlov.internal.enums.SelectCannon;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
