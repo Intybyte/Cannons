@@ -1,7 +1,7 @@
 package at.pavlov.cannons.interfaces.holders;
 
 import at.pavlov.internal.cannon.data.CannonMainData;
-import at.pavlov.cannons.interfaces.functionalities.Updatable;
+import at.pavlov.internal.cannon.functionalities.Updatable;
 
 import java.util.UUID;
 

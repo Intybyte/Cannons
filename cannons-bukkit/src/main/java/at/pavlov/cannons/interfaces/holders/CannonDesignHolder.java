@@ -3,7 +3,7 @@ package at.pavlov.cannons.interfaces.holders;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.cannon.DesignStorage;
-import at.pavlov.cannons.interfaces.functionalities.Updatable;
+import at.pavlov.internal.cannon.functionalities.Updatable;
 
 public interface CannonDesignHolder extends Updatable {
     void setCannonDesign(CannonDesign design);

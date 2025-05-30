@@ -2,7 +2,7 @@ package at.pavlov.cannons.interfaces.holders;
 
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.data.AmmoLoadingData;
-import at.pavlov.cannons.interfaces.functionalities.Updatable;
+import at.pavlov.internal.cannon.functionalities.Updatable;
 import at.pavlov.cannons.projectile.Projectile;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
