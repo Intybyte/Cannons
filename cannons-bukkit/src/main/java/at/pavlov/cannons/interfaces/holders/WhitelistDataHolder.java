@@ -1,7 +1,6 @@
 package at.pavlov.cannons.interfaces.holders;
 
-import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.cannon.data.WhitelistData;
+import at.pavlov.internal.cannon.data.WhitelistData;
 
 import java.util.HashSet;
 import java.util.UUID;

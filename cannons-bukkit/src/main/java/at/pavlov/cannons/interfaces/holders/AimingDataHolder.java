@@ -1,6 +1,6 @@
 package at.pavlov.cannons.interfaces.holders;
 
-import at.pavlov.cannons.cannon.data.AimingData;
+import at.pavlov.internal.cannon.data.AimingData;
 import at.pavlov.cannons.interfaces.functionalities.Updatable;
 
 public interface AimingDataHolder extends Updatable {

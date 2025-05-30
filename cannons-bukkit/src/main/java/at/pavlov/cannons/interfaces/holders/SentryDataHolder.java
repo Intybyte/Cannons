@@ -1,6 +1,6 @@
 package at.pavlov.cannons.interfaces.holders;
 
-import at.pavlov.cannons.cannon.data.SentryData;
+import at.pavlov.internal.cannon.data.SentryData;
 import at.pavlov.cannons.interfaces.functionalities.Updatable;
 
 import java.util.UUID;

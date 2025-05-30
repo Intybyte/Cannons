@@ -1,6 +1,6 @@
 package at.pavlov.cannons.interfaces.holders;
 
-import at.pavlov.cannons.cannon.data.AngleData;
+import at.pavlov.internal.cannon.data.AngleData;
 import at.pavlov.cannons.interfaces.functionalities.Updatable;
 
 public interface AngleDataHolder extends Updatable {
