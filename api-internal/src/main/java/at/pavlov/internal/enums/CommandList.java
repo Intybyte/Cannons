@@ -1,6 +1,10 @@
-package at.pavlov.cannons.Enum;
+package at.pavlov.internal.enums;
 
 
+import lombok.Getter;
+
+//TODO: Add new commands here or nuke this in favour of dynamically obtaining this data to print
+@Getter
 public enum CommandList {
     BUILD("build", "/cannons build", "cannons.player.command", false),
     FIRE("pilot", "/cannons fire", "cannons.player.command", false),
@@ -24,31 +28,15 @@ public enum CommandList {
     PERMISSIONS("permissions", "/cannons permissions [NAME]", "cannons.admin.permissions", true),
     BLOCKDATA("blockdata", "/cannons blockdata", "cannons.admin.blockdata", true);
 
-    private String command;
-    private String usage;
-    private String permission;
-    private Boolean adminCmd;
+    private final String command;
+    private final String usage;
+    private final String permission;
+    private final boolean adminCmd;
 
-    CommandList(String command, String usage, String permission, boolean adminCmd){
+    CommandList(String command, String usage, String permission, boolean adminCmd) {
         this.command = command;
         this.usage = usage;
         this.permission = permission;
         this.adminCmd = adminCmd;
-    }
-
-    public String getCommand() {
-        return command;
-    }
-
-    public String getPermission() {
-        return permission;
-    }
-
-    public String getUsage() {
-        return usage;
-    }
-
-    public boolean isAdminCmd(){
-        return this.adminCmd;
     }
 }

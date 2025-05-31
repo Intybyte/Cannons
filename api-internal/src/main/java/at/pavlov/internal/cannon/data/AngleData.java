@@ -1,4 +1,4 @@
-package at.pavlov.cannons.cannon.data;
+package at.pavlov.internal.cannon.data;
 
 import lombok.Data;
 

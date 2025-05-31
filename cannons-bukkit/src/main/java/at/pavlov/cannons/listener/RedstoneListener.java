@@ -1,8 +1,8 @@
 package at.pavlov.cannons.listener;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.InteractAction;
-import at.pavlov.cannons.Enum.MessageEnum;
+import at.pavlov.internal.enums.InteractAction;
+import at.pavlov.internal.enums.MessageEnum;
 import at.pavlov.cannons.FireCannon;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
@@ -52,7 +52,7 @@ public class RedstoneListener implements Listener {
                 // place right
                 if (cannon.isRedstoneTorchInterface(block.getLocation()))
                 {
-                    fireCannon.redstoneFiring(cannon, InteractAction.fireRedstone);
+                    fireCannon.redstoneFiring(cannon, InteractAction.FIRE_REDSTONE);
                 }
             }
         }
@@ -70,7 +70,7 @@ public class RedstoneListener implements Listener {
                     // is place right
                     if (cannon.isRedstoneWireInterface(block.getLocation()))
                     {
-                        MessageEnum message = fireCannon.redstoneFiring(cannon, InteractAction.fireRedstone);
+                        MessageEnum message = fireCannon.redstoneFiring(cannon, InteractAction.FIRE_REDSTONE);
                     }
                 }
 
@@ -90,7 +90,7 @@ public class RedstoneListener implements Listener {
                     // is place right
                     if (cannon.isRedstoneRepeaterInterface(block.getLocation()))
                     {
-                        MessageEnum message = fireCannon.redstoneFiring(cannon, InteractAction.fireRedstone);
+                        MessageEnum message = fireCannon.redstoneFiring(cannon, InteractAction.FIRE_REDSTONE);
                     }
 
                 }
@@ -120,7 +120,7 @@ public class RedstoneListener implements Listener {
 
                 plugin.logDebug("Redfire with button by " + player.getName());
 
-                MessageEnum message = fireCannon.playerFiring(cannon, player, InteractAction.fireRedstoneTrigger);
+                MessageEnum message = fireCannon.playerFiring(cannon, player, InteractAction.FIRE_REDSTONE_TRIGGER);
                 userMessages.sendMessage(message, player, cannon);
             }
         }

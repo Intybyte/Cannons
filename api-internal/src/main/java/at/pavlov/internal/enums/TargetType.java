@@ -1,6 +1,6 @@
-package at.pavlov.cannons.Enum;
+package at.pavlov.internal.enums;
 
-import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.internal.cannon.holders.SentryDataHolder;
 
 public enum TargetType {
     MONSTER,
@@ -12,7 +12,7 @@ public enum TargetType {
     BOAT,
     SUBMARINE;
 
-    public boolean isAllowed(Cannon cannon) {
+    public boolean isAllowed(SentryDataHolder cannon) {
         return switch (this) {
             case MONSTER -> cannon.isTargetMob();
             case PLAYER -> cannon.isTargetPlayer();

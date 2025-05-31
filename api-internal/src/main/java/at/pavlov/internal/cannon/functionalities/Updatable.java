@@ -1,4 +1,4 @@
-package at.pavlov.cannons.interfaces.functionalities;
+package at.pavlov.internal.cannon.functionalities;
 
 public interface Updatable {
     default void hasUpdated() {
