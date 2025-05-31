@@ -10,23 +10,28 @@ import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import java.util.UUID;
 
 public class ProjectileImpactListener implements Listener {
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void impactListener(ProjectileImpactEvent e) {
         Craft craft = MathUtils.fastNearestCraftToLoc(CraftManager.getInstance().getCrafts(), e.getImpactLocation());
-        if (!(craft instanceof PlayerCraft playerCraft))
+        if (!(craft instanceof PlayerCraft playerCraft)) {
             return;
-        if (!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(e.getImpactLocation())))
+        }
+
+        if (!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(e.getImpactLocation()))) {
             return;
+        }
 
         UUID shooter = e.getShooterUID();
         Player cause = Bukkit.getServer().getPlayer(shooter);
-        if (cause == null || !cause.isOnline())
+        if (cause == null || !cause.isOnline()) {
             return;
+        }
 
         DamageRecord record = new DamageRecord(cause, playerCraft.getPilot(), new ProjectileImpactDamage());
         CraftDamagedByEvent event = new CraftDamagedByEvent(playerCraft, record);
