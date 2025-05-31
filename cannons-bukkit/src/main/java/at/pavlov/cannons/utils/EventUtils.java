@@ -52,7 +52,7 @@ public class EventUtils {
 
         //now remove all invalid cannons
         for (UUID id : remove) {
-            cannonManager.removeCannon(id, false, true, BreakCause.Explosion);
+            cannonManager.removeCannon(id, false, true, BreakCause.EXPLOSION);
         }
     }
 }

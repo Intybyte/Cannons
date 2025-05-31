@@ -850,7 +850,7 @@ public class CreateExplosion {
 
         // send a message about the impact (only if the projectile has enabled this
         // feature and a player fired this projectile)
-        if (projectile.isImpactMessage() && cannonball.getProjectileCause() == ProjectileCause.PlayerFired) {
+        if (projectile.isImpactMessage() && cannonball.getProjectileCause() == ProjectileCause.PLAYER_FIRED) {
             this.plugin.sendImpactMessage(player, impactLoc, canceled);
         }
 
@@ -1112,7 +1112,7 @@ public class CreateExplosion {
 
             ProjectileManager.getInstance().spawnProjectile(projectile,
                     cannonball.getShooterUID(), cannonball.getSource(), cannonball.getPlayerlocation(),
-                    impactLoc.clone(), vectdeflect1, cannonball.getCannonUID(), ProjectileCause.DeflectedProjectile);
+                    impactLoc.clone(), vectdeflect1, cannonball.getCannonUID(), ProjectileCause.DEFLECTED_PROJECTILE);
         }, 1L);
 
         return true;
@@ -1148,7 +1148,7 @@ public class CreateExplosion {
 
                     ProjectileManager.getInstance().spawnProjectile(newProjectiles,
                             cannonball.getShooterUID(), cannonball.getSource(), null, spawnLoc, vect,
-                            cannonball.getCannonUID(), ProjectileCause.SpawnedProjectile);
+                            cannonball.getCannonUID(), ProjectileCause.SPAWNED_PROJECTILE);
                 }
             }
         }, 1L);

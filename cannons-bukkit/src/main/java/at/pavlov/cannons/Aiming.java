@@ -128,7 +128,7 @@ public class Aiming {
      */
     public MessageEnum changeAngle(Cannon cannon, Action action, BlockFace clickedFace, Player player) {
         //fire event
-        CannonUseEvent useEvent = new CannonUseEvent(cannon, player.getUniqueId(), InteractAction.adjustPlayer);
+        CannonUseEvent useEvent = new CannonUseEvent(cannon, player.getUniqueId(), InteractAction.ADJUST_PLAYER);
         Bukkit.getServer().getPluginManager().callEvent(useEvent);
 
         if (useEvent.isCancelled())
@@ -141,7 +141,7 @@ public class Aiming {
 
         if (!config.getToolAutoaim().equalsFuzzy(player.getInventory().getItemInMainHand())) {
             //barrel clicked to change angle
-            return updateAngle(player, cannon, clickedFace, InteractAction.adjustPlayer);
+            return updateAngle(player, cannon, clickedFace, InteractAction.ADJUST_PLAYER);
         }
         //aiming mode
         aimingMode(player, cannon, false);
@@ -319,7 +319,7 @@ public class Aiming {
 
         CannonDesign design = cannon.getCannonDesign();
 
-        if (action == InteractAction.adjustSentry && isSentry) {
+        if (action == InteractAction.ADJUST_SENTRY && isSentry) {
             if (cannon.isChunkLoaded())
                 return new GunAnglesWrapper(GunAngles.getGunAngle(cannon, cannon.getAimingYaw(), cannon.getAimingPitch()), true);
 
@@ -327,7 +327,7 @@ public class Aiming {
             return new GunAnglesWrapper(null, false);
         }
 
-        if (player != null && action == InteractAction.adjustAutoaim && inAimingMode.containsKey(player.getUniqueId())) {
+        if (player != null && action == InteractAction.ADJUST_AUTOAIM && inAimingMode.containsKey(player.getUniqueId())) {
             if (!player.isSneaking()) {
                 return new GunAnglesWrapper(null, false);
             }
@@ -493,7 +493,7 @@ public class Aiming {
             return false;
         }
 
-        MessageEnum message = updateAngle(player, cannon, null, InteractAction.adjustAutoaim);
+        MessageEnum message = updateAngle(player, cannon, null, InteractAction.ADJUST_AUTOAIM);
 
         // todo updated cannon angles for linked cannons
         // linked Cannons
@@ -509,7 +509,7 @@ public class Aiming {
             boolean canAccess = cannon.isAccessLinkingAllowed(fcannon, player);
 
             if (fcannon.isCannonOperator(player) && checkDesign && canAccess)
-                updateAngle(player, fcannon, null, InteractAction.adjustAutoaim);
+                updateAngle(player, fcannon, null, InteractAction.ADJUST_AUTOAIM);
         }
 
         userMessages.sendMessage(message, player, cannon);
@@ -565,7 +565,7 @@ public class Aiming {
         }
         // autoaming or fineadjusting
         if (cannon.isValid()) {
-            updateAngle(null, cannon, null, InteractAction.adjustSentry);
+            updateAngle(null, cannon, null, InteractAction.ADJUST_SENTRY);
         }
     }
 
@@ -961,7 +961,7 @@ public class Aiming {
 
             //this player is already in aiming mode, he might fire the cannon or turn the aiming mode off
             MessageEnum message = fire ?
-                    plugin.getFireCannon().playerFiring(cannon, player, InteractAction.fireAutoaim) :
+                    plugin.getFireCannon().playerFiring(cannon, player, InteractAction.FIRE_AUTOAIM) :
                     disableAimingMode(player);
             //turn off the aiming mode
             userMessages.sendMessage(message, player, cannon);

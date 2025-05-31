@@ -165,7 +165,7 @@ public class FireCannon {
     public MessageEnum sentryFiring(Cannon cannon) {
         CannonDesign design = cannon.getCannonDesign();
 
-        return this.fire(cannon, null, true, !design.isAmmoInfiniteForPlayer(), InteractAction.fireSentry);
+        return this.fire(cannon, null, true, !design.isAmmoInfiniteForPlayer(), InteractAction.FIRE_SENTRY);
     }
 
     /**
@@ -235,10 +235,10 @@ public class FireCannon {
         }
 
         final ProjectileCause projectileCause = switch (action) {
-            case fireRightClickTigger, fireAutoaim, fireRedstoneTrigger, fireAfterLoading -> ProjectileCause.PlayerFired;
-            case fireRedstone -> ProjectileCause.RedstoneFired;
-            case fireSentry -> ProjectileCause.SentryFired;
-            default -> ProjectileCause.UnknownFired;
+            case FIRE_RIGHT_CLICK_TIGGER, FIRE_AUTOAIM, FIRE_REDSTONE_TRIGGER, FIRE_AFTER_LOADING -> ProjectileCause.PLAYER_FIRED;
+            case FIRE_REDSTONE -> ProjectileCause.REDSTONE_FIRED;
+            case FIRE_SENTRY -> ProjectileCause.SENTRY_FIRED;
+            default -> ProjectileCause.UNKNOWN_FIRED;
         };
 
         var scheduler = AsyncTaskManager.get().scheduler;

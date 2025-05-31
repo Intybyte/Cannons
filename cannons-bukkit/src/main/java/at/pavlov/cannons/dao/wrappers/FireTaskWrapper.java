@@ -98,7 +98,7 @@ public class FireTaskWrapper implements BaseFireTask {
 
         //check if the temperature exceeds the limit and overloading
         if (cannon.checkHeatManagement() || cannon.isExplodedDueOverloading()) {
-            CannonManager.getInstance().removeCannon(cannon, true, true, BreakCause.Overheating);
+            CannonManager.getInstance().removeCannon(cannon, true, true, BreakCause.OVERHEATING);
             return;
         }
 

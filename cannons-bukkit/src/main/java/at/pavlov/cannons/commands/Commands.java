@@ -436,7 +436,7 @@ public class Commands extends BaseCommand {
             for (Cannon cannon : cannonList) {
                 taskManager.scheduler.runTask(cannon.getLocation(), () -> {
                     persistenceDatabase.deleteCannon(cannon.getUID());
-                    cannonManager.removeCannon(cannon, false, false, BreakCause.Other);
+                    cannonManager.removeCannon(cannon, false, false, BreakCause.OTHER);
                 });
             }
 

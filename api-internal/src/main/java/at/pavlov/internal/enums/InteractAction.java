@@ -1,19 +1,19 @@
 package at.pavlov.internal.enums;
 
 public enum InteractAction {
-    cleaningCannon,
-    loadGunpowder,
-    loadProjectile,
-    pushingProjectile,
-    fireAutoaim,
-    fireSentry,
-    fireRedstoneTrigger,
-    fireRightClickTigger,
-    fireRedstone,
-    fireAfterLoading,
-    fireOther,
-    adjustPlayer,
-    adjustAutoaim,
-    adjustSentry,
-    adjustOther
+    CLEANING_CANNON,
+    LOAD_GUNPOWDER,
+    LOAD_PROJECTILE,
+    PUSHING_PROJECTILE,
+    FIRE_AUTOAIM,
+    FIRE_SENTRY,
+    FIRE_REDSTONE_TRIGGER,
+    FIRE_RIGHT_CLICK_TIGGER,
+    FIRE_REDSTONE,
+    FIRE_AFTER_LOADING,
+    FIRE_OTHER,
+    ADJUST_PLAYER,
+    ADJUST_AUTOAIM,
+    ADJUST_SENTRY,
+    ADJUST_OTHER
 }
