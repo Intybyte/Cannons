@@ -13,12 +13,11 @@ public class FireFallingListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onFireFall(EntityChangeBlockEvent event) {
-        Block block = event.getBlock();
-        if (block.getType() != Material.FIRE) {
+        if (event.getTo() != Material.FIRE) {
             return;
         }
 
-        BlockIgniteEvent ignite = new BlockIgniteEvent(block, BlockIgniteEvent.IgniteCause.EXPLOSION, null, null);
+        BlockIgniteEvent ignite = new BlockIgniteEvent(event.getBlock(), BlockIgniteEvent.IgniteCause.EXPLOSION, null, null);
         Bukkit.getPluginManager().callEvent(ignite);
     }
 }
