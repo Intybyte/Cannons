@@ -1,9 +1,7 @@
 package at.pavlov.cannons.event;
 
-import at.pavlov.cannons.Enum.DamageType;
-import at.pavlov.cannons.Enum.InteractAction;
+import at.pavlov.internal.enums.DamageType;
 import at.pavlov.cannons.projectile.FlyingProjectile;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

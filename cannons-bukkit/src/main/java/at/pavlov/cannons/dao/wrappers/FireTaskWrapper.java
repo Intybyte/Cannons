@@ -1,9 +1,9 @@
 package at.pavlov.cannons.dao.wrappers;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.BreakCause;
+import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.internal.enums.FakeBlockType;
-import at.pavlov.cannons.Enum.ProjectileCause;
+import at.pavlov.internal.enums.ProjectileCause;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
@@ -98,7 +98,7 @@ public class FireTaskWrapper implements BaseFireTask {
 
         //check if the temperature exceeds the limit and overloading
         if (cannon.checkHeatManagement() || cannon.isExplodedDueOverloading()) {
-            CannonManager.getInstance().removeCannon(cannon, true, true, BreakCause.Overheating);
+            CannonManager.getInstance().removeCannon(cannon, true, true, BreakCause.OVERHEATING);
             return;
         }
 

@@ -1,6 +1,6 @@
 package at.pavlov.cannons.commands;
 
-import at.pavlov.cannons.Enum.SelectCannon;
+import at.pavlov.internal.enums.SelectCannon;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;

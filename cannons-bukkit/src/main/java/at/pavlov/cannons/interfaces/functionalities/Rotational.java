@@ -1,6 +1,6 @@
 package at.pavlov.cannons.interfaces.functionalities;
 
-import at.pavlov.cannons.Enum.CannonRotation;
+import at.pavlov.internal.enums.CannonRotation;
 import org.bukkit.util.Vector;
 
 public interface Rotational {

@@ -1,18 +1,18 @@
 package at.pavlov.cannons.cannon;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.BreakCause;
-import at.pavlov.cannons.Enum.CannonRotation;
-import at.pavlov.cannons.Enum.InteractAction;
-import at.pavlov.cannons.Enum.MessageEnum;
-import at.pavlov.cannons.cannon.data.AimingData;
+import at.pavlov.internal.enums.BreakCause;
+import at.pavlov.internal.enums.CannonRotation;
+import at.pavlov.internal.enums.InteractAction;
+import at.pavlov.internal.enums.MessageEnum;
+import at.pavlov.internal.cannon.data.AimingData;
 import at.pavlov.cannons.cannon.data.AmmoLoadingData;
-import at.pavlov.cannons.cannon.data.AngleData;
-import at.pavlov.cannons.cannon.data.CannonMainData;
+import at.pavlov.internal.cannon.data.AngleData;
+import at.pavlov.internal.cannon.data.CannonMainData;
 import at.pavlov.cannons.cannon.data.CannonPosition;
-import at.pavlov.cannons.cannon.data.LinkingData;
-import at.pavlov.cannons.cannon.data.SentryData;
-import at.pavlov.cannons.cannon.data.WhitelistData;
+import at.pavlov.internal.cannon.data.LinkingData;
+import at.pavlov.internal.cannon.data.SentryData;
+import at.pavlov.internal.cannon.data.WhitelistData;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.cannon.data.FiringData;
@@ -379,7 +379,7 @@ public class Cannon implements ICannon, Rotational {
     public MessageEnum loadGunpowder(Player player) {
 
         //fire event
-        CannonUseEvent useEvent = new CannonUseEvent(this, player.getUniqueId(), InteractAction.loadGunpowder);
+        CannonUseEvent useEvent = new CannonUseEvent(this, player.getUniqueId(), InteractAction.LOAD_GUNPOWDER);
         Bukkit.getServer().getPluginManager().callEvent(useEvent);
 
         if (useEvent.isCancelled())
@@ -443,7 +443,7 @@ public class Cannon implements ICannon, Rotational {
      */
     public MessageEnum loadProjectile(Projectile projectile, Player player) {
         //fire event
-        CannonUseEvent useEvent = new CannonUseEvent(this, player.getUniqueId(), InteractAction.loadProjectile);
+        CannonUseEvent useEvent = new CannonUseEvent(this, player.getUniqueId(), InteractAction.LOAD_PROJECTILE);
         Bukkit.getServer().getPluginManager().callEvent(useEvent);
 
         if (useEvent.isCancelled())
@@ -585,7 +585,7 @@ public class Cannon implements ICannon, Rotational {
             if (isClean())
                 return MessageEnum.RamrodCleaningDone;
             else {
-                CannonUseEvent cleaning = new CannonUseEvent(this, player.getUniqueId(), InteractAction.cleaningCannon);
+                CannonUseEvent cleaning = new CannonUseEvent(this, player.getUniqueId(), InteractAction.CLEANING_CANNON);
                 Bukkit.getServer().getPluginManager().callEvent(cleaning);
                 return MessageEnum.RamrodCleaning;
             }
@@ -604,7 +604,7 @@ public class Cannon implements ICannon, Rotational {
             if (isProjectilePushed()) {
                 return MessageEnum.RamrodPushingProjectileDone;
             } else {
-                CannonUseEvent cleaning = new CannonUseEvent(this, player.getUniqueId(), InteractAction.pushingProjectile);
+                CannonUseEvent cleaning = new CannonUseEvent(this, player.getUniqueId(), InteractAction.PUSHING_PROJECTILE);
                 Bukkit.getServer().getPluginManager().callEvent(cleaning);
                 return MessageEnum.RamrodPushingProjectile;
             }
@@ -718,9 +718,9 @@ public class Cannon implements ICannon, Rotational {
 
         // return message
         return switch (cause) {
-            case Overheating -> MessageEnum.HeatManagementOverheated;
-            case Other -> null;
-            case Dismantling -> MessageEnum.CannonDismantled;
+            case OVERHEATING -> MessageEnum.HeatManagementOverheated;
+            case OTHER -> null;
+            case DISMANTLING -> MessageEnum.CannonDismantled;
             default -> MessageEnum.CannonDestroyed;
         };
     }

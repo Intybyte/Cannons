@@ -1,7 +1,9 @@
-package at.pavlov.cannons.Enum;
+package at.pavlov.internal.enums;
 
-public enum MessageEnum
-{
+import lombok.Getter;
+
+@Getter
+public enum MessageEnum {
 	//Error Messages
     ErrorFiringInProgress ("Error.FiringInProgress", true),
 	ErrorLoadingInProgress ("Error.LoadingInProgress", true),
@@ -120,30 +122,20 @@ public enum MessageEnum
 	HelpAdjust ("Help.Adjust");
 
 	
-	private final String str;
+	private final String string;
 	private final boolean isError;
 	
-	MessageEnum(String str, boolean e)
-	{
-		this.str = str;
+	MessageEnum(String str, boolean e) {
+		this.string = str;
         this.isError = e;
 	}
-	MessageEnum(String str)
-	{
-		this.str = str;
+	MessageEnum(String str) {
+		this.string = str;
         isError = false;
 	}
 
-	public String getString()
-	{
-		return str;
-	}
-	public boolean isValid()
+    public boolean isValid()
 	{
 		return !isError;
-	}
-	public boolean isError()
-	{
-		return isError;
 	}
 }

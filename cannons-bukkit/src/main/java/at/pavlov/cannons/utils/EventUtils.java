@@ -1,6 +1,6 @@
 package at.pavlov.cannons.utils;
 
-import at.pavlov.cannons.Enum.BreakCause;
+import at.pavlov.internal.enums.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import org.bukkit.block.Block;
@@ -52,7 +52,7 @@ public class EventUtils {
 
         //now remove all invalid cannons
         for (UUID id : remove) {
-            cannonManager.removeCannon(id, false, true, BreakCause.Explosion);
+            cannonManager.removeCannon(id, false, true, BreakCause.EXPLOSION);
         }
     }
 }

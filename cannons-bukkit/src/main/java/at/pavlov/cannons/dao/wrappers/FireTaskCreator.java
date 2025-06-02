@@ -1,6 +1,6 @@
 package at.pavlov.cannons.dao.wrappers;
 
-import at.pavlov.cannons.Enum.ProjectileCause;
+import at.pavlov.internal.enums.ProjectileCause;
 import at.pavlov.cannons.cannon.Cannon;
 
 import java.util.UUID;
