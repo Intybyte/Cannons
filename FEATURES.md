@@ -1,14 +1,17 @@
-New features/fixes:
+New features
 ---------------
 - 1.20.6 + Support
-- Correct projectile behaviour for projectiles like ender dragon fireballs, tridents etc.
-- Fix the ability to pickup projectiles like arrows
-- Requires Java 17
 - Added Netherite and newer armor protection support
 - Simplified Chinese Translation by [SnowCutieOwO](https://github.com/SnowCutieOwO)
 - New area commands
 - Mohist compatibility (kind of, you need to use particle aiming)
 - Folia support
+
+Fixes:
+---------------
+- Correct projectile behaviour for projectiles like ender dragon fireballs, tridents etc.
+- Fix the ability to pickup projectiles like arrows
+- Fix fire falling block on explosion not being recognized by movecraft
 
 Hooks:
 ---------------
@@ -46,4 +49,3 @@ Other:
 - New CannonPreLoadEvent 
 - New CannonRenameEvent
 - New CannonGunpowderLoadEvent (gives accurate data on how much gunpowder is loaded)
-- ArmorCalculationUtil now handles internal calculations for damage, every method there is public and can be used by an addon
