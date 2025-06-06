@@ -1,7 +1,6 @@
 package at.pavlov.cannons.multiversion;
 
 import at.pavlov.cannons.Cannons;
-import org.bukkit.ExplosionResult;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -22,7 +21,7 @@ public class EventResolver {
             float yield
     ) {
         if (version[1] >= 21) {
-            return new EntityExplodeEvent(proj_entity, impactLoc, blocks, yield, ExplosionResult.DESTROY);
+            return new EntityExplodeEvent(proj_entity, impactLoc, blocks, yield, org.bukkit.ExplosionResult.DESTROY);
         } else {
             try {
                 Constructor<?> constructor = EntityExplodeEvent.class.getConstructor(Entity.class, Location.class, List.class, float.class);
@@ -33,5 +32,14 @@ public class EventResolver {
         }
 
         return null;
+    }
+
+    public static boolean isValidExplosion(EntityExplodeEvent event) {
+        if (version[1] >= 21) {
+            var result = event.getExplosionResult();
+            return result == org.bukkit.ExplosionResult.DESTROY || result == org.bukkit.ExplosionResult.DESTROY_WITH_DECAY;
+        }
+
+        return true;
     }
 }
