@@ -74,6 +74,17 @@ public class SimpleBlock {
     }
 
     /**
+     * compares the real world block by material
+     * @param world the world of the block
+     * @param offset the locations in x,y,z
+     * @return true if both block are equal in data
+     */
+    public boolean compareMaterial(World world, Vector offset) {
+        Block block = toLocation(world, offset).getBlock();
+        return compareMaterial(block.getBlockData());
+    }
+
+    /**
      * return true if Materials match
      * @param block block to compare to
      * @return true if both block match
