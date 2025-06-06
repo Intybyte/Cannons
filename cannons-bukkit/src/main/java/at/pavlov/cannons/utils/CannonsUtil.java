@@ -543,10 +543,12 @@ public class CannonsUtil
      * @return rotated blockData
      */
     public static BlockData roateBlockFacingClockwise(BlockData blockData){
-        if (blockData instanceof Directional directional){
-            directional.setFacing(roatateFace(directional.getFacing()));
+        if (blockData instanceof Directional) {
+            Directional copy = (Directional) blockData.clone(); // clone first
+            copy.setFacing(roatateFace(copy.getFacing()));
+            return copy;
         }
-        return blockData;
+        return blockData; // Not directional, return as-is
     }
 
     /**

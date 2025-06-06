@@ -659,7 +659,7 @@ public class CannonManager {
 
                 for (SimpleBlock designBlock : designBlockList) {
                     // compare blocks
-                    if (!designBlock.compareMaterialAndFacing(blockData)) {
+                    if (!designBlock.compareMaterial(blockData)) {
                         continue;
                     }
 
@@ -670,7 +670,7 @@ public class CannonManager {
                     boolean isCannon = true;
 
                     for (SimpleBlock checkBlocks : designBlockList) {
-                        if (!checkBlocks.compareMaterialAndFacing(world, offset)) {
+                        if (!checkBlocks.compareMaterial(world, offset)) {
                             // if the block does not match this is not the
                             // right one
                             isCannon = false;

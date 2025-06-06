@@ -469,8 +469,7 @@ public class DesignStorage
 
                 // #############  find the min and max for muzzle blocks so the
                 // cannonball is fired from the middle
-                if (sblock.compareMaterial(blockMuzzle))
-                {
+                if (sblock.compareMaterial(blockMuzzle)) {
                     // reset for the first entry
                     if (firstEntryMuzzle) {
                         firstEntryMuzzle = false;
@@ -502,7 +501,7 @@ public class DesignStorage
                 else if (sblock.compareMaterial(blockRedstoneWireAndRepeater))
                     cannonBlocks.addRedstoneWiresAndRepeater(new SimpleBlock(x, y, z, Material.REPEATER));
                     // #############  redstoneTrigger
-                else if (sblock.compareMaterialAndFacing(blockRedstoneTrigger)) {
+                else if (sblock.compareMaterial(blockRedstoneTrigger)) {
                     cannonBlocks.addRedstoneTrigger(new Vector(x, y, z));
                     // buttons or levers are part of the cannon
                     cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRedstoneTrigger));
@@ -511,11 +510,10 @@ public class DesignStorage
                         cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
                 }
                 // #############  rightClickTrigger
-                else if (sblock.compareMaterialAndFacing(blockRightClickTrigger))
-                {
+                else if (sblock.compareMaterial(blockRightClickTrigger)) {
                     cannonBlocks.addRightClickTrigger(new Vector(x, y, z));
                     //can be also a sign
-                    if (sblock.compareMaterialAndFacing(blockChestAndSign))
+                    if (sblock.compareMaterial(blockChestAndSign))
                         // the id does not matter, but the data is important for signs
                         cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, sblock.getBlockData())); //Material.WALL_SIGN
                     // firing blocks are also part of the cannon are
@@ -543,7 +541,7 @@ public class DesignStorage
 
                 // #############  firingIndicator
                 // can be everywhere on the cannon
-                if (sblock.compareMaterialAndFacing(blockFiringIndicator))
+                if (sblock.compareMaterial(blockFiringIndicator))
                     cannonBlocks.addFiringIndicator(new Vector(x, y, z));
             }
 
@@ -559,15 +557,15 @@ public class DesignStorage
             Vector compensation = new Vector(cannonBlocks.getMuzzle().getBlockX(), cannonBlocks.getMuzzle().getBlockY(), cannonBlocks.getMuzzle().getBlockZ());
 
             for (SimpleBlock block : cannonBlocks.getAllCannonBlocks())
-                block.subtract_noCopy(compensation);
+                block.directSubtract(compensation);
             for (Vector block : cannonBlocks.getBarrelBlocks())
                 block.subtract(compensation);
             for (SimpleBlock block : cannonBlocks.getChestsAndSigns())
-                block.subtract_noCopy(compensation);
+                block.directSubtract(compensation);
             for (Vector block : cannonBlocks.getRedstoneTorches())
                 block.subtract(compensation);
             for (SimpleBlock block : cannonBlocks.getRedstoneWiresAndRepeater())
-                block.subtract_noCopy(compensation);
+                block.directSubtract(compensation);
             for (Vector block : cannonBlocks.getRedstoneTrigger())
                 block.subtract(compensation);
             for (Vector block : cannonBlocks.getRightClickTrigger())
@@ -583,21 +581,18 @@ public class DesignStorage
 			cannonDesign.putCannonBlockMap(cannonDirection, cannonBlocks);
 
 			//rotate blocks for the next iteration
-            CannonsUtil.roateBlockFacingClockwise(blockIgnore);
-            CannonsUtil.roateBlockFacingClockwise(blockMuzzle);
-            CannonsUtil.roateBlockFacingClockwise(blockFiringIndicator);
-            CannonsUtil.roateBlockFacingClockwise(blockRotationCenter);
-            CannonsUtil.roateBlockFacingClockwise(blockChestAndSign);
-            CannonsUtil.roateBlockFacingClockwise(blockRedstoneTorch);
-//			if (blockRedstoneWireAndRepeater.getData() != -1)
-//                CannonsUtil.roateBlockFacingClockwise(blockRedstoneWireAndRepeater);
-            CannonsUtil.roateBlockFacingClockwise(blockRedstoneTrigger);
-            CannonsUtil.roateBlockFacingClockwise(blockRightClickTrigger);
-            CannonsUtil.roateBlockFacingClockwise(replaceRedstoneTrigger);
-            CannonsUtil.roateBlockFacingClockwise(replaceRightClickTrigger);
-			for (BlockData aBlockProtectedList : blockProtectedList) {
-                CannonsUtil.roateBlockFacingClockwise(aBlockProtectedList);
-			}
+			blockIgnore = CannonsUtil.roateBlockFacingClockwise(blockIgnore);
+			blockMuzzle = CannonsUtil.roateBlockFacingClockwise(blockMuzzle);
+			blockFiringIndicator = CannonsUtil.roateBlockFacingClockwise(blockFiringIndicator);
+			blockRotationCenter = CannonsUtil.roateBlockFacingClockwise(blockRotationCenter);
+			blockChestAndSign = CannonsUtil.roateBlockFacingClockwise(blockChestAndSign);
+			blockRedstoneTorch = CannonsUtil.roateBlockFacingClockwise(blockRedstoneTorch);
+			blockRedstoneTrigger = CannonsUtil.roateBlockFacingClockwise(blockRedstoneTrigger);
+			blockRightClickTrigger = CannonsUtil.roateBlockFacingClockwise(blockRightClickTrigger);
+			replaceRedstoneTrigger = CannonsUtil.roateBlockFacingClockwise(replaceRedstoneTrigger);
+			replaceRightClickTrigger = CannonsUtil.roateBlockFacingClockwise(replaceRightClickTrigger);
+
+			blockProtectedList = blockProtectedList.stream().map(CannonsUtil::roateBlockFacingClockwise).toList();
 
 			//rotate schematic blocks
 			for (SimpleBlock simpleBlock : schematicList){
