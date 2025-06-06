@@ -133,7 +133,7 @@ public class SimpleBlock {
      * shifts the location of the block without comparing the id
      * @param vect vector to subtract
      */
-    public void subtract_noCopy(Vector vect) {
+    public void directSubtract(Vector vect) {
         locX -= vect.getBlockX();
         locY -= vect.getBlockY();
         locZ -= vect.getBlockZ();

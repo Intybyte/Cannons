@@ -557,15 +557,15 @@ public class DesignStorage
             Vector compensation = new Vector(cannonBlocks.getMuzzle().getBlockX(), cannonBlocks.getMuzzle().getBlockY(), cannonBlocks.getMuzzle().getBlockZ());
 
             for (SimpleBlock block : cannonBlocks.getAllCannonBlocks())
-                block.subtract_noCopy(compensation);
+                block.directSubtract(compensation);
             for (Vector block : cannonBlocks.getBarrelBlocks())
                 block.subtract(compensation);
             for (SimpleBlock block : cannonBlocks.getChestsAndSigns())
-                block.subtract_noCopy(compensation);
+                block.directSubtract(compensation);
             for (Vector block : cannonBlocks.getRedstoneTorches())
                 block.subtract(compensation);
             for (SimpleBlock block : cannonBlocks.getRedstoneWiresAndRepeater())
-                block.subtract_noCopy(compensation);
+                block.directSubtract(compensation);
             for (Vector block : cannonBlocks.getRedstoneTrigger())
                 block.subtract(compensation);
             for (Vector block : cannonBlocks.getRightClickTrigger())
