@@ -1,7 +1,6 @@
 package at.pavlov.cannons.container;
 
 
-import at.pavlov.cannons.utils.CannonsUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -131,7 +130,6 @@ public class SimpleBlock {
 
     /**
      * shifts the location of the block without comparing the id
-     * @param loc
      */
     public SimpleBlock subtractInverted(Location loc) {
         return new SimpleBlock(loc.getBlockX() - locX, loc.getBlockY() - locY, loc.getBlockZ() - locZ, this.blockData);
@@ -140,7 +138,6 @@ public class SimpleBlock {
 
     /**
      * shifts the location of the block without comparing the id
-     * @param loc
      */
     public SimpleBlock subtract(Location loc) {
         return new SimpleBlock(locX - loc.getBlockX(), locY - loc.getBlockY(), locZ - loc.getBlockZ(), this.blockData);
@@ -150,9 +147,9 @@ public class SimpleBlock {
      * rotate the block 90° degree clockwise
      */
     public void rotate90() {
-        int newx = -this.locZ;
+        int newX = -this.locZ;
         this.locZ = this.locX;
-        this.locX = newx;
+        this.locX = newX;
     }
 
     /**
