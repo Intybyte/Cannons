@@ -34,4 +34,12 @@ public class EventResolver {
 
         return null;
     }
+
+    public static boolean isValidExplosion(EntityExplodeEvent event) {
+        if (version[1] >= 21) {
+            return event.getExplosionResult() == ExplosionResult.DESTROY;
+        }
+
+        return true;
+    }
 }
