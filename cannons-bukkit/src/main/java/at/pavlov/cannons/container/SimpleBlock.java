@@ -84,31 +84,6 @@ public class SimpleBlock {
     }
 
     /**
-     * compares material and facing
-     * @param blockData block to compare to
-     * @return true if both block match
-     */
-    public boolean compareMaterialAndFacing(BlockData blockData) {
-        // different materials
-        if (!compareMaterial(blockData)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * compares the real world block by material and facing
-     * @param world the world of the block
-     * @param offset the locations in x,y,z
-     * @return true if both block are equal in data and facing
-     */
-    public boolean compareMaterialAndFacing(World world, Vector offset) {
-        Block block = toLocation(world, offset).getBlock();
-        return compareMaterialAndFacing(block.getBlockData());
-    }
-
-    /**
      * matches all entries in this SimpleBlock to the given block
      * @param blockData block to compare to
      * @return true if both block match
@@ -175,7 +150,6 @@ public class SimpleBlock {
      * rotate the block 90° degree clockwise
      */
     public void rotate90() {
-        this.blockData = CannonsUtil.roateBlockFacingClockwise(this.blockData);
         int newx = -this.locZ;
         this.locZ = this.locX;
         this.locX = newx;

@@ -501,7 +501,7 @@ public class DesignStorage
                 else if (sblock.compareMaterial(blockRedstoneWireAndRepeater))
                     cannonBlocks.addRedstoneWiresAndRepeater(new SimpleBlock(x, y, z, Material.REPEATER));
                     // #############  redstoneTrigger
-                else if (sblock.compareMaterialAndFacing(blockRedstoneTrigger)) {
+                else if (sblock.compareMaterial(blockRedstoneTrigger)) {
                     cannonBlocks.addRedstoneTrigger(new Vector(x, y, z));
                     // buttons or levers are part of the cannon
                     cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRedstoneTrigger));
@@ -510,10 +510,10 @@ public class DesignStorage
                         cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
                 }
                 // #############  rightClickTrigger
-                else if (sblock.compareMaterialAndFacing(blockRightClickTrigger)) {
+                else if (sblock.compareMaterial(blockRightClickTrigger)) {
                     cannonBlocks.addRightClickTrigger(new Vector(x, y, z));
                     //can be also a sign
-                    if (sblock.compareMaterialAndFacing(blockChestAndSign))
+                    if (sblock.compareMaterial(blockChestAndSign))
                         // the id does not matter, but the data is important for signs
                         cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, sblock.getBlockData())); //Material.WALL_SIGN
                     // firing blocks are also part of the cannon are
@@ -541,7 +541,7 @@ public class DesignStorage
 
                 // #############  firingIndicator
                 // can be everywhere on the cannon
-                if (sblock.compareMaterialAndFacing(blockFiringIndicator))
+                if (sblock.compareMaterial(blockFiringIndicator))
                     cannonBlocks.addFiringIndicator(new Vector(x, y, z));
             }
 
