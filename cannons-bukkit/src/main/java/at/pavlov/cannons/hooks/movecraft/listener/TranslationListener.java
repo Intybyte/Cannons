@@ -1,7 +1,7 @@
 package at.pavlov.cannons.hooks.movecraft.listener;
 
-import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.hooks.movecraft.MovecraftUtils;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.events.CraftTranslateEvent;
 import org.bukkit.event.EventHandler;
@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 public class TranslationListener implements Listener {
-    private static final Cannons cannonPlugin = Cannons.getPlugin();
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void translateListener(CraftTranslateEvent e) {
@@ -22,7 +21,7 @@ public class TranslationListener implements Listener {
         if (v == null)
             return;
 
-        Set<Cannon> cannons = cannonPlugin.getCannonsAPI().getCannons(e.getCraft());
+        Set<Cannon> cannons = MovecraftUtils.getCannons(e.getCraft());
         if (cannons.isEmpty())
             return;
         for (Cannon c : cannons) {
