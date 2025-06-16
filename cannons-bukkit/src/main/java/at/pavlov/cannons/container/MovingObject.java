@@ -1,5 +1,6 @@
 package at.pavlov.cannons.container;
 
+import com.cryptomorin.xseries.XEntityType;
 import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -45,6 +46,11 @@ import java.util.UUID;
      * @return gravity to subtract to a specific entity type matching vanilla implementation
      */
     public double getGravity() {
+        final EntityType breezeWindCharge = XEntityType.BREEZE_WIND_CHARGE.get();
+        if (breezeWindCharge != null && entityType == breezeWindCharge) {
+            return 0.0;
+        }
+
         return switch (entityType) {
             case ARROW, TRIDENT, SPECTRAL_ARROW -> 0.05;
             case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL,
@@ -55,14 +61,26 @@ import java.util.UUID;
     }
 
     /**
-     * Returns a value between 0 and 0.99, the smaller the number the stronger the drag
-     * which means the projectile will get slowed down, used with Vector#multiply
+     * Returns a value between 0 and 1.0, a small float means that the projectile
+     * will get slowed down, whereas a high number will not change much the original vector,
+     * used with Vector#multiply.
+     * <br>
+     * Drag force is a mechanical force that opposes the motion of an object moving through a fluid.
      *
      * @param inWater the projectile is in water, in this case the drag is stronger
      *
      * @return drag multiplier for a specific entity matching vanilla implementation
      */
+    // they got some real PhD Physicists at mojang so instead of calling it drag
+    // in their code it is called 'getInertia' even if it handled like its opposite.
+    // in case someone else has to work on this and a new projectile entity needs to be added
+    // now you know where to go on paper's internal code.
     public double getDrag(boolean inWater) {
+        final EntityType breezeWindCharge = XEntityType.BREEZE_WIND_CHARGE.get();
+        if (breezeWindCharge != null && entityType == breezeWindCharge) {
+            return 1.0;
+        }
+
         return switch (entityType) {
             case ARROW, SPECTRAL_ARROW -> inWater ? 0.6 : 0.99;
             case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL,
