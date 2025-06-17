@@ -28,7 +28,7 @@ jobs:
         server-password: ${{ secrets.TOKEN }} 
 
     - name: Build with Maven
-      run: mvn -B -q package --file pom.xml --settings maven-settings.xml
+      run: mvn -B -q package --file pom.xml --settings $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml
       env:
         TOKEN: ${{ secrets.TOKEN }}
 
