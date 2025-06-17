@@ -173,7 +173,7 @@
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
 
-        <finalName>${project.name}</finalName>
+        <finalName>${project.name}-${version}</finalName>
         <defaultGoal>clean install</defaultGoal>
         <!-- Resources -->
         <resources>
