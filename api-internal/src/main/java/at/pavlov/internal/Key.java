@@ -1,6 +1,7 @@
 package at.pavlov.internal;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -33,21 +34,24 @@ public record Key(String namespace, String key) {
         }
 
         if (strings.length == 1) {
-            return Key.mc(strings[0]);
+            return Key.mc(strings[0].trim());
         }
 
-        return new Key(strings[0], strings[1]);
+        return new Key(strings[0].trim(), strings[1].trim());
     }
 
     public String full() {
         return namespace + ":" + key;
     }
 
+    public boolean matches(String s) {
+        return this.full().equals(s);
+    }
+
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Key[" +
                 "namespace=" + namespace + ", " +
                 "key=" + key + ']';
     }
-
 }
