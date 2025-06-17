@@ -43,11 +43,67 @@ jobs:
 
       - name: Build with Maven
         run: mvn -B -q package --file pom.xml --settings $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml
+        continue-on-error: true
         env:
           TOKEN: ${{ secrets.TOKEN }}
 
       - name: Upload the artifact
+        if: ${{ success() && steps.build.outcome == 'success' }}
         uses: actions/upload-artifact@v4
         with:
           name: cannons-bukkit${{ github.event.number }}-${{ env.SHORT_COMMIT_HASH }}
           path: 'cannons-bukkit/target/cannons-bukkit-${{ env.JAR_VERSION }}.jar'
+
+      - name: Publish to GitHub Packages Apache Maven
+        if: ${{ success() && steps.build.outcome == 'success' }}
+        run: mvn deploy -pl cannons-bukkit -am --settings $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+
+      - name: Get artifact download URL
+        id: get-artifact-url
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          echo "Fetching artifacts for run $RUN_ID"
+          ARTIFACTS_JSON=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/artifacts")
+
+          # Find the artifact id by name, assuming you know the exact artifact name or take the first one
+          ARTIFACT_ID=$(echo "$ARTIFACTS_JSON" | jq -r '.artifacts[] | select(.name=="cannons-bukkit'${{ github.event.number }}'-'${{ env.SHORT_COMMIT_HASH }}'") | .id')
+
+          # Fallback to first artifact if name match fails
+          if [ -z "$ARTIFACT_ID" ] || [ "$ARTIFACT_ID" == "null" ]; then
+            ARTIFACT_ID=$(echo "$ARTIFACTS_JSON" | jq -r '.artifacts[0].id')
+          fi
+
+          if [ -z "$ARTIFACT_ID" ] || [ "$ARTIFACT_ID" == "null" ]; then
+            echo "No artifact found"
+            exit 1
+          fi
+
+          DOWNLOAD_URL="https://github.com/$REPO/suites/$RUN_ID/artifacts/$ARTIFACT_ID"
+          echo "Artifact download URL: $DOWNLOAD_URL"
+
+          echo "artifact_url=$DOWNLOAD_URL" >> $GITHUB_OUTPUT
+
+      - name: Comment success on PR
+        if: ${{ steps.build.outcome == 'success' }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ✅ Build succeeded!  
+            Download the artifact [here](${{ steps.get-artifact-url.outputs.artifact_url }})
+
+      - name: Comment failure on PR
+        if: ${{ steps.build.outcome != 'success' }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ❌ Build failed. 
+            Please check the logs [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
