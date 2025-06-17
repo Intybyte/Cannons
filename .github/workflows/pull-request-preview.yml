@@ -54,12 +54,6 @@ jobs:
           name: cannons-bukkit${{ github.event.number }}-${{ env.SHORT_COMMIT_HASH }}
           path: 'cannons-bukkit/target/cannons-bukkit-${{ env.JAR_VERSION }}.jar'
 
-      - name: Publish to GitHub Packages Apache Maven
-        if: ${{ steps.build.outcome == 'success' }}
-        run: mvn deploy -pl cannons-bukkit -am --settings $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml
-        env:
-          TOKEN: ${{ secrets.TOKEN }}
-
       - name: Get artifact download URL
         id: get-artifact-url
         env:
