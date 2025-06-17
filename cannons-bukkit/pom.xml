@@ -53,11 +53,11 @@
         </repository>
         <repository>
             <id>papermc</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
             <id>github</id>
-            <url>https://maven.pkg.github.com/apdevteam/movecraft</url>
+            <url>https://maven.pkg.github.com/APDevTeam/Movecraft</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -173,7 +173,7 @@
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
 
-        <finalName>${project.name}</finalName>
+        <finalName>${project.name}-${version}</finalName>
         <defaultGoal>clean install</defaultGoal>
         <!-- Resources -->
         <resources>
@@ -214,10 +214,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.1</version>
-            </plugin>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
                 <version>3.1.1</version>
             </plugin>
             <plugin>
@@ -291,6 +287,13 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.4</version>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -1,0 +1,106 @@
+name: Pull Request
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  setup-preview-build:
+    name: Preview build
+    runs-on: ubuntu-latest
+    outputs:
+      short-commit-hash: ${{ steps.env-setup.outputs.SHORT_COMMIT_HASH }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      # Setup for the preview build
+      - id: env-setup
+        run: |
+          SHORT_COMMIT_HASH=$(git rev-parse --short=8 ${{ github.sha }})
+          JAR_VERSION="Preview-Build-#${{ github.event.number }}-$SHORT_COMMIT_HASH"
+          echo "SHORT_COMMIT_HASH=$SHORT_COMMIT_HASH" >> "$GITHUB_ENV"
+          echo "SHORT_COMMIT_HASH=$SHORT_COMMIT_HASH" >> "$GITHUB_OUTPUT"
+          echo "JAR_VERSION=$JAR_VERSION" >> "$GITHUB_ENV"
+
+      - name: Set preview version for cannons-bukkit
+        run: mvn -B -q versions:set -DnewVersion="${JAR_VERSION}" -f cannons-bukkit/pom.xml
+
+      - name: Build with Maven
+        id: build
+        run: mvn -B -q package --file pom.xml --settings $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+
+      - name: Upload the artifact
+        if: ${{ steps.build.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cannons-bukkit${{ github.event.number }}-${{ env.SHORT_COMMIT_HASH }}
+          path: 'cannons-bukkit/target/cannons-bukkit-${{ env.JAR_VERSION }}.jar'
+
+      - name: Get artifact download URL
+        id: get-artifact-url
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          PR_NUMBER: ${{ github.event.number }}
+          SHORT_HASH: ${{ env.SHORT_COMMIT_HASH }}
+        run: |
+          echo "Fetching artifacts for run $RUN_ID"
+          ARTIFACTS_JSON=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/artifacts")
+
+          ARTIFACT_NAME="cannons-bukkit${PR_NUMBER}-${SHORT_HASH}"
+          ARTIFACT_ID=$(echo "$ARTIFACTS_JSON" | jq -r --arg name "$ARTIFACT_NAME" '.artifacts[] | select(.name==$name) | .id')
+
+          if [ -z "$ARTIFACT_ID" ] || [ "$ARTIFACT_ID" == "null" ]; then
+            ARTIFACT_ID=$(echo "$ARTIFACTS_JSON" | jq -r '.artifacts[0].id')
+          fi
+
+          if [ -z "$ARTIFACT_ID" ] || [ "$ARTIFACT_ID" == "null" ]; then
+            echo "No artifact found"
+            exit 1
+          fi
+
+          DOWNLOAD_URL="https://github.com/$REPO/suites/$RUN_ID/artifacts/$ARTIFACT_ID"
+          echo "Artifact download URL: $DOWNLOAD_URL"
+
+          echo "artifact_url=$DOWNLOAD_URL" >> $GITHUB_OUTPUT
+
+      - name: Comment success on PR
+        if: ${{ steps.build.outcome == 'success' }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ✅ Build succeeded!  
+            Download the artifact [here](${{ steps.get-artifact-url.outputs.artifact_url }})
+
+      - name: Comment failure on PR
+        if: ${{ steps.build.outcome != 'success' }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ❌ Build failed. 
+            Please check the logs [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
