@@ -1,0 +1,49 @@
+name: Pull Request
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  setup-preview-build:
+    name: Preview build
+    runs-on: ubuntu-latest
+    outputs:
+      short-commit-hash: ${{ steps.env-setup.outputs.SHORT_COMMIT_HASH }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      # Setup for the preview build
+      - id: env-setup
+        run: |
+          SHORT_COMMIT_HASH=$(git rev-parse --short=8 ${{ github.sha }})
+          JAR_VERSION="Preview Build #${{ github.event.number }}-$SHORT_COMMIT_HASH"
+          echo "SHORT_COMMIT_HASH=$SHORT_COMMIT_HASH" >> "$GITHUB_ENV"
+          echo "SHORT_COMMIT_HASH=$SHORT_COMMIT_HASH" >> "$GITHUB_OUTPUT"
+          echo "JAR_VERSION=$JAR_VERSION" >> "$GITHUB_ENV"
+          sed -i 's/<version>\([0-9]\+\.[0-9]\+\.[0-9]\+\)<\/version>/<version>\1-PREVIEW<\/version>/' pom.xml
+      - name: Build with Maven
+        run: mvn -B -q package --file pom.xml --settings $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cannons-${{ github.event.number }}-${{ env.SHORT_COMMIT_HASH }}
+          path: 'target/Cannons ${{ env.JAR_VERSION }}.jar'
