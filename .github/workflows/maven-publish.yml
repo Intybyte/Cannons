@@ -28,7 +28,9 @@ jobs:
         server-password: ${{ secrets.TOKEN }} 
 
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B -q package --file pom.xml --settings maven-settings.xml
+      env:
+        TOKEN: ${{ secrets.TOKEN }}
 
     - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy
