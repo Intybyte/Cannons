@@ -33,6 +33,6 @@ jobs:
         TOKEN: ${{ secrets.TOKEN }}
 
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy --settings $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml
+      run: mvn deploy -pl cannons-bukkit -am --settings $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml
       env:
         TOKEN: ${{ secrets.TOKEN }}
