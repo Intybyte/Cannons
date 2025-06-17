@@ -1,5 +1,6 @@
 package at.pavlov.cannons;
 
+import at.pavlov.internal.Key;
 import at.pavlov.internal.enums.FakeBlockType;
 import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;
@@ -865,7 +866,7 @@ public class Aiming {
         Location muzzle = cannon.getMuzzle();
         Vector vel = cannon.getTargetVector();
 
-        MovingObject predictor = new MovingObject(muzzle, vel, cannon.getProjectileEntityType());
+        MovingObject predictor = new MovingObject(muzzle, vel, cannon.getProjectileEntityKey());
         Vector start = muzzle.toVector();
 
         int maxInterations = 500;
@@ -902,7 +903,8 @@ public class Aiming {
      * @return distance how much above/below the projectile will hit
      */
     private double simulateShot(Vector vector, Location muzzle, Location target, EntityType projectileType, int maxInterations) {
-        MovingObject cannonball = new MovingObject(muzzle, vector, projectileType);
+        Key entityKey = Key.mc(projectileType.getKey().getKey());
+        MovingObject cannonball = new MovingObject(muzzle, vector, entityKey);
         double target_distance_squared = Math.pow(target.getX() - muzzle.getX(), 2) + Math.pow(target.getZ() - muzzle.getZ(), 2);
 
         Vector oldLoc = null;
@@ -1249,9 +1251,8 @@ public class Aiming {
         Location muzzle = cannon.getMuzzle();
         Vector vel = cannon.getFiringVector(false, false);
 
-        MovingObject predictor = new MovingObject(muzzle, vel, cannon.getProjectileEntityType());
+        MovingObject predictor = new MovingObject(muzzle, vel, cannon.getProjectileEntityKey());
         Vector start = muzzle.toVector();
-
 
         //make a few iterations until we hit something
         for (int i = 0; start.distance(predictor.getLoc()) < config.getImitatedPredictorDistance() && i < config.getImitatedPredictorIterations(); i++) {

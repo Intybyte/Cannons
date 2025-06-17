@@ -8,6 +8,7 @@ import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.FileUtils;
 import at.pavlov.cannons.utils.ParseUtils;
+import at.pavlov.internal.Key;
 import at.pavlov.internal.projectile.ProjectileProperties;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -211,7 +212,7 @@ public class ProjectileStorage
 		projectile.setLoadingItem(new ItemHolder(projectileConfig.getString("general.loadingItem", "minecraft:cobblestone")));
 
 		//cannonball
-		projectile.setProjectileEntity(getProjectileEntity(projectileConfig.getString("cannonball.entityType", "SNOWBALL")));
+		projectile.setProjectileEntityKey(Key.from(projectileConfig.getString("cannonball.entityType", "SNOWBALL")));
 		projectile.setProjectileOnFire(projectileConfig.getBoolean("cannonball.isOnFire", false));
 		projectile.setVelocity(projectileConfig.getDouble("cannonball.velocity", 1.0));
 		if (projectile.getVelocity() < 0.01)
