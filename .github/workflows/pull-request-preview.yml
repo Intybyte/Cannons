@@ -42,20 +42,20 @@ jobs:
         run: mvn -B -q versions:set -DnewVersion="${JAR_VERSION}" -f cannons-bukkit/pom.xml
 
       - name: Build with Maven
+        id: build
         run: mvn -B -q package --file pom.xml --settings $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml
-        continue-on-error: true
         env:
           TOKEN: ${{ secrets.TOKEN }}
 
       - name: Upload the artifact
-        if: ${{ success() && steps.build.outcome == 'success' }}
+        if: ${{ steps.build.outcome == 'success' }}
         uses: actions/upload-artifact@v4
         with:
           name: cannons-bukkit${{ github.event.number }}-${{ env.SHORT_COMMIT_HASH }}
           path: 'cannons-bukkit/target/cannons-bukkit-${{ env.JAR_VERSION }}.jar'
 
       - name: Publish to GitHub Packages Apache Maven
-        if: ${{ success() && steps.build.outcome == 'success' }}
+        if: ${{ steps.build.outcome == 'success' }}
         run: mvn deploy -pl cannons-bukkit -am --settings $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml
         env:
           TOKEN: ${{ secrets.TOKEN }}
@@ -66,14 +66,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
+          PR_NUMBER: ${{ github.event.number }}
+          SHORT_HASH: ${{ env.SHORT_COMMIT_HASH }}
         run: |
           echo "Fetching artifacts for run $RUN_ID"
           ARTIFACTS_JSON=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/artifacts")
 
-          # Find the artifact id by name, assuming you know the exact artifact name or take the first one
-          ARTIFACT_ID=$(echo "$ARTIFACTS_JSON" | jq -r '.artifacts[] | select(.name=="cannons-bukkit'${{ github.event.number }}'-'${{ env.SHORT_COMMIT_HASH }}'") | .id')
+          ARTIFACT_NAME="cannons-bukkit${PR_NUMBER}-${SHORT_HASH}"
+          ARTIFACT_ID=$(echo "$ARTIFACTS_JSON" | jq -r --arg name "$ARTIFACT_NAME" '.artifacts[] | select(.name==$name) | .id')
 
-          # Fallback to first artifact if name match fails
           if [ -z "$ARTIFACT_ID" ] || [ "$ARTIFACT_ID" == "null" ]; then
             ARTIFACT_ID=$(echo "$ARTIFACTS_JSON" | jq -r '.artifacts[0].id')
           fi
