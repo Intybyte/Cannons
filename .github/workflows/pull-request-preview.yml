@@ -33,7 +33,7 @@ jobs:
       - id: env-setup
         run: |
           SHORT_COMMIT_HASH=$(git rev-parse --short=8 ${{ github.sha }})
-          JAR_VERSION="Preview Build #${{ github.event.number }}-$SHORT_COMMIT_HASH"
+          JAR_VERSION="Preview-Build-#${{ github.event.number }}-$SHORT_COMMIT_HASH"
           echo "SHORT_COMMIT_HASH=$SHORT_COMMIT_HASH" >> "$GITHUB_ENV"
           echo "SHORT_COMMIT_HASH=$SHORT_COMMIT_HASH" >> "$GITHUB_OUTPUT"
           echo "JAR_VERSION=$JAR_VERSION" >> "$GITHUB_ENV"
@@ -50,4 +50,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cannons-bukkit${{ github.event.number }}-${{ env.SHORT_COMMIT_HASH }}
-          path: 'cannons-bukkit/target/cannons-bukkit ${{ env.JAR_VERSION }}.jar'
+          path: 'cannons-bukkit/target/cannons-bukkit-${{ env.JAR_VERSION }}.jar'
