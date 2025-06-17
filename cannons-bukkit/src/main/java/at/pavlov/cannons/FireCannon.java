@@ -249,7 +249,7 @@ public class FireCannon {
                 boolean lastRound = i == (projectile.getAutomaticFiringMagazineSize() - 1);
                 double randomess = 1. + design.getFuseBurnTimeRandomness() * random.nextDouble();
                 long delayTime = (long) (randomess * design.getFuseBurnTime() * 20.0 + i * projectile.getAutomaticFiringDelay() * 20.0);
-                BaseFireTask fireTaskWrapper = fireEvent.getFireTaskCreator().create(cannon, playerUid, lastRound, projectileCause);
+                BaseFireTask fireTaskWrapper = fireEvent.createTask(cannon, playerUid, lastRound, projectileCause);
                 scheduler.runTaskLater(cannon.getLocation(), fireTaskWrapper::fireTask, delayTime);
             }
         } catch (Exception e) {

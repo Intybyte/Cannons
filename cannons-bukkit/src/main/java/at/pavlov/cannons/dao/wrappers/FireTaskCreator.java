@@ -2,6 +2,7 @@ package at.pavlov.cannons.dao.wrappers;
 
 import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.cannon.Cannon;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -12,5 +13,5 @@ import java.util.UUID;
  */
 @FunctionalInterface
 public interface FireTaskCreator {
-    BaseFireTask create(Cannon cannon, UUID shooter, boolean removeCharge, ProjectileCause projectileCause);
+    @Nullable BaseFireTask create(Cannon cannon, UUID shooter, boolean removeCharge, ProjectileCause projectileCause);
 }

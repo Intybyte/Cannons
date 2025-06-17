@@ -1,6 +1,8 @@
 package at.pavlov.cannons.event;
 
+import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.dao.wrappers.BaseFireTask;
 import at.pavlov.cannons.dao.wrappers.FireTaskCreator;
 import at.pavlov.cannons.dao.wrappers.FireTaskWrapper;
 import lombok.Getter;
@@ -10,6 +12,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 
@@ -24,13 +27,35 @@ public class CannonFireEvent extends Event implements Cancellable {
     private static final @NotNull HandlerList handlers = new HandlerList();
     private final Cannon cannon;
     private final UUID player;
-    private FireTaskCreator fireTaskCreator = FireTaskWrapper::new;
+    private final ArrayList<FireTaskCreator> fireTaskCreators = new ArrayList<>();
     private boolean cancelled;
 
     public CannonFireEvent(Cannon cannon, UUID player) {
         this.cannon = cannon;
         this.player = player;
         this.cancelled = false;
+    }
+
+    //replace this with a list
+    //or fully implement decorator with wrapFireTaskCreator(Function<FireTaskCreator, FireTaskCreator>) current -> next
+    /**
+     * Add a FireTaskCreator as a wrapper, the first to return no null is the one handled
+     *
+     * @param creator added FireTaskCreator
+     */
+    public void addFireTaskCreator(FireTaskCreator creator) {
+        this.fireTaskCreators.add(creator);
+    }
+
+    public BaseFireTask createTask(Cannon cannon, UUID shooter, boolean removeCharge, ProjectileCause cause) {
+        for (FireTaskCreator creator : fireTaskCreators) {
+            BaseFireTask result = creator.create(cannon, shooter, removeCharge, cause);
+            if (result != null) {
+                return result;
+            }
+        }
+
+        return new FireTaskWrapper(cannon, shooter, removeCharge, cause);
     }
 
     public @NotNull HandlerList getHandlers() {
