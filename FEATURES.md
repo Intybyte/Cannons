@@ -12,6 +12,8 @@ Fixes:
 - Correct projectile behaviour for projectiles like ender dragon fireballs, tridents etc.
 - Fix the ability to pickup projectiles like arrows
 - Fix fire falling block on explosion not being recognized by movecraft
+- Craft smashing into things invalidated some cannons and created ghost cannons
+- Sinking not being handled and creating ghost cannons
 
 Hooks:
 ---------------
@@ -32,6 +34,9 @@ Optimizations:
 
 API Changes/New Events:
 --------------
+
+FireTask API:
+- You can add custom firing behaviour in CannonFireEvent by using addFireTaskCreator
 
 Exchange API:
 - You can define your own exchanges for cannons creation requirement, example at [CannonsEXP](https://github.com/Intybyte/CannonsEXP)
