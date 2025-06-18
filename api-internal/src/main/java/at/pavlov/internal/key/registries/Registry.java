@@ -2,6 +2,7 @@ package at.pavlov.internal.key.registries;
 
 import at.pavlov.internal.key.Key;
 import at.pavlov.internal.key.KeyHolder;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+@NoArgsConstructor
 public class Registry<T extends KeyHolder> {
     private final Map<Key, T> map = new HashMap<>();
 
