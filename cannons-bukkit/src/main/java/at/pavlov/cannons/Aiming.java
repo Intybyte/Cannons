@@ -1,6 +1,6 @@
 package at.pavlov.cannons;
 
-import at.pavlov.internal.Key;
+import at.pavlov.internal.key.Key;
 import at.pavlov.internal.enums.FakeBlockType;
 import at.pavlov.cannons.Enum.InteractAction;
 import at.pavlov.cannons.Enum.MessageEnum;

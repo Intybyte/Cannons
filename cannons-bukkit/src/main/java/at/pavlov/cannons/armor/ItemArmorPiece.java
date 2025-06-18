@@ -1,6 +1,6 @@
 package at.pavlov.cannons.armor;
 
-import at.pavlov.internal.Key;
+import at.pavlov.internal.key.Key;
 import at.pavlov.internal.armor.BaseArmorHolder;
 import at.pavlov.internal.armor.BaseArmorPiece;
 import com.cryptomorin.xseries.XEnchantment;

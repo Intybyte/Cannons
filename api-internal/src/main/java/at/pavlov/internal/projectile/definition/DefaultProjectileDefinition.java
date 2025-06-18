@@ -1,6 +1,6 @@
 package at.pavlov.internal.projectile.definition;
 
-import at.pavlov.internal.Key;
+import at.pavlov.internal.key.Key;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

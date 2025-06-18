@@ -9,7 +9,7 @@ import at.pavlov.cannons.config.Config;
 import at.pavlov.internal.container.DeathCause;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
-import at.pavlov.internal.Key;
+import at.pavlov.internal.key.Key;
 import at.pavlov.internal.container.SpawnMaterialHolder;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.event.CannonDamageEvent;

@@ -6,7 +6,7 @@ import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.exchange.BExchanger;
 import at.pavlov.cannons.projectile.Projectile;
-import at.pavlov.internal.Key;
+import at.pavlov.internal.key.Key;
 import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Material;

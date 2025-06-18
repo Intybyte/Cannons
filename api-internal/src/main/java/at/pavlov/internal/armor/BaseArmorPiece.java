@@ -1,6 +1,6 @@
 package at.pavlov.internal.armor;
 
-import at.pavlov.internal.Key;
+import at.pavlov.internal.key.Key;
 
 public interface BaseArmorPiece {
     BaseArmorPiece EMPTY = new BaseArmorPiece() {

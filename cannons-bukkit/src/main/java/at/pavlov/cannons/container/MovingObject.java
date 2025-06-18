@@ -1,6 +1,6 @@
 package at.pavlov.cannons.container;
 
-import at.pavlov.internal.Key;
+import at.pavlov.internal.key.Key;
 import com.cryptomorin.xseries.XEntityType;
 import lombok.Data;
 import org.bukkit.Bukkit;

@@ -8,7 +8,7 @@ import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.FileUtils;
 import at.pavlov.cannons.utils.ParseUtils;
-import at.pavlov.internal.Key;
+import at.pavlov.internal.key.Key;
 import at.pavlov.internal.projectile.ProjectileProperties;
 import lombok.Getter;
 import org.bukkit.Bukkit;

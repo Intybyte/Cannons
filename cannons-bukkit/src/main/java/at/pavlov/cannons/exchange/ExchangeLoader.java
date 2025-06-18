@@ -3,7 +3,7 @@ package at.pavlov.cannons.exchange;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.hooks.VaultHook;
 import at.pavlov.internal.Exchanger;
-import at.pavlov.internal.Key;
+import at.pavlov.internal.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.ApiStatus;
