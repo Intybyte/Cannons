@@ -13,13 +13,29 @@ import java.util.function.Supplier;
 
 @NoArgsConstructor
 public class Registry<T extends KeyHolder> {
-    private final Map<Key, T> map = new HashMap<>();
+    protected final Map<Key, T> map = new HashMap<>();
 
     public Registry(Supplier<Collection<@NotNull T>> args) {
         Collection<@NotNull T> arguments = args.get();
         for (T arg : arguments) {
             register(arg);
         }
+    }
+
+    public @NotNull T of(@Nullable Key key, @NotNull T defaultValue) {
+        if (key == null) {
+            return defaultValue;
+        }
+
+        return map.getOrDefault(key, defaultValue);
+    }
+
+    public @NotNull T of(@Nullable String string, @NotNull T defaultValue) {
+        if (string == null) {
+            return defaultValue;
+        }
+
+        return of(Key.from(string), defaultValue);
     }
 
     public @Nullable T of(@Nullable Key key) {
