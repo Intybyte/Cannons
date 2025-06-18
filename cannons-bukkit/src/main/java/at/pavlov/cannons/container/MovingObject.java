@@ -32,12 +32,36 @@ import java.util.UUID;
     public void updateProjectileLocation(boolean inWater) {
         double drag = getDrag(inWater);
         double gravity = getGravity();
-        //update location
+
+        // 1. Move based on current velocity
         this.loc.add(this.vel);
-        //slow down projectile
+
+        // 2. Apply drag to velocity
         this.vel.multiply(drag);
-        //apply gravity
+
+        // 3. Apply gravity
         this.vel.subtract(new Vector(0, gravity, 0));
+
+        // 4. Apply constant acceleration if present
+        Double accelerationPower = getConstantAccelerationPower();
+        if (accelerationPower != null) {
+            Vector acceleration = vel.clone().normalize().multiply(accelerationPower);
+            this.vel.add(acceleration);
+        }
+    }
+
+    /**
+     * Returns the constant acceleration power for projectiles that use it (e.g., fireballs).
+     * Returns null if the entity does not use constant acceleration.
+     *
+     * @return the acceleration power (e.g., 0.1) or null if not applicable
+     */
+    public Double getConstantAccelerationPower() {
+        return switch (entityType.full()) {
+            case "minecraft:fireball", "minecraft:small_fireball", "minecraft:dragon_fireball",
+                 "minecraft:wither_skull", "minecraft:shulker_bullet" -> 0.1; // vanilla default
+            default -> null;
+        };
     }
 
     /**
@@ -91,18 +115,28 @@ import java.util.UUID;
     }
 
     /**
-     * reverts and update of the projectile position
+     * Reverts an update of the projectile position.
      *
-     * @param inWater the projectile is in water
+     * @param inWater true if the projectile is in water
      */
     public void revertProjectileLocation(boolean inWater) {
         double drag = getDrag(inWater);
         double gravity = getGravity();
-        //apply gravity
+
+        // 1. Revert constant acceleration if present
+        Double accelerationPower = getConstantAccelerationPower();
+        if (accelerationPower != null) {
+            Vector acceleration = vel.clone().normalize().multiply(accelerationPower);
+            this.vel.subtract(acceleration);
+        }
+
+        // 2. Revert gravity
         this.vel.add(new Vector(0, gravity, 0));
-        //slow down projectile
+
+        // 3. Revert drag
         this.vel.multiply(1.0 / drag);
-        //update location
+
+        // 4. Revert movement
         this.loc.subtract(this.vel);
     }
 
