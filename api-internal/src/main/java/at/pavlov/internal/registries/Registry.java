@@ -38,20 +38,20 @@ public class Registry<T extends KeyHolder> {
     @SafeVarargs
     public final void register(@NotNull T... entries) {
         for (T entry : entries) {
-            if (map.containsKey(entry.key())) {
+            if (map.containsKey(entry.getKey())) {
                 throw new RegistryDuplicate("Duplicate key in registry of class: " + entry.getClass());
             }
 
-            map.put(entry.key(), entry);
+            map.put(entry.getKey(), entry);
         }
     }
 
     public void register(Supplier<@NotNull T> entry) {
         T result = entry.get();
-        if (map.containsKey(result.key())) {
+        if (map.containsKey(result.getKey())) {
             throw new RegistryDuplicate("Duplicate key in registry of class: " + entry.getClass());
         }
 
-        map.put(result.key(), result);
+        map.put(result.getKey(), result);
     }
 }
