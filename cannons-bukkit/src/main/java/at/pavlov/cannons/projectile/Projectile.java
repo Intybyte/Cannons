@@ -5,10 +5,12 @@ import at.pavlov.cannons.builders.ParticleBuilder;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
+import at.pavlov.internal.Key;
 import at.pavlov.internal.container.SpawnMaterialHolder;
 import at.pavlov.internal.projectile.ProjectileProperties;
 import at.pavlov.internal.projectile.data.ClusterExplosionData;
 import at.pavlov.internal.projectile.data.ExplosionData;
+import com.cryptomorin.xseries.XEntityType;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.FireworkEffect;
@@ -28,7 +30,13 @@ public class Projectile implements Cloneable {
     private ItemHolder loadingItem;
 
     //properties of the cannonball
-    private EntityType projectileEntity;
+    @Getter
+    @Setter
+    private Key projectileEntityKey;
+    public EntityType getProjectileEntity() {
+        return XEntityType.of(projectileEntityKey.full()).get().get();
+    }
+
     private boolean projectileOnFire;
     private double velocity;
     private double penetration;
@@ -409,14 +417,6 @@ public class Projectile implements Cloneable {
 
     public void setFireworksEnabled(boolean fireworksEnabled) {
         this.fireworksEnabled = fireworksEnabled;
-    }
-
-    public EntityType getProjectileEntity() {
-        return projectileEntity;
-    }
-
-    public void setProjectileEntity(EntityType projectileEntity) {
-        this.projectileEntity = projectileEntity;
     }
 
     public boolean isProjectileOnFire() {

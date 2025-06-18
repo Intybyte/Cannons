@@ -28,6 +28,7 @@ import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.InventoryManagement;
 import at.pavlov.cannons.utils.SoundUtils;
+import at.pavlov.internal.Key;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.Validate;
@@ -1732,6 +1733,16 @@ public class Cannon implements ICannon, Rotational {
             return firingData.getLastFiredProjectile().getProjectileEntity();
         }
         return EntityType.SNOWBALL;
+    }
+
+    public Key getProjectileEntityKey() {
+        if (ammoLoadingData.getLoadedProjectile() != null) {
+            return ammoLoadingData.getLoadedProjectile().getProjectileEntityKey();
+        }
+        if (firingData.getLastFiredProjectile() != null) {
+            return firingData.getLastFiredProjectile().getProjectileEntityKey();
+        }
+        return Key.mc("snowball");
     }
 
     /**

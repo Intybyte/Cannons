@@ -1,5 +1,6 @@
 package at.pavlov.cannons.container;
 
+import at.pavlov.internal.Key;
 import com.cryptomorin.xseries.XEntityType;
 import lombok.Data;
 import org.bukkit.Bukkit;
@@ -14,9 +15,9 @@ import java.util.UUID;
     private UUID world;
     private Vector loc;
     private Vector vel;
-    private final EntityType entityType;
+    private final Key entityType;
 
-    public MovingObject(Location loc, Vector vel, EntityType entityType) {
+    public MovingObject(Location loc, Vector vel, Key entityType) {
         world = loc.getWorld().getUID();
         this.loc = loc.toVector();
         this.vel = vel;
@@ -47,15 +48,14 @@ import java.util.UUID;
      */
     public double getGravity() {
         final EntityType breezeWindCharge = XEntityType.BREEZE_WIND_CHARGE.get();
-        if (breezeWindCharge != null && entityType == breezeWindCharge) {
+        if (breezeWindCharge != null && entityType.matches(breezeWindCharge.getKey().toString())) {
             return 0.0;
         }
 
-        return switch (entityType) {
-            case ARROW, TRIDENT, SPECTRAL_ARROW -> 0.05;
-            case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL,
-                 WITHER_SKULL,
-                 SHULKER_BULLET -> 0.0;
+        return switch (entityType.full()) {
+            case "minecraft:arrow", "minecraft:trident", "minecraft:spectral_arrow" -> 0.05;
+            case "minecraft:fireball", "minecraft:small_fireball", "minecraft:dragon_fireball",
+                 "minecraft:wither_skull", "minecraft:shulker_bullet" -> 0.0;
             default -> 0.03;
         };
     }
@@ -77,16 +77,15 @@ import java.util.UUID;
     // now you know where to go on paper's internal code.
     public double getDrag(boolean inWater) {
         final EntityType breezeWindCharge = XEntityType.BREEZE_WIND_CHARGE.get();
-        if (breezeWindCharge != null && entityType == breezeWindCharge) {
+        if (breezeWindCharge != null && entityType.matches(breezeWindCharge.getKey().toString())) {
             return 1.0;
         }
 
-        return switch (entityType) {
-            case ARROW, SPECTRAL_ARROW -> inWater ? 0.6 : 0.99;
-            case FIREBALL, SMALL_FIREBALL, DRAGON_FIREBALL,
-                 WITHER_SKULL,
-                 SHULKER_BULLET -> 0.95;
-            case TRIDENT -> 0.99;
+        return switch (entityType.full()) {
+            case "minecraft:arrow", "minecraft:spectral_arrow"  -> inWater ? 0.6 : 0.99;
+            case "minecraft:fireball", "minecraft:small_fireball", "minecraft:dragon_fireball",
+                 "minecraft:wither_skull", "minecraft:shulker_bullet" -> 0.95;
+            case "minecraft:trident" -> 0.99;
             default -> inWater ? 0.8 : 0.99; // Water Drag - Air Drag
         };
     }
