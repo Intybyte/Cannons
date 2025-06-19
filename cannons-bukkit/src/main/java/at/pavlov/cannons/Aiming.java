@@ -866,7 +866,7 @@ public class Aiming {
         Location muzzle = cannon.getMuzzle();
         Vector vel = cannon.getTargetVector();
 
-        MovingObject predictor = new MovingObject(muzzle, vel, cannon.getProjectileEntityKey());
+        MovingObject predictor = new MovingObject(muzzle, vel, cannon.getProjectileDefinitionKey());
         Vector start = muzzle.toVector();
 
         int maxInterations = 500;
@@ -1251,7 +1251,7 @@ public class Aiming {
         Location muzzle = cannon.getMuzzle();
         Vector vel = cannon.getFiringVector(false, false);
 
-        MovingObject predictor = new MovingObject(muzzle, vel, cannon.getProjectileEntityKey());
+        MovingObject predictor = new MovingObject(muzzle, vel, cannon.getProjectileDefinitionKey());
         Vector start = muzzle.toVector();
 
         //make a few iterations until we hit something

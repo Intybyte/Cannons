@@ -1,0 +1,28 @@
+# Quick tutorial on how to make a projectile definition
+# "<my_server_name>:<my_server_projectile>":  # you can put anything as long as there is a semicolon in the middle, this will identify the projectile
+#    entity: "SNOWBALL" # snowball if null, any entity name, these are all valid https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
+#
+#    # these fields are unused due to them being handled badly by minecraft, maybe will be useful in the future
+#    constantAcceleration: 0.1 # stuff like fireball that will travel forever have this
+#
+#    glowing: false # makes the thing glow
+#
+#    # projectile specific stuff
+#    onFire: true # defaults to false, whatever or not make it incendiary
+#    charged: false # works only for wither skulls, makes it charged
+#    critical: false # works for arrows and tridents, makes the try visible
+#
+#    # this stuff is for throwable projectiles only, such as snowballs
+#    material: SNOWBALL # you can set any material https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+#    customModelData: 123 # must be an integer, texturepack magic number goes here
+
+
+"minecraft:blaze_shot":
+  entity: "SNOWBALL"
+
+  onFire: true
+
+"minecraft:charged_wither_skull":
+  entity: "WITHER_SKULL"
+
+  charged: true

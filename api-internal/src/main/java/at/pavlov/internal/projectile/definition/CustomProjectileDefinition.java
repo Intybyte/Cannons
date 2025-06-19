@@ -1,9 +1,11 @@
 package at.pavlov.internal.projectile.definition;
 
 import at.pavlov.internal.key.Key;
+import at.pavlov.internal.key.registries.Registries;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
@@ -14,9 +16,12 @@ public class CustomProjectileDefinition implements ProjectilePhysics {
     private final Key entityKey;
 
     private final Double constantAcceleration;
-    private final double gravity;
-    private final double drag;
-    private final double waterDrag;
+    //TODO continue after exams, also try setting setGravity false and see if these work smoothly
+    //private final double gravity;
+    //private final double drag;
+    //private final double waterDrag;
+
+    private final boolean glowing;
 
     private final boolean onFire; // visual fire for projectile
     private final boolean charged; // works for wither skeletons
@@ -25,4 +30,28 @@ public class CustomProjectileDefinition implements ProjectilePhysics {
     //for throwable projectiles only
     private final @Nullable Key material;
     private final @Nullable Integer customModelData;
+
+    @Override
+    public double getGravity() {
+        return fromKey().getGravity();
+    }
+
+    @Override
+    public double getDrag() {
+        return fromKey().getDrag();
+    }
+
+    @Override
+    public double getWaterDrag() {
+        return fromKey().getWaterDrag();
+    }
+
+    private @NotNull ProjectilePhysics fromKey() {
+        DefaultProjectileDefinition value = Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.of(entityKey);
+        if (value == null) {
+            return ProjectilePhysics.DEFAULT;
+        }
+
+        return value;
+    }
 }

@@ -1735,12 +1735,12 @@ public class Cannon implements ICannon, Rotational {
         return EntityType.SNOWBALL;
     }
 
-    public Key getProjectileEntityKey() {
+    public Key getProjectileDefinitionKey() {
         if (ammoLoadingData.getLoadedProjectile() != null) {
-            return ammoLoadingData.getLoadedProjectile().getProjectileEntityKey();
+            return ammoLoadingData.getLoadedProjectile().getProjectileDefinitionKey();
         }
         if (firingData.getLastFiredProjectile() != null) {
-            return firingData.getLastFiredProjectile().getProjectileEntityKey();
+            return firingData.getLastFiredProjectile().getProjectileDefinitionKey();
         }
         return Key.mc("snowball");
     }
