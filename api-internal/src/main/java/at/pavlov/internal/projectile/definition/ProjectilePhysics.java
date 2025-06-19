@@ -4,6 +4,8 @@ import at.pavlov.internal.key.EntityKeyHolder;
 import at.pavlov.internal.key.Key;
 import at.pavlov.internal.key.KeyHolder;
 
+import java.util.Objects;
+
 public interface ProjectilePhysics extends KeyHolder, EntityKeyHolder {
     ProjectilePhysics DEFAULT = new ProjectilePhysics() {
         @Override
@@ -85,5 +87,14 @@ public interface ProjectilePhysics extends KeyHolder, EntityKeyHolder {
 
     default double getDrag(boolean inWater) {
         return inWater ? this.getWaterDrag() : this.getDrag();
+    }
+
+    default boolean matches(ProjectilePhysics other) {
+        if (other == null) return false;
+
+        return Objects.equals(this.getConstantAcceleration(), other.getConstantAcceleration()) &&
+                Double.compare(this.getGravity(), other.getGravity()) == 0 &&
+                Double.compare(this.getDrag(), other.getDrag()) == 0 &&
+                Double.compare(this.getWaterDrag(), other.getWaterDrag()) == 0;
     }
 }

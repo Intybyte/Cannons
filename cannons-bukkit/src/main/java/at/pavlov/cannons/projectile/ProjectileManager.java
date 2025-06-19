@@ -6,6 +6,8 @@ import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.internal.key.registries.Registries;
 import at.pavlov.internal.projectile.definition.CustomProjectileDefinition;
+import at.pavlov.internal.projectile.definition.DefaultProjectileDefinition;
+import at.pavlov.internal.projectile.definition.ProjectilePhysics;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -102,6 +104,15 @@ public class ProjectileManager
 
         projectileEntity.setVisualFire(definition.isOnFire());
         projectileEntity.setGlowing(definition.isGlowing());
+
+        ProjectilePhysics defaultCase = Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.of(definition.getEntityKey());
+        if (defaultCase == null) {
+            defaultCase = ProjectilePhysics.DEFAULT;
+        }
+
+        if (!defaultCase.matches(definition)) {
+            projectileEntity.setGravity(false);
+        }
 
         if (projectileEntity instanceof WitherSkull witherSkull) {
             witherSkull.setCharged(definition.isCharged());

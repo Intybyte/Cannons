@@ -17,9 +17,9 @@ public class CustomProjectileDefinition implements ProjectilePhysics {
 
     private final Double constantAcceleration;
     //TODO continue after exams, also try setting setGravity false and see if these work smoothly
-    //private final double gravity;
-    //private final double drag;
-    //private final double waterDrag;
+    private final double gravity;
+    private final double drag;
+    private final double waterDrag;
 
     private final boolean glowing;
 
@@ -31,6 +31,7 @@ public class CustomProjectileDefinition implements ProjectilePhysics {
     private final @Nullable Key material;
     private final @Nullable Integer customModelData;
 
+    /*
     @Override
     public double getGravity() {
         return fromKey().getGravity();
@@ -53,5 +54,5 @@ public class CustomProjectileDefinition implements ProjectilePhysics {
         }
 
         return value;
-    }
+    }*/
 }
