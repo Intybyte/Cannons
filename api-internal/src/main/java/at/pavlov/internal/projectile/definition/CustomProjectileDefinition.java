@@ -1,11 +1,9 @@
 package at.pavlov.internal.projectile.definition;
 
 import at.pavlov.internal.key.Key;
-import at.pavlov.internal.key.registries.Registries;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
@@ -16,7 +14,7 @@ public class CustomProjectileDefinition implements ProjectilePhysics {
     private final Key entityKey;
 
     private final Double constantAcceleration;
-    //TODO continue after exams, also try setting setGravity false and see if these work smoothly
+
     private final double gravity;
     private final double drag;
     private final double waterDrag;

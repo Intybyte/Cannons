@@ -3,7 +3,6 @@ package at.pavlov.internal.key;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.regex.Pattern;
