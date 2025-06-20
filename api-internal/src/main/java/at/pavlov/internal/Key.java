@@ -1,4 +1,4 @@
-package at.pavlov.internal.key;
+package at.pavlov.internal;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;

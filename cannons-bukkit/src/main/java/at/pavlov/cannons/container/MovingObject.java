@@ -1,13 +1,11 @@
 package at.pavlov.cannons.container;
 
-import at.pavlov.internal.key.Key;
+import at.pavlov.internal.Key;
 import at.pavlov.internal.key.registries.Registries;
 import at.pavlov.internal.projectile.definition.ProjectilePhysics;
-import com.cryptomorin.xseries.XEntityType;
 import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,7 +1,7 @@
 package at.pavlov.internal.container;
 
 import at.pavlov.internal.CLogger;
-import at.pavlov.internal.key.Key;
+import at.pavlov.internal.Key;
 import at.pavlov.internal.MaxMinRandom;
 import lombok.Getter;
 import lombok.Setter;

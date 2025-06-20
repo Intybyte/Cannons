@@ -1,7 +1,7 @@
 package at.pavlov.internal.projectile.definition;
 
 import at.pavlov.internal.key.EntityKeyHolder;
-import at.pavlov.internal.key.Key;
+import at.pavlov.internal.Key;
 import at.pavlov.internal.key.KeyHolder;
 
 import java.util.Objects;

@@ -1,6 +1,6 @@
 package at.pavlov.internal.key.registries;
 
-import at.pavlov.internal.key.Key;
+import at.pavlov.internal.Key;
 import at.pavlov.internal.projectile.definition.CustomProjectileDefinition;
 import at.pavlov.internal.projectile.definition.DefaultProjectileDefinition;
 import at.pavlov.internal.projectile.definition.ProjectilePhysics;

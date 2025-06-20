@@ -1,6 +1,6 @@
 package at.pavlov.internal.key.registries;
 
-import at.pavlov.internal.key.Key;
+import at.pavlov.internal.Key;
 import at.pavlov.internal.key.KeyHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

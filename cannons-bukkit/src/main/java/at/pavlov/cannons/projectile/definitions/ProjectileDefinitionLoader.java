@@ -1,7 +1,7 @@
 package at.pavlov.cannons.projectile.definitions;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.internal.key.Key;
+import at.pavlov.internal.Key;
 import at.pavlov.internal.key.registries.Registries;
 import at.pavlov.internal.projectile.definition.CustomProjectileDefinition;
 import org.bukkit.configuration.ConfigurationSection;
