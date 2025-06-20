@@ -3,6 +3,7 @@ package at.pavlov.internal;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -38,6 +39,10 @@ public record Key(String namespace, String key) {
         }
 
         return new Key(strings[0].trim(), strings[1].trim());
+    }
+
+    public static Collection<Key> from(Collection<String> collection) {
+        return collection.stream().map(Key::from).toList();
     }
 
     public String full() {

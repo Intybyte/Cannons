@@ -212,7 +212,7 @@ public class ProjectileStorage
 		projectile.setLoadingItem(new ItemHolder(projectileConfig.getString("general.loadingItem", "minecraft:cobblestone")));
 
 		//cannonball
-		projectile.setProjectileEntityKey(Key.from(projectileConfig.getString("cannonball.entityType", "SNOWBALL")));
+		projectile.setProjectileDefinitionKey(Key.from(projectileConfig.getString("cannonball.entityType", "SNOWBALL")));
 		projectile.setProjectileOnFire(projectileConfig.getBoolean("cannonball.isOnFire", false));
 		projectile.setVelocity(projectileConfig.getDouble("cannonball.velocity", 1.0));
 		if (projectile.getVelocity() < 0.01)

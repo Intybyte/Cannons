@@ -61,7 +61,7 @@ public class FlyingProjectile
 
         //set location and speed
         Location new_loc = projectile_entity.getLocation();
-        predictor = new MovingObject(new_loc, projectile_entity.getVelocity(), projectile.getProjectileEntityKey());
+        predictor = new MovingObject(new_loc, projectile_entity.getVelocity(), projectile.getProjectileDefinitionKey());
 
         this.lastSmokeTrailLocation = new_loc;
     }

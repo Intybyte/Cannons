@@ -17,6 +17,7 @@ import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
+import at.pavlov.cannons.projectile.definitions.ProjectileDefinitionLoader;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.CannonsUtil;
 import co.aikar.commands.BaseCommand;
@@ -72,6 +73,7 @@ public class Commands extends BaseCommand {
     @CommandPermission("cannons.admin.reload")
     public static void onReload(CommandSender sender) {
         myConfig.loadConfig();
+        ProjectileDefinitionLoader.reload();
         DesignStorage.getInstance().loadCannonDesigns();
         ProjectileStorage.getInstance().loadProjectiles();
         CannonManager.getInstance().updateCannons();
