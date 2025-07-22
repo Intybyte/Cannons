@@ -4,6 +4,7 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.internal.Key;
 import at.pavlov.internal.key.registries.Registries;
 import at.pavlov.internal.projectile.definition.CustomProjectileDefinition;
+import at.pavlov.internal.projectile.definition.DefaultProjectileDefinition;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -35,13 +36,19 @@ public class ProjectileDefinitionLoader {
         }
 
         Key key = Key.from(node);
+        Key entityKey = Key.from(section.getString("entity", "SNOWBALL"));
+        DefaultProjectileDefinition dpd = Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.of(entityKey);
+        if (dpd == null) {
+            throw new RuntimeException("Default Projectile Definition not found, invalid entity?");
+        }
+
         CustomProjectileDefinition definition = CustomProjectileDefinition.builder()
                 .key(key)
-                .entityKey(Key.from(section.getString("entity", "SNOWBALL")))
+                .entityKey(entityKey)
                 .constantAcceleration(section.getObject("constantAcceleration", Double.class, null))
-                .gravity(section.getDouble("gravity", 0.03))
-                .drag(section.getDouble("drag", 0.99))
-                .waterDrag(section.getDouble("waterDrag", 0.8))
+                .gravity(section.getDouble("gravity", dpd.getGravity()))
+                .drag(section.getDouble("drag", dpd.getDrag()))
+                .waterDrag(section.getDouble("waterDrag", dpd.getWaterDrag()))
                 .glowing(section.getBoolean("glowing"))
                 .onFire(section.getBoolean("onFire"))
                 .charged(section.getBoolean("charged"))
