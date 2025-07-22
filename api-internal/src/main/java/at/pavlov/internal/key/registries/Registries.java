@@ -22,25 +22,27 @@ public class Registries {
             Collection<Key> fireballs = Key.from(
                     List.of("minecraft:fireball", "minecraft:small_fireball", "minecraft:dragon_fireball", "minecraft:wither_skull", "minecraft:shulker_bullet")
             );
+            var fireballBuilder = DefaultProjectileDefinition.builder()
+                    .gravity(0.0)
+                    .drag(0.95)
+                    .waterDrag(0.95)
+                    .constantAcceleration(0.1);
             for (Key fireball : fireballs) {
                 toAdd.add(
-                        DefaultProjectileDefinition.builder()
-                                .gravity(0.0)
-                                .drag(0.95)
-                                .waterDrag(0.95)
-                                .constantAcceleration(0.1)
+                        fireballBuilder
                                 .key(fireball)
                                 .build()
                 );
             }
 
             Collection<Key> arrows = Key.from(List.of("minecraft:arrow", "minecraft:spectral_arrow"));
+            var arrowBuilder = DefaultProjectileDefinition.builder()
+                    .gravity(0.05)
+                    .drag(0.99)
+                    .waterDrag(0.6);
             for (Key arrow : arrows) {
                 toAdd.add(
-                        DefaultProjectileDefinition.builder()
-                                .gravity(0.05)
-                                .drag(0.99)
-                                .waterDrag(0.6)
+                        arrowBuilder
                                 .key(arrow)
                                 .build()
                 );
