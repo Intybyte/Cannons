@@ -2,8 +2,12 @@
 # "<my_server_name>:<my_server_projectile>":  # you can put anything as long as there is a semicolon in the middle, this will identify the projectile
 #    entity: "SNOWBALL" # snowball if null, any entity name, these are all valid https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
 #
-#    # these fields are unused due to them being handled badly by minecraft, maybe will be useful in the future
-#    constantAcceleration: 0.1 # stuff like fireball that will travel forever have this
+#    # these fields are used to change how the projectiles behave,
+#    # however options different from default values can behave in a "sluggish" way
+#    constantAcceleration: 0.1 # optional, stuff like fireball that will travel forever have this, default is null or 0 for snowballs
+#    gravity: 0.03
+#    drag: 0.99 # high drag means the projectile looses less speed, so a low drag will mean that the projectile will slow down faster
+#    waterDrag: 0.8 # same as drag but for water and/or liquids
 #
 #    glowing: false # makes the thing glow
 #
