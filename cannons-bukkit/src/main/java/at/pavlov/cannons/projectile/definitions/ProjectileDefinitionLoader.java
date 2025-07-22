@@ -46,7 +46,7 @@ public class ProjectileDefinitionLoader {
         CustomProjectileDefinition definition = CustomProjectileDefinition.builder()
                 .key(key)
                 .entityKey(entityKey)
-                .constantAcceleration(section.getObject("constantAcceleration", Double.class, null))
+                .constantAcceleration(section.getObject("constantAcceleration", Double.class, dpd.getConstantAcceleration()))
                 .gravity(section.getDouble("gravity", dpd.getGravity()))
                 .drag(section.getDouble("drag", dpd.getDrag()))
                 .waterDrag(section.getDouble("waterDrag", dpd.getWaterDrag()))
