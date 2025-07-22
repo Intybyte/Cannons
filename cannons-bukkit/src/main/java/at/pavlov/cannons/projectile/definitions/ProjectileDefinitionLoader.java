@@ -5,6 +5,7 @@ import at.pavlov.internal.Key;
 import at.pavlov.internal.key.registries.Registries;
 import at.pavlov.internal.projectile.definition.CustomProjectileDefinition;
 import at.pavlov.internal.projectile.definition.DefaultProjectileDefinition;
+import at.pavlov.internal.projectile.definition.ProjectilePhysics;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -37,9 +38,9 @@ public class ProjectileDefinitionLoader {
 
         Key key = Key.from(node);
         Key entityKey = Key.from(section.getString("entity", "SNOWBALL"));
-        DefaultProjectileDefinition dpd = Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.of(entityKey);
+        ProjectilePhysics dpd = Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.of(entityKey);
         if (dpd == null) {
-            throw new RuntimeException("Default Projectile Definition not found, invalid entity?");
+            dpd = ProjectilePhysics.DEFAULT;
         }
 
         CustomProjectileDefinition definition = CustomProjectileDefinition.builder()
