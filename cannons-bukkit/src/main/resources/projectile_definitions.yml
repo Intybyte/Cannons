@@ -4,6 +4,7 @@
 #
 #    # these fields are used to change how the projectiles behave,
 #    # however options different from default values can behave in a "sluggish" way
+#    # if not set, they will use the default values of the entity
 #    constantAcceleration: 0.1 # optional, stuff like fireball that will travel forever have this, default is null or 0 for snowballs
 #    gravity: 0.03
 #    drag: 0.99 # high drag means the projectile looses less speed, so a low drag will mean that the projectile will slow down faster
