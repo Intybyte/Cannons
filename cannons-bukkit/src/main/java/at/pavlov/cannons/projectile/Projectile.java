@@ -7,9 +7,11 @@ import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
 import at.pavlov.internal.Key;
 import at.pavlov.internal.container.SpawnMaterialHolder;
+import at.pavlov.internal.key.registries.Registries;
 import at.pavlov.internal.projectile.ProjectileProperties;
 import at.pavlov.internal.projectile.data.ClusterExplosionData;
 import at.pavlov.internal.projectile.data.ExplosionData;
+import at.pavlov.internal.projectile.definition.ProjectilePhysics;
 import com.cryptomorin.xseries.XEntityType;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,9 +34,15 @@ public class Projectile implements Cloneable {
     //properties of the cannonball
     @Getter
     @Setter
-    private Key projectileEntityKey;
+    private Key projectileDefinitionKey;
     public EntityType getProjectileEntity() {
-        return XEntityType.of(projectileEntityKey.full()).get().get();
+        ProjectilePhysics pp = Registries.PROJECTILE_PHYSICS.of(projectileDefinitionKey);
+        if (pp == null) {
+            Cannons.getPlugin().getLogger().severe(projectileID + " -> invalid projectile key");
+            return EntityType.SNOWBALL;
+        }
+
+        return XEntityType.of(pp.getEntityKey().full()).get().get();
     }
 
     private boolean projectileOnFire;

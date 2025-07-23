@@ -1,0 +1,33 @@
+# Quick tutorial on how to make a projectile definition
+# "<my_server_name>:<my_server_projectile>":  # you can put anything as long as there is a semicolon in the middle, this will identify the projectile
+#    entity: "SNOWBALL" # snowball if null, any entity name, these are all valid https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
+#
+#    # these fields are used to change how the projectiles behave,
+#    # however options different from default values can behave in a "sluggish" way
+#    # if not set, they will use the default values of the entity
+#    constantAcceleration: 0.1 # optional, stuff like fireball that will travel forever have this, default is null or 0 for snowballs
+#    gravity: 0.03
+#    drag: 0.99 # high drag means the projectile looses less speed, so a low drag will mean that the projectile will slow down faster
+#    waterDrag: 0.8 # same as drag but for water and/or liquids
+#
+#    glowing: false # makes the thing glow
+#
+#    # projectile specific stuff
+#    onFire: true # defaults to false, whatever or not make it incendiary
+#    charged: false # works only for wither skulls, makes it charged
+#    critical: false # works for arrows and tridents, makes the try visible
+#
+#    # this stuff is for throwable projectiles only, such as snowballs
+#    material: SNOWBALL # you can set any material https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+#    customModelData: 123 # must be an integer, texturepack magic number goes here
+
+
+"minecraft:blaze_shot":
+  entity: "SNOWBALL"
+
+  onFire: true
+
+"minecraft:charged_wither_skull":
+  entity: "WITHER_SKULL"
+
+  charged: true

@@ -1,7 +1,7 @@
-package at.pavlov.internal.registries;
+package at.pavlov.internal.key;
 
 import at.pavlov.internal.Key;
 
 public interface KeyHolder {
-    Key key();
+    Key getKey();
 }

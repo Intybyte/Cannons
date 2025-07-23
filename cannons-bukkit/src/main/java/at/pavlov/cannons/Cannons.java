@@ -27,6 +27,7 @@ import at.pavlov.cannons.listener.UpdateNotifier;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileStorage;
+import at.pavlov.cannons.projectile.definitions.ProjectileDefinitionLoader;
 import at.pavlov.cannons.scheduler.FakeBlockHandler;
 import at.pavlov.cannons.scheduler.ProjectileObserver;
 import at.pavlov.cannons.utils.CannonSelector;
@@ -157,6 +158,7 @@ public final class Cannons extends JavaPlugin {
     }
 
     public void onEnable() {
+        ProjectileDefinitionLoader.load();
         long startTime = System.nanoTime();
         pm = getServer().getPluginManager();
         if (!pm.isPluginEnabled("WorldEdit")) {

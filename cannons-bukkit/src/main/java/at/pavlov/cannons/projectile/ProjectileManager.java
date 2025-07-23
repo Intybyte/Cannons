@@ -4,13 +4,24 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.dao.AsyncTaskManager;
+import at.pavlov.internal.key.registries.Registries;
+import at.pavlov.internal.projectile.definition.CustomProjectileDefinition;
+import at.pavlov.internal.projectile.definition.DefaultProjectileDefinition;
+import at.pavlov.internal.projectile.definition.ProjectilePhysics;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.ThrowableProjectile;
+import org.bukkit.entity.WitherSkull;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,22 +62,7 @@ public class ProjectileManager
         spawnLoc.setPitch((float) (Math.acos(velocity.getY()/v)*180.0/Math.PI - 90));
         spawnLoc.setYaw((float) (Math.atan2(velocity.getZ(),velocity.getX())*180.0/Math.PI - 90));
 
-        Entity pEntity = world.spawnEntity(spawnLoc, projectile.getProjectileEntity());
-
-        //calculate firing vector
-        pEntity.setVelocity(velocity);
-
-        org.bukkit.entity.Projectile projectileEntity;
-        try
-        {
-            projectileEntity = (org.bukkit.entity.Projectile) pEntity;
-        }
-        catch(Exception e)
-        {
-            plugin.logDebug("Can't convert EntityType " + pEntity.getType() + " to projectile. Using additional Snowball");
-            projectileEntity = (org.bukkit.entity.Projectile) world.spawnEntity(spawnLoc, EntityType.SNOWBALL);
-            projectileEntity.setVelocity(velocity);
-        }
+        org.bukkit.entity.Projectile projectileEntity = spawnProjectile(projectile, spawnLoc, velocity, world);
 
         if (projectile.isProjectileOnFire())
             projectileEntity.setFireTicks(100);
@@ -86,6 +82,60 @@ public class ProjectileManager
         return projectileEntity;
     }
 
+    private org.bukkit.entity.@NotNull Projectile spawnProjectile(Projectile projectile, Location spawnLoc, Vector velocity, World world) {
+        Entity pEntity = world.spawnEntity(spawnLoc, projectile.getProjectileEntity());
+
+        //calculate firing vector
+        pEntity.setVelocity(velocity);
+
+        org.bukkit.entity.Projectile projectileEntity;
+        try {
+            projectileEntity = (org.bukkit.entity.Projectile) pEntity;
+        } catch(Exception e) {
+            plugin.logDebug("Can't convert EntityType " + pEntity.getType() + " to projectile. Using additional Snowball");
+            projectileEntity = (org.bukkit.entity.Projectile) world.spawnEntity(spawnLoc, EntityType.SNOWBALL);
+            projectileEntity.setVelocity(velocity);
+        }
+
+        CustomProjectileDefinition definition = Registries.CUSTOM_PROJECTILE_DEFINITION.of(projectile.getProjectileDefinitionKey());
+        if (definition == null) {
+            return projectileEntity;
+        }
+
+        projectileEntity.setVisualFire(definition.isOnFire());
+        projectileEntity.setGlowing(definition.isGlowing());
+
+        ProjectilePhysics defaultCase = Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.of(definition.getEntityKey());
+        if (defaultCase == null) {
+            defaultCase = ProjectilePhysics.DEFAULT;
+        }
+
+        if (!defaultCase.matches(definition)) {
+            projectileEntity.setGravity(false);
+        }
+
+        if (projectileEntity instanceof WitherSkull witherSkull) {
+            witherSkull.setCharged(definition.isCharged());
+        } else if (projectileEntity instanceof AbstractArrow arrow) {
+            arrow.setCritical(definition.isCritical());
+        } else if (projectileEntity instanceof ThrowableProjectile throwable) {
+            Material material = Material.matchMaterial(definition.getMaterial().full());
+            if (material == null) {
+                plugin.logSevere("In custom projectile: " + definition.getKey().full() + " the material key is invalid.");
+                material = Material.SNOWBALL;
+            }
+
+            ItemStack stack = new ItemStack(material);
+
+            ItemMeta meta = stack.getItemMeta();
+            meta.setCustomModelData(definition.getCustomModelData());
+            stack.setItemMeta(meta);
+
+            throwable.setItem(stack);
+        }
+
+        return projectileEntity;
+    }
 
 
     /**

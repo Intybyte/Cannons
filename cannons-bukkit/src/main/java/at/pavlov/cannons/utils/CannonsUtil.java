@@ -233,7 +233,12 @@ public class CannonsUtil
 
         //int length = (int) (direction.length()*3);
         Cannons.logSDebug("World: " + world + " Start vector: " + start.toVector() + " Normalized direction: " + direction.clone().normalize());
-        BlockIterator iter = new BlockIterator(world, start.toVector(), direction.clone().normalize(), 0, 10);
+        BlockIterator iter;
+        try {
+            iter = new BlockIterator(world, start.toVector(), direction.clone().normalize(), 0, 10);
+        } catch (Exception e) {  //main face is null whatever this thing is whining about
+            return start;
+        }
 
         //try to find a surface of the
         while (iter.hasNext())
