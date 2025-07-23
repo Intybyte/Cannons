@@ -1,4 +1,5 @@
-# Quick tutorial on how to make a projectile definition
+# # Quick tutorial on how to make a projectile definition
+# # this will replace <projectile>.entityType
 # "<my_server_name>:<my_server_projectile>":  # you can put anything as long as there is a semicolon in the middle, this will identify the projectile
 #    entity: "SNOWBALL" # snowball if null, any entity name, these are all valid https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
 #
