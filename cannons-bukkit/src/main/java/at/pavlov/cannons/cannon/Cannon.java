@@ -423,7 +423,7 @@ public class Cannon implements ICannon, Rotational {
             case loadGunpowder, loadGunpowderNormalLimit -> {
                 SoundUtils.playSound(getMuzzle(), design.getSoundGunpowderLoading());
                 if (checkGunpowder) {
-                    InventoryManagement.removeItem(player.getInventory(), design.getGunpowderType().toItemStack(gunpowder));
+                    InventoryManagement.takeFromPlayerHand(player, gunpowder);
                 }
             }
             case loadOverloadedGunpowder -> {
