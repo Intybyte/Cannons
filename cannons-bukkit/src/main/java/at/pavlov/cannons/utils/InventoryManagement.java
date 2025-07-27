@@ -1,5 +1,6 @@
 package at.pavlov.cannons.utils;
 
+import at.pavlov.internal.Pair;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.function.Predicate;
 
 
 public class InventoryManagement
@@ -141,5 +144,51 @@ public class InventoryManagement
         }
         return list;
     }
+
+    public static Pair<Integer, Runnable> checkAndPrepareRemoval(List<Inventory> inventory, Predicate<ItemStack> valid, int amount) {
+        int remainder = amount;
+        List<Runnable> actions = new ArrayList<>();
+        for (var inv : inventory) {
+            int before = remainder;
+            var result = checkAndPrepareRemoval(inv, valid, remainder);
+            remainder -= before - result.first();
+            actions.add(result.second());
+
+            if (remainder == 0) {
+                break;
+            }
+        }
+
+        Runnable remover = () -> actions.forEach(Runnable::run);
+        return new Pair<>(remainder, remover);
+    }
+
+    public static Pair<Integer, Runnable> checkAndPrepareRemoval(Inventory inventory, Predicate<ItemStack> valid, int amount) {
+        int remainder = amount;
+        List<Runnable> actions = new ArrayList<>();
+        if (remainder == 0) {
+            return new Pair<>(0, () -> {});
+        }
+
+        for (ListIterator<ItemStack> iter = inventory.iterator(); iter.hasNext() && remainder > 0;) {
+            ItemStack item = iter.next();
+
+            if (item == null) continue;
+            if (!valid.test(item)) continue;
+
+            if (item.getAmount() > remainder) {
+                int finalNeeded = remainder;
+                actions.add(() -> item.setAmount(item.getAmount() - finalNeeded));
+                remainder = 0;
+            } else {
+                actions.add(iter::remove);
+                remainder -= item.getAmount();
+            }
+        }
+
+        Runnable remover = () -> actions.forEach(Runnable::run);
+        return new Pair<>(remainder, remover);
+    }
+
 
 }

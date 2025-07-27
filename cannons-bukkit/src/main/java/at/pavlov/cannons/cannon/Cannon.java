@@ -236,19 +236,18 @@ public class Cannon implements ICannon, Rotational {
             return null;
         }
 
-        ItemStack gunpowder = design.getGunpowderType().toItemStack(toLoad);
+        ItemHolder gunpowder = design.getGunpowderType();
         Cannons.getPlugin().logDebug("Amount of chests next to cannon: " + invlist.size());
-        gunpowder = InventoryManagement.removeItem(invlist, gunpowder);
 
-        if (gunpowder.getAmount() == 0) {
+        var result = InventoryManagement.checkAndPrepareRemoval(invlist, gunpowder::equalsFuzzy, toLoad);
+
+        if (result.first() == 0) {
             //there was enough gunpowder in the chest
+            result.second().run();
             ammoLoadingData.setLoadedGunpowder(design.getMaxLoadableGunpowderNormal());
             return null;
         }
 
-        //not enough gunpowder, put it back
-        gunpowder.setAmount(toLoad - gunpowder.getAmount());
-        InventoryManagement.addItemInChests(invlist, gunpowder);
         return MessageEnum.ErrorNoGunpowderInChest;
     }
 
@@ -269,7 +268,7 @@ public class Cannon implements ICannon, Rotational {
 
         //cooling items will be consumed from the inventory
         int toCool = (int) Math.ceil((this.getTemperature() - design.getWarningTemperature()) / design.getCoolingAmount());
-        ItemStack item = new ItemStack(Material.AIR, toCool);
+        int amountToRemove = toCool;
 
         if (toCool <= 0)
             return true;
@@ -279,24 +278,31 @@ public class Cannon implements ICannon, Rotational {
             if (mat == null)
                 continue;
 
-            int itemAmount = item.getAmount();
-            if (itemAmount <= 0)
-                continue;
 
-            item = mat.toItemStack(itemAmount);
-            item = InventoryManagement.removeItem(invlist, item);
+            var result = InventoryManagement.checkAndPrepareRemoval(invlist, mat::equalsFuzzy, amountToRemove);
+            result.second().run();
 
-            int usedItems = toCool - item.getAmount();
+            int usedItems = toCool - result.first();
             this.setTemperature(this.getTemperature() - usedItems * design.getCoolingAmount());
 
+            var coolItem = mat.toItemStack(usedItems);
             //put used items back to the chest (not if the item is AIR)
-            ItemStack itemUsed = design.getCoolingToolUsed(item);
+            ItemStack itemUsed = design.getCoolingToolUsed(coolItem);
+            if (itemUsed == null) {
+                if (result.first() == 0) {
+                    return true;
+                }
+
+                continue;
+            }
+
             itemUsed.setAmount(usedItems);
             if (!itemUsed.getType().equals(Material.AIR))
                 InventoryManagement.addItemInChests(invlist, itemUsed);
 
+            amountToRemove -= usedItems;
             //if all items have been removed we are done
-            if (item.getAmount() == 0)
+            if (result.first() == 0)
                 return true;
         }
         return false;
