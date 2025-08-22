@@ -135,7 +135,7 @@ import java.util.List;
 
         setRelayExplosionEvent(config.getBoolean("general.relayExplosionEvent", false));
         setClaimEdgeLength(config.getInt("general.claimEdgeLength", 60));
-        setLocalization(config.getString("general.localization", "localization"));
+        setLocalization(config.getString("general.localization", "en_US"));
 
 		//limitOfCannons
 		setBuildLimitEnabled(config.getBoolean("cannonLimits.useLimits", true));
