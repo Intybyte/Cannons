@@ -5,7 +5,6 @@ import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.projectile.Projectile;
-import at.pavlov.cannons.utils.CannonsUtil;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -33,6 +32,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class UserMessages {
+    private static final String localizationFolder = "plugins/Cannons/localization/";
+
     private FileConfiguration customLanguage = null;
     private File customLanguageFile = null;
 
@@ -77,7 +78,7 @@ public class UserMessages {
                     }
 
                     // Save the resource to the plugin folder
-                    File outFile = new File(getDataFolder(), name);
+                    File outFile = new File(plugin.getDataFolder(), name);
                     if (outFile.exists()) {
                         continue;
                     }
@@ -164,7 +165,7 @@ public class UserMessages {
 
     private void reloadCustomLanguage(String filename) {
         if (customLanguageFile == null) {
-            customLanguageFile = new File(getDataFolder(), filename + ".yml");
+            customLanguageFile = new File(localizationFolder, filename + ".yml");
         }
         customLanguage = YamlConfiguration.loadConfiguration(customLanguageFile);
 
@@ -177,11 +178,6 @@ public class UserMessages {
             plugin.logSevere("Unsupported encoding: " + e);
         }
 
-    }
-
-
-    private String getDataFolder() {
-        return "plugins/Cannons/localization/";
     }
 
 
