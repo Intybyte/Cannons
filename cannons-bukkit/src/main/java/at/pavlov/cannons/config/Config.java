@@ -32,6 +32,7 @@ import java.util.List;
 	private boolean debugMode;
     private boolean relayExplosionEvent;
     private int claimEdgeLength;
+    private String localization;
 
     //region hooks
     private boolean economyEnabled;
@@ -135,8 +136,8 @@ import java.util.List;
 
         setRelayExplosionEvent(config.getBoolean("general.relayExplosionEvent", false));
         setClaimEdgeLength(config.getInt("general.claimEdgeLength", 60));
-        ArmorCalculationUtil.setMagicValue(config.getDouble("general.armorEffectiveness", 0.04));
-		
+        setLocalization(config.getString("general.localization", "localization"));
+
 		//limitOfCannons
 		setBuildLimitEnabled(config.getBoolean("cannonLimits.useLimits", true));
 		setBuildLimitA(config.getInt("cannonLimits.buildLimitA", 10));

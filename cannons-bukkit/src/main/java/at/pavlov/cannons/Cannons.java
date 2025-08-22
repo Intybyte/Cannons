@@ -97,10 +97,10 @@ public final class Cannons extends JavaPlugin {
         CLogger.logger = this.getLogger();
         // must be done in onLoad because "movecraft"
         AsyncTaskManager.initialize(this);
-        UserMessages.initialize(this);
         Config.initialize(this);
-        CannonManager.initialize(this);
         this.config = Config.getInstance();
+        UserMessages.initialize(this);
+        CannonManager.initialize(this);
 
         initUpdater();
 

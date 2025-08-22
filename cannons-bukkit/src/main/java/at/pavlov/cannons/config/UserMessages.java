@@ -17,15 +17,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URL;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -98,20 +94,7 @@ public class UserMessages {
 
     public void loadLanguage() {
         this.saveAllLocalizations();
-        this.loadCustom("localization");
-
-        //copy german language
-        File localizationGerman = new File(plugin.getDataFolder(), "localization/localization_german.yml");
-
-        localizationGerman.getParentFile().mkdirs();
-        if (!localizationGerman.exists()) {
-            CannonsUtil.copyFile(plugin.getResource("localization/localization_german.yml"), localizationGerman);
-        }
-        //copy english language
-        File localizationEnglish = new File(plugin.getDataFolder(), "localization/localization_english.yml");
-        if (!localizationEnglish.exists()) {
-            CannonsUtil.copyFile(plugin.getResource("localization/localization.yml"), localizationEnglish);
-        }
+        this.loadCustom(Config.getInstance().getLocalization());
     }
 
     /**
