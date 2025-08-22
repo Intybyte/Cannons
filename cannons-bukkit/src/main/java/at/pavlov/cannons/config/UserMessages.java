@@ -17,15 +17,24 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URL;
+import java.security.CodeSource;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class UserMessages {
     private FileConfiguration customLanguage = null;
@@ -52,7 +61,43 @@ public class UserMessages {
         instance = new UserMessages(plugin);
     }
 
+    public void saveAllLocalizations() {
+        try {
+            CodeSource codeSource = getClass().getProtectionDomain().getCodeSource();
+            if (codeSource == null) {
+                return;
+            }
+
+            URI jarUri = codeSource.getLocation().toURI();
+            try (JarFile jarFile = new JarFile(new File(jarUri))) {
+
+                Enumeration<JarEntry> entries = jarFile.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    String name = entry.getName();
+
+                    if (!name.startsWith("localization/") || entry.isDirectory()) {
+                        continue;
+                    }
+
+                    // Save the resource to the plugin folder
+                    File outFile = new File(getDataFolder(), name);
+                    if (outFile.exists()) {
+                        continue;
+                    }
+
+                    outFile.getParentFile().mkdirs();
+                    plugin.saveResource(name, false);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void loadLanguage() {
+        this.saveAllLocalizations();
         this.loadCustom("localization");
 
         //copy german language
