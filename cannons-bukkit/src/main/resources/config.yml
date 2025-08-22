@@ -10,7 +10,7 @@ general:
   # relative command
   cannonPlaceListener: true
   # uses language files in /Cannons/localization
-  language: "en_US"
+  localization: "en_US"
 
 hooks:
   vault:

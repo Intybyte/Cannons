@@ -83,7 +83,6 @@ public class UserMessages {
                         continue;
                     }
 
-                    outFile.getParentFile().mkdirs();
                     plugin.saveResource(name, false);
                 }
             }
