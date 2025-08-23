@@ -29,9 +29,9 @@ import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.InventoryManagement;
 import at.pavlov.cannons.utils.SoundUtils;
 import at.pavlov.internal.Key;
+import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Effect;
@@ -47,6 +47,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1616,8 +1617,8 @@ public class Cannon implements ICannon, Rotational {
      * @param removeAfterShowing if true, the observer only works once
      * @return message for the player
      */
-    public MessageEnum addObserver(Player player, boolean removeAfterShowing) {
-        Validate.notNull(player, "player must not be null");
+    public MessageEnum addObserver(@NotNull Player player, boolean removeAfterShowing) {
+        Preconditions.checkNotNull(player, "player must not be null");
 
         //permission check
         if (!player.hasPermission(design.getPermissionObserver()))
@@ -1758,8 +1759,8 @@ public class Cannon implements ICannon, Rotational {
      * @param masterCannon if the controlled cannon is a slave and not the master cannon
      * @return message for the player
      */
-    public MessageEnum addCannonOperator(Player player, Boolean masterCannon) {
-        Validate.notNull(player, "player must not be null");
+    public MessageEnum addCannonOperator(@NotNull Player player, Boolean masterCannon) {
+        Preconditions.checkNotNull(player, "player must not be null");
 
         //permission check
         if (!player.hasPermission(design.getPermissionAutoaim()))

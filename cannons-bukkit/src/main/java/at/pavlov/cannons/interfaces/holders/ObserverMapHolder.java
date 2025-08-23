@@ -1,8 +1,9 @@
 package at.pavlov.cannons.interfaces.holders;
 
 import at.pavlov.cannons.Enum.MessageEnum;
-import org.apache.commons.lang3.Validate;
+import com.google.common.base.Preconditions;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -17,8 +18,8 @@ public interface ObserverMapHolder {
      * @param player player will be removed as observer
      * @return message for the player
      */
-    default MessageEnum removeObserver(Player player) {
-        Validate.notNull(player, "player must not be null");
+    default MessageEnum removeObserver(@NotNull Player player) {
+        Preconditions.checkNotNull(player, "player must not be null");
 
         getObserverMap().remove(player.getUniqueId());
         return MessageEnum.CannonObserverRemoved;
@@ -50,8 +51,8 @@ public interface ObserverMapHolder {
      * @param removeAfterShowing if true, the observer only works once
      * @return message for the player
      */
-    default MessageEnum toggleObserver(Player player, boolean removeAfterShowing) {
-        Validate.notNull(player, "player must not be null");
+    default MessageEnum toggleObserver(@NotNull Player player, boolean removeAfterShowing) {
+        Preconditions.checkNotNull(player, "player must not be null");
 
         if (getObserverMap().containsKey(player.getUniqueId()))
             return removeObserver(player);

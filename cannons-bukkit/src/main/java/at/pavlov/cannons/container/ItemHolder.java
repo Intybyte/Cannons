@@ -1,9 +1,9 @@
 package at.pavlov.cannons.container;
 
 import at.pavlov.cannons.multiversion.VersionHandler;
+import at.pavlov.cannons.utils.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

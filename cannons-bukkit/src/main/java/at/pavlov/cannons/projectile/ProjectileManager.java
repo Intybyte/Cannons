@@ -6,9 +6,8 @@ import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.internal.key.registries.Registries;
 import at.pavlov.internal.projectile.definition.CustomProjectileDefinition;
-import at.pavlov.internal.projectile.definition.DefaultProjectileDefinition;
 import at.pavlov.internal.projectile.definition.ProjectilePhysics;
-import org.apache.commons.lang3.Validate;
+import com.google.common.base.Preconditions;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -52,9 +51,8 @@ public class ProjectileManager
         this.plugin = plugin;
     }
 
-    public org.bukkit.entity.Projectile spawnProjectile(Projectile projectile, UUID shooter, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, Location spawnLoc, Vector velocity, UUID cannonId, ProjectileCause projectileCause)
-    {
-        Validate.notNull(shooter, "shooter for the projectile can't be null");
+    public org.bukkit.entity.Projectile spawnProjectile(Projectile projectile, @NotNull UUID shooter, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, Location spawnLoc, Vector velocity, UUID cannonId, ProjectileCause projectileCause) {
+        Preconditions.checkNotNull(shooter, "shooter for the projectile can't be null");
         World world = spawnLoc.getWorld();
 
         //set yaw, pitch for fireballs

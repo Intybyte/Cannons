@@ -2,7 +2,6 @@ package at.pavlov.cannons.interfaces.holders;
 
 import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.data.LinkingData;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;

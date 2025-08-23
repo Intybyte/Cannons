@@ -17,8 +17,8 @@ import at.pavlov.cannons.dao.wrappers.RemoveTaskWrapper;
 import at.pavlov.cannons.exchange.BExchanger;
 import at.pavlov.cannons.exchange.EmptyExchanger;
 import at.pavlov.cannons.utils.SoundUtils;
+import com.google.common.base.Preconditions;
 import lombok.Getter;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -28,6 +28,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
@@ -276,9 +277,9 @@ public class CannonManager {
         return "no unique name";
     }
 
-    public MessageEnum renameCannon(Player player, Cannon cannon, String newCannonName) {
-        Validate.notNull(player, "player must not be null");
-        Validate.notNull(cannon, "cannon must not be null");
+    public MessageEnum renameCannon(@NotNull Player player, @NotNull Cannon cannon, String newCannonName) {
+        Preconditions.checkNotNull(player, "player must not be null");
+        Preconditions.checkNotNull(cannon, "cannon must not be null");
 
         //check some permissions
         if (cannon.getOwner() != null && !player.getUniqueId().equals(cannon.getOwner()))
