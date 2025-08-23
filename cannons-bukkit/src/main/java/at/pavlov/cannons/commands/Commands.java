@@ -188,7 +188,7 @@ public class Commands extends BaseCommand {
         Projectile projectile = ProjectileStorage.getProjectile(projectileString);
         if (projectile == null) {
             String out = StringUtils.join(ProjectileStorage.getProjectileIds(), ", ");
-            sendMessage(player, ChatColor.RED + tag + "Design not found. Available designs are: " + out);
+            sendMessage(player, ChatColor.RED + tag + "Projectile not found. Available projectiles are: " + out);
             return;
         }
 
