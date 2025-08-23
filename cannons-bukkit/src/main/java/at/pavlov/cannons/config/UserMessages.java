@@ -5,7 +5,6 @@ import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.projectile.Projectile;
-import at.pavlov.cannons.utils.CannonsUtil;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -21,13 +20,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.security.CodeSource;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class UserMessages {
+    private static final String localizationFolder = "plugins/Cannons/localization/";
+
     private FileConfiguration customLanguage = null;
     private File customLanguageFile = null;
 
@@ -52,21 +58,43 @@ public class UserMessages {
         instance = new UserMessages(plugin);
     }
 
+    public void saveAllLocalizations() {
+        try {
+            CodeSource codeSource = getClass().getProtectionDomain().getCodeSource();
+            if (codeSource == null) {
+                return;
+            }
+
+            URI jarUri = codeSource.getLocation().toURI();
+            try (JarFile jarFile = new JarFile(new File(jarUri))) {
+
+                Enumeration<JarEntry> entries = jarFile.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    String name = entry.getName();
+
+                    if (!name.startsWith("localization/") || entry.isDirectory()) {
+                        continue;
+                    }
+
+                    // Save the resource to the plugin folder
+                    File outFile = new File(plugin.getDataFolder(), name);
+                    if (outFile.exists()) {
+                        continue;
+                    }
+
+                    plugin.saveResource(name, false);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void loadLanguage() {
-        this.loadCustom("localization");
-
-        //copy german language
-        File localizationGerman = new File(plugin.getDataFolder(), "localization/localization_german.yml");
-
-        localizationGerman.getParentFile().mkdirs();
-        if (!localizationGerman.exists()) {
-            CannonsUtil.copyFile(plugin.getResource("localization/localization_german.yml"), localizationGerman);
-        }
-        //copy english language
-        File localizationEnglish = new File(plugin.getDataFolder(), "localization/localization_english.yml");
-        if (!localizationEnglish.exists()) {
-            CannonsUtil.copyFile(plugin.getResource("localization/localization.yml"), localizationEnglish);
-        }
+        this.saveAllLocalizations();
+        this.loadCustom(Config.getInstance().getLocalization());
     }
 
     /**
@@ -136,7 +164,7 @@ public class UserMessages {
 
     private void reloadCustomLanguage(String filename) {
         if (customLanguageFile == null) {
-            customLanguageFile = new File(getDataFolder(), filename + ".yml");
+            customLanguageFile = new File(localizationFolder, filename + ".yml");
         }
         customLanguage = YamlConfiguration.loadConfiguration(customLanguageFile);
 
@@ -149,11 +177,6 @@ public class UserMessages {
             plugin.logSevere("Unsupported encoding: " + e);
         }
 
-    }
-
-
-    private String getDataFolder() {
-        return "plugins/Cannons/localization/";
     }
 
 

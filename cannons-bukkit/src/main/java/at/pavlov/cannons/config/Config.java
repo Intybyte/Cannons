@@ -5,7 +5,6 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.builders.ParticleBuilder;
 import at.pavlov.cannons.cannon.CannonManager;
 import at.pavlov.cannons.container.ItemHolder;
-import at.pavlov.cannons.utils.ArmorCalculationUtil;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.FileUtils;
 import at.pavlov.cannons.utils.ParseUtils;
@@ -32,6 +31,7 @@ import java.util.List;
 	private boolean debugMode;
     private boolean relayExplosionEvent;
     private int claimEdgeLength;
+    private String localization;
 
     //region hooks
     private boolean economyEnabled;
@@ -135,8 +135,8 @@ import java.util.List;
 
         setRelayExplosionEvent(config.getBoolean("general.relayExplosionEvent", false));
         setClaimEdgeLength(config.getInt("general.claimEdgeLength", 60));
-        ArmorCalculationUtil.setMagicValue(config.getDouble("general.armorEffectiveness", 0.04));
-		
+        setLocalization(config.getString("general.localization", "en_US"));
+
 		//limitOfCannons
 		setBuildLimitEnabled(config.getBoolean("cannonLimits.useLimits", true));
 		setBuildLimitA(config.getInt("cannonLimits.buildLimitA", 10));

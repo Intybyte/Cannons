@@ -83,7 +83,7 @@ Cannon:
     NEWLINE YELLOW 目标玩家: TARGET_PLAYER
     NEWLINE YELLOW 目标大炮: TARGET_CANNON
     NEWLINE YELLOW 其他目标: TARGET_OTHER
-    NEWLINE YELLOW 白名单': WHITELIST'
+    NEWLINE YELLOW 白名单: WHITELIST'
   RenameSuccess: 'GREEN [Cannons] 你将大炮重命名为 GOLD CANNON_NAME.'
   RenameFail: 'RED [Cannons] 已存在相同名称的大炮.'
 
