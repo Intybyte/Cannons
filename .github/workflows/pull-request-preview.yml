@@ -80,7 +80,7 @@ jobs:
             exit 1
           fi
 
-          DOWNLOAD_URL="https://github.com/$REPO/suites/$RUN_ID/artifacts/$ARTIFACT_ID"
+          DOWNLOAD_URL="https://github.com/$REPO/actions/runs/$RUN_ID/artifacts/$ARTIFACT_ID"
           echo "Artifact download URL: $DOWNLOAD_URL"
 
           echo "artifact_url=$DOWNLOAD_URL" >> $GITHUB_OUTPUT
