@@ -35,10 +35,10 @@ public record Key(String namespace, String key) {
         }
 
         if (strings.length == 1) {
-            return Key.mc(strings[0].trim());
+            return Key.mc(strings[0].trim().toLowerCase());
         }
 
-        return new Key(strings[0].trim(), strings[1].trim());
+        return new Key(strings[0].trim().toLowerCase(), strings[1].trim().toLowerCase());
     }
 
     public static Collection<Key> from(Collection<String> collection) {
