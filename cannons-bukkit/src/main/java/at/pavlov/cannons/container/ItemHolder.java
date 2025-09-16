@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +46,7 @@ public class ItemHolder {
         } else if (VersionHandler.isGreaterThan1_20_5() && meta.hasItemName()) {
             displayName = meta.getItemName();
         } else if (!meta.hasDisplayName()) {
-            displayName = getFriendlyName(item, true);
+            displayName = getFriendlyName(item);
         } else {
             displayName = "";
         }
@@ -190,18 +188,21 @@ public class ItemHolder {
 
         StringBuilder sbName = new StringBuilder();
         for (String subName : name.split("_"))
-            sbName.append(subName.substring(0, 1).toUpperCase() + subName.substring(1).toLowerCase()).append(" ");
+            sbName
+                .append(subName.substring(0, 1).toUpperCase())
+                .append(subName.substring(1).toLowerCase())
+                .append(" ");
 
         return sbName.substring(0, sbName.length() - 1);
     }
 
-    private static @NotNull String getFriendlyName(ItemStack itemStack, boolean checkDisplayName) {
+    private static @NotNull String getFriendlyName(ItemStack itemStack) {
         if (itemStack == null || itemStack.getType() == Material.AIR) return "Air";
 
-        if (checkDisplayName && itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName()) {
+        if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName()) {
             return itemStack.getItemMeta().getDisplayName();
         }
 
-        return capitalizeFully(itemStack.getType().name().replace("_", " ").toLowerCase());
+        return capitalizeFully(itemStack.getType().name().toLowerCase());
     }
 }
