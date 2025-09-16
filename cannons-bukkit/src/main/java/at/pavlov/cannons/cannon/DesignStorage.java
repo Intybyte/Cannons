@@ -1,6 +1,7 @@
 package at.pavlov.cannons.cannon;
 
 import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.config.Config;
 import at.pavlov.internal.container.DesignFileName;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
@@ -290,7 +291,8 @@ public class DesignStorage
         cannonDesign.setOverloadingDependsOfTemperature(cannonDesignConfig.getBoolean("overloading.dependsOfTemperature",false));
 
         //economy
-		Key economyKey = Key.from(cannonDesignConfig.getString("economy.type", "cannons:vault"));
+        String defaultKey = Config.getInstance().isEconomyEnabled() ? "cannons:vault" : "cannons:empty";
+		Key economyKey = Key.from(cannonDesignConfig.getString("economy.type", defaultKey));
 		cannonDesign.setEconomyType(economyKey);
 
 		BExchanger buildCost = ExchangeLoader.of(economyKey, cannonDesignConfig, "economy.buildingCosts", Exchanger.Type.WITHDRAW);
