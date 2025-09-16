@@ -263,7 +263,7 @@ public class Projectile implements Cloneable {
     }
 
 
-    List<ProjectileProperties> getPropertyList() {
+    public List<ProjectileProperties> getPropertyList() {
         return propertyList;
     }
 
