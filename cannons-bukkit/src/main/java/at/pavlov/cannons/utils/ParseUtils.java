@@ -188,4 +188,31 @@ public class ParseUtils {
 
         return entityList;
     }
+
+    public static String normalizeName(String original) {
+        if (original == null) {
+            return "";
+        }
+
+        String output = original.toLowerCase();
+        if (output.length() <= 1) {
+            return output.toUpperCase();
+        }
+
+        if (!output.contains("_")) {
+            return output.substring(0, 1).toUpperCase() + output.substring(1).toLowerCase();
+        }
+
+        StringBuilder sbName = new StringBuilder();
+        for (String subName : output.split("_")) {
+            if (subName.equalsIgnoreCase("with")) continue;
+            if (subName.equalsIgnoreCase("of")) continue;
+
+            sbName.append(subName.substring(0, 1).toUpperCase())
+                .append(subName.substring(1).toLowerCase())
+                .append(" ");
+        }
+
+        return sbName.toString();
+    }
 }

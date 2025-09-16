@@ -1,6 +1,7 @@
 package at.pavlov.cannons.container;
 
 import at.pavlov.cannons.multiversion.VersionHandler;
+import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.cannons.utils.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -173,36 +174,13 @@ public class ItemHolder {
         return !this.lore.isEmpty();
     }
 
-    private static String capitalizeFully(String name) {
-        if (name == null) {
-            return "";
-        }
-
-        if (name.length() <= 1) {
-            return name.toUpperCase();
-        }
-
-        if (!name.contains("_")) {
-            return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
-        }
-
-        StringBuilder sbName = new StringBuilder();
-        for (String subName : name.split("_"))
-            sbName
-                .append(subName.substring(0, 1).toUpperCase())
-                .append(subName.substring(1).toLowerCase())
-                .append(" ");
-
-        return sbName.substring(0, sbName.length() - 1);
-    }
-
-    private static @NotNull String getFriendlyName(ItemStack itemStack) {
+    public static @NotNull String getFriendlyName(ItemStack itemStack) {
         if (itemStack == null || itemStack.getType() == Material.AIR) return "Air";
 
         if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName()) {
             return itemStack.getItemMeta().getDisplayName();
         }
 
-        return capitalizeFully(itemStack.getType().name().toLowerCase());
+        return ParseUtils.normalizeName(itemStack.getType().name());
     }
 }
