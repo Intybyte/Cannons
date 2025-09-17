@@ -1,13 +1,12 @@
 package at.pavlov.internal.projectile.definition;
 
 import at.pavlov.internal.key.EntityKeyHolder;
-import at.pavlov.internal.Key;
 import at.pavlov.internal.key.KeyHolder;
 
 import java.util.Objects;
 
 public interface ProjectilePhysics extends KeyHolder, EntityKeyHolder {
-    ProjectilePhysics DEFAULT = new KeyedDefault(null);
+    ProjectilePhysics DEFAULT = new KeyedDefaultProjectile(null);
 
     /**
      * Returns the constant acceleration power for projectiles that use it (e.g., fireballs).

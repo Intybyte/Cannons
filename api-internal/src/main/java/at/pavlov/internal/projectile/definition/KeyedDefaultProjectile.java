@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class KeyedDefault implements ProjectilePhysics {
+public class KeyedDefaultProjectile implements ProjectilePhysics {
     private final Key entityKey;
 
     @Override
@@ -31,6 +31,6 @@ public class KeyedDefault implements ProjectilePhysics {
 
     @Override
     public Key getKey() {
-        return null;
+        return entityKey;
     }
 }

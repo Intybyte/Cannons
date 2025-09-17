@@ -3,7 +3,7 @@ package at.pavlov.internal.key.registries;
 import at.pavlov.internal.Key;
 import at.pavlov.internal.projectile.definition.CustomProjectileDefinition;
 import at.pavlov.internal.projectile.definition.DefaultProjectileDefinition;
-import at.pavlov.internal.projectile.definition.KeyedDefault;
+import at.pavlov.internal.projectile.definition.KeyedDefaultProjectile;
 import at.pavlov.internal.projectile.definition.ProjectilePhysics;
 
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ public class Registries {
                     "minecraft:llama_spit"
                 )
             ).forEach( entry -> toAdd.add(
-                new KeyedDefault(entry)
+                new KeyedDefaultProjectile(entry)
             ));
 
             return toAdd;
