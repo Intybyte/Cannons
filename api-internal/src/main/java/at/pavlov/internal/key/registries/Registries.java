@@ -3,6 +3,7 @@ package at.pavlov.internal.key.registries;
 import at.pavlov.internal.Key;
 import at.pavlov.internal.projectile.definition.CustomProjectileDefinition;
 import at.pavlov.internal.projectile.definition.DefaultProjectileDefinition;
+import at.pavlov.internal.projectile.definition.KeyedDefault;
 import at.pavlov.internal.projectile.definition.ProjectilePhysics;
 
 import java.util.ArrayList;
@@ -12,15 +13,20 @@ import java.util.List;
 public class Registries {
     public static final Registry.Composite<ProjectilePhysics> PROJECTILE_PHYSICS;
     public static final Registry<CustomProjectileDefinition> CUSTOM_PROJECTILE_DEFINITION;
-    public static final Registry<DefaultProjectileDefinition> DEFAULT_PROJECTILE_DEFINITION_REGISTRY;
+    public static final Registry<ProjectilePhysics> DEFAULT_PROJECTILE_DEFINITION_REGISTRY;
 
     static {
         CUSTOM_PROJECTILE_DEFINITION = new Registry<>();
         DEFAULT_PROJECTILE_DEFINITION_REGISTRY = new Registry<>(() -> {
-            List<DefaultProjectileDefinition> toAdd = new ArrayList<>();
+            List<ProjectilePhysics> toAdd = new ArrayList<>();
 
             Collection<Key> fireballs = Key.from(
-                    List.of("minecraft:fireball", "minecraft:small_fireball", "minecraft:dragon_fireball", "minecraft:wither_skull", "minecraft:shulker_bullet")
+                    List.of(
+                        "minecraft:fireball",
+                        "minecraft:small_fireball",
+                        "minecraft:dragon_fireball",
+                        "minecraft:wither_skull",
+                        "minecraft:shulker_bullet")
             );
             var fireballBuilder = DefaultProjectileDefinition.builder()
                     .gravity(0.0)
@@ -65,6 +71,20 @@ public class Registries {
                             .key(Key.mc("breeze_wind_charge"))
                             .build()
             );
+
+            Key.from(
+                List.of(
+                    "minecraft:snowball",
+                    "minecraft:egg",
+                    "minecraft:ender_pearl",
+                    "minecraft:experience_bottle",
+                    "minecraft:potion",
+                    "minecraft:lingering_potion",
+                    "minecraft:llama_spit"
+                )
+            ).forEach( entry -> toAdd.add(
+                new KeyedDefault(entry)
+            ));
 
             return toAdd;
         });

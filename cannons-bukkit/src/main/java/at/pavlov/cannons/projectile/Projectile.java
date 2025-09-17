@@ -38,7 +38,7 @@ public class Projectile implements Cloneable {
     public EntityType getProjectileEntity() {
         ProjectilePhysics pp = Registries.PROJECTILE_PHYSICS.of(projectileDefinitionKey);
         if (pp == null) {
-            Cannons.getPlugin().getLogger().severe(projectileID + " -> invalid projectile key");
+            Cannons.getPlugin().getLogger().severe(projectileID + " -> invalid projectile key: " + projectileDefinitionKey.full());
             return EntityType.SNOWBALL;
         }
 

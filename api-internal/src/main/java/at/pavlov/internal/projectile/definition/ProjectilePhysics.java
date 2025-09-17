@@ -7,37 +7,7 @@ import at.pavlov.internal.key.KeyHolder;
 import java.util.Objects;
 
 public interface ProjectilePhysics extends KeyHolder, EntityKeyHolder {
-    ProjectilePhysics DEFAULT = new ProjectilePhysics() {
-        @Override
-        public Double getConstantAcceleration() {
-            return null;
-        }
-
-        @Override
-        public double getGravity() {
-            return 0.03;
-        }
-
-        @Override
-        public double getDrag() {
-            return 0.99;
-        }
-
-        @Override
-        public double getWaterDrag() {
-            return 0.8;
-        }
-
-        @Override
-        public Key getEntityKey() {
-            return null;
-        }
-
-        @Override
-        public Key getKey() {
-            return null;
-        }
-    };
+    ProjectilePhysics DEFAULT = new KeyedDefault(null);
 
     /**
      * Returns the constant acceleration power for projectiles that use it (e.g., fireballs).
