@@ -24,6 +24,7 @@ import at.pavlov.cannons.listener.EntityListener;
 import at.pavlov.cannons.listener.PlayerListener;
 import at.pavlov.cannons.listener.RedstoneListener;
 import at.pavlov.cannons.listener.UpdateNotifier;
+import at.pavlov.cannons.metric.CannonMetrics;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileStorage;
@@ -231,24 +232,8 @@ public final class Cannons extends JavaPlugin {
     }
 
     private void initMetrics() {
-        Metrics metrics = new Metrics(this, 23139);
-        metrics.addCustomChart(
-                new AdvancedPie("hooks", () -> {
-
-                    Map<String, Integer> result = new HashMap<>();
-                    if (!hookManager.isActive()) {
-                        result.put("None", 1);
-                        return result;
-                    }
-
-                    for (Hook<?> hook : hookManager.hookMap().values()) {
-                        final int status = hook.active() ? 1 : 0;
-                        result.put(hook.getTypeClass().getSimpleName(), status);
-                    }
-
-                    return result;
-                })
-        );
+        CannonMetrics metrics = new CannonMetrics(this);
+        metrics.setupCharts();
     }
 
     private void initListeners() {
