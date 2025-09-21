@@ -122,6 +122,11 @@
             <version>1.0.7</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.Intybyte</groupId>
+            <artifactId>SchematicLib</artifactId>
+            <version>5acc213e0c</version>
+        </dependency>
 
         <!-- Hooks -->
         <dependency>
@@ -240,6 +245,10 @@
                         <relocation>
                             <pattern>io.papermc.lib</pattern>
                             <shadedPattern>at.pavlov.cannons.shaded.paperlib</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>me.vaan</pattern>
+                            <shadedPattern>at.pavlov.cannons.shaded.vaan</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>
