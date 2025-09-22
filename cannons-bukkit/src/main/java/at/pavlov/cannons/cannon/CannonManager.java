@@ -20,6 +20,7 @@ import at.pavlov.cannons.schematic.world.SchematicWorldProcessorImpl;
 import at.pavlov.cannons.utils.SoundUtils;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
+import me.vaan.schematiclib.base.block.IBlock;
 import me.vaan.schematiclib.base.schematic.OffsetSchematic;
 import me.vaan.schematiclib.base.schematic.OffsetSchematicImpl;
 import me.vaan.schematiclib.base.schematic.Schematic;
@@ -29,7 +30,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -642,7 +642,11 @@ public class CannonManager {
     private Cannon checkCannon(Location cannonBlock, UUID owner) {
         // is this block material used for a cannon design
         Block block = cannonBlock.getBlock();
-        BlockData blockData = cannonBlock.getBlock().getBlockData();
+        IBlock blockStuff = SchematicWorldProcessorImpl
+            .getProcessor()
+            .registry()
+            .getBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
+
         if (!isValidCannonBlock(block))
             return null;
 
@@ -663,14 +667,18 @@ public class CannonManager {
                 }
 
                 Schematic schem = cannonDesign.getSchematicMap().get(cannonDirection);
-                for (SimpleBlock designBlock : designBlockList) {
+                for (IBlock designBlock : schem) {
                     // compare blocks
-                    if (!designBlock.compareMaterial(blockData)) {
+                    if (!designBlock.key().equals(blockStuff.key())) {
                         continue;
                     }
 
                     // this block is same as in the design, get the offset
-                    Vector offset = designBlock.subtractInverted(cannonBlock).toVector();
+                    Vector offset = new Vector(
+                        cannonBlock.getBlockX() - designBlock.x(),
+                        cannonBlock.getBlockY() - designBlock.y(),
+                        cannonBlock.getBlockZ() - designBlock.z()
+                    );
 
                     OffsetSchematic offsetSchematic = new OffsetSchematicImpl(
                         offset.getBlockX(),
@@ -679,7 +687,7 @@ public class CannonManager {
                         schem.positions()
                     );
 
-                    boolean matches = SchematicWorldProcessorImpl.getProcessor().matches(offsetSchematic, cannonBlock.getWorld().getUID());
+                    boolean matches = SchematicWorldProcessorImpl.getProcessor().matches(offsetSchematic, world.getUID());
                     if (matches) {
                         return new Cannon(
                             cannonDesign,
