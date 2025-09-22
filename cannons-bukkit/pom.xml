@@ -125,7 +125,7 @@
         <dependency>
             <groupId>com.github.Intybyte</groupId>
             <artifactId>SchematicLib</artifactId>
-            <version>5acc213e0c</version>
+            <version>f092c09e70</version>
         </dependency>
 
         <!-- Hooks -->
@@ -249,6 +249,10 @@
                         <relocation>
                             <pattern>me.vaan</pattern>
                             <shadedPattern>at.pavlov.cannons.shaded.vaan</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google.gson</pattern>
+                            <shadedPattern>at.pavlov.cannons.shaded.google</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>

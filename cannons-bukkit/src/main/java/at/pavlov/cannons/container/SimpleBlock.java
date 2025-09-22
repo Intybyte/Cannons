@@ -4,8 +4,12 @@ package at.pavlov.cannons.container;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import me.vaan.schematiclib.base.block.BlockKey;
+import me.vaan.schematiclib.base.block.IBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -14,7 +18,7 @@ import org.bukkit.util.Vector;
 @Setter
 @Getter
 @ToString
-public class SimpleBlock {
+public class SimpleBlock implements IBlock {
     private int locX;
     private int locY;
     private int locZ;
@@ -44,6 +48,10 @@ public class SimpleBlock {
 
     public SimpleBlock(Location loc, Material material) {
         this(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), material);
+    }
+
+    public SimpleBlock(int x, int y, int z, BlockKey key) {
+        this(x, y, z, Registry.MATERIAL.get(new NamespacedKey(key.namespace(), key.key())));
     }
 
 
@@ -166,5 +174,26 @@ public class SimpleBlock {
      */
     public Vector toVector() {
         return new Vector(locX, locY, locZ);
+    }
+
+    @Override
+    public int x() {
+        return locX;
+    }
+
+    @Override
+    public int y() {
+        return locY;
+    }
+
+    @Override
+    public int z() {
+        return locZ;
+    }
+
+    @Override
+    public BlockKey key() {
+        NamespacedKey key = material.getKey();
+        return new BlockKey(key.getNamespace(), key.getKey());
     }
 }

@@ -7,7 +7,8 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.math.transform.AffineTransform;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.util.io.Closer;
 import com.sk89q.worldedit.world.block.BlockState;
 import me.vaan.schematiclib.base.block.IBlock;
@@ -29,13 +30,27 @@ public class WorldEditFormat implements SchematicLoader {
         Clipboard cc = loadSchematic(file);
         if (cc == null) throw new FileExceptionUnknown("Schematic not found");
 
-        Region region = cc.getRegion();
+        ClipboardHolder clipboardHolder = new ClipboardHolder(cc);
+        clipboardHolder.setTransform(new AffineTransform().translate(cc.getMinimumPoint().multiply(-1)));
+        Clipboard transformedCC = clipboardHolder.getClipboard();
+
+        cc.setOrigin(BlockVector3.ZERO);
 
         List<IBlock> positions = new ArrayList<>();
 
-        for (BlockVector3 pos : region) {
-            BlockState state = cc.getBlock(pos);
-            positions.add(new WorldEditBlock(state, pos));
+        int width = transformedCC.getDimensions().getBlockX();
+        int height = transformedCC.getDimensions().getBlockY();
+        int length = transformedCC.getDimensions().getBlockZ();
+
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
+                for (int z = 0; z < length; ++z) {
+                    BlockVector3 pt = BlockVector3.at(x, y, z);
+                    BlockState blockState = cc.getBlock(pt.add(cc.getMinimumPoint()));
+
+                    positions.add(new WorldEditBlock(blockState, pt));
+                }
+            }
         }
 
         return new FileSchematic(positions);

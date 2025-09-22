@@ -2,6 +2,7 @@ package at.pavlov.cannons.cannon;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.config.Config;
+import at.pavlov.cannons.schematic.formats.WorldEditFormat;
 import at.pavlov.internal.container.DesignFileName;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
@@ -17,14 +18,17 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.transform.AffineTransform;
-import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.util.io.Closer;
-import com.sk89q.worldedit.world.block.BlockState;
 import lombok.Getter;
-import org.bukkit.Bukkit;
+import me.vaan.schematiclib.base.block.BlockKey;
+import me.vaan.schematiclib.base.block.IBlock;
+import me.vaan.schematiclib.base.formats.SchematicLoader;
+import me.vaan.schematiclib.base.schematic.Schematic;
+import me.vaan.schematiclib.file.block.FileBlock;
+import me.vaan.schematiclib.file.formats.VaanFormat;
+import me.vaan.schematiclib.file.schematic.FileSchematic;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -164,14 +168,21 @@ public class DesignStorage
 
                 String schematicFile = CannonsUtil.changeExtension(ymlFile, ".schematic");
                 String schemFile = CannonsUtil.changeExtension(ymlFile, ".schem");
-                if (new File(getPath() + schematicFile).isFile()) {
-                    // there is a shematic file and a .yml file
-                    designList.add(new DesignFileName(ymlFile, schematicFile));
-                } else if (new File(getPath() + schemFile).isFile()) {
-                    // there is a shematic file and a .yml file
-                    designList.add(new DesignFileName(ymlFile, schemFile));
-                } else {
-                    plugin.logSevere(schematicFile + " is missing");
+                String vschemFile = CannonsUtil.changeExtension(ymlFile, ".vschem");
+
+                String[] toCheck = new String[] {schemFile, schematicFile, vschemFile};
+                boolean success = false;
+                for (String entry: toCheck) {
+                    File file = new File(getPath() + entry);
+                    if (file.isFile()) {
+                        designList.add(new DesignFileName(ymlFile, entry));
+                        success = true;
+                        break;
+                    }
+                }
+
+                if (!success) {
+                    plugin.logSevere("Schematic is missing for configuration: " + ymlFile);
                 }
             }
 		} catch (Exception e) {
@@ -399,79 +410,78 @@ public class DesignStorage
 		}
 	}
 
+    private static BlockKey bk(BlockData data) {
+        NamespacedKey key = data.getMaterial().getKey();
+        return new BlockKey(key.getNamespace(), key.getKey());
+    }
+
 	/**
 	 * loads the schematic of the config file
 	 * @param cannonDesign design of the cannon
 	 * @param schematicFile path of the schematic file
 	 */
+    private static final BlockFace[] HORIZONTALS = new BlockFace[] {BlockFace.EAST, BlockFace.SOUTH, BlockFace.NORTH, BlockFace.WEST};
 	private boolean loadDesignSchematic(CannonDesign cannonDesign, String schematicFile) {
         long startTime = System.nanoTime();
-		
-		// load schematic with worldedit
-        Clipboard cc = loadSchematic(schematicFile);
-		//failed to load schematic
-		if (cc == null) {
-			return false;
-		}
+
+        String schematicPath = getPath() + schematicFile;
+        File schemFile = new File(schematicPath);
 
 		// convert all schematic blocks from the config to BaseBlocks so they
 		// can be rotated
-		BlockData blockIgnore = cannonDesign.getSchematicBlockTypeIgnore();
-		BlockData blockMuzzle = cannonDesign.getSchematicBlockTypeMuzzle();
-		BlockData blockFiringIndicator = cannonDesign.getSchematicBlockTypeFiringIndicator();
-		BlockData blockRotationCenter = cannonDesign.getSchematicBlockTypeRotationCenter();
-		BlockData blockChestAndSign = cannonDesign.getSchematicBlockTypeChestAndSign();
-		BlockData blockRedstoneTorch = cannonDesign.getSchematicBlockTypeRedstoneTorch();
-		BlockData blockRedstoneWireAndRepeater = cannonDesign.getSchematicBlockTypeRedstoneWireAndRepeater();
-		BlockData blockRedstoneTrigger = cannonDesign.getSchematicBlockTypeRedstoneTrigger();
-		BlockData blockRightClickTrigger = cannonDesign.getSchematicBlockTypeRightClickTrigger();
-		BlockData replaceRedstoneTrigger = cannonDesign.getIngameBlockTypeRedstoneTrigger();
-		BlockData replaceRightClickTrigger = cannonDesign.getIngameBlockTypeRightClickTrigger();
+        BlockData blockIgnore = cannonDesign.getSchematicBlockTypeIgnore();
+        BlockData blockMuzzle = cannonDesign.getSchematicBlockTypeMuzzle();
+        BlockData blockFiringIndicator = cannonDesign.getSchematicBlockTypeFiringIndicator();
+        BlockData blockRotationCenter = cannonDesign.getSchematicBlockTypeRotationCenter();
+        BlockData blockChestAndSign = cannonDesign.getSchematicBlockTypeChestAndSign();
+        BlockData blockRedstoneTorch = cannonDesign.getSchematicBlockTypeRedstoneTorch();
+        BlockData blockRedstoneWireAndRepeater = cannonDesign.getSchematicBlockTypeRedstoneWireAndRepeater();
+        BlockData blockRedstoneTrigger = cannonDesign.getSchematicBlockTypeRedstoneTrigger();
+        BlockData blockRightClickTrigger = cannonDesign.getSchematicBlockTypeRightClickTrigger();
+        BlockData replaceRedstoneTrigger = cannonDesign.getIngameBlockTypeRedstoneTrigger();
+        BlockData replaceRightClickTrigger = cannonDesign.getIngameBlockTypeRightClickTrigger();
         List<BlockData> blockProtectedList = new ArrayList<>(cannonDesign.getSchematicBlockTypeProtected());
+        List<BlockKey> blockKeys = blockProtectedList.stream().map(DesignStorage::bk).toList();
 
-		// get facing of the cannon
-		BlockFace cannonDirection = cannonDesign.getDefaultHorizontalFacing();
-
-		ClipboardHolder clipboardHolder = new ClipboardHolder(cc);
-		clipboardHolder.setTransform(new AffineTransform().translate(cc.getMinimumPoint().multiply(-1)));
-		cc = clipboardHolder.getClipboard();
-
-		// read out blocks
-		int width = cc.getDimensions().getBlockX();
-		int height = cc.getDimensions().getBlockY();
-		int length = cc.getDimensions().getBlockZ();
-
-		cc.setOrigin(BlockVector3.ZERO);
+        // get facing of the cannon
+        BlockFace cannonDirection = cannonDesign.getDefaultHorizontalFacing();
 
 		//plugin.logDebug("design: " + schematicFile);
-		ArrayList<SimpleBlock> schematicList = getSchematic(width, height, length, cc, blockIgnore);
+        Schematic blocks = getSchematic(schemFile, bk(blockIgnore));
+        if (blocks == null) return false;
 
-		for (int i = 0; i < 4; i++) {
-			// create CannonBlocks entry
+        //todo try string confrontation with match...
+        int width = blocks.positions().stream().mapToInt(IBlock::x).max().orElse(0) - blocks.positions().stream().mapToInt(IBlock::x).min().orElse(0) + 1;
+        int height = blocks.positions().stream().mapToInt(IBlock::y).max().orElse(0) - blocks.positions().stream().mapToInt(IBlock::y).min().orElse(0) + 1;
+        int length = blocks.positions().stream().mapToInt(IBlock::z).max().orElse(0) - blocks.positions().stream().mapToInt(IBlock::z).min().orElse(0) + 1;
+
+        for (int i = 0; i < 4; i++) {
+            // create CannonBlocks entry
             CannonBlocks cannonBlocks = new CannonBlocks();
 
-			// to set the muzzle location the maximum and mininum x, y, z values
-			// of all muzzle blocks have to be found
-			Vector minMuzzle = new Vector(0, 0, 0);
-			Vector maxMuzzle = new Vector(0, 0, 0);
-			boolean firstEntryMuzzle = true;
+            // to set the muzzle location the maximum and mininum x, y, z values
+            // of all muzzle blocks have to be found
+            Vector minMuzzle = new Vector(0, 0, 0);
+            Vector maxMuzzle = new Vector(0, 0, 0);
+            boolean firstEntryMuzzle = true;
 
-			// to set the rotation Center maximum and mininum x, y, z values
-			// of all rotation blocks have to be found
-			// setting max to the size of the marked area is a good approximation
-			// if no rotationblock is given
-			Vector minRotation = new Vector(0, 0, 0);
-			Vector maxRotation = new Vector(width, height, length);
-			boolean firstEntryRotation = true;
+            // to set the rotation Center maximum and mininum x, y, z values
+            // of all rotation blocks have to be found
+            // setting max to the size of the marked area is a good approximation
+            // if no rotationblock is given
+            Vector minRotation = new Vector(0, 0, 0);
+            Vector maxRotation = new Vector(width, height, length);
+            boolean firstEntryRotation = true;
 
-            for (SimpleBlock sblock : schematicList) {
-                int x = sblock.getLocX();
-                int y = sblock.getLocY();
-                int z = sblock.getLocZ();
+            for (IBlock sblock : blocks) {
+                int x = sblock.x();
+                int y = sblock.y();
+                int z = sblock.z();
 
                 // #############  find the min and max for muzzle blocks so the
                 // cannonball is fired from the middle
-                if (sblock.compareMaterial(blockMuzzle)) {
+                BlockKey key = sblock.key();
+                if (key.equals(bk(blockMuzzle))) {
                     // reset for the first entry
                     if (firstEntryMuzzle) {
                         firstEntryMuzzle = false;
@@ -485,7 +495,7 @@ public class DesignStorage
                     cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, Material.AIR));
                 }
                 // #############  find the min and max for rotation blocks
-                else if (sblock.compareMaterial(blockRotationCenter)) {
+                else if (key.equals(bk(blockRotationCenter))) {
                     // reset for the first entry
                     if (firstEntryRotation) {
                         firstEntryRotation = false;
@@ -497,63 +507,63 @@ public class DesignStorage
                     }
                 }
                 // #############  redstoneTorch
-                else if (sblock.compareMaterial(blockRedstoneTorch))
+                else if (key.equals(bk(blockRedstoneTorch)))
                     cannonBlocks.addRedstoneTorch(new Vector(x, y, z));
                     // #############  redstoneWire and Repeater
-                else if (sblock.compareMaterial(blockRedstoneWireAndRepeater))
+                else if (key.equals(bk(blockRedstoneWireAndRepeater)))
                     cannonBlocks.addRedstoneWiresAndRepeater(new SimpleBlock(x, y, z, Material.REPEATER));
                     // #############  redstoneTrigger
-                else if (sblock.compareMaterial(blockRedstoneTrigger)) {
+                else if (key.equals(bk(blockRedstoneTrigger))) {
                     cannonBlocks.addRedstoneTrigger(new Vector(x, y, z));
                     // buttons or levers are part of the cannon
                     cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRedstoneTrigger));
                     // this can be a destructible block
-                    if (!isInList(blockProtectedList, sblock.getBlockData()))
+                    if (!isInList(blockKeys, key))
                         cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
                 }
                 // #############  rightClickTrigger
-                else if (sblock.compareMaterial(blockRightClickTrigger)) {
+                else if (key.equals(bk(blockRightClickTrigger))) {
                     cannonBlocks.addRightClickTrigger(new Vector(x, y, z));
                     //can be also a sign
-                    if (sblock.compareMaterial(blockChestAndSign))
+                    if (key.equals(bk(blockChestAndSign)))
                         // the id does not matter, but the data is important for signs
-                        cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, sblock.getBlockData())); //Material.WALL_SIGN
+                        cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, key)); //Material.WALL_SIGN
                     // firing blocks are also part of the cannon are
                     // part of the cannon
                     cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRightClickTrigger));
                     // this can be a destructible block
-                    if (!isInList(blockProtectedList, sblock.getBlockData()))
+                    if (!isInList(blockKeys, key))
                         cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
                 }
                 // #############  chests and signs
-                else if (sblock.compareMaterial(blockChestAndSign)) {
+                else if (key.equals(bk(blockChestAndSign))) {
                     // the id does not matter, but the data is important for signs
-                    cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, sblock.getBlockData())); //Material.WALL_SIGN
+                    cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, key)); //Material.WALL_SIGN
                 }
                 // #############  loading Interface is a cannonblock that is non of
                 // the previous blocks
                 else {
                     // all remaining blocks are loading interface or cannonBlocks
                     cannonBlocks.addBarrel(new Vector(x, y, z));
-                    cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, sblock.getBlockData()));
+                    cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, key));
                     // this can be a destructible block
-                    if (!isInList(blockProtectedList, sblock.getBlockData()))
+                    if (!isInList(blockKeys, key))
                         cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
                 }
 
                 // #############  firingIndicator
                 // can be everywhere on the cannon
-                if (sblock.compareMaterial(blockFiringIndicator))
+                if (key.equals(bk(blockFiringIndicator)))
                     cannonBlocks.addFiringIndicator(new Vector(x, y, z));
             }
 
-			// calculate the muzzle location
-			maxMuzzle.add(new Vector(1, 1, 1));
-			cannonBlocks.setMuzzle(maxMuzzle.add(minMuzzle).multiply(0.5));
+            // calculate the muzzle location
+            maxMuzzle.add(new Vector(1, 1, 1));
+            cannonBlocks.setMuzzle(maxMuzzle.add(minMuzzle).multiply(0.5));
 
-			// calculate the rotation Center
-			maxRotation.add(new Vector(1, 1, 1));
-			cannonBlocks.setRotationCenter(maxRotation.add(maxRotation).multiply(0.5));
+            // calculate the rotation Center
+            maxRotation.add(new Vector(1, 1, 1));
+            cannonBlocks.setRotationCenter(maxRotation.add(maxRotation).multiply(0.5));
 
             //set the muzzle location
             Vector compensation = new Vector(cannonBlocks.getMuzzle().getBlockX(), cannonBlocks.getMuzzle().getBlockY(), cannonBlocks.getMuzzle().getBlockZ());
@@ -579,33 +589,41 @@ public class DesignStorage
             cannonBlocks.getMuzzle().subtract(compensation);
             cannonBlocks.getRotationCenter().subtract(compensation);
 
-			// add blocks to the HashMap
-			cannonDesign.putCannonBlockMap(cannonDirection, cannonBlocks);
+            // add blocks to the HashMap
+            cannonDesign.putCannonBlockMap(cannonDirection, cannonBlocks);
 
-			//rotate blocks for the next iteration
-			blockIgnore = CannonsUtil.roateBlockFacingClockwise(blockIgnore);
-			blockMuzzle = CannonsUtil.roateBlockFacingClockwise(blockMuzzle);
-			blockFiringIndicator = CannonsUtil.roateBlockFacingClockwise(blockFiringIndicator);
-			blockRotationCenter = CannonsUtil.roateBlockFacingClockwise(blockRotationCenter);
-			blockChestAndSign = CannonsUtil.roateBlockFacingClockwise(blockChestAndSign);
-			blockRedstoneTorch = CannonsUtil.roateBlockFacingClockwise(blockRedstoneTorch);
-			blockRedstoneTrigger = CannonsUtil.roateBlockFacingClockwise(blockRedstoneTrigger);
-			blockRightClickTrigger = CannonsUtil.roateBlockFacingClockwise(blockRightClickTrigger);
-			replaceRedstoneTrigger = CannonsUtil.roateBlockFacingClockwise(replaceRedstoneTrigger);
-			replaceRightClickTrigger = CannonsUtil.roateBlockFacingClockwise(replaceRightClickTrigger);
+            //rotate blocks for the next iteration
+            blockIgnore = CannonsUtil.roateBlockFacingClockwise(blockIgnore);
+            blockMuzzle = CannonsUtil.roateBlockFacingClockwise(blockMuzzle);
+            blockFiringIndicator = CannonsUtil.roateBlockFacingClockwise(blockFiringIndicator);
+            blockRotationCenter = CannonsUtil.roateBlockFacingClockwise(blockRotationCenter);
+            blockChestAndSign = CannonsUtil.roateBlockFacingClockwise(blockChestAndSign);
+            blockRedstoneTorch = CannonsUtil.roateBlockFacingClockwise(blockRedstoneTorch);
+            blockRedstoneTrigger = CannonsUtil.roateBlockFacingClockwise(blockRedstoneTrigger);
+            blockRightClickTrigger = CannonsUtil.roateBlockFacingClockwise(blockRightClickTrigger);
+            replaceRedstoneTrigger = CannonsUtil.roateBlockFacingClockwise(replaceRedstoneTrigger);
+            replaceRightClickTrigger = CannonsUtil.roateBlockFacingClockwise(replaceRightClickTrigger);
 
-			blockProtectedList = blockProtectedList.stream().map(CannonsUtil::roateBlockFacingClockwise).toList();
+            blockProtectedList = blockProtectedList.stream().map(CannonsUtil::roateBlockFacingClockwise).toList();
 
-			//rotate schematic blocks
-			for (SimpleBlock simpleBlock : schematicList){
-				simpleBlock.rotate90();
-			}
+            //rotate schematic blocks
+            ArrayList<IBlock> newList = new ArrayList<>();
+            for (IBlock simpleBlock : blocks){
+                newList.add(
+                    new FileBlock(
+                        -simpleBlock.z(),
+                        simpleBlock.y(),
+                        simpleBlock.x(),
+                        simpleBlock.key()
+                    )
+                );
+            }
 
-            //rotate cannonDirection
-			cannonDirection = CannonsUtil.roatateFace(cannonDirection);
+            blocks = new FileSchematic(newList);
 
+            cannonDirection = CannonsUtil.roatateFace(cannonDirection);
+        }
 
-		}
         plugin.logDebug("Time to load designs: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
 
         return true;
@@ -654,13 +672,13 @@ public class DesignStorage
         }
     }
 	
-	private boolean isInList(List<BlockData> list, BlockData block)
+	private <T> boolean isInList(List<T> list, T block)
 	{
 		if (block == null) return true;
 		
-		for (BlockData listBlock : list)
+		for (T listBlock : list)
 		{
-			if (listBlock != null && listBlock.getMaterial().equals(block.getMaterial()))
+			if (listBlock != null && listBlock.equals(block))
 				return true;
 		}
 		return false;
@@ -724,26 +742,22 @@ public class DesignStorage
 		return material != Material.AIR && cannonBlockMaterials.contains(material);
 	}
 
-	private ArrayList<SimpleBlock> getSchematic(int width, int height, int length, Clipboard cc, BlockData blockIgnore) {
-		ArrayList<SimpleBlock> schematiclist = new ArrayList<>();
-		for (int x = 0; x < width; ++x) {
-			for (int y = 0; y < height; ++y) {
-				for (int z = 0; z < length; ++z) {
 
-					BlockVector3 pt = BlockVector3.at(x, y, z);
-					BlockState blockState = cc.getBlock(pt.add(cc.getMinimumPoint()));
-					//plugin.logDebug("blockstate: " + blockState.getAsString());
+    private static final SchematicLoader[] loaders = new SchematicLoader[] {
+        new WorldEditFormat(),
+        new VaanFormat()
+    };
 
-					BlockData block = Bukkit.getServer().createBlockData(blockState.getAsString());
+	private Schematic getSchematic(File file, BlockKey blockIgnore) {
+        for (SchematicLoader loader : loaders) {
+            try {
+                Schematic schm = loader.load(file);
+                List<IBlock> list = schm.positions().stream().filter(it -> !it.key().equals(blockIgnore) && !it.key().key().equals("air")).toList();
+                return new FileSchematic(list);
+            } catch (Throwable ignored) {}
+        }
 
-
-					// ignore if block is AIR or the IgnoreBlock type
-					if (!block.getMaterial().equals(Material.AIR) && !block.matches(blockIgnore)) {
-						schematiclist.add(new SimpleBlock(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ(), block));
-					}
-				}
-			}
-		}
-		return schematiclist;
+		plugin.logSevere("Couldn't load " + file.getPath());
+        return null;
 	}
 }
