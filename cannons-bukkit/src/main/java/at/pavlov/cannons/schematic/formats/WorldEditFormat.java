@@ -56,11 +56,10 @@ public class WorldEditFormat implements SchematicLoader {
         return new FileSchematic(positions);
     }
 
-    private Clipboard loadSchematic(File schematicFile) {
+    private Clipboard loadSchematic(File schematicFile) throws IOException {
         ClipboardFormat format = ClipboardFormats.findByFile(schematicFile);
 
         if(format == null) {
-            Cannons.getPlugin().logSevere("Error while loading schematic " + schematicFile.getPath() + " : Format not found");
             return null;
         }
 
@@ -70,9 +69,6 @@ public class WorldEditFormat implements SchematicLoader {
             ClipboardReader reader = closer.register(format.getReader(bis));
 
             return reader.read();
-        } catch (IOException e) {
-            Cannons.getPlugin().logSevere("Error while loading schematic " + schematicFile.getPath() + " : IO Error");
-            return null;
         }
     }
 }

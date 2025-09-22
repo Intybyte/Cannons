@@ -388,28 +388,6 @@ public class DesignStorage
 		cannonDesign.setSchematicBlockTypeProtected(ParseUtils.toBlockDataList(cannonDesignConfig.getStringList("constructionBlocks.protectedBlocks")));
 	}
 
-	private Clipboard loadSchematic(String schematicFile) {
-		String schematicPath = getPath() + schematicFile;
-		File f = new File(schematicPath);
-		ClipboardFormat format = ClipboardFormats.findByFile(f);
-
-		if(format == null) {
-			plugin.logSevere("Error while loading schematic " + schematicPath + " : Format not found");
-			return null;
-		}
-
-		try (Closer closer = Closer.create()) {
-			FileInputStream fis = closer.register(new FileInputStream(f));
-			BufferedInputStream bis = closer.register(new BufferedInputStream(fis));
-			ClipboardReader reader = closer.register(format.getReader(bis));
-
-			return reader.read();
-		} catch (IOException e) {
-			plugin.logSevere("Error while loading schematic " + schematicPath + " : IO Error");
-			return null;
-		}
-	}
-
     private static BlockKey bk(BlockData data) {
         NamespacedKey key = data.getMaterial().getKey();
         return new BlockKey(key.getNamespace(), key.getKey());
@@ -752,6 +730,7 @@ public class DesignStorage
         for (SchematicLoader loader : loaders) {
             try {
                 Schematic schm = loader.load(file);
+                if (schm == null) continue;
                 List<IBlock> list = schm.positions().stream().filter(it -> !it.key().equals(blockIgnore) && !it.key().key().equals("air")).toList();
                 return new FileSchematic(list);
             } catch (Throwable ignored) {}
