@@ -18,11 +18,14 @@ import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.projectile.definitions.ProjectileDefinitionLoader;
+import at.pavlov.cannons.schematic.world.SchematicWorldProcessorImpl;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.StringUtils;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import me.vaan.schematiclib.base.schematic.Schematic;
+import me.vaan.schematiclib.file.formats.VaanFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -31,6 +34,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -313,6 +317,33 @@ public class Commands extends BaseCommand {
         }
         //this never gets called
         //sendMessage(sender, ChatColor.RED + "Usage '/cannons observer' or '/cannons observer <off|disable>' or '/cannons observer <CANNON NAME>'");
+    }
+
+    @Subcommand("schematic")
+    @CommandPermission("cannons.admin.reload")
+    public class onSchematic extends BaseCommand {
+        private static final SchematicWorldProcessorImpl processor = new SchematicWorldProcessorImpl();
+
+        @Default
+        public static void help(Player player) {
+            sendMessage(player, ChatColor.RED + "Usage '/cannons schematic save <xA> <yA> <zA> <xB> <yB> <zB> <extensionlessName>'");
+        }
+
+        @Subcommand("save")
+        public static void save(Player player, int xA, int yA, int zA, int xB, int yB, int zB, String name) {
+            String fullName = name + ".vschem";
+            Schematic schematic = processor.schematicOf(xA, yA, zA, xB, yB, zB, player.getWorld().getUID());
+
+            String fullPath = DesignStorage.getPath() + fullName;
+            File file = new File(fullPath);
+
+            VaanFormat format = new VaanFormat();
+            try {
+                format.save(file, schematic);
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Subcommand("whitelist")
