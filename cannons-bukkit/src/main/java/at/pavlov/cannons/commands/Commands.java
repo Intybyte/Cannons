@@ -322,7 +322,6 @@ public class Commands extends BaseCommand {
     @Subcommand("schematic")
     @CommandPermission("cannons.admin.reload")
     public class onSchematic extends BaseCommand {
-        private static final SchematicWorldProcessorImpl processor = new SchematicWorldProcessorImpl();
 
         @Default
         public static void help(Player player) {
@@ -332,7 +331,7 @@ public class Commands extends BaseCommand {
         @Subcommand("save")
         public static void save(Player player, int xA, int yA, int zA, int xB, int yB, int zB, String name) {
             String fullName = name + ".vschem";
-            Schematic schematic = processor.schematicOf(xA, yA, zA, xB, yB, zB, player.getWorld().getUID());
+            Schematic schematic = SchematicWorldProcessorImpl.getProcessor().schematicOf(xA, yA, zA, xB, yB, zB, player.getWorld().getUID());
 
             String fullPath = DesignStorage.getPath() + fullName;
             File file = new File(fullPath);
