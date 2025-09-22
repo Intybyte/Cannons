@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
+import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.UUID;
 
@@ -28,5 +29,14 @@ public class MinecraftNamespaceHandler implements NamespaceHandler {
         return new BlockImpl(
             Bukkit.getWorld(uuid).getBlockAt(x, y, z)
         );
+    }
+
+    @Override
+    public void destroy(IBlock iBlock, UUID uuid) {
+        Bukkit.getWorld(uuid).getBlockAt(
+            iBlock.x(),
+            iBlock.y(),
+            iBlock.z()
+        ).setType(Material.AIR);
     }
 }

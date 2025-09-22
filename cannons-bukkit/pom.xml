@@ -125,7 +125,7 @@
         <dependency>
             <groupId>com.github.Intybyte</groupId>
             <artifactId>SchematicLib</artifactId>
-            <version>fdc507c3c0</version>
+            <version>7158d35884</version>
         </dependency>
 
         <!-- Hooks -->
@@ -153,6 +153,15 @@
             <version>2.11.6</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Schematic handling -->
+        <dependency>
+            <groupId>com.github.Slimefun</groupId>
+            <artifactId>Slimefun4</artifactId>
+            <version>RC-37</version>
+            <scope>provided</scope>
+        </dependency>
+
 
         <!-- Testing dependencies  -->
         <dependency>
