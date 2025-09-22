@@ -16,9 +16,13 @@ import at.pavlov.cannons.event.CannonRenameEvent;
 import at.pavlov.cannons.dao.wrappers.RemoveTaskWrapper;
 import at.pavlov.cannons.exchange.BExchanger;
 import at.pavlov.cannons.exchange.EmptyExchanger;
+import at.pavlov.cannons.schematic.world.SchematicWorldProcessorImpl;
 import at.pavlov.cannons.utils.SoundUtils;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
+import me.vaan.schematiclib.base.schematic.OffsetSchematic;
+import me.vaan.schematiclib.base.schematic.OffsetSchematicImpl;
+import me.vaan.schematiclib.base.schematic.Schematic;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -658,6 +662,7 @@ public class CannonManager {
                     return null;
                 }
 
+                Schematic schem = cannonDesign.getSchematicMap().get(cannonDirection);
                 for (SimpleBlock designBlock : designBlockList) {
                     // compare blocks
                     if (!designBlock.compareMaterial(blockData)) {
@@ -667,21 +672,22 @@ public class CannonManager {
                     // this block is same as in the design, get the offset
                     Vector offset = designBlock.subtractInverted(cannonBlock).toVector();
 
-                    // check all other blocks of the cannon
-                    boolean isCannon = true;
+                    OffsetSchematic offsetSchematic = new OffsetSchematicImpl(
+                        offset.getBlockX(),
+                        offset.getBlockY(),
+                        offset.getBlockZ(),
+                        schem.positions()
+                    );
 
-                    for (SimpleBlock checkBlocks : designBlockList) {
-                        if (!checkBlocks.compareMaterial(world, offset)) {
-                            // if the block does not match this is not the
-                            // right one
-                            isCannon = false;
-                            break;
-                        }
-                    }
-
-                    // this is a cannon
-                    if (isCannon) {
-                        return new Cannon(cannonDesign, world.getUID(), offset, cannonDirection, owner);
+                    boolean matches = SchematicWorldProcessorImpl.getProcessor().matches(offsetSchematic, cannonBlock.getWorld().getUID());
+                    if (matches) {
+                        return new Cannon(
+                            cannonDesign,
+                            world.getUID(),
+                            offset,
+                            cannonDirection,
+                            owner
+                        );
                     }
                 }
             }

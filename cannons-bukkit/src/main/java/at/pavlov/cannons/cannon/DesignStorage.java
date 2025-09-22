@@ -22,9 +22,11 @@ import com.sk89q.worldedit.util.io.Closer;
 import lombok.Getter;
 import me.vaan.schematiclib.base.block.BlockKey;
 import me.vaan.schematiclib.base.block.IBlock;
+import me.vaan.schematiclib.base.block.ICoord;
 import me.vaan.schematiclib.base.formats.SchematicLoader;
 import me.vaan.schematiclib.base.schematic.Schematic;
 import me.vaan.schematiclib.file.block.FileBlock;
+import me.vaan.schematiclib.file.block.FileCoord;
 import me.vaan.schematiclib.file.formats.VaanFormat;
 import me.vaan.schematiclib.file.schematic.FileSchematic;
 import org.bukkit.Material;
@@ -437,6 +439,7 @@ public class DesignStorage
         for (int i = 0; i < 4; i++) {
             // create CannonBlocks entry
             CannonBlocks cannonBlocks = new CannonBlocks();
+            List<IBlock> filteredSchematic = new ArrayList<>();
 
             // to set the muzzle location the maximum and mininum x, y, z values
             // of all muzzle blocks have to be found
@@ -472,6 +475,7 @@ public class DesignStorage
                     }
                     //muzzle blocks need to be air - else the projectile would spawn in a block
                     cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, Material.AIR));
+                    filteredSchematic.add(new FileBlock(x, y, z, BlockKey.mc("air")));
                 }
                 // #############  find the min and max for rotation blocks
                 else if (key.equals(bk(blockRotationCenter))) {
@@ -486,49 +490,57 @@ public class DesignStorage
                     }
                 }
                 // #############  redstoneTorch
-                else if (key.equals(bk(blockRedstoneTorch)))
+                else if (key.equals(bk(blockRedstoneTorch))) {
                     cannonBlocks.addRedstoneTorch(new Vector(x, y, z));
+                }
                     // #############  redstoneWire and Repeater
-                else if (key.equals(bk(blockRedstoneWireAndRepeater)))
+                else if (key.equals(bk(blockRedstoneWireAndRepeater))) {
                     cannonBlocks.addRedstoneWiresAndRepeater(new SimpleBlock(x, y, z, Material.REPEATER));
+                }
                     // #############  redstoneTrigger
-                else if (key.equals(bk(blockRedstoneTrigger))) {
+                else if (!key.equals(bk(blockRedstoneTrigger))) {
+                    if (key.equals(bk(blockRightClickTrigger))) {
+                        cannonBlocks.addRightClickTrigger(new Vector(x, y, z));
+                        //can be also a sign
+                        if (key.equals(bk(blockChestAndSign)))
+                            // the id does not matter, but the data is important for signs
+                            cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, key)); //Material.WALL_SIGN
+                        // firing blocks are also part of the cannon are
+                        // part of the cannon
+                        cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRightClickTrigger));
+                        filteredSchematic.add(new FileBlock(x, y, z, bk(replaceRightClickTrigger)));
+                        // this can be a destructible block
+                        if (!isInList(blockKeys, key))
+                            cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
+                    }
+                    // #############  chests and signs
+                    else if (key.equals(bk(blockChestAndSign))) {
+                        // the id does not matter, but the data is important for signs
+                        cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, key)); //Material.WALL_SIGN
+                    }
+                    // #############  loading Interface is a cannonblock that is non of
+                    // the previous blocks
+                    else {
+                        // all remaining blocks are loading interface or cannonBlocks
+                        cannonBlocks.addBarrel(new Vector(x, y, z));
+                        cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, key));
+                        filteredSchematic.add(new FileBlock(x, y, z, key));
+                        // this can be a destructible block
+                        if (!isInList(blockKeys, key))
+                            cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
+                    }
+                }
+                // #############  rightClickTrigger
+                else {
                     cannonBlocks.addRedstoneTrigger(new Vector(x, y, z));
                     // buttons or levers are part of the cannon
                     cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRedstoneTrigger));
+                    filteredSchematic.add(new FileBlock(x, y, z, bk(replaceRedstoneTrigger)));
                     // this can be a destructible block
                     if (!isInList(blockKeys, key))
                         cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
                 }
-                // #############  rightClickTrigger
-                else if (key.equals(bk(blockRightClickTrigger))) {
-                    cannonBlocks.addRightClickTrigger(new Vector(x, y, z));
-                    //can be also a sign
-                    if (key.equals(bk(blockChestAndSign)))
-                        // the id does not matter, but the data is important for signs
-                        cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, key)); //Material.WALL_SIGN
-                    // firing blocks are also part of the cannon are
-                    // part of the cannon
-                    cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRightClickTrigger));
-                    // this can be a destructible block
-                    if (!isInList(blockKeys, key))
-                        cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
-                }
-                // #############  chests and signs
-                else if (key.equals(bk(blockChestAndSign))) {
-                    // the id does not matter, but the data is important for signs
-                    cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, key)); //Material.WALL_SIGN
-                }
-                // #############  loading Interface is a cannonblock that is non of
-                // the previous blocks
-                else {
-                    // all remaining blocks are loading interface or cannonBlocks
-                    cannonBlocks.addBarrel(new Vector(x, y, z));
-                    cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, key));
-                    // this can be a destructible block
-                    if (!isInList(blockKeys, key))
-                        cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
-                }
+
 
                 // #############  firingIndicator
                 // can be everywhere on the cannon
@@ -546,6 +558,18 @@ public class DesignStorage
 
             //set the muzzle location
             Vector compensation = new Vector(cannonBlocks.getMuzzle().getBlockX(), cannonBlocks.getMuzzle().getBlockY(), cannonBlocks.getMuzzle().getBlockZ());
+
+            List<IBlock> actualSchematic = new ArrayList<>();
+            for (IBlock iblock : filteredSchematic)
+                actualSchematic.add(
+                    iblock.add(
+                        new FileCoord(
+                            -compensation.getBlockX(),
+                            -compensation.getBlockY(),
+                            -compensation.getBlockZ()
+                        )
+                    )
+                );
 
             for (SimpleBlock block : cannonBlocks.getAllCannonBlocks())
                 block.directSubtract(compensation);
@@ -570,6 +594,7 @@ public class DesignStorage
 
             // add blocks to the HashMap
             cannonDesign.putCannonBlockMap(cannonDirection, cannonBlocks);
+            cannonDesign.putSchematicMap(cannonDirection, new FileSchematic(actualSchematic));
 
             //rotate blocks for the next iteration
             blockIgnore = CannonsUtil.roateBlockFacingClockwise(blockIgnore);

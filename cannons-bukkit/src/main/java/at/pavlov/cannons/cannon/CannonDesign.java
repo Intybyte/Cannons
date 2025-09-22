@@ -8,8 +8,11 @@ import at.pavlov.cannons.exchange.BExchanger;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.internal.Key;
 import lombok.Data;
+import me.vaan.schematiclib.base.schematic.Schematic;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
@@ -192,6 +195,7 @@ import java.util.List;
     
     //cannon design block lists for every direction (NORTH, EAST, SOUTH, WEST)
     private final HashMap<BlockFace, CannonBlocks> cannonBlockMap = new HashMap<>();
+    private final HashMap<BlockFace, Schematic> schematicMap = new HashMap<>();
 	private final EnumSet<Material> allowedMaterials = EnumSet.noneOf(Material.class);
 
 
@@ -552,13 +556,25 @@ import java.util.List;
 	}
 
 
-	public void putCannonBlockMap(BlockFace cannonDirection, CannonBlocks blocks) {
-		for (var block : blocks.getAllCannonBlocks()) {
-			allowedMaterials.add(block.getBlockData().getMaterial());
-		}
+    public void putCannonBlockMap(BlockFace cannonDirection, CannonBlocks blocks) {
+        for (var block : blocks.getAllCannonBlocks()) {
+            allowedMaterials.add(block.getBlockData().getMaterial());
+        }
 
-		cannonBlockMap.put(cannonDirection, blocks);
-	}
+        cannonBlockMap.put(cannonDirection, blocks);
+    }
+
+    public void putSchematicMap(BlockFace cannonDirection, Schematic blocks) {
+        blocks.forEach(b -> {
+            Material m = Registry.MATERIAL.get(
+                new NamespacedKey(b.key().namespace(), b.key().key())
+            );
+
+            allowedMaterials.add(m);
+        });
+
+        schematicMap.put(cannonDirection, blocks);
+    }
 
 	public boolean isAllowedMaterial(Material m) {
 		return allowedMaterials.contains(m);
