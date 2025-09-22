@@ -684,7 +684,7 @@ public class DesignStorage
 		return false;
 	}
 	
-	private String getPath()
+	public static String getPath()
 	{
 		// Directory path here
 		return "plugins/Cannons/designs/";
