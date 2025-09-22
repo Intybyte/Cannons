@@ -421,7 +421,7 @@ public class DesignStorage
         BlockData replaceRedstoneTrigger = cannonDesign.getIngameBlockTypeRedstoneTrigger();
         BlockData replaceRightClickTrigger = cannonDesign.getIngameBlockTypeRightClickTrigger();
         List<BlockData> blockProtectedList = new ArrayList<>(cannonDesign.getSchematicBlockTypeProtected());
-        List<BlockKey> blockKeys = blockProtectedList.stream().map(DesignStorage::bk).toList();
+        List<BlockKey> keysBlocksProtected = blockProtectedList.stream().map(DesignStorage::bk).toList();
 
         // get facing of the cannon
         BlockFace cannonDirection = cannonDesign.getDefaultHorizontalFacing();
@@ -510,7 +510,7 @@ public class DesignStorage
                         cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRightClickTrigger));
                         filteredSchematic.add(new FileBlock(x, y, z, bk(replaceRightClickTrigger)));
                         // this can be a destructible block
-                        if (!isInList(blockKeys, key))
+                        if (!isInList(keysBlocksProtected, key))
                             cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
                     }
                     // #############  chests and signs
@@ -526,7 +526,7 @@ public class DesignStorage
                         cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, key));
                         filteredSchematic.add(new FileBlock(x, y, z, key));
                         // this can be a destructible block
-                        if (!isInList(blockKeys, key))
+                        if (!isInList(keysBlocksProtected, key))
                             cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
                     }
                 }
@@ -537,7 +537,7 @@ public class DesignStorage
                     cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRedstoneTrigger));
                     filteredSchematic.add(new FileBlock(x, y, z, bk(replaceRedstoneTrigger)));
                     // this can be a destructible block
-                    if (!isInList(blockKeys, key))
+                    if (!isInList(keysBlocksProtected, key))
                         cannonBlocks.addDestructibleBlocks(new Vector(x, y, z));
                 }
 
