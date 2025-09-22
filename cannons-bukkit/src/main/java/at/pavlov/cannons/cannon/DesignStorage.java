@@ -428,10 +428,11 @@ public class DesignStorage
         Schematic blocks = getSchematic(schemFile, bk(blockIgnore));
         if (blocks == null) return false;
 
-        //todo try string confrontation with match...
-        int width = blocks.positions().stream().mapToInt(IBlock::x).max().orElse(0) - blocks.positions().stream().mapToInt(IBlock::x).min().orElse(0) + 1;
-        int height = blocks.positions().stream().mapToInt(IBlock::y).max().orElse(0) - blocks.positions().stream().mapToInt(IBlock::y).min().orElse(0) + 1;
-        int length = blocks.positions().stream().mapToInt(IBlock::z).max().orElse(0) - blocks.positions().stream().mapToInt(IBlock::z).min().orElse(0) + 1;
+        ICoord max = blocks.getMax();
+        ICoord min = blocks.getMin();
+        int width = max.x() - min.x() + 1;
+        int height = max.y() - min.y() + 1;
+        int length = max.z() - min.z() + 1;
 
         for (int i = 0; i < 4; i++) {
             // create CannonBlocks entry
