@@ -583,7 +583,7 @@ import java.util.List;
 	@Override
 	public String toString()
 	{
-		return "designID:" + designID + " name:" + designName + " blocks:" + getAllCannonBlocks(BlockFace.NORTH).size();
+		return "designID:" + designID + " name:" + designName + " blocks:" + schematicMap.get(BlockFace.NORTH).positions().size();
 	}
 
     /**

@@ -1,10 +1,12 @@
 package at.pavlov.cannons.schematic.block;
 
+import lombok.Getter;
 import me.vaan.schematiclib.base.block.BlockKey;
 import me.vaan.schematiclib.base.block.IBlock;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 
+@Getter
 public class BlockImpl implements IBlock {
     private final Block block;
 

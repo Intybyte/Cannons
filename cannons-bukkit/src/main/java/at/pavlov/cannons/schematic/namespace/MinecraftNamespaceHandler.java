@@ -2,6 +2,7 @@ package at.pavlov.cannons.schematic.namespace;
 
 
 import at.pavlov.cannons.schematic.block.BlockImpl;
+import me.vaan.schematiclib.base.block.BlockKey;
 import me.vaan.schematiclib.base.block.IBlock;
 import me.vaan.schematiclib.base.namespace.NamespaceHandler;
 import org.bukkit.Bukkit;
@@ -46,5 +47,11 @@ public class MinecraftNamespaceHandler implements NamespaceHandler {
             iBlock.y(),
             iBlock.z()
         ).breakNaturally();
+    }
+
+    // should be unused
+    @Override
+    public BlockKey toMaterial(BlockKey blockKey) {
+        return blockKey;
     }
 }
