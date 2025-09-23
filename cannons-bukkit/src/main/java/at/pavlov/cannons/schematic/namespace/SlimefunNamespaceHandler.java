@@ -1,8 +1,8 @@
 package at.pavlov.cannons.schematic.namespace;
 
-import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.schematic.RetryUntil;
+import at.pavlov.cannons.utils.SchemLibUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
@@ -17,11 +17,9 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 // doesn't support handlers as we have no acting player
@@ -44,18 +42,10 @@ public class SlimefunNamespaceHandler implements NamespaceHandler {
         }
 
         if (Slimefun.getTickerTask().isDeletedSoon(location)) {
-            new BukkitRunnable() {
-
-                @Override
-                public void run() {
-                    if (Slimefun.getTickerTask().isDeletedSoon(location)) {
-                        return;
-                    }
-
-                    place(iBlock, uuid);
-                    cancel();
-                }
-            }.runTaskTimer(Cannons.getPlugin(), 1L, 4L);
+            new RetryUntil(
+                () -> Slimefun.getTickerTask().isDeletedSoon(location),
+                () -> place(iBlock, uuid)
+            ).start();
             return;
         }
 
@@ -136,7 +126,6 @@ public class SlimefunNamespaceHandler implements NamespaceHandler {
             return BlockKey.mc("air");
         }
 
-        String materialType = sfItem.getItem().getType().getKey().getKey();
-        return BlockKey.mc(materialType);
+        return SchemLibUtils.materialKey(sfItem.getItem().getType());
     }
 }
