@@ -65,6 +65,10 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>matteodev</id>
+            <url>https://maven.devs.beer/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -125,7 +129,15 @@
         <dependency>
             <groupId>com.github.Intybyte</groupId>
             <artifactId>SchematicLib</artifactId>
-            <version>7e2dbdc1bf</version>
+            <version>1faa409806</version>
+        </dependency>
+
+        <!-- Schematic loading -->
+        <dependency>
+            <groupId>dev.lone</groupId>
+            <artifactId>api-itemsadder</artifactId>
+            <version>4.0.10</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Hooks -->

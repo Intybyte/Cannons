@@ -1,6 +1,7 @@
 package at.pavlov.cannons.schematic.world;
 
 import at.pavlov.cannons.schematic.block.BlockImpl;
+import at.pavlov.cannons.schematic.namespace.ItemsAdderNamespaceHandler;
 import at.pavlov.cannons.schematic.namespace.MinecraftNamespaceHandler;
 import at.pavlov.cannons.schematic.namespace.SlimefunNamespaceHandler;
 import lombok.Getter;
@@ -46,6 +47,12 @@ public class SchematicWorldProcessorImpl implements SchematicWorldProcessor {
             "slimefun",
             "io.github.thebusybiscuit.slimefun4.implementation.Slimefun",
             new SlimefunNamespaceHandler()
+        );
+
+        registerReflectionNamespace(
+            "itemsadder",
+            "dev.lone.itemsadder.api.CustomBlock",
+            new ItemsAdderNamespaceHandler()
         );
 
         return this;
