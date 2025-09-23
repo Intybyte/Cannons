@@ -2,6 +2,7 @@ package at.pavlov.cannons.schematic.world;
 
 import at.pavlov.cannons.schematic.block.BlockImpl;
 import at.pavlov.cannons.schematic.namespace.MinecraftNamespaceHandler;
+import at.pavlov.cannons.schematic.namespace.SlimefunNamespaceHandler;
 import lombok.Getter;
 import me.vaan.schematiclib.base.block.IBlock;
 import me.vaan.schematiclib.base.namespace.NamespaceHandler;
@@ -13,7 +14,7 @@ import java.util.UUID;
 
 public class SchematicWorldProcessorImpl implements SchematicWorldProcessor {
     @Getter
-    private static final SchematicWorldProcessorImpl processor = new SchematicWorldProcessorImpl();
+    private static final SchematicWorldProcessorImpl processor = new SchematicWorldProcessorImpl().registerAll();
     private final NamespaceRegistry registry;
     private final MinecraftNamespaceHandler mcHandler = new MinecraftNamespaceHandler();
 
@@ -38,6 +39,16 @@ public class SchematicWorldProcessorImpl implements SchematicWorldProcessor {
 
     public Block getRaw(IBlock block, UUID world) {
         return ((BlockImpl) mcHandler.get(block.x(), block.y(), block.z(), world)).getBlock();
+    }
+
+    private SchematicWorldProcessorImpl registerAll() {
+        registerReflectionNamespace(
+            "slimefun",
+            "io.github.thebusybiscuit.slimefun4.implementation.Slimefun",
+            new SlimefunNamespaceHandler()
+        );
+
+        return this;
     }
 }
 
