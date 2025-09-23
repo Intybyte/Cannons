@@ -395,6 +395,15 @@ public class DesignStorage {
         return new BlockKey(key.getNamespace(), key.getKey());
     }
 
+    private static boolean isSchematicValid(Schematic schematic) {
+        try {
+            SchematicWorldProcessorImpl.getProcessor().parseToMaterial(schematic);
+            return true;
+        } catch (Throwable throwable) {
+            return false;
+        }
+    }
+
 	/**
 	 * loads the schematic of the config file
 	 * @param cannonDesign design of the cannon
@@ -428,6 +437,10 @@ public class DesignStorage {
 
 		//plugin.logDebug("design: " + schematicFile);
         Schematic blocks = getSchematic(schemFile, bk(blockIgnore));
+        if (!isSchematicValid(blocks)) {
+            plugin.logSevere("Schematic " + schematicFile + " is invalid, maybe it has custom blocks whose plugin has been removed?");
+            return false;
+        }
         if (blocks == null) return false;
 
         ICoord max = blocks.getMax();
