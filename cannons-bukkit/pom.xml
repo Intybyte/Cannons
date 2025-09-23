@@ -125,7 +125,7 @@
         <dependency>
             <groupId>com.github.Intybyte</groupId>
             <artifactId>SchematicLib</artifactId>
-            <version>7158d35884</version>
+            <version>ac11044435</version>
         </dependency>
 
         <!-- Hooks -->
