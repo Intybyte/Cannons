@@ -659,14 +659,14 @@ public class CannonManager {
             // check of all directions
             for (BlockFace cannonDirection : blockFaces) {
                 // for all blocks for the design
-                List<SimpleBlock> designBlockList = cannonDesign.getAllCannonBlocks(cannonDirection);
+                Schematic schem = cannonDesign.getSchematicMap().get(cannonDirection);
                 //check for empty entries
-                if (designBlockList.isEmpty()) {
+                if (schem.positions().isEmpty()) {
                     plugin.logSevere("There are empty cannon design schematics in your design folder. Please check it.");
                     return null;
                 }
 
-                Schematic schem = cannonDesign.getSchematicMap().get(cannonDirection);
+
                 for (IBlock designBlock : schem) {
                     // compare blocks
                     if (!designBlock.key().equals(blockStuff.key())) {

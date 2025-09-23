@@ -3,6 +3,7 @@ package at.pavlov.cannons.cannon;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.schematic.formats.WorldEditFormat;
+import at.pavlov.cannons.schematic.world.SchematicWorldProcessorImpl;
 import at.pavlov.internal.container.DesignFileName;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SimpleBlock;
@@ -14,11 +15,6 @@ import at.pavlov.cannons.utils.DesignComparator;
 import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.internal.Exchanger;
 import at.pavlov.internal.Key;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.util.io.Closer;
 import lombok.Getter;
 import me.vaan.schematiclib.base.block.BlockKey;
 import me.vaan.schematiclib.base.block.IBlock;
@@ -31,30 +27,31 @@ import me.vaan.schematiclib.file.formats.VaanFormat;
 import me.vaan.schematiclib.file.schematic.FileSchematic;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.Vector;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
-public class DesignStorage
-{
+public class DesignStorage {
 
 	@Getter
     private static DesignStorage instance = null;
 
-	private final List<CannonDesign> cannonDesignList;
+	@Getter
+    private final List<CannonDesign> cannonDesignList;
 	private final Cannons plugin;
-	private final List<Material> cannonBlockMaterials;
+	@Getter
+    private final Set<Material> cannonBlockMaterials;
 
 	public static void initialize(Cannons cannons) {
 		if (instance != null)
@@ -67,7 +64,7 @@ public class DesignStorage
     private DesignStorage(Cannons cannons)  {
 		plugin = cannons;
 		cannonDesignList = new ArrayList<>();
-		cannonBlockMaterials = new ArrayList<>();
+		cannonBlockMaterials = EnumSet.noneOf(Material.class);
 	}
 
 	/**
@@ -121,13 +118,16 @@ public class DesignStorage
 		Comparator<CannonDesign> comparator = new DesignComparator();
 		cannonDesignList.sort(comparator);
 
-		for (CannonDesign cannonDesign : getCannonDesignList()) {
-			for (SimpleBlock sBlock : cannonDesign.getAllCannonBlocks(BlockFace.NORTH)){
-				Material material = sBlock.getBlockData().getMaterial();
-				if (material != Material.AIR && !cannonBlockMaterials.contains(material)) {
-					cannonBlockMaterials.add(sBlock.getBlockData().getMaterial());
-				}
-			}
+        SchematicWorldProcessorImpl processor = SchematicWorldProcessorImpl.getProcessor();
+		for (CannonDesign cannonDesign : cannonDesignList) {
+            Schematic schematic = cannonDesign.getSchematicMap().get(BlockFace.NORTH);
+            Schematic materials = processor.parseToMaterial(schematic);
+            materials.positions().stream()
+                .map(IBlock::key)
+                .map(key -> NamespacedKey.minecraft(key.key()))
+                .map(Registry.MATERIAL::get)
+                .filter(mat -> mat != Material.AIR)
+                .forEach(cannonBlockMaterials::add);
 		}
 
 
@@ -474,7 +474,7 @@ public class DesignStorage
                         setMaximum(x, y, z, maxMuzzle);
                     }
                     //muzzle blocks need to be air - else the projectile would spawn in a block
-                    cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, Material.AIR));
+                    //cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, Material.AIR));
                     filteredSchematic.add(new FileBlock(x, y, z, BlockKey.mc("air")));
                 }
                 // #############  find the min and max for rotation blocks
@@ -507,7 +507,7 @@ public class DesignStorage
                             cannonBlocks.addChestsAndSigns(new SimpleBlock(x, y, z, key)); //Material.WALL_SIGN
                         // firing blocks are also part of the cannon are
                         // part of the cannon
-                        cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRightClickTrigger));
+                        //cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRightClickTrigger));
                         filteredSchematic.add(new FileBlock(x, y, z, bk(replaceRightClickTrigger)));
                         // this can be a destructible block
                         if (!isInList(keysBlocksProtected, key))
@@ -522,8 +522,8 @@ public class DesignStorage
                     // the previous blocks
                     else {
                         // all remaining blocks are loading interface or cannonBlocks
-                        cannonBlocks.addBarrel(new Vector(x, y, z));
-                        cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, key));
+                        cannonBlocks.addBarrelBlocks(new Vector(x, y, z));
+                        //cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, key));
                         filteredSchematic.add(new FileBlock(x, y, z, key));
                         // this can be a destructible block
                         if (!isInList(keysBlocksProtected, key))
@@ -534,7 +534,7 @@ public class DesignStorage
                 else {
                     cannonBlocks.addRedstoneTrigger(new Vector(x, y, z));
                     // buttons or levers are part of the cannon
-                    cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRedstoneTrigger));
+                    //cannonBlocks.addAllCannonBlocks(new SimpleBlock(x, y, z, replaceRedstoneTrigger));
                     filteredSchematic.add(new FileBlock(x, y, z, bk(replaceRedstoneTrigger)));
                     // this can be a destructible block
                     if (!isInList(keysBlocksProtected, key))
@@ -571,8 +571,6 @@ public class DesignStorage
                     )
                 );
 
-            for (SimpleBlock block : cannonBlocks.getAllCannonBlocks())
-                block.directSubtract(compensation);
             for (Vector block : cannonBlocks.getBarrelBlocks())
                 block.subtract(compensation);
             for (SimpleBlock block : cannonBlocks.getChestsAndSigns())
@@ -693,13 +691,8 @@ public class DesignStorage
 		// Directory path here
 		return "plugins/Cannons/designs/";
 	}
-	
-	public List<CannonDesign> getCannonDesignList()
-	{
-		return cannonDesignList;
-	}
-	
-	/**
+
+    /**
 	 * returns the cannon design of the cannon
 	 * @param cannon the cannon
 	 * @return design of cannon
@@ -738,11 +731,7 @@ public class DesignStorage
 		return false;
 	}
 
-	public List<Material> getCannonBlockMaterials() {
-		return cannonBlockMaterials;
-	}
-
-	public boolean isCannonBlockMaterial(Material material) {
+    public boolean isCannonBlockMaterial(Material material) {
 		return material != Material.AIR && cannonBlockMaterials.contains(material);
 	}
 

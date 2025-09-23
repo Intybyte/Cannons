@@ -6,6 +6,7 @@ import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.exchange.BExchanger;
 import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.cannons.schematic.world.SchematicWorldProcessorImpl;
 import at.pavlov.internal.Key;
 import lombok.Data;
 import me.vaan.schematiclib.base.schematic.Schematic;
@@ -248,43 +249,6 @@ import java.util.List;
             return cannonBlocks.getFiringTrigger().clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit());
     	}
     	return null;
-    }
-    
-    /**
-     * returns a list of all cannonBlocks
-     * @param cannonDirection - the direction the cannon is facing
-     * @return List of cannon blocks
-     */
-    public List<SimpleBlock> getAllCannonBlocks(BlockFace cannonDirection)
-    {
-    	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannonDirection);
-    	if (cannonBlocks != null)
-    	{
-    		return cannonBlocks.getAllCannonBlocks();
-    	}
-    	
-    	return new ArrayList<>();
-    }
-
-
-    /**
-     * returns a list of all cannonBlocks
-     * @param cannon
-     * @return
-     */
-    public List<Location> getAllCannonBlocks(Cannon cannon)
-    {
-        CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
-        List<Location> locList = new ArrayList<>();
-        if (cannonBlocks != null)
-        {
-            for (SimpleBlock block : cannonBlocks.getAllCannonBlocks())
-            {
-                Vector vect = block.toVector();
-                locList.add(vect.clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit()));
-            }
-        }
-        return locList;
     }
 
     /**
@@ -557,17 +521,14 @@ import java.util.List;
 
 
     public void putCannonBlockMap(BlockFace cannonDirection, CannonBlocks blocks) {
-        for (var block : blocks.getAllCannonBlocks()) {
-            allowedMaterials.add(block.getBlockData().getMaterial());
-        }
-
         cannonBlockMap.put(cannonDirection, blocks);
     }
 
     public void putSchematicMap(BlockFace cannonDirection, Schematic blocks) {
-        blocks.forEach(b -> {
+        Schematic parsed = SchematicWorldProcessorImpl.getProcessor().parseToMaterial(blocks);
+        parsed.forEach(b -> {
             Material m = Registry.MATERIAL.get(
-                new NamespacedKey(b.key().namespace(), b.key().key())
+                NamespacedKey.minecraft(b.key().key())
             );
 
             allowedMaterials.add(m);
