@@ -329,6 +329,7 @@ public class Commands extends BaseCommand {
         }
 
         @Subcommand("save")
+        @Syntax("<xA> <yA> <zA> <xB> <yB> <zB> <extensionlessName>")
         public static void save(Player player, int xA, int yA, int zA, int xB, int yB, int zB, String name) {
             String fullName = name + ".vschem";
             Schematic schematic = SchematicWorldProcessorImpl.getProcessor().schematicOf(xA, yA, zA, xB, yB, zB, player.getWorld().getUID());
