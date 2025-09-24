@@ -9,6 +9,7 @@ import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.schematic.world.SchematicWorldProcessorImpl;
 import at.pavlov.internal.Key;
 import lombok.Data;
+import me.vaan.schematiclib.base.block.BlockKey;
 import me.vaan.schematiclib.base.schematic.Schematic;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -181,18 +182,18 @@ import java.util.List;
 
 	
 	//constructionblocks:
-	private BlockData schematicBlockTypeIgnore;     				//this block this is ignored in the schematic file
-    private BlockData schematicBlockTypeMuzzle;					//location of the muzzle
-    private BlockData schematicBlockTypeRotationCenter;			//location of the roatation
-    private BlockData schematicBlockTypeChestAndSign;				//locations of the chest and sign
-    private BlockData schematicBlockTypeRedstoneTorch;				//locations of the redstone torches
-    private BlockData schematicBlockTypeRedstoneWireAndRepeater;	//locations of the redstone wires and repeaters
-    private BlockData schematicBlockTypeRedstoneTrigger; 			//locations of button or levers
-    private BlockData ingameBlockTypeRedstoneTrigger;    			//block which is placed instead of the place holder
-    private BlockData schematicBlockTypeRightClickTrigger; 		//locations of the right click trigger
-    private BlockData ingameBlockTypeRightClickTrigger;   			//block type of the tigger in game
-    private BlockData schematicBlockTypeFiringIndicator;			//location of the firing indicator
-    private List<BlockData> schematicBlockTypeProtected;				//list of blocks that are protected from explosions (e.g. buttons)
+	private BlockKey schematicBlockTypeIgnore;     				//this block this is ignored in the schematic file
+    private BlockKey schematicBlockTypeMuzzle;					//location of the muzzle
+    private BlockKey schematicBlockTypeRotationCenter;			//location of the roatation
+    private BlockKey schematicBlockTypeChestAndSign;				//locations of the chest and sign
+    private BlockKey schematicBlockTypeRedstoneTorch;				//locations of the redstone torches
+    private BlockKey schematicBlockTypeRedstoneWireAndRepeater;	//locations of the redstone wires and repeaters
+    private BlockKey schematicBlockTypeRedstoneTrigger; 			//locations of button or levers
+    private BlockKey ingameBlockTypeRedstoneTrigger;    			//block which is placed instead of the place holder
+    private BlockKey schematicBlockTypeRightClickTrigger; 		//locations of the right click trigger
+    private BlockKey ingameBlockTypeRightClickTrigger;   			//block type of the tigger in game
+    private BlockKey schematicBlockTypeFiringIndicator;			//location of the firing indicator
+    private List<BlockKey> schematicBlockTypeProtected;				//list of blocks that are protected from explosions (e.g. buttons)
     
     //cannon design block lists for every direction (NORTH, EAST, SOUTH, WEST)
     private final HashMap<BlockFace, CannonBlocks> cannonBlockMap = new HashMap<>();
