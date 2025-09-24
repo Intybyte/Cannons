@@ -341,8 +341,10 @@ public class Commands extends BaseCommand {
             try {
                 format.save(file, schematic);
             } catch (Throwable e) {
-                throw new RuntimeException(e);
+                sendMessage(player, ChatColor.RED + "[Cannons] Failed to save");
             }
+
+            sendMessage(player, ChatColor.GREEN + "[Cannons] Successful save");
         }
     }
 
