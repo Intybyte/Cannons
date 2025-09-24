@@ -90,11 +90,21 @@ public class Cannon implements ICannon, Rotational {
     //TODO make a vector util class and add this there
     private final static Vector noVelocity = new Vector(0,0,0);
 
+    @Getter
+    private final OffsetSchematic offsetSchematic;
 
     public Cannon(CannonDesign design, UUID world, Vector cannonOffset, BlockFace cannonDirection, UUID owner) {
 
         this.design = design;
         this.cannonPosition = new CannonPosition(cannonDirection, cannonOffset, world, false, noVelocity.clone());
+
+        Schematic schematic = design.getSchematicMap().get(cannonPosition.getCannonDirection());
+        this.offsetSchematic = new ConstantOffsetSchematic(
+            cannonOffset.getBlockX(),
+            cannonOffset.getBlockY(),
+            cannonOffset.getBlockZ(),
+            schematic.positions()
+        );
         boolean noFee = design.getEconomyBuildingCost() instanceof EmptyExchanger;
         this.mainData = new CannonMainData( UUID.randomUUID(),null, noFee, owner, true);
 
@@ -157,7 +167,6 @@ public class Cannon implements ICannon, Rotational {
         if (!barrel.isEmpty())
             return barrel.get(random.nextInt(barrel.size()));
 
-        OffsetSchematic offsetSchematic = getOffsetSchematic();
         List<IBlock> positions = offsetSchematic.realBlocks().positions();
         IBlock position = positions.get(random.nextInt(positions.size()));
         return new Location(getWorldBukkit(), position.x(), position.y(), position.z());
@@ -745,8 +754,6 @@ public class Cannon implements ICannon, Rotational {
      * this will force the cannon to show up at this location - all blocks will be overwritten
      */
     public void show() {
-        OffsetSchematic offsetSchematic = getOffsetSchematic();
-
         SchematicWorldProcessorImpl.getProcessor().place(
             offsetSchematic,
             cannonPosition.getWorld()
@@ -757,8 +764,6 @@ public class Cannon implements ICannon, Rotational {
      * this will force the cannon blocks to become AIR
      */
     public void hide() {
-        OffsetSchematic offsetSchematic = getOffsetSchematic();
-
         SchematicWorldProcessorImpl.getProcessor().destroy(
             offsetSchematic,
             cannonPosition.getWorld()
@@ -770,8 +775,6 @@ public class Cannon implements ICannon, Rotational {
      * breaks all cannon blocks of the cannon
      */
     private void breakAllCannonBlocks() {
-        OffsetSchematic offsetSchematic = getOffsetSchematic();
-
         SchematicWorldProcessorImpl.getProcessor().breakNaturally(
             offsetSchematic,
             cannonPosition.getWorld()
@@ -803,7 +806,6 @@ public class Cannon implements ICannon, Rotational {
             return false;
         }
 
-        OffsetSchematic offsetSchematic = getOffsetSchematic();
         SchematicWorldProcessorImpl processor = SchematicWorldProcessorImpl.getProcessor();
         for (IBlock schemBlock : offsetSchematic.realBlocks()) {
             IBlock obtain = processor.registry().getBlock(block.getX(), block.getY(), block.getZ(), world);
@@ -988,7 +990,6 @@ public class Cannon implements ICannon, Rotational {
      * @return - first block of the cannon
      */
     public Location getFirstCannonBlock() {
-        OffsetSchematic offsetSchematic = getOffsetSchematic();
         IBlock first = offsetSchematic.realBlocks().positions().get(0);
         return new Location(getWorldBukkit(), first.x(), first.y(), first.z());
     }
