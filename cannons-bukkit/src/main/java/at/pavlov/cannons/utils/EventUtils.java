@@ -3,8 +3,10 @@ package at.pavlov.cannons.utils;
 import at.pavlov.cannons.Enum.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -19,17 +21,23 @@ public class EventUtils {
     public static void handleExplosion(List<Block> blocklist) {
         CannonManager cannonManager = CannonManager.getInstance();
         HashSet<UUID> remove = new HashSet<>();
+        HashMap<Block, Cannon> cannonHashMap = new HashMap<>();
 
         // first search if a barrel block was destroyed.
         for (Block block : blocklist) {
-            Cannon cannon = cannonManager.getCannon(block.getLocation(), null);
+            if (block == null) continue;
 
+            Location location = block.getLocation();
+            if (block.getType().isAir()) continue;
+
+            Cannon cannon = cannonManager.getCannon(location, null);
             // if it is a cannon block
             if (cannon == null) {
                 continue;
             }
 
-            if (cannon.isDestructibleBlock(block.getLocation())) {
+            cannonHashMap.put(block, cannon);
+            if (cannon.isDestructibleBlock(location)) {
                 //this cannon is destroyed
                 remove.add(cannon.getUID());
             }
@@ -38,7 +46,7 @@ public class EventUtils {
         //iterate again and remove all block of intact cannons
         for (int i = 0; i < blocklist.size(); i++) {
             Block block = blocklist.get(i);
-            Cannon cannon = cannonManager.getCannon(block.getLocation(), null);
+            Cannon cannon = cannonHashMap.get(block);
 
             // if it is a cannon block and the cannon is not destroyed (see above)
             if (cannon == null || remove.contains(cannon.getUID())) {
