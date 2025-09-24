@@ -26,6 +26,7 @@ import me.vaan.schematiclib.base.schematic.OffsetSchematicImpl;
 import me.vaan.schematiclib.base.schematic.Schematic;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -35,6 +36,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -525,6 +527,7 @@ public class CannonManager {
 
         //check if there is a cannon at this location
         Cannon cannon = checkCannon(cannonBlock, owner);
+        plugin.logDebug("Time to process Schematic: " + (System.nanoTime() - startTime) + "ns");
 
         //if there is no cannon, exit
         if (cannon == null)
@@ -642,24 +645,31 @@ public class CannonManager {
     private Cannon checkCannon(Location cannonBlock, UUID owner) {
         // is this block material used for a cannon design
         Block block = cannonBlock.getBlock();
-        IBlock blockStuff = SchematicWorldProcessorImpl
-            .getProcessor()
-            .registry()
+        SchematicWorldProcessorImpl processor = SchematicWorldProcessorImpl.getProcessor();
+        IBlock blockStuff = processor.registry()
             .getBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
+        Material material = block.getType();
 
         if (!isValidCannonBlock(block))
             return null;
 
         World world = cannonBlock.getWorld();
-        var designList = DesignStorage.getInstance().getCannonDesignList();
-        designList = designList.stream().filter(it -> it.isAllowedMaterial(block.getType())).toList();
+
+        var allDesigns = DesignStorage.getInstance().getCannonDesignList();
+        List<CannonDesign> designList = new ArrayList<>();
+        for (CannonDesign it : allDesigns) {
+            if (it.isAllowedMaterial(material)) {
+                designList.add(it);
+            }
+        }
 
         // check all cannon design if this block is part of the design
         for (CannonDesign cannonDesign : designList) {
+            var schemMap = cannonDesign.getSchematicMap();
             // check of all directions
             for (BlockFace cannonDirection : blockFaces) {
                 // for all blocks for the design
-                Schematic schem = cannonDesign.getSchematicMap().get(cannonDirection);
+                Schematic schem = schemMap.get(cannonDirection);
                 //check for empty entries
                 if (schem.positions().isEmpty()) {
                     plugin.logSevere("There are empty cannon design schematics in your design folder. Please check it.");
@@ -687,7 +697,7 @@ public class CannonManager {
                         schem.positions()
                     );
 
-                    boolean matches = SchematicWorldProcessorImpl.getProcessor().matches(offsetSchematic, world.getUID());
+                    boolean matches = processor.matches(offsetSchematic, world.getUID());
                     if (matches) {
                         return new Cannon(
                             cannonDesign,
@@ -700,6 +710,7 @@ public class CannonManager {
                 }
             }
         }
+
         return null;
     }
 
