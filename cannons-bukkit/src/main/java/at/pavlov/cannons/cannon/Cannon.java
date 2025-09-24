@@ -25,6 +25,7 @@ import at.pavlov.cannons.interfaces.ICannon;
 import at.pavlov.cannons.interfaces.functionalities.Rotational;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
+import at.pavlov.cannons.schematic.world.SchematicWorldProcessorImpl;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.InventoryManagement;
 import at.pavlov.cannons.utils.SoundUtils;
@@ -32,6 +33,10 @@ import at.pavlov.internal.Key;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
+import me.vaan.schematiclib.base.block.IBlock;
+import me.vaan.schematiclib.base.schematic.OffsetSchematic;
+import me.vaan.schematiclib.base.schematic.OffsetSchematicImpl;
+import me.vaan.schematiclib.base.schematic.Schematic;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Effect;
@@ -130,7 +135,7 @@ public class Cannon implements ICannon, Rotational {
      * @return location of the cannon
      */
     public Location getLocation() {
-        return design.getAllCannonBlocks(this).get(0);
+        return getFirstCannonBlock();
     }
 
     /**
@@ -151,8 +156,11 @@ public class Cannon implements ICannon, Rotational {
         List<Location> barrel = design.getBarrelBlocks(this);
         if (!barrel.isEmpty())
             return barrel.get(random.nextInt(barrel.size()));
-        List<Location> all = design.getAllCannonBlocks(this);
-        return all.get(random.nextInt(all.size()));
+
+        OffsetSchematic offsetSchematic = getOffsetSchematic();
+        List<IBlock> positions = offsetSchematic.realBlocks().positions();
+        IBlock position = positions.get(random.nextInt(positions.size()));
+        return new Location(getWorldBukkit(), position.x(), position.y(), position.z());
     }
 
 
@@ -737,39 +745,24 @@ public class Cannon implements ICannon, Rotational {
      * this will force the cannon to show up at this location - all blocks will be overwritten
      */
     public void show() {
-        for (SimpleBlock cBlock : design.getAllCannonBlocks(this.getCannonDirection())) {
-            Block wBlock = cBlock.toLocation(getWorldBukkit(), getOffset()).getBlock();
-            //todo check show
-            wBlock.setBlockData(cBlock.getBlockData());
-            //wBlock.setBlockData(cBlock);
-        }
+        OffsetSchematic offsetSchematic = getOffsetSchematic();
+
+        SchematicWorldProcessorImpl.getProcessor().place(
+            offsetSchematic,
+            cannonPosition.getWorld()
+        );
     }
 
     /**
      * this will force the cannon blocks to become AIR
      */
     public void hide() {
-        //remove only attachable block
-        for (SimpleBlock cBlock : design.getAllCannonBlocks(this.getCannonDirection())) {
-            Block wBlock = cBlock.toLocation(getWorldBukkit(), getOffset()).getBlock();
-            //if that block is not loaded
+        OffsetSchematic offsetSchematic = getOffsetSchematic();
 
-            if (wBlock.getState() instanceof Attachable) {
-                //Cannons.logger().info("hide " + wBlock.getType());
-                wBlock.setType(Material.AIR);
-                //wBlock.setData((byte) 0, false);
-            }
-        }
-
-        //remove all
-        for (SimpleBlock cBlock : design.getAllCannonBlocks(this.getCannonDirection())) {
-            Block wBlock = cBlock.toLocation(getWorldBukkit(), getOffset()).getBlock();
-
-            if (wBlock.getType() != Material.AIR) {
-                wBlock.setType(Material.AIR);
-                // wBlock.setData((byte) 0, false);
-            }
-        }
+        SchematicWorldProcessorImpl.getProcessor().destroy(
+            offsetSchematic,
+            cannonPosition.getWorld()
+        );
     }
 
 
@@ -777,10 +770,24 @@ public class Cannon implements ICannon, Rotational {
      * breaks all cannon blocks of the cannon
      */
     private void breakAllCannonBlocks() {
-        List<Location> locList = design.getAllCannonBlocks(this);
-        for (Location loc : locList) {
-            loc.getBlock().breakNaturally();
-        }
+        OffsetSchematic offsetSchematic = getOffsetSchematic();
+
+        SchematicWorldProcessorImpl.getProcessor().breakNaturally(
+            offsetSchematic,
+            cannonPosition.getWorld()
+        );
+    }
+
+    public OffsetSchematic getOffsetSchematic() {
+        Schematic schematic = design.getSchematicMap().get(cannonPosition.getCannonDirection());
+        Vector off = cannonPosition.getOffset();
+
+        return new OffsetSchematicImpl(
+            off.getBlockX(),
+            off.getBlockY(),
+            off.getBlockZ(),
+            schematic.positions()
+        );
     }
 
 
@@ -791,15 +798,20 @@ public class Cannon implements ICannon, Rotational {
      * @return - true if it is part of this cannon
      */
     public boolean isCannonBlock(Block block) {
-        if (!getWorld().equals(block.getWorld().getUID())) {
+        UUID world = cannonPosition.getWorld();
+        if (!world.equals(block.getWorld().getUID())) {
             return false;
         }
 
-        for (SimpleBlock designBlock : design.getAllCannonBlocks(getCannonDirection())) {
-            if (designBlock.compareMaterialAndLoc(block, getOffset())) {
+        OffsetSchematic offsetSchematic = getOffsetSchematic();
+        SchematicWorldProcessorImpl processor = SchematicWorldProcessorImpl.getProcessor();
+        for (IBlock schemBlock : offsetSchematic.realBlocks()) {
+            IBlock obtain = processor.registry().getBlock(block.getX(), block.getY(), block.getZ(), world);
+            if (obtain.matches(schemBlock)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -976,8 +988,9 @@ public class Cannon implements ICannon, Rotational {
      * @return - first block of the cannon
      */
     public Location getFirstCannonBlock() {
-        return design.getAllCannonBlocks(getCannonDirection()).get(0).toLocation(getWorldBukkit(), getOffset());
-
+        OffsetSchematic offsetSchematic = getOffsetSchematic();
+        IBlock first = offsetSchematic.realBlocks().positions().get(0);
+        return new Location(getWorldBukkit(), first.x(), first.y(), first.z());
     }
 
     /**
