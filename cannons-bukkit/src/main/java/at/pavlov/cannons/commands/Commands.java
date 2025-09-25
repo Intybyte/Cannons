@@ -43,7 +43,6 @@ import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 @CommandAlias("cannons")
-@SuppressWarnings("deprecation")
 public class Commands extends BaseCommand {
     private static final String tag = "[Cannons] ";
 
@@ -170,6 +169,7 @@ public class Commands extends BaseCommand {
     @Subcommand("create")
     @Syntax("[DESIGN]")
     @CommandPermission("cannons.admin.create")
+    @CommandCompletion("@cannon_designs")
     public static void onCreate(Player player, String arg) {
         //check if the design name is valid
         if (!designStorage.hasDesign(arg)) {
@@ -188,6 +188,7 @@ public class Commands extends BaseCommand {
     @Subcommand("give")
     @Syntax("[PROJECTILE] <amount>")
     @CommandPermission("cannons.admin.give")
+    @CommandCompletion("@cannon_projectiles")
     public static void onGive(Player player, String projectileString, @Default("1") int amount) {
         //check if the projectile id is valid
         Projectile projectile = ProjectileStorage.getProjectile(projectileString);

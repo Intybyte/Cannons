@@ -1,12 +1,16 @@
 package at.pavlov.cannons.commands;
 
 import at.pavlov.cannons.Enum.SelectCannon;
+import at.pavlov.cannons.cannon.DesignStorage;
+import at.pavlov.cannons.projectile.ProjectileStorage;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
+import com.google.common.collect.ImmutableList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -14,12 +18,13 @@ import java.util.regex.Pattern;
 public class CannonsCommandManager extends PaperCommandManager {
     public CannonsCommandManager(Plugin plugin) {
         super(plugin);
-        this.registerContexts();
+        this.registerCommandContexts();
+        this.registerCommandCompletions();
     }
 
-    private void registerContexts() {
-        var context = this.getCommandContexts();
-        context.registerContext(SelectCannon.class, c -> {
+    private void registerCommandContexts() {
+        var commandContexts = this.getCommandContexts();
+        commandContexts.registerContext(SelectCannon.class, c -> {
             String select = c.popFirstArg();
             switch (select.toLowerCase(Locale.ROOT)) {
                 case "mob" -> {
@@ -41,6 +46,12 @@ public class CannonsCommandManager extends PaperCommandManager {
                 default -> throw new InvalidCommandArgument("Invalid target specified, only allowed values: mob|player|cannon|other");
             }
         });
+    }
+
+    private void registerCommandCompletions() {
+        var commandCompletions = this.getCommandCompletions();
+        commandCompletions.registerCompletion("cannon_designs", c -> Collections.unmodifiableList(DesignStorage.getInstance().getDesignIds()));
+        commandCompletions.registerCompletion("cannon_projectiles" , c -> Collections.unmodifiableList(ProjectileStorage.getProjectileIds()));
     }
 
     private static final Pattern COMMA = Pattern.compile(",");
