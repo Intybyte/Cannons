@@ -129,7 +129,7 @@
         <dependency>
             <groupId>com.github.Intybyte</groupId>
             <artifactId>SchematicLib</artifactId>
-            <version>4abe119bf1</version>
+            <version>d0f209a1f1</version>
         </dependency>
 
         <!-- Schematic loading -->
