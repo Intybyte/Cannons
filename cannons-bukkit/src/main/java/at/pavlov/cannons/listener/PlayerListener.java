@@ -15,10 +15,12 @@ import at.pavlov.cannons.projectile.FlyingProjectile;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileManager;
 import at.pavlov.cannons.projectile.ProjectileStorage;
+import at.pavlov.cannons.schematic.SchemUtil;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.SoundUtils;
 import com.cryptomorin.xseries.XPotion;
+import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -226,6 +228,21 @@ public class PlayerListener implements Listener {
         final Player player = event.getPlayer();
         Block clickedBlock = getBlock(event.getClickedBlock(), player);
         if (clickedBlock == null) {
+            return;
+        }
+
+        // handle schematic positioning
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        if (mainHand.isSimilar(SchemUtil.SELECT_TOOL)) {
+            if (action == Action.RIGHT_CLICK_BLOCK) {
+                SchemUtil.coord1 = clickedBlock;
+                player.sendMessage(ChatColor.GREEN + "[Cannons] Saved position 1");
+            } else if (action == Action.LEFT_CLICK_BLOCK) {
+                SchemUtil.coord2 = clickedBlock;
+                player.sendMessage(ChatColor.GREEN + "[Cannons] Saved position 2");
+            }
+
+            event.setCancelled(true);
             return;
         }
 

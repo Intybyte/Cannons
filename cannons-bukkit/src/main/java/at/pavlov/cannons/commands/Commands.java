@@ -18,6 +18,7 @@ import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.projectile.definitions.ProjectileDefinitionLoader;
+import at.pavlov.cannons.schematic.SchemUtil;
 import at.pavlov.cannons.schematic.world.SchematicWorldProcessorImpl;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.CannonsUtil;
@@ -322,17 +323,32 @@ public class Commands extends BaseCommand {
     @Subcommand("schematic")
     @CommandPermission("cannons.admin.reload")
     public class onSchematic extends BaseCommand {
+        private static final SchematicWorldProcessorImpl processor = SchematicWorldProcessorImpl.getProcessor();
 
         @Default
         public static void help(Player player) {
-            sendMessage(player, ChatColor.RED + "Usage '/cannons schematic save <xA> <yA> <zA> <xB> <yB> <zB> <extensionlessName>'");
+            sendMessage(player, ChatColor.RED + "Usage '/cannons schematic <save|tool> <args>'");
+        }
+
+        @Subcommand("tool")
+        public static void tool(Player player) {
+            player.getInventory().addItem(SchemUtil.SELECT_TOOL.clone());
         }
 
         @Subcommand("save")
-        @Syntax("<xA> <yA> <zA> <xB> <yB> <zB> <extensionlessName>")
-        public static void save(Player player, int xA, int yA, int zA, int xB, int yB, int zB, String name) {
+        @Syntax("<extensionlessName>")
+        public static void save(Player player, String name) {
             String fullName = name + ".vschem";
-            Schematic schematic = SchematicWorldProcessorImpl.getProcessor().schematicOf(xA, yA, zA, xB, yB, zB, player.getWorld().getUID());
+            if (!SchemUtil.coord1.getWorld().equals(SchemUtil.coord2.getWorld())) {
+                sendMessage(player, ChatColor.RED + "[Cannons] Coordinates must be in the same world");
+                return;
+            }
+
+            Schematic schematic = processor.schematicOf(
+                SchemUtil.coord1.getX(), SchemUtil.coord1.getY(), SchemUtil.coord1.getZ(),
+                SchemUtil.coord2.getX(), SchemUtil.coord2.getY(), SchemUtil.coord2.getZ(),
+                SchemUtil.coord1.getWorld().getUID()
+            );
 
             String fullPath = DesignStorage.getPath() + fullName;
             File file = new File(fullPath);
