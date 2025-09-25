@@ -30,7 +30,7 @@ public class EventUtils {
             Location location = block.getLocation();
             if (block.getType().isAir()) continue;
 
-            Cannon cannon = cannonManager.getCannon(location, null);
+            Cannon cannon = cannonManager.getCannonFromStorage(location);
             // if it is a cannon block
             if (cannon == null) {
                 continue;
