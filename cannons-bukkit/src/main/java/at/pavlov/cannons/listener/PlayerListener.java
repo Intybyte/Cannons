@@ -231,6 +231,10 @@ public class PlayerListener implements Listener {
             return;
         }
 
+        if (event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
+
         // handle schematic positioning
         ItemStack mainHand = player.getInventory().getItemInMainHand();
         if (mainHand.isSimilar(SchemUtil.SELECT_TOOL)) {
@@ -256,10 +260,6 @@ public class PlayerListener implements Listener {
 
         // ############ select a cannon ####################
         if (isCannonSelect(event, clickedBlock, cannon)) return;
-
-        if (event.getHand() != EquipmentSlot.HAND) {
-            return;
-        }
 
         boolean isRMB = action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;
         if ((isRMB || event.getAction() == Action.PHYSICAL) && cannon != null) {
