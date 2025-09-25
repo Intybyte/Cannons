@@ -2,6 +2,7 @@ package at.pavlov.cannons.schematic;
 
 import at.pavlov.cannons.Cannons;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -24,6 +25,7 @@ public class SchemUtil {
             meta = Bukkit.getItemFactory().getItemMeta(Material.BLAZE_ROD);
         }
 
+        meta.setDisplayName(ChatColor.RESET + "Cannon Select Tool");
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.addEnchant(Enchantment.UNBREAKING, 1, true);
         meta.getPersistentDataContainer().set(CANNON_KEY, PersistentDataType.BOOLEAN, true);
