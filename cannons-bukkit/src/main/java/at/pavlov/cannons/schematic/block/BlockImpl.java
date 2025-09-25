@@ -9,9 +9,12 @@ import org.bukkit.block.Block;
 @Getter
 public class BlockImpl implements IBlock {
     private final Block block;
+    private final BlockKey key;
 
     public BlockImpl(Block block) {
         this.block = block;
+        NamespacedKey key = block.getType().getKey();
+        this.key = BlockKey.mc(key.getKey());
     }
 
     @Override
@@ -31,7 +34,6 @@ public class BlockImpl implements IBlock {
 
     @Override
     public BlockKey key() {
-        NamespacedKey key = block.getType().getKey();
-        return BlockKey.mc(key.getKey());
+        return this.key;
     }
 }

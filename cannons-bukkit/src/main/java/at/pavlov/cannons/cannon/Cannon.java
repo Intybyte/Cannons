@@ -34,6 +34,7 @@ import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
 import me.vaan.schematiclib.base.block.IBlock;
+import me.vaan.schematiclib.base.schematic.ConstantOffsetSchematic;
 import me.vaan.schematiclib.base.schematic.OffsetSchematic;
 import me.vaan.schematiclib.base.schematic.OffsetSchematicImpl;
 import me.vaan.schematiclib.base.schematic.Schematic;
@@ -50,7 +51,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Attachable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,21 +90,12 @@ public class Cannon implements ICannon, Rotational {
     //TODO make a vector util class and add this there
     private final static Vector noVelocity = new Vector(0,0,0);
 
-    @Getter
-    private final OffsetSchematic offsetSchematic;
-
     public Cannon(CannonDesign design, UUID world, Vector cannonOffset, BlockFace cannonDirection, UUID owner) {
 
         this.design = design;
         this.cannonPosition = new CannonPosition(cannonDirection, cannonOffset, world, false, noVelocity.clone());
 
         Schematic schematic = design.getSchematicMap().get(cannonPosition.getCannonDirection());
-        this.offsetSchematic = new ConstantOffsetSchematic(
-            cannonOffset.getBlockX(),
-            cannonOffset.getBlockY(),
-            cannonOffset.getBlockZ(),
-            schematic.positions()
-        );
         boolean noFee = design.getEconomyBuildingCost() instanceof EmptyExchanger;
         this.mainData = new CannonMainData( UUID.randomUUID(),null, noFee, owner, true);
 
@@ -167,7 +158,7 @@ public class Cannon implements ICannon, Rotational {
         if (!barrel.isEmpty())
             return barrel.get(random.nextInt(barrel.size()));
 
-        List<IBlock> positions = offsetSchematic.realBlocks().positions();
+        List<IBlock> positions = getOffsetSchematic().realBlocks().positions();
         IBlock position = positions.get(random.nextInt(positions.size()));
         return new Location(getWorldBukkit(), position.x(), position.y(), position.z());
     }
@@ -755,7 +746,7 @@ public class Cannon implements ICannon, Rotational {
      */
     public void show() {
         SchematicWorldProcessorImpl.getProcessor().place(
-            offsetSchematic,
+            getOffsetSchematic(),
             cannonPosition.getWorld()
         );
     }
@@ -765,7 +756,7 @@ public class Cannon implements ICannon, Rotational {
      */
     public void hide() {
         SchematicWorldProcessorImpl.getProcessor().destroy(
-            offsetSchematic,
+            getOffsetSchematic(),
             cannonPosition.getWorld()
         );
     }
@@ -776,7 +767,7 @@ public class Cannon implements ICannon, Rotational {
      */
     private void breakAllCannonBlocks() {
         SchematicWorldProcessorImpl.getProcessor().breakNaturally(
-            offsetSchematic,
+            getOffsetSchematic(),
             cannonPosition.getWorld()
         );
     }
@@ -807,7 +798,7 @@ public class Cannon implements ICannon, Rotational {
         }
 
         SchematicWorldProcessorImpl processor = SchematicWorldProcessorImpl.getProcessor();
-        for (IBlock schemBlock : offsetSchematic.realBlocks()) {
+        for (IBlock schemBlock : getOffsetSchematic().realBlocks()) {
             IBlock obtain = processor.registry().getBlock(block.getX(), block.getY(), block.getZ(), world);
             if (obtain.matches(schemBlock)) {
                 return true;
@@ -990,7 +981,7 @@ public class Cannon implements ICannon, Rotational {
      * @return - first block of the cannon
      */
     public Location getFirstCannonBlock() {
-        IBlock first = offsetSchematic.realBlocks().positions().get(0);
+        IBlock first = getOffsetSchematic().realBlocks().positions().get(0);
         return new Location(getWorldBukkit(), first.x(), first.y(), first.z());
     }
 
