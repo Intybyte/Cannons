@@ -126,11 +126,6 @@
             <version>1.0.7</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.Intybyte</groupId>
-            <artifactId>SchematicLib</artifactId>
-            <version>d0f209a1f1</version>
-        </dependency>
 
         <!-- Schematic loading -->
         <dependency>
