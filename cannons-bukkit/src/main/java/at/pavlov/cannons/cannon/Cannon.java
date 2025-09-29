@@ -981,8 +981,14 @@ public class Cannon implements ICannon, Rotational {
      * @return - first block of the cannon
      */
     public Location getFirstCannonBlock() {
-        IBlock first = getOffsetSchematic().realBlocks().positions().get(0);
-        return new Location(getWorldBukkit(), first.x(), first.y(), first.z());
+        Vector vec = cannonPosition.getOffset();
+        OffsetSchematic schematic = getOffsetSchematic();
+        IBlock first = schematic.positions().get(0);
+        return new Location(getWorldBukkit(),
+            first.x() + vec.getBlockX(),
+            first.y() + vec.getBlockY(),
+            first.z() + vec.getBlockZ()
+        );
     }
 
     /**
