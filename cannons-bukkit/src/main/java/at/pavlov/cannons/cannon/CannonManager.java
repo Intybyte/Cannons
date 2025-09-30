@@ -590,15 +590,16 @@ public class CannonManager {
             return event;
         });
 
+        MessageEnum msg = cbceEvent.getMessage();
         //add cannon to the list if everything was fine and return the cannon
-        if (!cbceEvent.isCancelled() && cbceEvent.getMessage() != null && cbceEvent.getMessage() == MessageEnum.CannonCreated) {
+        if (!cbceEvent.isCancelled() && msg == MessageEnum.CannonCreated) {
             return true;
         }
 
         //send messages
-        if (!silent) {
+        if (!silent && msg != null) {
             taskManager.scheduler.runTask(player, () -> {
-                userMessages.sendMessage(message, player, cannon);
+                userMessages.sendMessage(msg, player, cannon);
                 SoundUtils.playErrorSound(cannon.getMuzzle());
             });
         }
