@@ -38,6 +38,7 @@ import me.vaan.schematiclib.base.schematic.ConstantOffsetSchematic;
 import me.vaan.schematiclib.base.schematic.OffsetSchematic;
 import me.vaan.schematiclib.base.schematic.OffsetSchematicImpl;
 import me.vaan.schematiclib.base.schematic.Schematic;
+import me.vaan.schematiclib.file.block.FileBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Effect;
@@ -798,8 +799,8 @@ public class Cannon implements ICannon, Rotational {
         }
 
         SchematicWorldProcessorImpl processor = SchematicWorldProcessorImpl.getProcessor();
+        IBlock obtain = processor.registry().getBlock(block.getX(), block.getY(), block.getZ(), world);
         for (IBlock schemBlock : getOffsetSchematic().realBlocks()) {
-            IBlock obtain = processor.registry().getBlock(block.getX(), block.getY(), block.getZ(), world);
             if (obtain.matches(schemBlock)) {
                 return true;
             }
