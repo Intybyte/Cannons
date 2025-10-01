@@ -65,6 +65,10 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>matteodev</id>
+            <url>https://maven.devs.beer/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -123,6 +127,14 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- Schematic loading -->
+        <dependency>
+            <groupId>dev.lone</groupId>
+            <artifactId>api-itemsadder</artifactId>
+            <version>4.0.10</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Hooks -->
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
@@ -148,6 +160,15 @@
             <version>2.11.6</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Schematic handling -->
+        <dependency>
+            <groupId>com.github.Slimefun</groupId>
+            <artifactId>Slimefun4</artifactId>
+            <version>RC-37</version>
+            <scope>provided</scope>
+        </dependency>
+
 
         <!-- Testing dependencies  -->
         <dependency>
@@ -240,6 +261,14 @@
                         <relocation>
                             <pattern>io.papermc.lib</pattern>
                             <shadedPattern>at.pavlov.cannons.shaded.paperlib</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>me.vaan</pattern>
+                            <shadedPattern>at.pavlov.cannons.shaded.vaan</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google.gson</pattern>
+                            <shadedPattern>at.pavlov.cannons.shaded.google</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>
