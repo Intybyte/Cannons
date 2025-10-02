@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class TeleportPlayerHandler implements Listener {
+public class PreventRecreateHandler implements Listener {
     private final HashMap<UUID, Long> playerCannonCooldown = new HashMap<>();
 
     @EventHandler(ignoreCancelled = true)

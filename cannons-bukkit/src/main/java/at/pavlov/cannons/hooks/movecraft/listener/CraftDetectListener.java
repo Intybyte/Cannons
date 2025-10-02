@@ -1,16 +1,13 @@
 package at.pavlov.cannons.hooks.movecraft.listener;
 
 import at.pavlov.cannons.Cannons;
-import at.pavlov.cannons.Enum.BreakCause;
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.cannon.CannonManager;
+import at.pavlov.cannons.hooks.movecraft.MovecraftCannonTracker;
 import at.pavlov.cannons.hooks.movecraft.MovecraftUtils;
 import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsEntry;
 import net.countercraft.movecraft.craft.Craft;
-import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.events.CraftDetectEvent;
-import net.countercraft.movecraft.events.CraftSinkEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -23,7 +20,7 @@ import static at.pavlov.cannons.hooks.movecraft.type.MaxCannonsProperty.MAX_CANN
 
 public class CraftDetectListener implements Listener {
     private static final Set<CraftType> notifyError = new HashSet<>();
-    private static final Cannons cannon = Cannons.getPlugin();
+    private static final Cannons plugin = Cannons.getPlugin();
 
     @EventHandler
     public void onCraftDetect(CraftDetectEvent e) {
@@ -32,13 +29,7 @@ public class CraftDetectListener implements Listener {
         if (notifyError.contains(type))
             return;
 
-        if (!(craft instanceof PlayerCraft))
-            return;
-
         Set<?> maxCannons = getCannonProperty(type);
-        if (maxCannons.isEmpty())
-            return; // Return if empty set to improve performance
-
         // Sum up counts of each cannon design
         Set<Cannon> cannons = MovecraftUtils.getCannons(craft);
         Map<String, Integer> cannonCount = new HashMap<>();
@@ -51,8 +42,10 @@ public class CraftDetectListener implements Listener {
         // Check designs against maxCannons
         int size = craft.getOrigBlockCount();
         for (var entry : maxCannons) {
-            if (!(entry instanceof MaxCannonsEntry max))
-                throw new IllegalStateException("maxCannons must be a set of MaxCannonsEntry.");
+            if (!(entry instanceof MaxCannonsEntry max)) {
+                plugin.logSevere("maxCannons must be a set of MaxCannonsEntry.");
+                continue;
+            }
 
             var cannonName = max.getName();
             var count = cannonCount.get(cannonName.toLowerCase());
@@ -67,11 +60,13 @@ public class CraftDetectListener implements Listener {
                         + cannonName + ": " + error);
             });
         }
+
+        MovecraftCannonTracker.setCannons(craft.getUUID(), cannons);
     }
 
     private void printCannonCount(Map<String, Integer> cannonCount) {
         for (var entry : cannonCount.entrySet()) {
-            cannon.logDebug("Cannon found: " + entry.getKey() + " | " + entry.getValue());
+            plugin.logDebug("Cannon found: " + entry.getKey() + " | " + entry.getValue());
         }
     }
 
@@ -85,7 +80,7 @@ public class CraftDetectListener implements Listener {
             }
         } catch (Exception exception) {
             notifyError.add(type);
-            cannon.logSevere(
+            plugin.logSevere(
                     "Failed to get maxCannons property from craft " +
                             type.getStringProperty(CraftType.NAME) +
                             " maxCannons won't be applied. - Cause: " +
