@@ -34,6 +34,7 @@ import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
 import me.vaan.schematiclib.base.block.IBlock;
+import me.vaan.schematiclib.base.block.ICoord;
 import me.vaan.schematiclib.base.schematic.ConstantOffsetSchematic;
 import me.vaan.schematiclib.base.schematic.OffsetSchematic;
 import me.vaan.schematiclib.base.schematic.OffsetSchematicImpl;
@@ -802,6 +803,29 @@ public class Cannon implements ICannon, Rotational {
         IBlock obtain = processor.registry().getBlock(block.getX(), block.getY(), block.getZ(), world);
         for (IBlock schemBlock : getOffsetSchematic().realBlocks()) {
             if (obtain.matches(schemBlock)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isCannonBlock(IBlock block, UUID blockWorld) {
+        UUID world = cannonPosition.getWorld();
+        if (!world.equals(blockWorld)) {
+            return false;
+        }
+
+        Vector offset = cannonPosition.getOffset();
+        FileBlock offsetLessBlock = new FileBlock(
+            block.x() - offset.getBlockX(),
+            block.y() - offset.getBlockY(),
+            block.z() - offset.getBlockZ(),
+            block.key()
+        );
+
+        for (IBlock schemBlock : getOffsetSchematic().positions()) {
+            if (offsetLessBlock.matches(schemBlock)) {
                 return true;
             }
         }

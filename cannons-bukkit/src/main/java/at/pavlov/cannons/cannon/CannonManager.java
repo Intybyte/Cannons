@@ -7,7 +7,6 @@ import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.container.ItemHolder;
-import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.LoadWhitelistTask;
 import at.pavlov.cannons.event.CannonAfterCreateEvent;
@@ -21,6 +20,7 @@ import at.pavlov.cannons.utils.SoundUtils;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import me.vaan.schematiclib.base.block.IBlock;
+import me.vaan.schematiclib.base.namespace.NamespaceRegistry;
 import me.vaan.schematiclib.base.schematic.OffsetSchematic;
 import me.vaan.schematiclib.base.schematic.OffsetSchematicImpl;
 import me.vaan.schematiclib.base.schematic.Schematic;
@@ -37,10 +37,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -436,9 +438,21 @@ public class CannonManager {
      */
     public static HashSet<Cannon> getCannonsByLocations(List<Location> locations) {
         HashSet<Cannon> newCannonList = new HashSet<>();
+        Map<IBlock, UUID> blocks = new HashMap<>(locations.size());
+        NamespaceRegistry registry = SchematicWorldProcessorImpl.getProcessor().registry();
+        for (Location loc : locations) {
+            UUID world = loc.getWorld().getUID();
+            blocks.put(registry.getBlock(
+                loc.getBlockX(),
+                loc.getBlockY(),
+                loc.getBlockZ(),
+                world
+            ), world);
+        }
+
         for (Cannon cannon : getCannonList().values()) {
-            for (Location loc : locations) {
-                if (cannon.isCannonBlock(loc.getBlock()))
+            for (var loc : blocks.entrySet()) {
+                if (cannon.isCannonBlock(loc.getKey(), loc.getValue()))
                     newCannonList.add(cannon);
             }
         }
