@@ -10,6 +10,7 @@ softdepend:
   - PlaceholderAPI
   - Slimefun
   - ItemsAdder
+  - Nexo
 authors: [DerPavlov, Vaan1310]
 description: Fire block build cannons and smash your enemies
 folia-supported: true

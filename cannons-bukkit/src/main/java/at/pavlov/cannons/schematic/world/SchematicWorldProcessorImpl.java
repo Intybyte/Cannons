@@ -3,6 +3,7 @@ package at.pavlov.cannons.schematic.world;
 import at.pavlov.cannons.schematic.block.BlockImpl;
 import at.pavlov.cannons.schematic.namespace.ItemsAdderNamespaceHandler;
 import at.pavlov.cannons.schematic.namespace.MinecraftNamespaceHandler;
+import at.pavlov.cannons.schematic.namespace.NexoNamespaceHandler;
 import at.pavlov.cannons.schematic.namespace.SlimefunNamespaceHandler;
 import lombok.Getter;
 import me.vaan.schematiclib.base.block.IBlock;
@@ -53,6 +54,12 @@ public class SchematicWorldProcessorImpl implements SchematicWorldProcessor {
             "itemsadder",
             "dev.lone.itemsadder.api.CustomBlock",
             new ItemsAdderNamespaceHandler()
+        );
+
+        registerReflectionNamespace(
+            "nexo",
+            "com.nexomc.nexo.api.NexoBlocks",
+            new NexoNamespaceHandler()
         );
 
         return this;
