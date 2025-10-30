@@ -33,13 +33,13 @@ import at.pavlov.internal.Key;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
+import me.vaan.schematiclib.base.block.BlockKey;
 import me.vaan.schematiclib.base.block.IBlock;
-import me.vaan.schematiclib.base.block.ICoord;
-import me.vaan.schematiclib.base.schematic.ConstantOffsetSchematic;
 import me.vaan.schematiclib.base.schematic.OffsetSchematic;
 import me.vaan.schematiclib.base.schematic.OffsetSchematicImpl;
 import me.vaan.schematiclib.base.schematic.Schematic;
 import me.vaan.schematiclib.file.block.FileBlock;
+import me.vaan.schematiclib.file.block.FileCoord;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Effect;
@@ -782,7 +782,7 @@ public class Cannon implements ICannon, Rotational {
             off.getBlockX(),
             off.getBlockY(),
             off.getBlockZ(),
-            schematic.positions()
+            schematic
         );
     }
 
@@ -800,14 +800,17 @@ public class Cannon implements ICannon, Rotational {
         }
 
         SchematicWorldProcessorImpl processor = SchematicWorldProcessorImpl.getProcessor();
+        OffsetSchematic offsetSchematic = getOffsetSchematic();
         IBlock obtain = processor.registry().getBlock(block.getX(), block.getY(), block.getZ(), world);
-        for (IBlock schemBlock : getOffsetSchematic().realBlocks()) {
-            if (obtain.matches(schemBlock)) {
-                return true;
-            }
-        }
+        BlockKey schemBlock = offsetSchematic.blockMap().get(
+            new FileCoord(
+                block.getX() - offsetSchematic.x(),
+                block.getY() - offsetSchematic.y(),
+                block.getZ() - offsetSchematic.z()
+            )
+        );
 
-        return false;
+        return obtain.key().equals(schemBlock);
     }
 
     public boolean isCannonBlock(IBlock block, UUID blockWorld) {

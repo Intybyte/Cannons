@@ -709,7 +709,7 @@ public class CannonManager {
                         offset.getBlockX(),
                         offset.getBlockY(),
                         offset.getBlockZ(),
-                        schem.positions()
+                        schem
                     );
 
                     boolean matches = processor.matches(offsetSchematic, world.getUID());
