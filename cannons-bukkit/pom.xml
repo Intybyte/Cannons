@@ -131,31 +131,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- Schematic loading -->
-        <dependency>
-            <groupId>dev.lone</groupId>
-            <artifactId>api-itemsadder</artifactId>
-            <version>4.0.10</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.nexomc</groupId>
-            <artifactId>nexo</artifactId>
-            <version>1.12.1-dev</version>
-            <scope>provided</scope>
-            <exclusions>
-                <!-- can't find these so you are getting excluded, stay in a corner -->
-                <exclusion>
-                    <groupId>dev.triumphteam</groupId>
-                    <artifactId>triumph-gui</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.byteflux</groupId>
-                    <artifactId>libby-bukkit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <!-- Hooks -->
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
@@ -188,6 +163,29 @@
             <artifactId>Slimefun4</artifactId>
             <version>RC-37</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.lone</groupId>
+            <artifactId>api-itemsadder</artifactId>
+            <version>4.0.10</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nexomc</groupId>
+            <artifactId>nexo</artifactId>
+            <version>1.12.1-dev</version>
+            <scope>provided</scope>
+            <exclusions>
+                <!-- can't find these so you are getting excluded, stay in a corner -->
+                <exclusion>
+                    <groupId>dev.triumphteam</groupId>
+                    <artifactId>triumph-gui</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.byteflux</groupId>
+                    <artifactId>libby-bukkit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 
