@@ -1,6 +1,7 @@
 package at.pavlov.cannons.schematic.world;
 
 import at.pavlov.cannons.schematic.block.BlockImpl;
+import at.pavlov.cannons.schematic.namespace.Initialize;
 import at.pavlov.cannons.schematic.namespace.ItemsAdderNamespaceHandler;
 import at.pavlov.cannons.schematic.namespace.MinecraftNamespaceHandler;
 import at.pavlov.cannons.schematic.namespace.NexoNamespaceHandler;
@@ -34,6 +35,10 @@ public class SchematicWorldProcessorImpl implements SchematicWorldProcessor {
             Class.forName(classToFind);
         } catch (Exception e) {
             return;
+        }
+
+        if (handler instanceof Initialize initialize) {
+            initialize.init();
         }
 
         registry.registerNamespaceHandler(namespace, handler);

@@ -1,7 +1,15 @@
 package at.pavlov.cannons.schematic.namespace;
 
+import at.pavlov.cannons.Aiming;
+import at.pavlov.cannons.Cannons;
+import at.pavlov.cannons.Enum.BreakCause;
+import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.cannon.CannonManager;
+import at.pavlov.cannons.cannon.DesignStorage;
+import at.pavlov.cannons.utils.CannonSelector;
 import com.nexomc.nexo.api.NexoBlocks;
 import com.nexomc.nexo.api.NexoFurniture;
+import com.nexomc.nexo.api.events.furniture.NexoFurnitureBreakEvent;
 import com.nexomc.nexo.mechanics.custom_block.CustomBlockMechanic;
 import com.nexomc.nexo.mechanics.furniture.FurnitureMechanic;
 import me.vaan.schematiclib.base.block.BlockKey;
@@ -14,10 +22,22 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import java.util.UUID;
 
-public class NexoNamespaceHandler implements NamespaceHandler {
+public class NexoNamespaceHandler implements NamespaceHandler, Listener, Initialize {
+    @Override
+    public void init() {
+        Cannons pl = Cannons.getPlugin();
+        // furnitures aren't handled by block break
+        Bukkit.getPluginManager().registerEvents(this, pl);
+        // nexo block resolution requires some time first, so rerun load
+        Bukkit.getScheduler().runTaskLater(pl, DesignStorage.getInstance()::loadCannonDesigns, 5L);
+    }
+
     @Override
     public void place(IBlock iBlock, UUID world) {
         String item_id = iBlock.key().key().replace('$', ':');
@@ -69,7 +89,7 @@ public class NexoNamespaceHandler implements NamespaceHandler {
         if (NexoFurniture.isFurniture(loc)) NexoFurniture.remove(loc);
     }
 
-    private static final BlockKey BARRIER = BlockKey.mc("barrier");
+    private static final BlockKey BARRIER = BlockKey.mc("air");
     @Override
     public BlockKey toMaterial(BlockKey blockKey) {
         String item_id = blockKey.key().replace('$', ':');
@@ -90,5 +110,33 @@ public class NexoNamespaceHandler implements NamespaceHandler {
         if (fm.getHitbox().getBarriers().size() != 1) return null;
 
         return fm;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    private void onFurnitureBreak(NexoFurnitureBreakEvent event) {
+        if (event.getMechanic().getHitbox().getBarriers().size() != 1) return;
+
+        CannonManager cannonManager = CannonManager.getInstance();
+        Cannons plugin = Cannons.getPlugin();
+
+        Location location = event.getBaseEntity().getLocation().getBlock().getLocation();
+        Cannon cannon = cannonManager.getCannonFromStorage(location);
+
+        if (cannon == null) {
+            return;
+        }
+
+        Cannon aimingCannon = null;
+        Player player = event.getPlayer();
+        if (Aiming.getInstance().isInAimingMode(player.getUniqueId()))
+            aimingCannon = Aiming.getInstance().getCannonInAimingMode(player);
+
+        if (!cannon.equals(aimingCannon) && !CannonSelector.getInstance().isSelectingMode(player)) {
+            cannonManager.removeCannon(cannon, false, true, BreakCause.PlayerBreak);
+            plugin.logDebug("cannon broken:  " + location);
+        } else {
+            event.setCancelled(true);
+            plugin.logDebug("cancelled cannon destruction: " + location);
+        }
     }
 }
