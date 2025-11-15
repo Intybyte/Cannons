@@ -8,6 +8,7 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.vaan.schematiclib.base.block.BlockKey;
 import me.vaan.schematiclib.base.block.IBlock;
+import me.vaan.schematiclib.base.block.ICoord;
 import me.vaan.schematiclib.base.namespace.NamespaceHandler;
 import me.vaan.schematiclib.file.block.FileBlock;
 import org.bukkit.Bukkit;
@@ -117,6 +118,11 @@ public class SlimefunNamespaceHandler implements NamespaceHandler {
         }
 
         location.getBlock().setType(Material.AIR);
+    }
+
+    @Override
+    public void move(ICoord from, ICoord to, BlockKey blockKey) {
+
     }
 
     @Override

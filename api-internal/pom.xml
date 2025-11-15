@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.github.Intybyte</groupId>
             <artifactId>SchematicLib</artifactId>
-            <version>d669292866</version>
+            <version>f420e46a34</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

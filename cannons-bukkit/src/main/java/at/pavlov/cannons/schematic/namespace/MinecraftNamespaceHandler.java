@@ -4,6 +4,7 @@ package at.pavlov.cannons.schematic.namespace;
 import at.pavlov.cannons.schematic.block.BlockImpl;
 import me.vaan.schematiclib.base.block.BlockKey;
 import me.vaan.schematiclib.base.block.IBlock;
+import me.vaan.schematiclib.base.block.ICoord;
 import me.vaan.schematiclib.base.namespace.NamespaceHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -48,6 +49,10 @@ public class MinecraftNamespaceHandler implements NamespaceHandler {
             iBlock.z()
         ).breakNaturally();
     }
+
+    // no internal state to move
+    @Override
+    public void move(ICoord iCoord, ICoord iCoord1, BlockKey blockKey) {}
 
     // should be unused
     @Override

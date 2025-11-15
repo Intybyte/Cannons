@@ -5,6 +5,7 @@ import at.pavlov.cannons.utils.SchemLibUtils;
 import dev.lone.itemsadder.api.CustomBlock;
 import me.vaan.schematiclib.base.block.BlockKey;
 import me.vaan.schematiclib.base.block.IBlock;
+import me.vaan.schematiclib.base.block.ICoord;
 import me.vaan.schematiclib.base.namespace.NamespaceHandler;
 import me.vaan.schematiclib.file.block.FileBlock;
 import org.bukkit.Bukkit;
@@ -64,6 +65,11 @@ public class ItemsAdderNamespaceHandler implements NamespaceHandler {
         iaBlock.drop(location);
 
         destroy(iBlock, uuid);
+    }
+
+    @Override
+    public void move(ICoord from, ICoord to, BlockKey blockKey) {
+
     }
 
     @Override

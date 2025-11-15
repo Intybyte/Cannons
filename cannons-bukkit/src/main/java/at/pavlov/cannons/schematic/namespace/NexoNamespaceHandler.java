@@ -14,6 +14,7 @@ import com.nexomc.nexo.mechanics.custom_block.CustomBlockMechanic;
 import com.nexomc.nexo.mechanics.furniture.FurnitureMechanic;
 import me.vaan.schematiclib.base.block.BlockKey;
 import me.vaan.schematiclib.base.block.IBlock;
+import me.vaan.schematiclib.base.block.ICoord;
 import me.vaan.schematiclib.base.namespace.NamespaceHandler;
 import me.vaan.schematiclib.file.block.FileBlock;
 import org.bukkit.Bukkit;
@@ -87,6 +88,11 @@ public class NexoNamespaceHandler implements NamespaceHandler, Listener, Initial
         Block block = loc.getBlock();
         if (NexoBlocks.isCustomBlock(block)) NexoBlocks.remove(loc, null, true);
         if (NexoFurniture.isFurniture(loc)) NexoFurniture.remove(loc);
+    }
+
+    @Override
+    public void move(ICoord from, ICoord to, BlockKey blockKey) {
+
     }
 
     private static final BlockKey BARRIER = BlockKey.mc("air");
