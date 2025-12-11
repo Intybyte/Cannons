@@ -1,56 +1,33 @@
 package at.pavlov.internal.projectile.definition;
 
 import at.pavlov.internal.Key;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @Getter
 @Builder
+@EqualsAndHashCode
+@ConfigSerializable
+@NoArgsConstructor
 @AllArgsConstructor
 public class CustomProjectileDefinition implements ProjectilePhysics {
-    private final Key key; // for the name of the custom projectile definition
-    private final Key entityKey;
+    private Key key; // for the name of the custom projectile definition
+    private Key entityKey;
 
-    private final Double constantAcceleration;
+    private Double constantAcceleration;
 
-    private final double gravity;
-    private final double drag;
-    private final double waterDrag;
+    private double gravity;
+    private double drag;
+    private double waterDrag;
 
-    private final boolean glowing;
+    private boolean glowing;
 
-    private final boolean onFire; // visual fire for projectile
-    private final boolean charged; // works for wither skeletons
-    private final boolean critical; // for arrows and tridents
+    private boolean onFire; // visual fire for projectile
+    private boolean charged; // works for wither skeletons
+    private boolean critical; // for arrows and tridents
 
     //for throwable projectiles only
-    private final @Nullable Key material;
-    private final @Nullable Integer customModelData;
-
-    /*
-    @Override
-    public double getGravity() {
-        return fromKey().getGravity();
-    }
-
-    @Override
-    public double getDrag() {
-        return fromKey().getDrag();
-    }
-
-    @Override
-    public double getWaterDrag() {
-        return fromKey().getWaterDrag();
-    }
-
-    private @NotNull ProjectilePhysics fromKey() {
-        DefaultProjectileDefinition value = Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.of(entityKey);
-        if (value == null) {
-            return ProjectilePhysics.DEFAULT;
-        }
-
-        return value;
-    }*/
+    private @Nullable Key material;
+    private @Nullable Integer customModelData;
 }
