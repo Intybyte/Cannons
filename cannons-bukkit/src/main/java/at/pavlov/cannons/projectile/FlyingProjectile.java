@@ -78,12 +78,12 @@ public class FlyingProjectile
      *
      * @return
      */
-	public org.bukkit.entity.Projectile getProjectileEntity() {
+	public Entity getProjectileEntity() {
         Entity e = Bukkit.getEntity(entityUID);
         if (e == null)
             return null;
 
-        return (org.bukkit.entity.Projectile) Bukkit.getEntity(entityUID);
+        return Bukkit.getEntity(entityUID);
 	}
 
 	public Projectile getProjectile()
@@ -104,7 +104,7 @@ public class FlyingProjectile
      * check if the projectile in in a liquid
      * @return true if the projectile is in a liquid
      */
-    private boolean isInWaterCheck(org.bukkit.entity.Projectile projectile_entity)
+    private boolean isInWaterCheck(Entity projectile_entity)
     {
         if(projectile_entity!=null)
         {
@@ -122,7 +122,7 @@ public class FlyingProjectile
      * returns if the projectile has entered the water surface and updates also inWater
      * @return true if the projectile has entered water
      */
-    public boolean updateWaterSurfaceCheck(org.bukkit.entity.Projectile projectile_entity)
+    public boolean updateWaterSurfaceCheck(Entity projectile_entity)
     {
         inWater = isInWaterCheck(projectile_entity);
         boolean isSurface = !wasInWater && inWater;
@@ -153,7 +153,7 @@ public class FlyingProjectile
      * a projectile is valid if it has an entity, is not below -64 and younger than 1h (60*60*1000)
      * @return returns false if the projectile entity is null
      */
-    public boolean isValid(org.bukkit.entity.Projectile projectile_entity)
+    public boolean isValid(Entity projectile_entity)
     {
         return (projectile_entity != null && projectile_entity.getLocation().getBlockY() > -64 && System.currentTimeMillis() < getSpawnTime() + 3600000);
     }
@@ -196,7 +196,7 @@ public class FlyingProjectile
      * returns the distance of the projectile location to the calculated location
      * @return distance of the projectile location to the calculated location
      */
-    public double distanceToProjectile(org.bukkit.entity.Projectile projectile_entity)
+    public double distanceToProjectile(Entity projectile_entity)
     {
         return projectile_entity.getLocation().toVector().distance(predictor.getLoc());
     }
@@ -204,7 +204,7 @@ public class FlyingProjectile
     /**
      * teleports the projectile to the predicted location
      */
-    public void teleportToPrediction(org.bukkit.entity.Projectile projectile_entity)
+    public void teleportToPrediction(Entity projectile_entity)
     {
         if (projectile_entity == null)
             return;

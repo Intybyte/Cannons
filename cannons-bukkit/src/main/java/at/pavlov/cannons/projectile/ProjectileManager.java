@@ -142,7 +142,7 @@ public class ProjectileManager
                 return;
             }
             //detonate timefuse
-            org.bukkit.entity.Projectile projectile_entity = fproj.getProjectileEntity();
+            var projectile_entity = fproj.getProjectileEntity();
             //the projectile might be null
             if (projectile_entity != null) {
                 CreateExplosion.getInstance().detonate(cannonball, projectile_entity);
@@ -184,7 +184,7 @@ public class ProjectileManager
             return;
         }
 
-        org.bukkit.entity.Projectile projectile_entity = fproj.getProjectileEntity();
+        Entity projectile_entity = fproj.getProjectileEntity();
         if (!fproj.hasDetonated() && cannonball.isValid()) {
             fproj.setHasDetonated(true);
             CreateExplosion.getInstance().directHit(fproj, projectile_entity, target);

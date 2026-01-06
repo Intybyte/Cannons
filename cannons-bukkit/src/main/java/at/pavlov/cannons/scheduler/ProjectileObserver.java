@@ -16,6 +16,7 @@ import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -53,7 +54,7 @@ public class ProjectileObserver {
 
             for(var entry : projectiles.entrySet()) {
                 FlyingProjectile cannonball = entry.getValue();
-                org.bukkit.entity.Projectile projectile_entity = cannonball.getProjectileEntity();
+                Entity projectile_entity = cannonball.getProjectileEntity();
 
                 Executor executor = (task) -> {
                     if (plugin.isFolia()) {
@@ -101,7 +102,7 @@ public class ProjectileObserver {
      * if cannonball enters water it will spawn a splash effect
      * @param cannonball the projectile to check
      */
-    private void checkWaterImpact(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
+    private void checkWaterImpact(FlyingProjectile cannonball, Entity projectile_entity) {
 
         //the projectile has passed the water surface, make a splash
         if (!cannonball.updateWaterSurfaceCheck(projectile_entity)) {
@@ -151,7 +152,7 @@ public class ProjectileObserver {
      * teleports the player to new position of the cannonball
      * @param cannonball the FlyingProjectile to check
      */
-    private void updateTeleporter(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity)
+    private void updateTeleporter(FlyingProjectile cannonball, Entity projectile_entity)
     {
         //do nothing if the teleport was already performed
         if (cannonball.isTeleported())
@@ -197,7 +198,7 @@ public class ProjectileObserver {
      * @param cannonball projectile to update
      * @return true if the projectile must be removed
      */
-    private boolean updateProjectileLocation(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity)
+    private boolean updateProjectileLocation(FlyingProjectile cannonball, Entity projectile_entity)
     {
         if (!plugin.getMyConfig().isKeepAliveEnabled())
             return false;
@@ -231,7 +232,7 @@ public class ProjectileObserver {
      * @param cannonball the cannonball entity entry of cannons
      * @param projectile_entity the entity of the projectile
      */
-    private void updateSmokeTrail(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
+    private void updateSmokeTrail(FlyingProjectile cannonball, Entity projectile_entity) {
         Projectile proj = cannonball.getProjectile();
         int maxDist = plugin.getMyConfig().getImitatedBlockMaximumDistance();
         double smokeDist = proj.getSmokeTrailDistance()*(0.5 + random.nextDouble());
