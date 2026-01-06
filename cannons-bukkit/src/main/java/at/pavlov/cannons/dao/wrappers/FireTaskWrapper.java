@@ -139,7 +139,7 @@ public class FireTaskWrapper implements BaseFireTask {
 
             Vector vect = cannon.getFiringVector(true, true);
 
-            org.bukkit.entity.Projectile projectileEntity = ProjectileManager.getInstance().spawnProjectile(projectile, shooter, source, playerLoc, firingLoc, vect, cannon.getUID(), projectileCause);
+            Entity projectileEntity = ProjectileManager.getInstance().spawnProjectile(projectile, shooter, source, playerLoc, firingLoc, vect, cannon.getUID(), projectileCause);
 
             if (i == 0 && projectile.hasProperty(ProjectileProperties.SHOOTER_AS_PASSENGER) && onlinePlayer != null)
                 projectileEntity.setPassenger(onlinePlayer);

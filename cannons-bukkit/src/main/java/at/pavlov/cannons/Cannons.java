@@ -36,13 +36,18 @@ import at.pavlov.cannons.utils.TimeUtils;
 import at.pavlov.internal.CLogger;
 import at.pavlov.internal.Hook;
 import at.pavlov.internal.HookManager;
+import at.pavlov.internal.Key;
 import at.pavlov.internal.ModrinthUpdateChecker;
+import at.pavlov.internal.key.registries.Registries;
+import at.pavlov.internal.projectile.definition.KeyedDefaultProjectile;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -95,6 +100,20 @@ public final class Cannons extends JavaPlugin {
     }
 
     public void onLoad() {
+        Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.setFrozen(false);
+        for (EntityType type : EntityType.values()) {
+            if (!type.isSpawnable()) continue;
+            NamespacedKey key = type.getKey();
+            Key cannonKey = Key.from(key.toString());
+
+            if (!Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.has(cannonKey)) {
+                Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.register(
+                    new KeyedDefaultProjectile(cannonKey)
+                );
+            }
+        }
+        Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.setFrozen(true);
+
         CLogger.logger = this.getLogger();
         // must be done in onLoad because "movecraft"
         AsyncTaskManager.initialize(this);
