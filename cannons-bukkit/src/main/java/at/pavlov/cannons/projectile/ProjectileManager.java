@@ -51,7 +51,7 @@ public class ProjectileManager
         this.plugin = plugin;
     }
 
-    public org.bukkit.entity.Projectile spawnProjectile(Projectile projectile, @NotNull UUID shooter, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, Location spawnLoc, Vector velocity, UUID cannonId, ProjectileCause projectileCause) {
+    public Entity spawnProjectile(Projectile projectile, @NotNull UUID shooter, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, Location spawnLoc, Vector velocity, UUID cannonId, ProjectileCause projectileCause) {
         Preconditions.checkNotNull(shooter, "shooter for the projectile can't be null");
         World world = spawnLoc.getWorld();
 
@@ -60,17 +60,14 @@ public class ProjectileManager
         spawnLoc.setPitch((float) (Math.acos(velocity.getY()/v)*180.0/Math.PI - 90));
         spawnLoc.setYaw((float) (Math.atan2(velocity.getZ(),velocity.getX())*180.0/Math.PI - 90));
 
-        org.bukkit.entity.Projectile projectileEntity = spawnProjectile(projectile, spawnLoc, velocity, world);
+        Entity projectileEntity = spawnProjectile(projectile, spawnLoc, velocity, world);
 
         if (projectile.isProjectileOnFire())
             projectileEntity.setFireTicks(100);
         //projectileEntity.setTicksLived(2);
 
-
-
         //create a new flying projectile container
         FlyingProjectile cannonball = new FlyingProjectile(projectile, projectileEntity, shooter, source, playerLoc, cannonId, projectileCause);
-
 
         flyingProjectilesMap.put(cannonball.getUID(), cannonball);
 
@@ -80,28 +77,19 @@ public class ProjectileManager
         return projectileEntity;
     }
 
-    private org.bukkit.entity.@NotNull Projectile spawnProjectile(Projectile projectile, Location spawnLoc, Vector velocity, World world) {
-        Entity pEntity = world.spawnEntity(spawnLoc, projectile.getProjectileEntity());
+    private @NotNull Entity spawnProjectile(Projectile projectile, Location spawnLoc, Vector velocity, World world) {
+        Entity entity = world.spawnEntity(spawnLoc, projectile.getProjectileEntity());
 
         //calculate firing vector
-        pEntity.setVelocity(velocity);
-
-        org.bukkit.entity.Projectile projectileEntity;
-        try {
-            projectileEntity = (org.bukkit.entity.Projectile) pEntity;
-        } catch(Exception e) {
-            plugin.logDebug("Can't convert EntityType " + pEntity.getType() + " to projectile. Using additional Snowball");
-            projectileEntity = (org.bukkit.entity.Projectile) world.spawnEntity(spawnLoc, EntityType.SNOWBALL);
-            projectileEntity.setVelocity(velocity);
-        }
+        entity.setVelocity(velocity);
 
         CustomProjectileDefinition definition = Registries.CUSTOM_PROJECTILE_DEFINITION.of(projectile.getProjectileDefinitionKey());
         if (definition == null) {
-            return projectileEntity;
+            return entity;
         }
 
-        projectileEntity.setVisualFire(definition.isOnFire());
-        projectileEntity.setGlowing(definition.isGlowing());
+        entity.setVisualFire(definition.isOnFire());
+        entity.setGlowing(definition.isGlowing());
 
         ProjectilePhysics defaultCase = Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.of(definition.getEntityKey());
         if (defaultCase == null) {
@@ -109,14 +97,14 @@ public class ProjectileManager
         }
 
         if (!defaultCase.matches(definition)) {
-            projectileEntity.setGravity(false);
+            entity.setGravity(false);
         }
 
-        if (projectileEntity instanceof WitherSkull witherSkull) {
+        if (entity instanceof WitherSkull witherSkull) {
             witherSkull.setCharged(definition.isCharged());
-        } else if (projectileEntity instanceof AbstractArrow arrow) {
+        } else if (entity instanceof AbstractArrow arrow) {
             arrow.setCritical(definition.isCritical());
-        } else if (projectileEntity instanceof ThrowableProjectile throwable) {
+        } else if (entity instanceof ThrowableProjectile throwable) {
             Material material = Material.matchMaterial(definition.getMaterial().full());
             if (material == null) {
                 plugin.logSevere("In custom projectile: " + definition.getKey().full() + " the material key is invalid.");
@@ -132,7 +120,7 @@ public class ProjectileManager
             throwable.setItem(stack);
         }
 
-        return projectileEntity;
+        return entity;
     }
 
 

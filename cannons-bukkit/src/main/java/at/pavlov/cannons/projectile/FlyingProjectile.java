@@ -40,7 +40,7 @@ public class FlyingProjectile
     private final MovingObject predictor;
 
 
-	public FlyingProjectile(Projectile projectile, org.bukkit.entity.Projectile projectile_entity, UUID shooterUID, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, UUID cannonId, ProjectileCause projectileCause)
+	public FlyingProjectile(Projectile projectile, org.bukkit.entity.Entity projectile_entity, UUID shooterUID, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, UUID cannonId, ProjectileCause projectileCause)
 	{
         //Validate.notNull(shooterUID, "shooterUID for the projectile can't be null");
         this.entityUID = projectile_entity.getUniqueId();
@@ -52,8 +52,8 @@ public class FlyingProjectile
         this.shooterUID = shooterUID;
         this.playerlocation = playerLoc;
         this.source = source;
-        if (source != null)
-            projectile_entity.setShooter(source);
+        if (source != null && projectile_entity instanceof org.bukkit.entity.Projectile pe)
+            pe.setShooter(source);
         this.projectileCause = projectileCause;
 
 		this.spawnTime = System.currentTimeMillis();
