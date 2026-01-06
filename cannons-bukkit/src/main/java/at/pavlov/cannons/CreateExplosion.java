@@ -27,6 +27,8 @@ import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.cannons.utils.SoundUtils;
 import com.cryptomorin.xseries.XEntityType;
+import com.cryptomorin.xseries.particles.ParticleDisplay;
+import com.cryptomorin.xseries.particles.XParticle;
 import io.papermc.lib.PaperLib;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -1220,7 +1222,14 @@ public class CreateExplosion {
         if (config.isImitatedExplosionParticlesEnabled()) {
             double d = config.getImitatedExplosionParticlesDiameter();
             impactLoc.getWorld().spawnParticle(config.getImitatedExplosionParticlesType(), impactLoc, config.getImitatedExplosionParticlesCount(), d, d, d, 0, null, true);
-            impactLoc.getWorld().spawnParticle(Particle.FLASH, impactLoc, 5, 0, 0, 0, 0, null, true);
+
+            Object argument = null;
+            // 1.21.i_am_not_sure_which_minor_version thing
+            if (Particle.FLASH.getDataType() == Color.class) {
+                argument = Color.WHITE;
+            }
+
+            impactLoc.getWorld().spawnParticle(Particle.FLASH, impactLoc, 5, 0, 0, 0, 0, argument, true);
         }
 
         if (!config.isImitatedExplosionEnabled()) {
