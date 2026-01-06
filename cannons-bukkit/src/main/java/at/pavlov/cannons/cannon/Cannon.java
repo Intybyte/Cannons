@@ -284,6 +284,8 @@ public class Cannon implements ICannon, Rotational {
             result.second().run();
 
             int usedItems = toCool - result.first();
+            if (usedItems == 0) continue;
+
             this.setTemperature(this.getTemperature() - usedItems * design.getCoolingAmount());
 
             var coolItem = mat.toItemStack(usedItems);
