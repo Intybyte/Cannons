@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrowableProjectile;
 import org.bukkit.entity.WitherSkull;
@@ -118,6 +119,20 @@ public class ProjectileManager
             stack.setItemMeta(meta);
 
             throwable.setItem(stack);
+        } else if (entity instanceof ItemDisplay itemDisplay) {
+            Material material = Material.matchMaterial(definition.getMaterial().full());
+            if (material == null) {
+                plugin.logSevere("In custom projectile: " + definition.getKey().full() + " the material key is invalid.");
+                material = Material.SNOWBALL;
+            }
+
+            ItemStack stack = new ItemStack(material);
+
+            ItemMeta meta = stack.getItemMeta();
+            meta.setCustomModelData(definition.getCustomModelData());
+            stack.setItemMeta(meta);
+
+            itemDisplay.setItemStack(stack);
         }
 
         return entity;

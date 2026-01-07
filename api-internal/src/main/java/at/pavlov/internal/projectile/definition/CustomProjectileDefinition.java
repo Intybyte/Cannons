@@ -25,7 +25,7 @@ public class CustomProjectileDefinition implements ProjectilePhysics {
     private final boolean charged; // works for wither skeletons
     private final boolean critical; // for arrows and tridents
 
-    //for throwable projectiles only
+    //for throwable projectiles & item displays only
     private final @Nullable Key material;
     private final @Nullable Integer customModelData;
 
