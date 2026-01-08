@@ -8,16 +8,11 @@ import at.pavlov.internal.key.registries.Registries;
 import at.pavlov.internal.projectile.definition.CustomProjectileDefinition;
 import at.pavlov.internal.projectile.definition.ProjectilePhysics;
 import com.google.common.base.Preconditions;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.entity.AbstractArrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemDisplay;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.ThrowableProjectile;
-import org.bukkit.entity.WitherSkull;
+import org.bukkit.*;
+import org.bukkit.attribute.Attributable;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
@@ -26,8 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ProjectileManager
-{
+public class ProjectileManager {
     private static ProjectileManager instance = null;
 
     private final Cannons plugin;
@@ -46,6 +40,7 @@ public class ProjectileManager
 
     /**
      * ProjectileManager
+     *
      * @param plugin - Cannons instance
      */
     private ProjectileManager(Cannons plugin) {
@@ -58,8 +53,8 @@ public class ProjectileManager
 
         //set yaw, pitch for fireballs
         double v = velocity.length();
-        spawnLoc.setPitch((float) (Math.acos(velocity.getY()/v)*180.0/Math.PI - 90));
-        spawnLoc.setYaw((float) (Math.atan2(velocity.getZ(),velocity.getX())*180.0/Math.PI - 90));
+        spawnLoc.setPitch((float) (Math.acos(velocity.getY() / v) * 180.0 / Math.PI - 90));
+        spawnLoc.setYaw((float) (Math.atan2(velocity.getZ(), velocity.getX()) * 180.0 / Math.PI - 90));
 
         Entity projectileEntity = spawnProjectile(projectile, spawnLoc, velocity, world);
 
@@ -99,6 +94,32 @@ public class ProjectileManager
 
         if (!defaultCase.matches(definition)) {
             entity.setGravity(false);
+        }
+
+        if (entity instanceof Attributable attributable) {
+            var uuid = UUID.fromString("cannon:attribute");
+            for (var entry : definition.getAttributes().entrySet()) {
+                String attrKey = entry.getKey();
+                Attribute attribute = Registry.ATTRIBUTE.get(NamespacedKey.minecraft(attrKey));
+
+                if (attribute == null) {
+                    Cannons.getPlugin().logSevere("Attribute [" + attrKey + "] doesn't exist");
+                    continue;
+                }
+
+                var instance = attributable.getAttribute(attribute);
+                if (instance == null) {
+                    Cannons.getPlugin().logSevere("Attribute [" + attrKey + "] not found for entity " + entity.getType());
+                    continue;
+                }
+
+                // todo: this AttributeModifier constructor is marked for removal, might want to replace with a more robust implementation
+                instance.addModifier(
+                        new AttributeModifier(
+                                uuid, "attribute_definition", entry.getValue(), AttributeModifier.Operation.ADD_NUMBER
+                        )
+                );
+            }
         }
 
         if (entity instanceof WitherSkull witherSkull) {
@@ -141,6 +162,7 @@ public class ProjectileManager
 
     /**
      * detonate a timefused projectile mid air
+     *
      * @param cannonball - the cannonball to detonate
      */
     private void detonateTimefuse(final FlyingProjectile cannonball) {
@@ -164,23 +186,19 @@ public class ProjectileManager
                 projectile_entity.remove();
             }
             flyingProjectilesMap.remove(cannonball.getUID());
-        }, (long) (cannonball.getProjectile().getTimefuse()*20));
+        }, (long) (cannonball.getProjectile().getTimefuse() * 20));
     }
 
 
     /**
      * detonates the given projectile entity
+     *
      * @param projectile - the projectile with this entity
      */
-    public void detonateProjectile(Entity projectile)
-    {
-        if(projectile == null || !(projectile instanceof org.bukkit.entity.Projectile))
-            return;
-
+    public void detonateProjectile(Entity projectile) {
         FlyingProjectile fproj = flyingProjectilesMap.get(projectile.getUniqueId());
-        if (fproj!=null)
-        {
-            CreateExplosion.getInstance().detonate(fproj, (org.bukkit.entity.Projectile) projectile);
+        if (fproj != null) {
+            CreateExplosion.getInstance().detonate(fproj, projectile);
             projectile.remove();
             flyingProjectilesMap.remove(fproj.getUID());
         }
@@ -188,11 +206,12 @@ public class ProjectileManager
 
     /**
      * detonates the given projectile entity
+     *
      * @param cannonball - the projectile with this entity
-     * @param target the entity hit by the projectile
+     * @param target     the entity hit by the projectile
      */
     public void directHitProjectile(Entity cannonball, Entity target) {
-        if(cannonball == null || target == null) return;
+        if (cannonball == null || target == null) return;
 
         FlyingProjectile fproj = flyingProjectilesMap.get(cannonball.getUniqueId());
         if (fproj == null) {
@@ -211,11 +230,11 @@ public class ProjectileManager
 
     /**
      * returns true if the given entity is a cannonball projectile
+     *
      * @param projectile flying projectile
      * @return true if cannonball projectile
      */
-    public boolean isFlyingProjectile(Entity projectile)
-    {
+    public boolean isFlyingProjectile(Entity projectile) {
         FlyingProjectile fproj = flyingProjectilesMap.get(projectile.getUniqueId());
         return fproj != null;
     }
@@ -223,21 +242,21 @@ public class ProjectileManager
 
     /**
      * returns the list of all flying projectiles
+     *
      * @return - the list of all flying projectiles
      */
-    public ConcurrentHashMap<UUID, FlyingProjectile> getFlyingProjectiles()
-    {
+    public ConcurrentHashMap<UUID, FlyingProjectile> getFlyingProjectiles() {
         return flyingProjectilesMap;
     }
 
     /**
      * returns the projectile of which the player is passenger
      * if the player is attached to a projectile he will follow its movement
+     *
      * @param player is the passenger
      * @return the projectile or null
      */
-    public FlyingProjectile getAttachedProjectile(Player player)
-    {
+    public FlyingProjectile getAttachedProjectile(Player player) {
         if (player == null) {
             return null;
         }
