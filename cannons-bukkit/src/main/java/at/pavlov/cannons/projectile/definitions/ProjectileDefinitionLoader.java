@@ -8,8 +8,10 @@ import at.pavlov.internal.projectile.definition.DefaultProjectileDefinition;
 import at.pavlov.internal.projectile.definition.ProjectilePhysics;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.HashMap;
 
 public class ProjectileDefinitionLoader {
     public static void reload() {
@@ -43,7 +45,7 @@ public class ProjectileDefinitionLoader {
             dpd = ProjectilePhysics.DEFAULT;
         }
 
-        CustomProjectileDefinition definition = CustomProjectileDefinition.builder()
+        CustomProjectileDefinition.CustomProjectileDefinitionBuilder builder = CustomProjectileDefinition.builder()
                 .key(key)
                 .entityKey(entityKey)
                 .constantAcceleration(section.getObject("constantAcceleration", Double.class, dpd.getConstantAcceleration()))
@@ -55,9 +57,18 @@ public class ProjectileDefinitionLoader {
                 .charged(section.getBoolean("charged"))
                 .critical(section.getBoolean("critical"))
                 .material(Key.from(section.getString("material", "SNOWBALL")))
-                .customModelData(section.getObject("customModelData", Integer.class, null))
-                .build();
+                .customModelData(section.getObject("customModelData", Integer.class, null));
 
-        Registries.CUSTOM_PROJECTILE_DEFINITION.register(definition);
+        var attributeSection = section.getConfigurationSection("attributes");
+        HashMap<String, @NotNull Double> attributeMap = new HashMap<>();
+        if (attributeSection != null) {
+            for (var attrName : attributeSection.getKeys(false)) {
+                var value = attributeSection.getDouble(attrName);
+                attributeMap.put(attrName, value);
+            }
+        }
+
+        builder = builder.attributes(attributeMap);
+        Registries.CUSTOM_PROJECTILE_DEFINITION.register(builder.build());
     }
 }
