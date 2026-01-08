@@ -20,6 +20,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -111,6 +112,10 @@ public class ProjectileManager {
             handleAttributable(attributable, definition, entity);
         }
 
+        if (entity instanceof Display display) {
+            display.setTeleportDuration(1);
+        }
+
         if (entity instanceof WitherSkull witherSkull) {
             witherSkull.setCharged(definition.isCharged());
         } else if (entity instanceof AbstractArrow arrow) {
@@ -149,7 +154,7 @@ public class ProjectileManager {
     }
 
     private static void handleAttributable(Attributable attributable, CustomProjectileDefinition definition, Entity entity) {
-        UUID uuid = UUID.fromString("cannon:attribute");
+        UUID uuid = UUID.nameUUIDFromBytes("cannon:attribute".getBytes(StandardCharsets.UTF_8));
         for (var entry : definition.getAttributes().entrySet()) {
             String attrKey = entry.getKey();
             Attribute attribute = Registry.ATTRIBUTE.get(NamespacedKey.minecraft(attrKey));
