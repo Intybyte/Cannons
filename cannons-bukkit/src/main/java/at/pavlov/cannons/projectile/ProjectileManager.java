@@ -108,29 +108,7 @@ public class ProjectileManager {
         }
 
         if (entity instanceof Attributable attributable) {
-            var uuid = UUID.fromString("cannon:attribute");
-            for (var entry : definition.getAttributes().entrySet()) {
-                String attrKey = entry.getKey();
-                Attribute attribute = Registry.ATTRIBUTE.get(NamespacedKey.minecraft(attrKey));
-
-                if (attribute == null) {
-                    Cannons.getPlugin().logSevere("Attribute [" + attrKey + "] doesn't exist");
-                    continue;
-                }
-
-                var instance = attributable.getAttribute(attribute);
-                if (instance == null) {
-                    Cannons.getPlugin().logSevere("Attribute [" + attrKey + "] not found for entity " + entity.getType());
-                    continue;
-                }
-
-                // todo: this AttributeModifier constructor is marked for removal, might want to replace with a more robust implementation
-                instance.addModifier(
-                        new AttributeModifier(
-                                uuid, "attribute_definition", entry.getValue(), AttributeModifier.Operation.ADD_NUMBER
-                        )
-                );
-            }
+            handleAttributable(attributable, definition, entity);
         }
 
         if (entity instanceof WitherSkull witherSkull) {
@@ -168,6 +146,32 @@ public class ProjectileManager {
         }
 
         return entity;
+    }
+
+    private static void handleAttributable(Attributable attributable, CustomProjectileDefinition definition, Entity entity) {
+        UUID uuid = UUID.fromString("cannon:attribute");
+        for (var entry : definition.getAttributes().entrySet()) {
+            String attrKey = entry.getKey();
+            Attribute attribute = Registry.ATTRIBUTE.get(NamespacedKey.minecraft(attrKey));
+
+            if (attribute == null) {
+                Cannons.getPlugin().logSevere("Attribute [" + attrKey + "] doesn't exist");
+                continue;
+            }
+
+            var attributeInstance = attributable.getAttribute(attribute);
+            if (attributeInstance == null) {
+                Cannons.getPlugin().logSevere("Attribute [" + attrKey + "] not found for entity " + entity.getType());
+                continue;
+            }
+
+            // todo: this AttributeModifier constructor is marked for removal, might want to replace with a more robust implementation
+            attributeInstance.addModifier(
+                    new AttributeModifier(
+                            uuid, "attribute_definition", entry.getValue(), AttributeModifier.Operation.ADD_NUMBER
+                    )
+            );
+        }
     }
 
 
