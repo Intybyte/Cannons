@@ -103,6 +103,10 @@ public class ProjectileManager {
             entity.setGravity(false);
         }
 
+        if (entity instanceof LivingEntity livingEntity) {
+            livingEntity.setAI(false);
+        }
+
         if (entity instanceof Attributable attributable) {
             var uuid = UUID.fromString("cannon:attribute");
             for (var entry : definition.getAttributes().entrySet()) {
