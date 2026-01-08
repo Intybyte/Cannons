@@ -4,6 +4,7 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.dao.AsyncTaskManager;
+import at.pavlov.internal.Key;
 import at.pavlov.internal.key.registries.Registries;
 import at.pavlov.internal.projectile.definition.CustomProjectileDefinition;
 import at.pavlov.internal.projectile.definition.ProjectilePhysics;
@@ -15,6 +16,7 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,16 +75,21 @@ public class ProjectileManager {
         return projectileEntity;
     }
 
+    private static final NamespacedKey MOB_TYPE_KEY = new NamespacedKey(Cannons.getPlugin(), "mob_type");
     private @NotNull Entity spawnProjectile(Projectile projectile, Location spawnLoc, Vector velocity, World world) {
         Entity entity = world.spawnEntity(spawnLoc, projectile.getProjectileEntity());
 
         //calculate firing vector
         entity.setVelocity(velocity);
 
-        CustomProjectileDefinition definition = Registries.CUSTOM_PROJECTILE_DEFINITION.of(projectile.getProjectileDefinitionKey());
+        Key customEntityKey = projectile.getProjectileDefinitionKey();
+        CustomProjectileDefinition definition = Registries.CUSTOM_PROJECTILE_DEFINITION.of(customEntityKey);
         if (definition == null) {
             return entity;
         }
+
+        // allow people to use custom textures for entities
+        entity.getPersistentDataContainer().set(MOB_TYPE_KEY, PersistentDataType.STRING, customEntityKey.full());
 
         entity.setVisualFire(definition.isOnFire());
         entity.setGlowing(definition.isGlowing());
