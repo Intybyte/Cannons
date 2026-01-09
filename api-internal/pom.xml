@@ -15,11 +15,23 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.Intybyte</groupId>
+            <artifactId>SchematicLib</artifactId>
+            <version>f420e46a34</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

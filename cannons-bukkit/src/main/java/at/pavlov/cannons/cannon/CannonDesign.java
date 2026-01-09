@@ -6,10 +6,15 @@ import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.container.SoundHolder;
 import at.pavlov.cannons.exchange.BExchanger;
 import at.pavlov.cannons.projectile.Projectile;
+import at.pavlov.cannons.schematic.world.SchematicWorldProcessorImpl;
 import at.pavlov.internal.Key;
 import lombok.Data;
+import me.vaan.schematiclib.base.block.BlockKey;
+import me.vaan.schematiclib.base.schematic.Schematic;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
@@ -177,21 +182,22 @@ import java.util.List;
 
 	
 	//constructionblocks:
-	private BlockData schematicBlockTypeIgnore;     				//this block this is ignored in the schematic file
-    private BlockData schematicBlockTypeMuzzle;					//location of the muzzle
-    private BlockData schematicBlockTypeRotationCenter;			//location of the roatation
-    private BlockData schematicBlockTypeChestAndSign;				//locations of the chest and sign
-    private BlockData schematicBlockTypeRedstoneTorch;				//locations of the redstone torches
-    private BlockData schematicBlockTypeRedstoneWireAndRepeater;	//locations of the redstone wires and repeaters
-    private BlockData schematicBlockTypeRedstoneTrigger; 			//locations of button or levers
-    private BlockData ingameBlockTypeRedstoneTrigger;    			//block which is placed instead of the place holder
-    private BlockData schematicBlockTypeRightClickTrigger; 		//locations of the right click trigger
-    private BlockData ingameBlockTypeRightClickTrigger;   			//block type of the tigger in game
-    private BlockData schematicBlockTypeFiringIndicator;			//location of the firing indicator
-    private List<BlockData> schematicBlockTypeProtected;				//list of blocks that are protected from explosions (e.g. buttons)
+	private BlockKey schematicBlockTypeIgnore;     				//this block this is ignored in the schematic file
+    private BlockKey schematicBlockTypeMuzzle;					//location of the muzzle
+    private BlockKey schematicBlockTypeRotationCenter;			//location of the roatation
+    private BlockKey schematicBlockTypeChestAndSign;				//locations of the chest and sign
+    private BlockKey schematicBlockTypeRedstoneTorch;				//locations of the redstone torches
+    private BlockKey schematicBlockTypeRedstoneWireAndRepeater;	//locations of the redstone wires and repeaters
+    private BlockKey schematicBlockTypeRedstoneTrigger; 			//locations of button or levers
+    private BlockKey ingameBlockTypeRedstoneTrigger;    			//block which is placed instead of the place holder
+    private BlockKey schematicBlockTypeRightClickTrigger; 		//locations of the right click trigger
+    private BlockKey ingameBlockTypeRightClickTrigger;   			//block type of the tigger in game
+    private BlockKey schematicBlockTypeFiringIndicator;			//location of the firing indicator
+    private List<BlockKey> schematicBlockTypeProtected;				//list of blocks that are protected from explosions (e.g. buttons)
     
     //cannon design block lists for every direction (NORTH, EAST, SOUTH, WEST)
     private final HashMap<BlockFace, CannonBlocks> cannonBlockMap = new HashMap<>();
+    private final HashMap<BlockFace, Schematic> schematicMap = new HashMap<>();
 	private final EnumSet<Material> allowedMaterials = EnumSet.noneOf(Material.class);
 
 
@@ -244,43 +250,6 @@ import java.util.List;
             return cannonBlocks.getFiringTrigger().clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit());
     	}
     	return null;
-    }
-    
-    /**
-     * returns a list of all cannonBlocks
-     * @param cannonDirection - the direction the cannon is facing
-     * @return List of cannon blocks
-     */
-    public List<SimpleBlock> getAllCannonBlocks(BlockFace cannonDirection)
-    {
-    	CannonBlocks cannonBlocks  = cannonBlockMap.get(cannonDirection);
-    	if (cannonBlocks != null)
-    	{
-    		return cannonBlocks.getAllCannonBlocks();
-    	}
-    	
-    	return new ArrayList<>();
-    }
-
-
-    /**
-     * returns a list of all cannonBlocks
-     * @param cannon
-     * @return
-     */
-    public List<Location> getAllCannonBlocks(Cannon cannon)
-    {
-        CannonBlocks cannonBlocks  = cannonBlockMap.get(cannon.getCannonDirection());
-        List<Location> locList = new ArrayList<>();
-        if (cannonBlocks != null)
-        {
-            for (SimpleBlock block : cannonBlocks.getAllCannonBlocks())
-            {
-                Vector vect = block.toVector();
-                locList.add(vect.clone().add(cannon.getOffset()).toLocation(cannon.getWorldBukkit()));
-            }
-        }
-        return locList;
     }
 
     /**
@@ -552,13 +521,22 @@ import java.util.List;
 	}
 
 
-	public void putCannonBlockMap(BlockFace cannonDirection, CannonBlocks blocks) {
-		for (var block : blocks.getAllCannonBlocks()) {
-			allowedMaterials.add(block.getBlockData().getMaterial());
-		}
+    public void putCannonBlockMap(BlockFace cannonDirection, CannonBlocks blocks) {
+        cannonBlockMap.put(cannonDirection, blocks);
+    }
 
-		cannonBlockMap.put(cannonDirection, blocks);
-	}
+    public void putSchematicMap(BlockFace cannonDirection, Schematic blocks) {
+        Schematic parsed = SchematicWorldProcessorImpl.getProcessor().parseToMaterial(blocks);
+        parsed.forEach(b -> {
+            Material m = Registry.MATERIAL.get(
+                NamespacedKey.minecraft(b.key().key())
+            );
+
+            allowedMaterials.add(m);
+        });
+
+        schematicMap.put(cannonDirection, blocks);
+    }
 
 	public boolean isAllowedMaterial(Material m) {
 		return allowedMaterials.contains(m);
@@ -567,7 +545,7 @@ import java.util.List;
 	@Override
 	public String toString()
 	{
-		return "designID:" + designID + " name:" + designName + " blocks:" + getAllCannonBlocks(BlockFace.NORTH).size();
+		return "designID:" + designID + " name:" + designName + " blocks:" + schematicMap.get(BlockFace.NORTH).positions().size();
 	}
 
     /**
