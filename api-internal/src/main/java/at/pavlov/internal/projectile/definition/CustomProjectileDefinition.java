@@ -33,4 +33,6 @@ public class CustomProjectileDefinition implements ProjectilePhysics {
     private final @Nullable Integer customModelData;
 
     private final @NotNull Map<String, @NotNull Double> attributes;
+
+    private final @NotNull Map<String, @NotNull Double> entityDisplayData;
 }
