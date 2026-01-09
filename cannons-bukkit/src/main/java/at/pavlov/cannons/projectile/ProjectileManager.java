@@ -4,29 +4,27 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.CreateExplosion;
 import at.pavlov.cannons.Enum.ProjectileCause;
 import at.pavlov.cannons.dao.AsyncTaskManager;
+import at.pavlov.internal.Key;
 import at.pavlov.internal.key.registries.Registries;
 import at.pavlov.internal.projectile.definition.CustomProjectileDefinition;
 import at.pavlov.internal.projectile.definition.ProjectilePhysics;
 import com.google.common.base.Preconditions;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.entity.AbstractArrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.ThrowableProjectile;
-import org.bukkit.entity.WitherSkull;
+import org.bukkit.*;
+import org.bukkit.attribute.Attributable;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ProjectileManager
-{
+public class ProjectileManager {
     private static ProjectileManager instance = null;
 
     private final Cannons plugin;
@@ -45,32 +43,30 @@ public class ProjectileManager
 
     /**
      * ProjectileManager
+     *
      * @param plugin - Cannons instance
      */
     private ProjectileManager(Cannons plugin) {
         this.plugin = plugin;
     }
 
-    public org.bukkit.entity.Projectile spawnProjectile(Projectile projectile, @NotNull UUID shooter, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, Location spawnLoc, Vector velocity, UUID cannonId, ProjectileCause projectileCause) {
+    public Entity spawnProjectile(Projectile projectile, @NotNull UUID shooter, org.bukkit.projectiles.ProjectileSource source, Location playerLoc, Location spawnLoc, Vector velocity, UUID cannonId, ProjectileCause projectileCause) {
         Preconditions.checkNotNull(shooter, "shooter for the projectile can't be null");
         World world = spawnLoc.getWorld();
 
         //set yaw, pitch for fireballs
         double v = velocity.length();
-        spawnLoc.setPitch((float) (Math.acos(velocity.getY()/v)*180.0/Math.PI - 90));
-        spawnLoc.setYaw((float) (Math.atan2(velocity.getZ(),velocity.getX())*180.0/Math.PI - 90));
+        spawnLoc.setPitch((float) (Math.acos(velocity.getY() / v) * 180.0 / Math.PI - 90));
+        spawnLoc.setYaw((float) (Math.atan2(velocity.getZ(), velocity.getX()) * 180.0 / Math.PI - 90));
 
-        org.bukkit.entity.Projectile projectileEntity = spawnProjectile(projectile, spawnLoc, velocity, world);
+        Entity projectileEntity = spawnProjectile(projectile, spawnLoc, velocity, world);
 
         if (projectile.isProjectileOnFire())
             projectileEntity.setFireTicks(100);
         //projectileEntity.setTicksLived(2);
 
-
-
         //create a new flying projectile container
         FlyingProjectile cannonball = new FlyingProjectile(projectile, projectileEntity, shooter, source, playerLoc, cannonId, projectileCause);
-
 
         flyingProjectilesMap.put(cannonball.getUID(), cannonball);
 
@@ -80,28 +76,24 @@ public class ProjectileManager
         return projectileEntity;
     }
 
-    private org.bukkit.entity.@NotNull Projectile spawnProjectile(Projectile projectile, Location spawnLoc, Vector velocity, World world) {
-        Entity pEntity = world.spawnEntity(spawnLoc, projectile.getProjectileEntity());
+    private static final NamespacedKey MOB_TYPE_KEY = new NamespacedKey(Cannons.getPlugin(), "mob_type");
+    private @NotNull Entity spawnProjectile(Projectile projectile, Location spawnLoc, Vector velocity, World world) {
+        Entity entity = world.spawnEntity(spawnLoc, projectile.getProjectileEntity());
 
         //calculate firing vector
-        pEntity.setVelocity(velocity);
+        entity.setVelocity(velocity);
 
-        org.bukkit.entity.Projectile projectileEntity;
-        try {
-            projectileEntity = (org.bukkit.entity.Projectile) pEntity;
-        } catch(Exception e) {
-            plugin.logDebug("Can't convert EntityType " + pEntity.getType() + " to projectile. Using additional Snowball");
-            projectileEntity = (org.bukkit.entity.Projectile) world.spawnEntity(spawnLoc, EntityType.SNOWBALL);
-            projectileEntity.setVelocity(velocity);
-        }
-
-        CustomProjectileDefinition definition = Registries.CUSTOM_PROJECTILE_DEFINITION.of(projectile.getProjectileDefinitionKey());
+        Key customEntityKey = projectile.getProjectileDefinitionKey();
+        CustomProjectileDefinition definition = Registries.CUSTOM_PROJECTILE_DEFINITION.of(customEntityKey);
         if (definition == null) {
-            return projectileEntity;
+            return entity;
         }
 
-        projectileEntity.setVisualFire(definition.isOnFire());
-        projectileEntity.setGlowing(definition.isGlowing());
+        // allow people to use custom textures for entities
+        entity.getPersistentDataContainer().set(MOB_TYPE_KEY, PersistentDataType.STRING, customEntityKey.full());
+
+        entity.setVisualFire(definition.isOnFire());
+        entity.setGlowing(definition.isGlowing());
 
         ProjectilePhysics defaultCase = Registries.DEFAULT_PROJECTILE_DEFINITION_REGISTRY.of(definition.getEntityKey());
         if (defaultCase == null) {
@@ -109,14 +101,26 @@ public class ProjectileManager
         }
 
         if (!defaultCase.matches(definition)) {
-            projectileEntity.setGravity(false);
+            entity.setGravity(false);
         }
 
-        if (projectileEntity instanceof WitherSkull witherSkull) {
+        if (entity instanceof LivingEntity livingEntity) {
+            livingEntity.setAI(false);
+        }
+
+        if (entity instanceof Attributable attributable) {
+            handleAttributable(attributable, definition, entity);
+        }
+
+        if (entity instanceof Display display) {
+            display.setTeleportDuration(1);
+        }
+
+        if (entity instanceof WitherSkull witherSkull) {
             witherSkull.setCharged(definition.isCharged());
-        } else if (projectileEntity instanceof AbstractArrow arrow) {
+        } else if (entity instanceof AbstractArrow arrow) {
             arrow.setCritical(definition.isCritical());
-        } else if (projectileEntity instanceof ThrowableProjectile throwable) {
+        } else if (entity instanceof ThrowableProjectile throwable) {
             Material material = Material.matchMaterial(definition.getMaterial().full());
             if (material == null) {
                 plugin.logSevere("In custom projectile: " + definition.getKey().full() + " the material key is invalid.");
@@ -130,14 +134,55 @@ public class ProjectileManager
             stack.setItemMeta(meta);
 
             throwable.setItem(stack);
+        } else if (entity instanceof ItemDisplay itemDisplay) {
+            Material material = Material.matchMaterial(definition.getMaterial().full());
+            if (material == null) {
+                plugin.logSevere("In custom projectile: " + definition.getKey().full() + " the material key is invalid.");
+                material = Material.SNOWBALL;
+            }
+
+            ItemStack stack = new ItemStack(material);
+
+            ItemMeta meta = stack.getItemMeta();
+            meta.setCustomModelData(definition.getCustomModelData());
+            stack.setItemMeta(meta);
+
+            itemDisplay.setItemStack(stack);
         }
 
-        return projectileEntity;
+        return entity;
+    }
+
+    private static void handleAttributable(Attributable attributable, CustomProjectileDefinition definition, Entity entity) {
+        UUID uuid = UUID.nameUUIDFromBytes("cannon:attribute".getBytes(StandardCharsets.UTF_8));
+        for (var entry : definition.getAttributes().entrySet()) {
+            String attrKey = entry.getKey();
+            Attribute attribute = Registry.ATTRIBUTE.get(NamespacedKey.minecraft(attrKey));
+
+            if (attribute == null) {
+                Cannons.getPlugin().logSevere("Attribute [" + attrKey + "] doesn't exist");
+                continue;
+            }
+
+            var attributeInstance = attributable.getAttribute(attribute);
+            if (attributeInstance == null) {
+                Cannons.getPlugin().logSevere("Attribute [" + attrKey + "] not found for entity " + entity.getType());
+                continue;
+            }
+
+            // todo: this AttributeModifier constructor is marked for removal, might want to replace with a more robust implementation
+            attributeInstance.addModifier(
+                    new AttributeModifier(
+                            uuid, "attribute_definition", entry.getValue(), AttributeModifier.Operation.ADD_NUMBER
+                    )
+            );
+        }
     }
 
 
     /**
      * detonate a timefused projectile mid air
+     *
      * @param cannonball - the cannonball to detonate
      */
     private void detonateTimefuse(final FlyingProjectile cannonball) {
@@ -154,30 +199,26 @@ public class ProjectileManager
                 return;
             }
             //detonate timefuse
-            org.bukkit.entity.Projectile projectile_entity = fproj.getProjectileEntity();
+            var projectile_entity = fproj.getProjectileEntity();
             //the projectile might be null
             if (projectile_entity != null) {
                 CreateExplosion.getInstance().detonate(cannonball, projectile_entity);
                 projectile_entity.remove();
             }
             flyingProjectilesMap.remove(cannonball.getUID());
-        }, (long) (cannonball.getProjectile().getTimefuse()*20));
+        }, (long) (cannonball.getProjectile().getTimefuse() * 20));
     }
 
 
     /**
      * detonates the given projectile entity
+     *
      * @param projectile - the projectile with this entity
      */
-    public void detonateProjectile(Entity projectile)
-    {
-        if(projectile == null || !(projectile instanceof org.bukkit.entity.Projectile))
-            return;
-
+    public void detonateProjectile(Entity projectile) {
         FlyingProjectile fproj = flyingProjectilesMap.get(projectile.getUniqueId());
-        if (fproj!=null)
-        {
-            CreateExplosion.getInstance().detonate(fproj, (org.bukkit.entity.Projectile) projectile);
+        if (fproj != null) {
+            CreateExplosion.getInstance().detonate(fproj, projectile);
             projectile.remove();
             flyingProjectilesMap.remove(fproj.getUID());
         }
@@ -185,18 +226,19 @@ public class ProjectileManager
 
     /**
      * detonates the given projectile entity
+     *
      * @param cannonball - the projectile with this entity
-     * @param target the entity hit by the projectile
+     * @param target     the entity hit by the projectile
      */
     public void directHitProjectile(Entity cannonball, Entity target) {
-        if(cannonball == null || target == null) return;
+        if (cannonball == null || target == null) return;
 
         FlyingProjectile fproj = flyingProjectilesMap.get(cannonball.getUniqueId());
         if (fproj == null) {
             return;
         }
 
-        org.bukkit.entity.Projectile projectile_entity = fproj.getProjectileEntity();
+        Entity projectile_entity = fproj.getProjectileEntity();
         if (!fproj.hasDetonated() && cannonball.isValid()) {
             fproj.setHasDetonated(true);
             CreateExplosion.getInstance().directHit(fproj, projectile_entity, target);
@@ -208,11 +250,11 @@ public class ProjectileManager
 
     /**
      * returns true if the given entity is a cannonball projectile
+     *
      * @param projectile flying projectile
      * @return true if cannonball projectile
      */
-    public boolean isFlyingProjectile(Entity projectile)
-    {
+    public boolean isFlyingProjectile(Entity projectile) {
         FlyingProjectile fproj = flyingProjectilesMap.get(projectile.getUniqueId());
         return fproj != null;
     }
@@ -220,21 +262,21 @@ public class ProjectileManager
 
     /**
      * returns the list of all flying projectiles
+     *
      * @return - the list of all flying projectiles
      */
-    public ConcurrentHashMap<UUID, FlyingProjectile> getFlyingProjectiles()
-    {
+    public ConcurrentHashMap<UUID, FlyingProjectile> getFlyingProjectiles() {
         return flyingProjectilesMap;
     }
 
     /**
      * returns the projectile of which the player is passenger
      * if the player is attached to a projectile he will follow its movement
+     *
      * @param player is the passenger
      * @return the projectile or null
      */
-    public FlyingProjectile getAttachedProjectile(Player player)
-    {
+    public FlyingProjectile getAttachedProjectile(Player player) {
         if (player == null) {
             return null;
         }

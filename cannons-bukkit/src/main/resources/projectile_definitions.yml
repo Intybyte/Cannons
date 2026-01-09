@@ -18,7 +18,11 @@
 #    charged: false # works only for wither skulls, makes it charged
 #    critical: false # works for arrows and tridents, makes the try visible
 #
-#    # this stuff is for throwable projectiles only, such as snowballs
+#    # available for all entities that are Attributable, generally all living entities have this
+#    attributes:
+#       scale: 2.0
+#
+#    # this stuff is for throwable projectiles, such as snowballs, and item displays
 #    material: SNOWBALL # you can set any material https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 #    customModelData: 123 # must be an integer, texturepack magic number goes here
 

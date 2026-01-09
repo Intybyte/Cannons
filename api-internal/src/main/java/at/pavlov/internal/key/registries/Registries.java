@@ -72,20 +72,6 @@ public class Registries {
                             .build()
             );
 
-            Key.from(
-                List.of(
-                    "minecraft:snowball",
-                    "minecraft:egg",
-                    "minecraft:ender_pearl",
-                    "minecraft:experience_bottle",
-                    "minecraft:potion",
-                    "minecraft:lingering_potion",
-                    "minecraft:llama_spit"
-                )
-            ).forEach( entry -> toAdd.add(
-                new KeyedDefaultProjectile(entry)
-            ));
-
             return toAdd;
         });
         SharedRegistryKeyValidator<ProjectilePhysics> validator = new SharedRegistryKeyValidator<>(CUSTOM_PROJECTILE_DEFINITION, DEFAULT_PROJECTILE_DEFINITION_REGISTRY);

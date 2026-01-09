@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>cannons-bukkit</artifactId>
-    <version>3.4.1</version>
+    <version>3.4.2</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -110,7 +110,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>13.3.0</version>
+            <version>13.6.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

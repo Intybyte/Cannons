@@ -149,9 +149,8 @@ public class InventoryManagement
         int remainder = amount;
         List<Runnable> actions = new ArrayList<>();
         for (var inv : inventory) {
-            int before = remainder;
             var result = checkAndPrepareRemoval(inv, valid, remainder);
-            remainder -= before - result.first();
+            remainder = result.first();
             actions.add(result.second());
 
             if (remainder == 0) {

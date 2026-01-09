@@ -27,6 +27,8 @@ import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.ParseUtils;
 import at.pavlov.cannons.utils.SoundUtils;
 import com.cryptomorin.xseries.XEntityType;
+import com.cryptomorin.xseries.particles.ParticleDisplay;
+import com.cryptomorin.xseries.particles.XParticle;
 import io.papermc.lib.PaperLib;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -161,7 +163,7 @@ public class CreateExplosion {
      * @param cannonball
      * @return the location after the piercing event
      */
-    private Location blockBreaker(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
+    private Location blockBreaker(FlyingProjectile cannonball, Entity projectile_entity) {
         Projectile projectile = cannonball.getProjectile();
 
 
@@ -757,7 +759,7 @@ public class CreateExplosion {
      * @param cannonball cannonball which hit the entity
      * @param entity     entity hit
      */
-    public void directHit(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity, Entity entity) {
+    public void directHit(FlyingProjectile cannonball, Entity projectile_entity, Entity entity) {
         // add damage to map - it will be applied later to the player
         double directHit = this.getDirectHitDamage(cannonball, entity);
         this.damageMap.put(entity, directHit);
@@ -772,7 +774,7 @@ public class CreateExplosion {
      *
      * @param cannonball cannonball which will explode
      */
-    public void detonate(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
+    public void detonate(FlyingProjectile cannonball, Entity projectile_entity) {
         this.plugin.logDebug("detonate cannonball");
 
         Projectile projectile = cannonball.getProjectile().clone();
@@ -994,7 +996,7 @@ public class CreateExplosion {
      *
      * @param cannonball the flying projectile
      */
-    private void damageEntity(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
+    private void damageEntity(FlyingProjectile cannonball, Entity projectile_entity) {
         Projectile projectile = cannonball.getProjectile();
         Location impactLoc = cannonball.getImpactLocation();
 
@@ -1159,7 +1161,7 @@ public class CreateExplosion {
      *
      * @param cannonball the flying projectile
      */
-    private void spawnFireworks(FlyingProjectile cannonball, org.bukkit.entity.Projectile projectile_entity) {
+    private void spawnFireworks(FlyingProjectile cannonball, Entity projectile_entity) {
         World world = cannonball.getWorld();
         Projectile projectile = cannonball.getProjectile();
 
@@ -1220,7 +1222,14 @@ public class CreateExplosion {
         if (config.isImitatedExplosionParticlesEnabled()) {
             double d = config.getImitatedExplosionParticlesDiameter();
             impactLoc.getWorld().spawnParticle(config.getImitatedExplosionParticlesType(), impactLoc, config.getImitatedExplosionParticlesCount(), d, d, d, 0, null, true);
-            impactLoc.getWorld().spawnParticle(Particle.FLASH, impactLoc, 5, 0, 0, 0, 0, null, true);
+
+            Object argument = null;
+            // 1.21.i_am_not_sure_which_minor_version thing
+            if (Particle.FLASH.getDataType() == Color.class) {
+                argument = Color.WHITE;
+            }
+
+            impactLoc.getWorld().spawnParticle(Particle.FLASH, impactLoc, 5, 0, 0, 0, 0, argument, true);
         }
 
         if (!config.isImitatedExplosionEnabled()) {
