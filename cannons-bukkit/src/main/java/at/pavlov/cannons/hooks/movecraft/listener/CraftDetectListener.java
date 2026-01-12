@@ -3,9 +3,9 @@ package at.pavlov.cannons.hooks.movecraft.listener;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.hooks.movecraft.MovecraftUtils;
-import at.pavlov.cannons.hooks.movecraft.type.CannonProperties;
+import at.pavlov.cannons.hooks.movecraft.type.properties.CannonProperties;
 import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsEntry;
-import at.pavlov.cannons.hooks.movecraft.type.PropertyWrapper;
+import at.pavlov.cannons.hooks.movecraft.type.properties.PropertyWrapper;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.craft.type.CraftType;
@@ -45,11 +45,6 @@ public class CraftDetectListener implements Listener {
 
         // Check designs against maxCannons
         for (var max : maxCannons) {
-            var cannonName = max.getName();
-            var count = cannonCount.get(cannonName.toLowerCase());
-            if (count == null)
-                continue;
-
             var result = max.check(craft, cannonCount);
 
             if (result.isPresent()) {

@@ -16,7 +16,7 @@ import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.exchange.ExchangeLoader;
 import at.pavlov.cannons.hooks.VaultHook;
 import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
-import at.pavlov.cannons.hooks.movecraft.type.CannonProperties;
+import at.pavlov.cannons.hooks.movecraft.type.properties.CannonProperties;
 import at.pavlov.cannons.hooks.movecraftcombat.MovecraftCombatHook;
 import at.pavlov.cannons.hooks.papi.PlaceholderAPIHook;
 import at.pavlov.cannons.listener.BlockListener;

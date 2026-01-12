@@ -1,6 +1,8 @@
-package at.pavlov.cannons.hooks.movecraft.type;
+package at.pavlov.cannons.hooks.movecraft.type.properties;
 
 import at.pavlov.cannons.hooks.movecraft.MovecraftUtils;
+import at.pavlov.cannons.hooks.movecraft.type.CraftKeys;
+import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsEntry;
 import net.countercraft.movecraft.craft.type.TypeData;
 
 import java.util.HashSet;
@@ -24,9 +26,9 @@ public class CannonProperties {
                 if (entry.getKey() == null)
                     throw new TypeData.InvalidValueException("Keys for " + fileKey + " must be a string cannon name.");
 
-                String name = entry.getKey();
+                Object entryKey = entry.getKey();
                 var limit = MovecraftUtils.parseLimit(entry.getValue());
-                maxCannons.add(new MaxCannonsEntry(name, limit));
+                maxCannons.add(new MaxCannonsEntry(MovecraftUtils.parseKey(entryKey), limit));
             }
             return maxCannons;
         }, (type -> new HashSet<>()));

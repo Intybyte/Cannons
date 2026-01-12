@@ -67,4 +67,18 @@ public class MovecraftUtils {
         int val = Integer.parseInt(parts[1]);
         return new Pair<>(true, val);
     }
+
+    public static @NotNull List<@NotNull String> parseKey(Object key) {
+        if (key instanceof String string) {
+            return List.of(string);
+        } else if (key instanceof ArrayList<?> array) {
+            if (array.get(0) instanceof String) {
+                return (ArrayList<String>) array;
+            }
+
+            throw new IllegalArgumentException("Invalid parsed key");
+        } else {
+            throw new IllegalArgumentException("Invalid parsed key");
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package at.pavlov.cannons.hooks.movecraft.type;
+package at.pavlov.cannons.hooks.movecraft.type.properties;
 
 import at.pavlov.cannons.Cannons;
 import lombok.AllArgsConstructor;
