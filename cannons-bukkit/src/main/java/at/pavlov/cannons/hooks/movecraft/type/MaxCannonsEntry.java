@@ -22,15 +22,6 @@ public class MaxCannonsEntry implements CannonCheck {
         this.numericMax = max.getLeft();
     }
 
-    public boolean check(int count, int size) {
-        if (numericMax) {
-            return !(count > max);
-        }
-
-        double percent = 100D * count / size;
-        return !(percent > max);
-    }
-
     /**
      *
      * @return Empty if no error, otherwise return the error
