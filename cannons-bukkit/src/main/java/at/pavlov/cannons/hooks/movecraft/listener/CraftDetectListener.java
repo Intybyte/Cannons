@@ -38,7 +38,7 @@ public class CraftDetectListener implements Listener {
         Set<Cannon> cannons = MovecraftUtils.getCannons(craft);
         Map<String, Integer> cannonCount = new HashMap<>();
         for (var cannon : cannons) {
-            String design = cannon.getCannonDesign().getDesignName().toLowerCase();
+            String design = cannon.getCannonDesign().getDesignID();
             cannonCount.compute(design, (key, value) -> (value == null) ? 1 : value + 1);
         }
         printCannonCount(cannonCount);
