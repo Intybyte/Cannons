@@ -5,6 +5,7 @@ import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.hooks.movecraft.MovecraftUtils;
 import at.pavlov.cannons.hooks.movecraft.type.CannonProperties;
 import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsEntry;
+import at.pavlov.cannons.hooks.movecraft.type.PropertyWrapper;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.craft.type.CraftType;
@@ -13,19 +14,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class CraftDetectListener implements Listener {
-    private static final Set<CraftType> notifyError = new HashSet<>();
     private static final Cannons cannon = Cannons.getPlugin();
 
     @EventHandler
     public void onCraftDetect(CraftDetectEvent e) {
         Craft craft = e.getCraft();
         CraftType type = craft.getType();
-        if (notifyError.contains(type))
+        if (PropertyWrapper.notifyError.contains(type))
             return;
 
         if (!(craft instanceof PlayerCraft))
@@ -53,10 +52,12 @@ public class CraftDetectListener implements Listener {
 
             var result = max.check(craft, cannonCount);
 
-            result.ifPresent( error -> {
+            if (result.isPresent()) {
+                String error = result.get();
                 e.setCancelled(true);
                 e.setFailMessage("Detection Failed! " + error);
-            });
+                return;
+            }
         }
     }
 
