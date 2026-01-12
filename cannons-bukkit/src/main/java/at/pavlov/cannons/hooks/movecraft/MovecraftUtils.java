@@ -6,12 +6,16 @@ import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PilotedCraft;
 import net.countercraft.movecraft.craft.SubCraft;
+import net.countercraft.movecraft.util.Pair;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import static net.countercraft.movecraft.craft.type.TypeData.NUMERIC_PREFIX;
 
 public class MovecraftUtils {
 
@@ -48,5 +52,19 @@ public class MovecraftUtils {
 
         // Return null if all else fails
         return null;
+    }
+
+    public static @NotNull Pair<Boolean, ? extends Number> parseLimit(@NotNull Object input) {
+        if (!(input instanceof String str)) {
+            return new Pair<>(false, (double) input);
+        }
+
+        if (!str.contains(NUMERIC_PREFIX)) {
+            return new Pair<>(false, Double.valueOf(str));
+        }
+
+        String[] parts = str.split(NUMERIC_PREFIX);
+        int val = Integer.parseInt(parts[1]);
+        return new Pair<>(true, val);
     }
 }
