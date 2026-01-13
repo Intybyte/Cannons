@@ -25,12 +25,13 @@ public class CannonProperties {
 
     public static final PropertyWrapperInt MAX_MASS = new PropertyWrapperInt(CraftKeys.MAX_MASS, (type) -> null);
     public static final PropertyWrapperInt MIN_MASS = new PropertyWrapperInt(CraftKeys.MIN_MASS, (type) -> null);
-
     public static final PropertyWrapper<Set> EXCLUDE_FROM_MASS = new PropertyWrapper<>(
         CraftKeys.EXCLUDE_FROM_MASS,
         Set.class,
         Set::of
     );
+
+    public static final PropertyWrapperBoolean USE_SHIP_ANGLES = new PropertyWrapperBoolean(CraftKeys.USE_SHIP_ANGLES, (type) -> false);
 
     public static void register() {
         MAX_CANNONS.register((data, type, fileKey, namespacedKey) -> {
@@ -69,7 +70,6 @@ public class CannonProperties {
 
         MAX_MASS.register();
         MIN_MASS.register();
-
         EXCLUDE_FROM_MASS.register((data, type, fileKey, namespacedKey) -> {
             List<String> list = data.getStringList(fileKey);
             if (list.isEmpty())
@@ -77,5 +77,7 @@ public class CannonProperties {
 
             return new HashSet<>(list);
         }, (type -> new HashSet<>()));
+
+        USE_SHIP_ANGLES.register();
     }
 }

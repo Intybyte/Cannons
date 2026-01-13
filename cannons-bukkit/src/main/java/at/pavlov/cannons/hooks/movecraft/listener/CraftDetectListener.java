@@ -22,7 +22,7 @@ import java.util.Set;
 public class CraftDetectListener implements Listener {
     private static final Cannons cannon = Cannons.getPlugin();
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onCraftDetect(CraftDetectEvent e) {
         Craft craft = e.getCraft();
         CraftType type = craft.getType();
@@ -38,10 +38,15 @@ public class CraftDetectListener implements Listener {
 
         if (checkMaxMin(e, type, cannons, craft)) return;
 
-        checkMass(e, cannons, type);
+        if (checkMass(e, cannons, type)) return;
+
+        boolean useShip = CannonProperties.USE_SHIP_ANGLES.get(type) == Boolean.TRUE;
+        if (useShip) {
+            cannons.forEach(it -> it.setOnShip(true));
+        }
     }
 
-    private static void checkMass(CraftDetectEvent e, Set<Cannon> cannons, CraftType type) {
+    private boolean checkMass(CraftDetectEvent e, Set<Cannon> cannons, CraftType type) {
         int cannonsMassCount = 0;
         Set<String> exclude = CannonProperties.EXCLUDE_FROM_MASS.get(type);
         for (Cannon cannon : cannons) {
@@ -61,7 +66,7 @@ public class CraftDetectListener implements Listener {
                     "Detection Failed! Too much cannon mass on board! %d > %d", cannonsMassCount, maxMass
                 )
             );
-            return;
+            return true;
         }
 
         Integer minMass = CannonProperties.MIN_MASS.get(type);
@@ -72,7 +77,10 @@ public class CraftDetectListener implements Listener {
                     "Detection Failed! Not enough cannon mass on board! %d < %d", cannonsMassCount, minMass
                 )
             );
+            return true;
         }
+
+        return false;
     }
 
     private boolean checkMaxMin(CraftDetectEvent e, CraftType type, Set<Cannon> cannons, Craft craft) {
