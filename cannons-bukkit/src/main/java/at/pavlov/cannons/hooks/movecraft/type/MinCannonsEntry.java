@@ -28,11 +28,11 @@ public class MinCannonsEntry implements CannonCheck {
     public Optional<String> detect(int count, int size) {
         if (numericMax) {
             if (count < min)
-                return Optional.of(String.format("You have too many %s cannon types : %d > %d", allNames(), count, (int) min));
+                return Optional.of(String.format("You have too few %s cannon types : %d < %d", allNames(), count, (int) min));
         } else {
             double blockPercent = 100D * count / size;
             if (blockPercent < min)
-                return Optional.of(String.format("You have too many %s cannon types : %.2f%% > %.2f%%", allNames(), blockPercent, min));
+                return Optional.of(String.format("You have too few %s cannon types : %.2f%% < %.2f%%", allNames(), blockPercent, min));
         }
 
         return Optional.empty();
