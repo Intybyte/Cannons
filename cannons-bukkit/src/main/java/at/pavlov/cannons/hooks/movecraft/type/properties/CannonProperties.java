@@ -7,6 +7,7 @@ import at.pavlov.cannons.hooks.movecraft.type.MinCannonsEntry;
 import net.countercraft.movecraft.craft.type.TypeData;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class CannonProperties {
@@ -24,6 +25,12 @@ public class CannonProperties {
 
     public static final PropertyWrapperInt MAX_MASS = new PropertyWrapperInt(CraftKeys.MAX_MASS, (type) -> null);
     public static final PropertyWrapperInt MIN_MASS = new PropertyWrapperInt(CraftKeys.MIN_MASS, (type) -> null);
+
+    public static final PropertyWrapper<Set> EXCLUDE_FROM_MASS = new PropertyWrapper<>(
+        CraftKeys.EXCLUDE_FROM_MASS,
+        Set.class,
+        Set::of
+    );
 
     public static void register() {
         MAX_CANNONS.register((data, type, fileKey, namespacedKey) -> {
@@ -62,5 +69,13 @@ public class CannonProperties {
 
         MAX_MASS.register();
         MIN_MASS.register();
+
+        EXCLUDE_FROM_MASS.register((data, type, fileKey, namespacedKey) -> {
+            List<String> list = data.getStringList(fileKey);
+            if (list.isEmpty())
+                throw new TypeData.InvalidValueException("Value for " + fileKey + " must not be an empty list");
+
+            return new HashSet<>(list);
+        }, (type -> new HashSet<>()));
     }
 }

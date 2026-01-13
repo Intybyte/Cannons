@@ -2,6 +2,7 @@ package at.pavlov.cannons.hooks.movecraft.listener;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.hooks.movecraft.MovecraftUtils;
 import at.pavlov.cannons.hooks.movecraft.type.CannonCheck;
 import at.pavlov.cannons.hooks.movecraft.type.properties.CannonProperties;
@@ -30,38 +31,28 @@ public class CraftDetectListener implements Listener {
 
         if (!(craft instanceof PlayerCraft)) return;
 
-        Set<? extends CannonCheck> cannonMaxMinChecks = CannonProperties.MAX_CANNONS.get(type);
-        cannonMaxMinChecks.addAll(CannonProperties.MIN_CANNONS.get(type));
-
-        if (cannonMaxMinChecks.isEmpty()) return;
-
         // Sum up counts of each cannon design
         Set<Cannon> cannons = MovecraftUtils.getCannons(craft);
 
-        Map<String, Integer> cannonCount = new HashMap<>();
+        if (cannons.isEmpty()) return;
+
+        if (checkMaxMin(e, type, cannons, craft)) return;
+
+        checkMass(e, cannons, type);
+    }
+
+    private static void checkMass(CraftDetectEvent e, Set<Cannon> cannons, CraftType type) {
+        int cannonsMassCount = 0;
+        Set<String> exclude = CannonProperties.EXCLUDE_FROM_MASS.get(type);
         for (Cannon cannon : cannons) {
-            String design = cannon.getCannonDesign().getDesignID();
-            cannonCount.compute(design, (key, value) -> (value == null) ? 1 : value + 1);
-        }
+            CannonDesign design = cannon.getCannonDesign();
 
-        printCannonCount(cannonCount);
-
-        for (CannonCheck check : cannonMaxMinChecks) {
-            Optional<String> result = check.check(craft, cannonCount);
-
-            if (result.isPresent()) {
-                String error = result.get();
-                e.setCancelled(true);
-                e.setFailMessage("Detection Failed! " + error);
-                return;
+            if (!exclude.contains(design.getDesignID())) {
+                cannonsMassCount += design.getMassOfCannon();
             }
         }
 
-        int cannonsMassCount = 0;
-        for (Cannon cannon : cannons) {
-            cannonsMassCount += cannon.getCannonDesign().getMassOfCannon();
-        }
-
+        cannon.logDebug("MassCount " + cannonsMassCount);
         Integer maxMass = CannonProperties.MAX_MASS.get(type);
         if (maxMass != null && maxMass < cannonsMassCount) {
             e.setCancelled(true);
@@ -84,9 +75,32 @@ public class CraftDetectListener implements Listener {
         }
     }
 
-    private void printCannonCount(Map<String, Integer> cannonCount) {
+    private boolean checkMaxMin(CraftDetectEvent e, CraftType type, Set<Cannon> cannons, Craft craft) {
+        Set<? extends CannonCheck> cannonMaxMinChecks = CannonProperties.MAX_CANNONS.get(type);
+        cannonMaxMinChecks.addAll(CannonProperties.MIN_CANNONS.get(type));
+
+        if (cannonMaxMinChecks.isEmpty()) return false;
+
+        Map<String, Integer> cannonCount = new HashMap<>();
+        for (Cannon cannon : cannons) {
+            String design = cannon.getCannonDesign().getDesignID();
+            cannonCount.compute(design, (key, value) -> (value == null) ? 1 : value + 1);
+        }
+
         for (var entry : cannonCount.entrySet()) {
             cannon.logDebug("Cannon found: " + entry.getKey() + " | " + entry.getValue());
         }
+
+        for (CannonCheck check : cannonMaxMinChecks) {
+            Optional<String> result = check.check(craft, cannonCount);
+
+            if (result.isEmpty()) continue;
+
+            String error = result.get();
+            e.setCancelled(true);
+            e.setFailMessage("Detection Failed! " + error);
+            return true;
+        }
+        return false;
     }
 }
