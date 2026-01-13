@@ -22,6 +22,9 @@ public class CannonProperties {
         Set::of
     );
 
+    public static final PropertyWrapperInt MAX_MASS = new PropertyWrapperInt(CraftKeys.MAX_MASS, (type) -> null);
+    public static final PropertyWrapperInt MIN_MASS = new PropertyWrapperInt(CraftKeys.MIN_MASS, (type) -> null);
+
     public static void register() {
         MAX_CANNONS.register((data, type, fileKey, namespacedKey) -> {
             var map = data.getData(fileKey).getBackingData();
@@ -56,5 +59,8 @@ public class CannonProperties {
             }
             return maxCannons;
         }, (type -> new HashSet<>()));
+
+        MAX_MASS.register();
+        MIN_MASS.register();
     }
 }
