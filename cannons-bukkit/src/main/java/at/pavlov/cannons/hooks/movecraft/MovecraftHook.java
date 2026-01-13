@@ -9,7 +9,6 @@ import at.pavlov.cannons.hooks.movecraft.listener.TranslationListener;
 import at.pavlov.internal.Hook;
 import net.countercraft.movecraft.Movecraft;
 import org.bukkit.ChatColor;
-import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 

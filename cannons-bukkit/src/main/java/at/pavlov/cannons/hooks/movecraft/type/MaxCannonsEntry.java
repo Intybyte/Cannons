@@ -1,6 +1,5 @@
 package at.pavlov.cannons.hooks.movecraft.type;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.util.Pair;
