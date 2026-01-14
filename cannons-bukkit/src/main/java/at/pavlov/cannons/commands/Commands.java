@@ -164,6 +164,7 @@ public class Commands extends BaseCommand {
 
     @Subcommand("create")
     @Syntax("[DESIGN]")
+    @CommandCompletion("@designs")
     @CommandPermission("cannons.admin.create")
     public static void onCreate(Player player, String arg) {
         //check if the design name is valid
@@ -182,6 +183,7 @@ public class Commands extends BaseCommand {
 
     @Subcommand("give")
     @Syntax("[PROJECTILE] <amount>")
+    @CommandCompletion("@projectiles @range:1-64")
     @CommandPermission("cannons.admin.give")
     public static void onGive(Player player, String projectileString, @Default("1") int amount) {
         //check if the projectile id is valid

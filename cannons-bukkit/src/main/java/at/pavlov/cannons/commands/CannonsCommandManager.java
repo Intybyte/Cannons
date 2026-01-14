@@ -1,6 +1,8 @@
 package at.pavlov.cannons.commands;
 
 import at.pavlov.cannons.Enum.SelectCannon;
+import at.pavlov.cannons.cannon.DesignStorage;
+import at.pavlov.cannons.projectile.ProjectileStorage;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
@@ -15,6 +17,13 @@ public class CannonsCommandManager extends PaperCommandManager {
     public CannonsCommandManager(Plugin plugin) {
         super(plugin);
         this.registerContexts();
+        this.registerCompletions();
+    }
+
+    private void registerCompletions() {
+        var completions = this.getCommandCompletions();
+        completions.registerAsyncCompletion("designs", c -> DesignStorage.getInstance().getDesignIds());
+        completions.registerAsyncCompletion("projectiles", c -> ProjectileStorage.getProjectileIds());
     }
 
     private void registerContexts() {
