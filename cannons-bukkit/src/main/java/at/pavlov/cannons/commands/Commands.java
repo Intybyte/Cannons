@@ -69,6 +69,11 @@ public class Commands extends BaseCommand {
         userMessages.sendMessage(MessageEnum.HelpText, sender);
     }
 
+    @Subcommand("wiki")
+    public static void onWiki(Player sender) {
+        userMessages.sendMessage(MessageEnum.HelpWiki, sender);
+    }
+
     @Subcommand("reload")
     @CommandPermission("cannons.admin.reload")
     public static void onReload(CommandSender sender) {
