@@ -37,7 +37,7 @@ public class CannonBlocks {
     	}
     	return false;
     }
-    
+
     /**
      * returns the location off one firing Trigger
      * @return the firing trigger. (can be null if there is no trigger on the cannon)
@@ -45,12 +45,12 @@ public class CannonBlocks {
     public Vector getFiringTrigger() {
     	//return one tigger
     	if (rightClickTrigger!= null && !rightClickTrigger.isEmpty())
-    		return rightClickTrigger.get(0);	
+    		return rightClickTrigger.get(0);
     	if (redstoneTrigger != null && !redstoneTrigger.isEmpty())
         	return redstoneTrigger.get(0);
         return null;
     }
-    
+
 	public Vector getRotationCenter() {
 		return rotationCenter;
 	}
@@ -154,5 +154,49 @@ public class CannonBlocks {
 	public void addDestructibleBlocks(Vector add) {
 		this.destructibleBlocks.add(add);
 	}
-    
+
+
+    private Vector min = null;
+    public Vector getMin() {
+        if (min != null) return min;
+        calculateMaxMin();
+        return min;
+    }
+
+    private Vector max = null;
+    public Vector getMax() {
+        if (max != null) return max;
+        calculateMaxMin();
+        return max;
+    }
+
+    private void calculateMaxMin() {
+        Vector minT = allCannonBlocks.get(0).toVector();
+        Vector maxT = minT.clone();
+
+        for (var block : allCannonBlocks) {
+            Vector vec = block.toVector();
+
+            minT.setX(Math.min(minT.getX(), vec.getX()));
+            minT.setY(Math.min(minT.getY(), vec.getY()));
+            minT.setZ(Math.min(minT.getZ(), vec.getZ()));
+
+            maxT.setX(Math.max(maxT.getX(), vec.getX()));
+            maxT.setY(Math.max(maxT.getY(), vec.getY()));
+            maxT.setZ(Math.max(maxT.getZ(), vec.getZ()));
+        }
+
+        min = minT;
+        max = maxT;
+    }
+
+    private double diagonal = -1;
+    public double getDiagonal() {
+        if (diagonal < 0) {
+            calculateMaxMin();
+            diagonal = max.distance(min);
+        }
+
+        return diagonal;
+    }
 }
