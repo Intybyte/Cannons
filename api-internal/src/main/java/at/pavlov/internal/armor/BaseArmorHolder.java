@@ -86,7 +86,7 @@ public interface BaseArmorHolder {
 
     default double getDirectHitReduction(double armorPiercing, double damage) {
         double overallPiercing = armorPiercing + 1;
-        return (1 - getArmorDamageReduced(damage) / overallPiercing) * (1 - getEnchantProtection(Key.mc("protection")) / overallPiercing);
+        return (1 - getArmorDamageReduced(damage) / overallPiercing) * (1 - getEnchantProtection(Key.mc("projectile_protection")) / overallPiercing);
     }
 
     default double getExplosionHitReduction(double armorPiercing, double damage) {
