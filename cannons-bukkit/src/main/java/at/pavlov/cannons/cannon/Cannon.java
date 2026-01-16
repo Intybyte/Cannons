@@ -797,6 +797,10 @@ public class Cannon implements ICannon, Rotational {
             return false;
         }
 
+        if (!design.isAllowedMaterial(block.getType())) {
+            return false;
+        }
+
         for (SimpleBlock designBlock : design.getAllCannonBlocks(getCannonDirection())) {
             if (designBlock.compareMaterialAndLoc(block, getOffset())) {
                 return true;
