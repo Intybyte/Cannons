@@ -27,8 +27,6 @@ public class CraftDetectListener implements Listener {
         Craft craft = e.getCraft();
         CraftType type = craft.getType();
 
-        if (PropertyWrapper.notifyError.contains(type)) return;
-
         if (!(craft instanceof PlayerCraft)) return;
 
         // Sum up counts of each cannon design

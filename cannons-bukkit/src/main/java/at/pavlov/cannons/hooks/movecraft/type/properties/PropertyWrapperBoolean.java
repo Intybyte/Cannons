@@ -5,9 +5,12 @@ import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import org.bukkit.NamespacedKey;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 
 public class PropertyWrapperBoolean {
+    public final Set<CraftType> notifyError = new HashSet<>();
 
     public final NamespacedKey key;
     public final Function<CraftType, Boolean> defaultProvider;
@@ -29,13 +32,14 @@ public class PropertyWrapperBoolean {
     }
 
     public Boolean get(CraftType type) {
+        if (notifyError.contains(type)) return null;
+
         try {
-            // movecraft treats it as Integer but returns a not null int primitive... whatever
             return type.getBoolProperty(key);
         } catch (Exception exception) {
             if (defaultProvider != null) return defaultProvider.apply(type);
 
-            PropertyWrapper.notifyError.add(type);
+            notifyError.add(type);
             Cannons.getPlugin().logSevere(
                 "Failed to get " + fileEntryName + " property from craft " +
                     type.getStringProperty(CraftType.NAME) +

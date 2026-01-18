@@ -15,7 +15,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class PropertyWrapper<T> {
-    public static final Set<CraftType> notifyError = new HashSet<>();
+    public final Set<CraftType> notifyError = new HashSet<>();
 
     public final NamespacedKey key;
     public final Class<T> clazz;
@@ -42,6 +42,8 @@ public class PropertyWrapper<T> {
     }
 
     public T get(CraftType type) {
+        if (notifyError.contains(type)) return null;
+
         try {
             Object objectProperty = type.getObjectProperty(key);
             if (clazz.isInstance(objectProperty)) {
