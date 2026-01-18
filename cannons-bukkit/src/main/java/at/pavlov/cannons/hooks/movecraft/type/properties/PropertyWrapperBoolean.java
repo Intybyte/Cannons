@@ -4,6 +4,7 @@ import at.pavlov.cannons.Cannons;
 import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class PropertyWrapperBoolean {
         }
     }
 
-    public Boolean get(CraftType type) {
+    public @Nullable Boolean get(CraftType type) {
         if (notifyError.contains(type)) return null;
 
         try {

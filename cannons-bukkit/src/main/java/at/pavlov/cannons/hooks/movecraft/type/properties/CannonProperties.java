@@ -4,12 +4,15 @@ import at.pavlov.cannons.hooks.movecraft.MovecraftUtils;
 import at.pavlov.cannons.hooks.movecraft.type.CraftKeys;
 import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsEntry;
 import at.pavlov.cannons.hooks.movecraft.type.MinCannonsEntry;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import net.countercraft.movecraft.craft.type.TypeData;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CannonProperties {
     public static final PropertyWrapper<Set> MAX_CANNONS = new PropertyWrapper<>(
         CraftKeys.MAX_CANNONS,

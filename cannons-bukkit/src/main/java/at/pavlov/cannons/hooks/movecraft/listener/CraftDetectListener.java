@@ -6,7 +6,6 @@ import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.hooks.movecraft.MovecraftUtils;
 import at.pavlov.cannons.hooks.movecraft.type.CannonCheck;
 import at.pavlov.cannons.hooks.movecraft.type.properties.CannonProperties;
-import at.pavlov.cannons.hooks.movecraft.type.properties.PropertyWrapper;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.craft.type.CraftType;
@@ -20,7 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class CraftDetectListener implements Listener {
-    private static final Cannons cannon = Cannons.getPlugin();
+    private static final Cannons cannonPlugin = Cannons.getPlugin();
 
     @EventHandler(ignoreCancelled = true)
     public void onCraftDetect(CraftDetectEvent e) {
@@ -55,7 +54,7 @@ public class CraftDetectListener implements Listener {
             }
         }
 
-        cannon.logDebug("MassCount " + cannonsMassCount);
+        cannonPlugin.logDebug("MassCount " + cannonsMassCount);
         Integer maxMass = CannonProperties.MAX_MASS.get(type);
         if (maxMass != null && maxMass < cannonsMassCount) {
             e.setCancelled(true);
@@ -94,7 +93,7 @@ public class CraftDetectListener implements Listener {
         }
 
         for (var entry : cannonCount.entrySet()) {
-            cannon.logDebug("Cannon found: " + entry.getKey() + " | " + entry.getValue());
+            cannonPlugin.logDebug("Cannon found: " + entry.getKey() + " | " + entry.getValue());
         }
 
         for (CannonCheck check : cannonMaxMinChecks) {
