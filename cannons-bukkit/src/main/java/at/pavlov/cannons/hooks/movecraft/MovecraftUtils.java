@@ -2,6 +2,8 @@ package at.pavlov.cannons.hooks.movecraft;
 
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonManager;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PilotedCraft;
@@ -17,6 +19,7 @@ import java.util.UUID;
 
 import static net.countercraft.movecraft.craft.type.TypeData.NUMERIC_PREFIX;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MovecraftUtils {
 
     public static Set<Cannon> getCannons(Craft craft) {

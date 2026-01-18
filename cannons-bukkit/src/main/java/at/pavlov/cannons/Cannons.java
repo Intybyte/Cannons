@@ -476,4 +476,8 @@ public final class Cannons extends JavaPlugin {
     public void setDebugMode(boolean debugMode) {
         this.debugMode = debugMode;
     }
+
+    public static NamespacedKey nsKey(String key) {
+        return new NamespacedKey(getPlugin(), key);
+    }
 }
