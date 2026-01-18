@@ -16,7 +16,7 @@ import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.exchange.ExchangeLoader;
 import at.pavlov.cannons.hooks.VaultHook;
 import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
-import at.pavlov.cannons.hooks.movecraft.type.MaxCannonsProperty;
+import at.pavlov.cannons.hooks.movecraft.type.properties.CannonProperties;
 import at.pavlov.cannons.hooks.movecraftcombat.MovecraftCombatHook;
 import at.pavlov.cannons.hooks.papi.PlaceholderAPIHook;
 import at.pavlov.cannons.listener.BlockListener;
@@ -34,15 +34,12 @@ import at.pavlov.cannons.scheduler.ProjectileObserver;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.TimeUtils;
 import at.pavlov.internal.CLogger;
-import at.pavlov.internal.Hook;
 import at.pavlov.internal.HookManager;
 import at.pavlov.internal.Key;
 import at.pavlov.internal.ModrinthUpdateChecker;
 import at.pavlov.internal.key.registries.Registries;
 import at.pavlov.internal.projectile.definition.KeyedDefaultProjectile;
 import lombok.Getter;
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.AdvancedPie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -59,8 +56,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -127,7 +122,7 @@ public final class Cannons extends JavaPlugin {
         if (config.isMovecraftEnabled()) {
             try {
                 Class.forName("net.countercraft.movecraft.craft.type.property.Property");
-                MaxCannonsProperty.register();
+                CannonProperties.register();
             } catch (Exception ignored) {
             }
 
@@ -480,5 +475,9 @@ public final class Cannons extends JavaPlugin {
 
     public void setDebugMode(boolean debugMode) {
         this.debugMode = debugMode;
+    }
+
+    public static NamespacedKey nsKey(String key) {
+        return new NamespacedKey(getPlugin(), key);
     }
 }

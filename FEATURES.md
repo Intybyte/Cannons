@@ -18,8 +18,8 @@ Fixes:
 Hooks:
 ---------------
 - Vault hook to buy cannons (was there even before fork)
-- Movecraft-Cannons support is now integrated (Movecraft Combat hook + Movecraft hook)
-- [PlaceholderAPI](./PLACEHOLDERS.md) hook
+- [Movecraft](https://github.com/Intybyte/Cannons/wiki/Hooks-&-Integrations#movecraft): Movecraft-Cannons support is now integrated (Movecraft Combat hook + Movecraft hook)
+- [PlaceholderAPI](https://github.com/Intybyte/Cannons/wiki/Hooks-&-Integrations#placeholder-api) hook
 
 Optimizations:
 ---------------

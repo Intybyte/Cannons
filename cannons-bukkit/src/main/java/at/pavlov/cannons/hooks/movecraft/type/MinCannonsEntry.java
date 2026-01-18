@@ -10,15 +10,15 @@ import java.util.Map;
 import java.util.Optional;
 
 @Getter
-public class MaxCannonsEntry implements CannonCheck {
+public class MinCannonsEntry implements CannonCheck {
     private final List<String> names;
-    private final double max;
+    private final double min;
     private final boolean numericMax;
 
-    public MaxCannonsEntry(List<String> names, @NotNull Pair<Boolean, ? extends Number> max) {
+    public MinCannonsEntry(List<String> names, @NotNull Pair<Boolean, ? extends Number> min) {
         this.names = names;
-        this.max = max.getRight().doubleValue();
-        this.numericMax = max.getLeft();
+        this.min = min.getRight().doubleValue();
+        this.numericMax = min.getLeft();
     }
 
     /**
@@ -27,12 +27,12 @@ public class MaxCannonsEntry implements CannonCheck {
      */
     public Optional<String> detect(int count, int size) {
         if (numericMax) {
-            if (count > max)
-                return Optional.of(String.format("You have too many %s cannon types : %d > %d", allNames(), count, (int) max));
+            if (count < min)
+                return Optional.of(String.format("You have too few %s cannon types : %d < %d", allNames(), count, (int) min));
         } else {
             double blockPercent = 100D * count / size;
-            if (blockPercent > max)
-                return Optional.of(String.format("You have too many %s cannon types : %.2f%% > %.2f%%", allNames(), blockPercent, max));
+            if (blockPercent < min)
+                return Optional.of(String.format("You have too few %s cannon types : %.2f%% < %.2f%%", allNames(), blockPercent, min));
         }
 
         return Optional.empty();
