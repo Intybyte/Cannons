@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 public class ReleaseListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onCraftSink(CraftReleaseEvent event) {
+    public void onRelease(CraftReleaseEvent event) {
         MovecraftUtils.getCannons(event.getCraft()).forEach(it -> it.setOnShip(false));
     }
 }
