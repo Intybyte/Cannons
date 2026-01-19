@@ -90,6 +90,10 @@ public class ItemHolder {
         }
     }
 
+    public String getAmpDisplayName() {
+        return displayName.replace('§', '&');
+    }
+
     public ItemStack toItemStack(int amount) {
         type = type == null ? Material.AIR : type;
         ItemStack item = new ItemStack(type, amount);
