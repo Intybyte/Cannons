@@ -23,6 +23,9 @@ import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.StringUtils;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -493,14 +496,15 @@ public class Commands extends BaseCommand {
         }
 
         ItemHolder holder = new ItemHolder(mainHand);
-        StringBuilder output = new StringBuilder(String.join(";", "minecraft:" + holder.getType().toString().toLowerCase(), holder.getDisplayName()));
+        StringBuilder output = new StringBuilder(String.join(";", "minecraft:" + holder.getType().toString().toLowerCase(), holder.getAmpDisplayName()));
         for (String line : holder.getLore()) {
-            output.append(";").append(line);
+            output.append(";").append(line.replace('§', '&'));
         }
 
-        player.sendMessage(
-                tag + "In loadingItem for this item you should use this entry: " + output
-        );
+        var textComponent = new TextComponent(tag + "In loadingItem for this item you should use this entry: " + output + " [Click to copy]");
+        textComponent.setColor(net.md_5.bungee.api.ChatColor.GREEN);
+        textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, output.toString()));
+        player.spigot().sendMessage(textComponent);
     }
 
     @Subcommand("version")
