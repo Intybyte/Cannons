@@ -49,7 +49,6 @@ public class EntityListener implements Listener {
             return;
         }
 
-        event.blockList().removeIf(it -> it.getType().isAir());
         EventUtils.handleExplosion(event.blockList());
     }
 

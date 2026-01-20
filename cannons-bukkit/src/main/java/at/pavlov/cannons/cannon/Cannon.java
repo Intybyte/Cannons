@@ -97,7 +97,6 @@ public class Cannon implements ICannon, Rotational {
         this.design = design;
         this.cannonPosition = new CannonPosition(cannonDirection, cannonOffset, world, false, noVelocity.clone());
 
-        Schematic schematic = design.getSchematicMap().get(cannonPosition.getCannonDirection());
         boolean noFee = design.getEconomyBuildingCost() instanceof EmptyExchanger;
         this.mainData = new CannonMainData( UUID.randomUUID(),null, noFee, owner, true);
 
@@ -763,6 +762,51 @@ public class Cannon implements ICannon, Rotational {
             getOffsetSchematic(),
             cannonPosition.getWorld()
         );
+    }
+
+    private Vector min = null;
+    public Vector getMin() {
+        if (min != null) return min;
+        calculateMaxMin();
+        return min;
+    }
+
+    private Vector max = null;
+    public Vector getMax() {
+        if (max != null) return max;
+        calculateMaxMin();
+        return max;
+    }
+
+    private void calculateMaxMin() {
+        Schematic schematic = design.getSchematicMap().get(cannonPosition.getCannonDirection());
+        List<IBlock> positions = schematic.positions();
+        IBlock zero = positions.get(0);
+        Vector minT = new Vector(zero.x(), zero.y(), zero.z());
+        Vector maxT = minT.clone();
+
+        for (var block : positions) {
+            minT.setX(Math.min(minT.getX(), block.x()));
+            minT.setY(Math.min(minT.getY(), block.y()));
+            minT.setZ(Math.min(minT.getZ(), block.z()));
+
+            maxT.setX(Math.max(maxT.getX(), block.x()));
+            maxT.setY(Math.max(maxT.getY(), block.y()));
+            maxT.setZ(Math.max(maxT.getZ(), block.z()));
+        }
+
+        min = minT;
+        max = maxT;
+    }
+
+    private double diagonal = -1;
+    public double getDiagonal() {
+        if (diagonal < 0) {
+            calculateMaxMin();
+            diagonal = max.distance(min);
+        }
+
+        return diagonal;
     }
 
 

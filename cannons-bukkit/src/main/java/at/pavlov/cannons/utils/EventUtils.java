@@ -19,6 +19,7 @@ public class EventUtils {
      * @param blocklist list of blocks involved in the event
      */
     public static void handleExplosion(List<Block> blocklist) {
+        blocklist.removeIf(it -> it.getType().isAir());
         CannonManager cannonManager = CannonManager.getInstance();
         HashSet<UUID> remove = new HashSet<>();
         HashMap<Block, Cannon> cannonHashMap = new HashMap<>();
@@ -28,8 +29,6 @@ public class EventUtils {
             if (block == null) continue;
 
             Location location = block.getLocation();
-            if (block.getType().isAir()) continue;
-
             Cannon cannon = cannonManager.getCannonFromStorage(location);
             // if it is a cannon block
             if (cannon == null) {

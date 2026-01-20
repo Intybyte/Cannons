@@ -506,9 +506,7 @@ public class CannonManager {
     public Cannon getCannonFromStorage(Location loc) {
         Vector vector = loc.toVector();
         for (Cannon cannon : cannonList.values()) {
-            var design = cannon.getCannonDesign();
-            var cannonBlocks = design.getCannonBlockMap().get(cannon.getCannonDirection());
-            double diagonal = cannonBlocks.getDiagonal();
+            double diagonal = cannon.getDiagonal();
             if (diagonal < 0 || vector.distance(cannon.getOffset()) >= diagonal) continue;
 
             if (cannon.isCannonBlock(loc.getBlock())) {

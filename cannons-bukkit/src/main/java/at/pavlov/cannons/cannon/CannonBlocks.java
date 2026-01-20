@@ -18,7 +18,6 @@ public class CannonBlocks {
 	private Vector rotationCenter;	//center off all rotation blocks
     private Vector muzzle;			//center off all muzzle blocks - spawing Vector for snowball
 
-	private ArrayList<SimpleBlock> allCannonBlocks = new ArrayList<>();
     private ArrayList<Vector> barrelBlocks = new ArrayList<>();
     private ArrayList<SimpleBlock> chestsAndSigns = new ArrayList<>();
     private ArrayList<Vector> redstoneTorches = new ArrayList<>();
@@ -86,49 +85,4 @@ public class CannonBlocks {
     public void addDestructibleBlocks(Vector add) {
 		this.destructibleBlocks.add(add);
 	}
-
-
-    private Vector min = null;
-    public Vector getMin() {
-        if (min != null) return min;
-        calculateMaxMin();
-        return min;
-    }
-
-    private Vector max = null;
-    public Vector getMax() {
-        if (max != null) return max;
-        calculateMaxMin();
-        return max;
-    }
-
-    private void calculateMaxMin() {
-        Vector minT = allCannonBlocks.get(0).toVector();
-        Vector maxT = minT.clone();
-
-        for (var block : allCannonBlocks) {
-            Vector vec = block.toVector();
-
-            minT.setX(Math.min(minT.getX(), vec.getX()));
-            minT.setY(Math.min(minT.getY(), vec.getY()));
-            minT.setZ(Math.min(minT.getZ(), vec.getZ()));
-
-            maxT.setX(Math.max(maxT.getX(), vec.getX()));
-            maxT.setY(Math.max(maxT.getY(), vec.getY()));
-            maxT.setZ(Math.max(maxT.getZ(), vec.getZ()));
-        }
-
-        min = minT;
-        max = maxT;
-    }
-
-    private double diagonal = -1;
-    public double getDiagonal() {
-        if (diagonal < 0) {
-            calculateMaxMin();
-            diagonal = max.distance(min);
-        }
-
-        return diagonal;
-    }
 }

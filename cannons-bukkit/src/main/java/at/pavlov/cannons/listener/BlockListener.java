@@ -58,7 +58,6 @@ public class BlockListener implements Listener {
         }
 
         //search for destroyed cannons
-        event.blockList().removeIf(it -> it.getType().isAir());
         EventUtils.handleExplosion(event.blockList());
     }
 
