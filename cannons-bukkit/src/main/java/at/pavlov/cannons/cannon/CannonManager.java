@@ -504,9 +504,14 @@ public class CannonManager {
      * @return the cannon at this location
      */
     public Cannon getCannonFromStorage(Location loc) {
+        Vector vector = loc.toVector();
         for (Cannon cannon : cannonList.values()) {
-            //To make code faster on servers with a lot of cannons we check the distance squared
-            if (loc.toVector().distanceSquared(cannon.getOffset()) <= 1024 && cannon.isCannonBlock(loc.getBlock())) {
+            var design = cannon.getCannonDesign();
+            var cannonBlocks = design.getCannonBlockMap().get(cannon.getCannonDirection());
+            double diagonal = cannonBlocks.getDiagonal();
+            if (diagonal < 0 || vector.distance(cannon.getOffset()) >= diagonal) continue;
+
+            if (cannon.isCannonBlock(loc.getBlock())) {
                 return cannon;
             }
         }

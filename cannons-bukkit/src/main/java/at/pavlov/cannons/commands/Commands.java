@@ -27,6 +27,8 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import me.vaan.schematiclib.base.schematic.Schematic;
 import me.vaan.schematiclib.file.formats.VaanFormat;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -71,6 +73,11 @@ public class Commands extends BaseCommand {
     @CommandPermission("cannons.player.command")
     public static void onHelpCommand(Player sender) {
         userMessages.sendMessage(MessageEnum.HelpText, sender);
+    }
+
+    @Subcommand("wiki")
+    public static void onWiki(Player sender) {
+        userMessages.sendMessage(MessageEnum.HelpWiki, sender);
     }
 
     @Subcommand("reload")
@@ -168,8 +175,8 @@ public class Commands extends BaseCommand {
 
     @Subcommand("create")
     @Syntax("[DESIGN]")
+    @CommandCompletion("@designs")
     @CommandPermission("cannons.admin.create")
-    @CommandCompletion("@cannon_designs")
     public static void onCreate(Player player, String arg) {
         //check if the design name is valid
         if (!designStorage.hasDesign(arg)) {
@@ -187,8 +194,8 @@ public class Commands extends BaseCommand {
 
     @Subcommand("give")
     @Syntax("[PROJECTILE] <amount>")
+    @CommandCompletion("@projectiles @range:1-64")
     @CommandPermission("cannons.admin.give")
-    @CommandCompletion("@cannon_projectiles")
     public static void onGive(Player player, String projectileString, @Default("1") int amount) {
         //check if the projectile id is valid
         Projectile projectile = ProjectileStorage.getProjectile(projectileString);
@@ -536,14 +543,15 @@ public class Commands extends BaseCommand {
         }
 
         ItemHolder holder = new ItemHolder(mainHand);
-        StringBuilder output = new StringBuilder(String.join(";", "minecraft:" + holder.getType().toString().toLowerCase(), holder.getDisplayName()));
+        StringBuilder output = new StringBuilder(String.join(";", "minecraft:" + holder.getType().toString().toLowerCase(), holder.getAmpDisplayName()));
         for (String line : holder.getLore()) {
-            output.append(";").append(line);
+            output.append(";").append(line.replace('§', '&'));
         }
 
-        player.sendMessage(
-                tag + "In loadingItem for this item you should use this entry: " + output
-        );
+        var textComponent = new TextComponent(tag + "In loadingItem for this item you should use this entry: " + output + " [Click to copy]");
+        textComponent.setColor(net.md_5.bungee.api.ChatColor.GREEN);
+        textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, output.toString()));
+        player.spigot().sendMessage(textComponent);
     }
 
     @Subcommand("version")

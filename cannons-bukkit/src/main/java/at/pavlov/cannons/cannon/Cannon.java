@@ -801,6 +801,10 @@ public class Cannon implements ICannon, Rotational {
             return false;
         }
 
+        if (!design.isAllowedMaterial(block.getType())) {
+            return false;
+        }
+
         SchematicWorldProcessorImpl processor = SchematicWorldProcessorImpl.getProcessor();
         OffsetSchematic offsetSchematic = getOffsetSchematic();
         IBlock obtain = processor.registry().getBlock(block.getX(), block.getY(), block.getZ(), world);

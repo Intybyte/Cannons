@@ -7,13 +7,14 @@ import at.pavlov.cannons.hooks.movecraft.MovecraftCannonTracker;
 import at.pavlov.cannons.hooks.movecraft.MovecraftUtils;
 import net.countercraft.movecraft.events.CraftSinkEvent;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import java.util.Set;
 
 public class SinkListener implements Listener {
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onCraftSink(CraftSinkEvent event) {
         Set<Cannon> cannons = MovecraftUtils.getCannons(event.getCraft());
         MovecraftCannonTracker.clearCannons(event.getCraft().getUUID());
