@@ -4,6 +4,7 @@ import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.container.ItemHolder;
 import at.pavlov.cannons.container.SpawnEntityHolder;
 import at.pavlov.internal.container.SpawnMaterialHolder;
+import me.vaan.schematiclib.base.block.BlockKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -137,6 +138,20 @@ public class ParseUtils {
         }
 
         return blockDataList;
+    }
+
+    public static BlockKey toBlockKey(String entry) {
+        return BlockKey.fromString(entry.split("\\[")[0]);
+    }
+
+    public static List<BlockKey> toBlockKeyList(List<String> stringList) {
+        List<BlockKey> blockKeyList = new ArrayList<>();
+
+        for (String str : stringList) {
+            blockKeyList.add(toBlockKey(str));
+        }
+
+        return blockKeyList;
     }
 
     /**

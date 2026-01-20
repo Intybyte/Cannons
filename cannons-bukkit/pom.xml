@@ -65,6 +65,14 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>matteodev</id>
+            <url>https://maven.devs.beer/</url>
+        </repository>
+        <repository>
+            <id>nexo</id>
+            <url>https://repo.nexomc.com/releases</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -149,6 +157,38 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Schematic handling -->
+        <dependency>
+            <groupId>com.github.Slimefun</groupId>
+            <artifactId>Slimefun4</artifactId>
+            <version>RC-37</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.lone</groupId>
+            <artifactId>api-itemsadder</artifactId>
+            <version>4.0.10</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nexomc</groupId>
+            <artifactId>nexo</artifactId>
+            <version>1.12.1-dev</version>
+            <scope>provided</scope>
+            <exclusions>
+                <!-- can't find these so you are getting excluded, stay in a corner -->
+                <exclusion>
+                    <groupId>dev.triumphteam</groupId>
+                    <artifactId>triumph-gui</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.byteflux</groupId>
+                    <artifactId>libby-bukkit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
         <!-- Testing dependencies  -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -189,7 +229,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.14.1</version>
                 <configuration>
                     <source>${java.source}</source>
                     <target>${java.target}</target>
@@ -240,6 +280,14 @@
                         <relocation>
                             <pattern>io.papermc.lib</pattern>
                             <shadedPattern>at.pavlov.cannons.shaded.paperlib</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>me.vaan</pattern>
+                            <shadedPattern>at.pavlov.cannons.shaded.vaan</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google.gson</pattern>
+                            <shadedPattern>at.pavlov.cannons.shaded.google</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>

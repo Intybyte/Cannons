@@ -194,7 +194,7 @@ public final class Cannons extends JavaPlugin {
 		ProjectileManager.initialize(this);
 		CannonSelector.initialize(this);
 
-        DesignStorage.getInstance().loadCannonDesigns();
+        //DesignStorage.getInstance().loadCannonDesigns();
         ProjectileStorage.getInstance().loadProjectiles();
         CannonManager.getInstance().updateCannons();
         UserMessages.getInstance().loadLanguage();

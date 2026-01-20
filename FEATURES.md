@@ -6,6 +6,9 @@ New features
 - New area commands
 - Mohist compatibility (kind of, you need to use particle aiming)
 - Folia support
+- Custom projectile definitions (Custom gravity, drag, water drag, constant acceleration, Custom model data and more)
+- Custom blocks support (Slimefun & ItemsAdder so far, requires custom format)
+- Command completions
 
 Fixes:
 ---------------
@@ -40,6 +43,9 @@ FireTask API:
 
 Exchange API:
 - You can define your own exchanges for cannons creation requirement, example at [CannonsEXP](https://github.com/Intybyte/CannonsEXP)
+
+Schematic Processing API:
+- You can define your own custom blocks to add by defining a namespace and adding it to SchematicWorldProcessorImpl
 
 Projectiles:
 - Projectile type events now give the FlyingProjectile
