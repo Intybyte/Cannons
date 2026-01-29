@@ -27,33 +27,33 @@ public class ItemHolder {
 
     public ItemHolder(ItemStack item) {
         if (item == null) {
-            type = Material.AIR;
-            displayName = "";
-            lore = new ArrayList<>();
+            this.type = Material.AIR;
+            this.displayName = "";
+            this.lore = new ArrayList<>();
             return;
         }
 
-        type = item.getType();
+        this.type = item.getType();
 
         if (!item.hasItemMeta()) {
-            displayName = "";
-            lore = new ArrayList<>();
+            this.displayName = "";
+            this.lore = new ArrayList<>();
             return;
         }
 
         ItemMeta meta = item.getItemMeta();
         if (meta.hasDisplayName() && meta.getDisplayName() != null) {
-            displayName = meta.getDisplayName();
+            this.displayName = meta.getDisplayName();
         } else if (VersionHandler.isGreaterThan1_20_5() && meta.hasItemName()) {
-            displayName = meta.getItemName();
+            this.displayName = meta.getItemName();
         } else if (!meta.hasDisplayName()) {
-            displayName = getFriendlyName(item);
+            this.displayName = getFriendlyName(item);
         } else {
-            displayName = "";
+            this.displayName = "";
         }
 
         boolean loreExists = meta.hasLore() && meta.getLore() != null;
-        lore = loreExists ? meta.getLore() : new ArrayList<>();
+        this.lore = loreExists ? meta.getLore() : new ArrayList<>();
     }
 
     public ItemHolder(Material material) {
@@ -63,7 +63,10 @@ public class ItemHolder {
     public ItemHolder(Material material, String description, List<String> lore) {
         this.type = Objects.requireNonNullElse(material, Material.AIR);
         this.displayName = description == null ? "" : ChatColor.translateAlternateColorCodes('&', description);
-        this.lore = Objects.requireNonNullElseGet(lore, ArrayList::new);
+        this.lore = new ArrayList<>();
+        if (lore == null) return;
+
+        this.lore.addAll(lore.stream().map(it -> ChatColor.translateAlternateColorCodes('&', it)).toList());
     }
 
     public ItemHolder(String str) {
@@ -71,22 +74,27 @@ public class ItemHolder {
         // id;DESCRIPTION;LORE1;LORE2
         // HOE;COOL Item;Looks so cool;Fancy
         String[] entries = str.split(";");
-		lore = new ArrayList<>();
+		this.lore = new ArrayList<>();
         if (entries.length > 0) {
-            type = Material.matchMaterial(entries[0]);
-            if (type == null) {
-                type = Material.AIR;
+            this.type = Material.matchMaterial(entries[0]);
+            if (this.type == null) {
+                this.type = Material.AIR;
             }
         }
 
         if (entries.length > 1) {
-            displayName = entries[1].replace('&', '§');
+            this.displayName = entries[1].replace('&', '§');
         } else {
-            displayName = "";
+            this.displayName = "";
         }
 
         if (entries.length > 2) {
-            lore.addAll(Arrays.asList(entries).subList(2, entries.length));
+            lore.addAll(Arrays.asList(entries)
+                .subList(2, entries.length)
+                .stream()
+                .map(it -> ChatColor.translateAlternateColorCodes('&', it))
+                .toList()
+            );
         }
     }
 
