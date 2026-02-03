@@ -57,9 +57,15 @@ public class ProjectileDefinitionLoader {
                 .charged(section.getBoolean("charged"))
                 .critical(section.getBoolean("critical"))
                 .material(Key.from(section.getString("material", "SNOWBALL")))
-                .customModelData(section.getObject("customModelData", Integer.class, null));
+                .customModelData(section.getObject("customModelData", Integer.class, null))
+                .attributes(getStringDoubleHashMap(section, "attributes"))
+                .entityDisplayData(getStringDoubleHashMap(section, "entityDisplayData"));
 
-        var attributeSection = section.getConfigurationSection("attributes");
+        Registries.CUSTOM_PROJECTILE_DEFINITION.register(builder.build());
+    }
+
+    private static @NotNull HashMap<String, @NotNull Double> getStringDoubleHashMap(ConfigurationSection section, String key) {
+        var attributeSection = section.getConfigurationSection(key);
         HashMap<String, @NotNull Double> attributeMap = new HashMap<>();
         if (attributeSection != null) {
             for (var attrName : attributeSection.getKeys(false)) {
@@ -67,8 +73,6 @@ public class ProjectileDefinitionLoader {
                 attributeMap.put(attrName, value);
             }
         }
-
-        builder = builder.attributes(attributeMap);
-        Registries.CUSTOM_PROJECTILE_DEFINITION.register(builder.build());
+        return attributeMap;
     }
 }
