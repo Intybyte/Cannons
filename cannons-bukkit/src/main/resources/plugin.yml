@@ -3,7 +3,14 @@ main: at.pavlov.cannons.Cannons
 api-version: 1.13
 version: ${version}
 depend: [WorldEdit]
-softdepend: [Vault, Movecraft, Movecraft-Combat, PlaceholderAPI]
+softdepend:
+  - Vault
+  - Movecraft
+  - Movecraft-Combat
+  - PlaceholderAPI
+  - Slimefun
+  - ItemsAdder
+  - Nexo
 authors: [DerPavlov, Vaan1310]
 description: Fire block build cannons and smash your enemies
 folia-supported: true

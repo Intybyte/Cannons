@@ -4,8 +4,12 @@ package at.pavlov.cannons.container;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import me.vaan.schematiclib.base.block.BlockKey;
+import me.vaan.schematiclib.base.block.IBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -14,10 +18,11 @@ import org.bukkit.util.Vector;
 @Setter
 @Getter
 @ToString
-public class SimpleBlock {
+public class SimpleBlock implements IBlock {
     private int locX;
     private int locY;
     private int locZ;
+    private Material material;
     private BlockData blockData;
 
     public SimpleBlock(int x, int y, int z, BlockData blockData) {
@@ -25,6 +30,7 @@ public class SimpleBlock {
         locY = y;
         locZ = z;
 
+        this.material = blockData.getMaterial();
         this.blockData = blockData;
     }
 
@@ -41,11 +47,11 @@ public class SimpleBlock {
     }
 
     public SimpleBlock(Location loc, Material material) {
-        locX = loc.getBlockX();
-        locY = loc.getBlockY();
-        locZ = loc.getBlockZ();
+        this(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), material);
+    }
 
-        this.blockData = material.createBlockData();
+    public SimpleBlock(int x, int y, int z, BlockKey key) {
+        this(x, y, z, Registry.MATERIAL.get(new NamespacedKey(key.namespace(), key.key())));
     }
 
 
@@ -90,7 +96,7 @@ public class SimpleBlock {
      * @return true if both block match
      */
     public boolean compareMaterial(BlockData block) {
-        return block.getMaterial().equals(this.blockData.getMaterial());
+        return block.getMaterial().equals(this.material);
     }
 
     /**
@@ -99,7 +105,7 @@ public class SimpleBlock {
      * @return true if both block match
      */
     public boolean compareBlockData(BlockData blockData) {
-        return this.blockData.matches(blockData);
+        return this.material.equals(blockData.getMaterial());
     }
 
     /**
@@ -108,7 +114,7 @@ public class SimpleBlock {
      * @return new Simpleblock
      */
     public SimpleBlock add(Location loc) {
-        return new SimpleBlock(locX + loc.getBlockX(), locY + loc.getBlockY(), locZ + loc.getBlockZ(), this.blockData);
+        return new SimpleBlock(locX + loc.getBlockX(), locY + loc.getBlockY(), locZ + loc.getBlockZ(), this.material);
     }
 
     /**
@@ -117,7 +123,7 @@ public class SimpleBlock {
      * @return a new block with a shifted location
      */
     public SimpleBlock add(Vector vect) {
-        return new SimpleBlock(toVector().add(vect), this.blockData);
+        return new SimpleBlock(toVector().add(vect), this.material);
     }
 
     /**
@@ -126,7 +132,7 @@ public class SimpleBlock {
      * @return new block with new subtracted location
      */
     public SimpleBlock subtract(Vector vect) {
-        return new SimpleBlock(vect.getBlockX() - locX, vect.getBlockY() - locY, vect.getBlockZ() - locZ, this.blockData);
+        return new SimpleBlock(vect.getBlockX() - locX, vect.getBlockY() - locY, vect.getBlockZ() - locZ, this.material);
     }
 
     /**
@@ -143,7 +149,7 @@ public class SimpleBlock {
      * shifts the location of the block without comparing the id
      */
     public SimpleBlock subtractInverted(Location loc) {
-        return new SimpleBlock(loc.getBlockX() - locX, loc.getBlockY() - locY, loc.getBlockZ() - locZ, this.blockData);
+        return new SimpleBlock(loc.getBlockX() - locX, loc.getBlockY() - locY, loc.getBlockZ() - locZ, this.material);
     }
 
 
@@ -151,7 +157,7 @@ public class SimpleBlock {
      * shifts the location of the block without comparing the id
      */
     public SimpleBlock subtract(Location loc) {
-        return new SimpleBlock(locX - loc.getBlockX(), locY - loc.getBlockY(), locZ - loc.getBlockZ(), this.blockData);
+        return new SimpleBlock(locX - loc.getBlockX(), locY - loc.getBlockY(), locZ - loc.getBlockZ(), this.material);
     }
 
     /**
@@ -168,5 +174,26 @@ public class SimpleBlock {
      */
     public Vector toVector() {
         return new Vector(locX, locY, locZ);
+    }
+
+    @Override
+    public int x() {
+        return locX;
+    }
+
+    @Override
+    public int y() {
+        return locY;
+    }
+
+    @Override
+    public int z() {
+        return locZ;
+    }
+
+    @Override
+    public BlockKey key() {
+        NamespacedKey key = material.getKey();
+        return new BlockKey(key.getNamespace(), key.getKey());
     }
 }

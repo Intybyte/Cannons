@@ -18,13 +18,16 @@ import at.pavlov.cannons.dao.PersistenceDatabase;
 import at.pavlov.cannons.projectile.Projectile;
 import at.pavlov.cannons.projectile.ProjectileStorage;
 import at.pavlov.cannons.projectile.definitions.ProjectileDefinitionLoader;
+import at.pavlov.cannons.schematic.SchemUtil;
+import at.pavlov.cannons.schematic.world.SchematicWorldProcessorImpl;
 import at.pavlov.cannons.utils.CannonSelector;
 import at.pavlov.cannons.utils.CannonsUtil;
 import at.pavlov.cannons.utils.StringUtils;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import me.vaan.schematiclib.base.schematic.Schematic;
+import me.vaan.schematiclib.file.formats.VaanFormat;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,6 +37,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +45,6 @@ import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 @CommandAlias("cannons")
-@SuppressWarnings("deprecation")
 public class Commands extends BaseCommand {
     private static final String tag = "[Cannons] ";
 
@@ -323,6 +326,50 @@ public class Commands extends BaseCommand {
         }
         //this never gets called
         //sendMessage(sender, ChatColor.RED + "Usage '/cannons observer' or '/cannons observer <off|disable>' or '/cannons observer <CANNON NAME>'");
+    }
+
+    @Subcommand("schematic")
+    @CommandPermission("cannons.admin.reload")
+    public class onSchematic extends BaseCommand {
+        private static final SchematicWorldProcessorImpl processor = SchematicWorldProcessorImpl.getProcessor();
+
+        @Default
+        public static void help(Player player) {
+            sendMessage(player, ChatColor.RED + "Usage '/cannons schematic <save|tool> <args>'");
+        }
+
+        @Subcommand("tool")
+        public static void tool(Player player) {
+            player.getInventory().addItem(SchemUtil.SELECT_TOOL.clone());
+        }
+
+        @Subcommand("save")
+        @Syntax("<extensionlessName>")
+        public static void save(Player player, String name) {
+            String fullName = name + ".vschem";
+            if (!SchemUtil.coord1.getWorld().equals(SchemUtil.coord2.getWorld())) {
+                sendMessage(player, ChatColor.RED + "[Cannons] Coordinates must be in the same world");
+                return;
+            }
+
+            Schematic schematic = processor.schematicOf(
+                SchemUtil.coord1.getX(), SchemUtil.coord1.getY(), SchemUtil.coord1.getZ(),
+                SchemUtil.coord2.getX(), SchemUtil.coord2.getY(), SchemUtil.coord2.getZ(),
+                SchemUtil.coord1.getWorld().getUID()
+            );
+
+            String fullPath = DesignStorage.getPath() + fullName;
+            File file = new File(fullPath);
+
+            VaanFormat format = new VaanFormat();
+            try {
+                format.save(file, schematic);
+            } catch (Throwable e) {
+                sendMessage(player, ChatColor.RED + "[Cannons] Failed to save");
+            }
+
+            sendMessage(player, ChatColor.GREEN + "[Cannons] Successful save");
+        }
     }
 
     @Subcommand("whitelist")

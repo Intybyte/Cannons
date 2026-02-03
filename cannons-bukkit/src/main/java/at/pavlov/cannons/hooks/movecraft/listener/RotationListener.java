@@ -1,7 +1,7 @@
 package at.pavlov.cannons.hooks.movecraft.listener;
 
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.hooks.movecraft.MovecraftUtils;
+import at.pavlov.cannons.hooks.movecraft.MovecraftCannonTracker;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.events.CraftRotateEvent;
 import org.bukkit.event.EventHandler;
@@ -17,7 +17,7 @@ public class RotationListener implements Listener {
     public void rotateListener(CraftRotateEvent e) {
         Craft craft = e.getCraft();
 
-        Set<Cannon> cannons = MovecraftUtils.getCannons(craft);
+        Set<Cannon> cannons = MovecraftCannonTracker.getCannons(craft.getUUID());
         if (cannons.isEmpty())
             return;
 

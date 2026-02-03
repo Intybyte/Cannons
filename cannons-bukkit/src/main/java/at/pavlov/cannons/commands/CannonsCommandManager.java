@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class CannonsCommandManager extends PaperCommandManager {
     public CannonsCommandManager(Plugin plugin) {
         super(plugin);
-        this.registerContexts();
+        this.registerCommandContexts();
         this.registerCompletions();
     }
 
@@ -26,7 +26,7 @@ public class CannonsCommandManager extends PaperCommandManager {
         completions.registerAsyncCompletion("projectiles", c -> ProjectileStorage.getProjectileIds());
     }
 
-    private void registerContexts() {
+    private void registerCommandContexts() {
         var context = this.getCommandContexts();
         context.registerContext(SelectCannon.class, c -> {
             String select = c.popFirstArg();
