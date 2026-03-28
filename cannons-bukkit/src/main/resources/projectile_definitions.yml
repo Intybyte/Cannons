@@ -22,6 +22,20 @@
 #    attributes:
 #       scale: 2.0
 #
+#    # available for all entities that are Display, mainly for ItemDisplay
+#    entityDisplayData:
+#       # initial rotations
+#       rotationX: 5.0
+#       rotationY: -5.0
+#       rotationZ: 0.0
+#
+#       # change in rotation in degrees x tick
+#       rotationSpeedX: -5.0
+#       rotationSpeedY: 2.0
+#       rotationSpeedZ: 0.0
+#
+#       size: 4.0
+#
 #    # this stuff is for throwable projectiles, such as snowballs, and item displays
 #    material: SNOWBALL # you can set any material https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 #    customModelData: 123 # must be an integer, texturepack magic number goes here
