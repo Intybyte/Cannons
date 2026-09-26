@@ -3,6 +3,7 @@ package at.pavlov.cannons.hooks.movecraft.listener;
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonDesign;
+import at.pavlov.cannons.hooks.movecraft.MovecraftCannonTracker;
 import at.pavlov.cannons.hooks.movecraft.MovecraftUtils;
 import at.pavlov.cannons.hooks.movecraft.type.CannonCheck;
 import at.pavlov.cannons.hooks.movecraft.type.properties.CannonProperties;
@@ -37,10 +38,11 @@ public class CraftDetectListener implements Listener {
 
         if (checkMass(e, cannons, type)) return;
 
-        boolean useShip = CannonProperties.USE_SHIP_ANGLES.get(type) == Boolean.TRUE;
-        if (useShip) {
+        if (CannonProperties.USE_SHIP_ANGLES.get(type) == Boolean.TRUE) {
             cannons.forEach(it -> it.setOnShip(true));
         }
+
+        MovecraftCannonTracker.setCannons(craft.getUUID(), cannons);
     }
 
     private boolean checkMass(CraftDetectEvent e, Set<Cannon> cannons, CraftType type) {

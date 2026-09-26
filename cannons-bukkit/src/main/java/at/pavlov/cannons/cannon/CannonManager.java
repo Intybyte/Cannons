@@ -7,7 +7,6 @@ import at.pavlov.cannons.Enum.MessageEnum;
 import at.pavlov.cannons.config.Config;
 import at.pavlov.cannons.config.UserMessages;
 import at.pavlov.cannons.container.ItemHolder;
-import at.pavlov.cannons.container.SimpleBlock;
 import at.pavlov.cannons.dao.AsyncTaskManager;
 import at.pavlov.cannons.dao.LoadWhitelistTask;
 import at.pavlov.cannons.event.CannonAfterCreateEvent;
@@ -16,25 +15,34 @@ import at.pavlov.cannons.event.CannonRenameEvent;
 import at.pavlov.cannons.dao.wrappers.RemoveTaskWrapper;
 import at.pavlov.cannons.exchange.BExchanger;
 import at.pavlov.cannons.exchange.EmptyExchanger;
+import at.pavlov.cannons.schematic.world.SchematicWorldProcessorImpl;
 import at.pavlov.cannons.utils.SoundUtils;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
+import me.vaan.schematiclib.base.block.IBlock;
+import me.vaan.schematiclib.base.namespace.NamespaceRegistry;
+import me.vaan.schematiclib.base.schematic.OffsetSchematic;
+import me.vaan.schematiclib.base.schematic.OffsetSchematicImpl;
+import me.vaan.schematiclib.base.schematic.Schematic;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -430,9 +438,21 @@ public class CannonManager {
      */
     public static HashSet<Cannon> getCannonsByLocations(List<Location> locations) {
         HashSet<Cannon> newCannonList = new HashSet<>();
+        Map<IBlock, UUID> blocks = new HashMap<>(locations.size());
+        NamespaceRegistry registry = SchematicWorldProcessorImpl.getProcessor().registry();
+        for (Location loc : locations) {
+            UUID world = loc.getWorld().getUID();
+            blocks.put(registry.getBlock(
+                loc.getBlockX(),
+                loc.getBlockY(),
+                loc.getBlockZ(),
+                world
+            ), world);
+        }
+
         for (Cannon cannon : getCannonList().values()) {
-            for (Location loc : locations) {
-                if (cannon.isCannonBlock(loc.getBlock()))
+            for (var loc : blocks.entrySet()) {
+                if (cannon.isCannonBlock(loc.getKey(), loc.getValue()))
                     newCannonList.add(cannon);
             }
         }
@@ -486,9 +506,7 @@ public class CannonManager {
     public Cannon getCannonFromStorage(Location loc) {
         Vector vector = loc.toVector();
         for (Cannon cannon : cannonList.values()) {
-            var design = cannon.getCannonDesign();
-            var cannonBlocks = design.getCannonBlockMap().get(cannon.getCannonDirection());
-            double diagonal = cannonBlocks.getDiagonal();
+            double diagonal = cannon.getDiagonal();
             if (diagonal < 0 || vector.distance(cannon.getOffset()) >= diagonal) continue;
 
             if (cannon.isCannonBlock(loc.getBlock())) {
@@ -526,6 +544,7 @@ public class CannonManager {
 
         //check if there is a cannon at this location
         Cannon cannon = checkCannon(cannonBlock, owner);
+        plugin.logDebug("Time to process Schematic: " + (System.nanoTime() - startTime) + "ns");
 
         //if there is no cannon, exit
         if (cannon == null)
@@ -588,15 +607,16 @@ public class CannonManager {
             return event;
         });
 
+        MessageEnum msg = cbceEvent.getMessage();
         //add cannon to the list if everything was fine and return the cannon
-        if (!cbceEvent.isCancelled() && cbceEvent.getMessage() != null && cbceEvent.getMessage() == MessageEnum.CannonCreated) {
+        if (!cbceEvent.isCancelled() && msg == MessageEnum.CannonCreated) {
             return true;
         }
 
         //send messages
-        if (!silent) {
+        if (!silent && msg != null) {
             taskManager.scheduler.runTask(player, () -> {
-                userMessages.sendMessage(message, player, cannon);
+                userMessages.sendMessage(msg, player, cannon);
                 SoundUtils.playErrorSound(cannon.getMuzzle());
             });
         }
@@ -643,54 +663,72 @@ public class CannonManager {
     private Cannon checkCannon(Location cannonBlock, UUID owner) {
         // is this block material used for a cannon design
         Block block = cannonBlock.getBlock();
-        BlockData blockData = cannonBlock.getBlock().getBlockData();
+        SchematicWorldProcessorImpl processor = SchematicWorldProcessorImpl.getProcessor();
+        IBlock blockStuff = processor.registry()
+            .getBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
+        Material material = block.getType();
+
         if (!isValidCannonBlock(block))
             return null;
 
         World world = cannonBlock.getWorld();
-        var designList = DesignStorage.getInstance().getCannonDesignList();
-        designList = designList.stream().filter(it -> it.isAllowedMaterial(block.getType())).toList();
+
+        var allDesigns = DesignStorage.getInstance().getCannonDesignList();
+        List<CannonDesign> designList = new ArrayList<>();
+        for (CannonDesign it : allDesigns) {
+            if (it.isAllowedMaterial(material)) {
+                designList.add(it);
+            }
+        }
 
         // check all cannon design if this block is part of the design
         for (CannonDesign cannonDesign : designList) {
+            var schemMap = cannonDesign.getSchematicMap();
             // check of all directions
             for (BlockFace cannonDirection : blockFaces) {
                 // for all blocks for the design
-                List<SimpleBlock> designBlockList = cannonDesign.getAllCannonBlocks(cannonDirection);
+                Schematic schem = schemMap.get(cannonDirection);
                 //check for empty entries
-                if (designBlockList.isEmpty()) {
+                if (schem.positions().isEmpty()) {
                     plugin.logSevere("There are empty cannon design schematics in your design folder. Please check it.");
                     return null;
                 }
 
-                for (SimpleBlock designBlock : designBlockList) {
+
+                for (IBlock designBlock : schem) {
                     // compare blocks
-                    if (!designBlock.compareMaterial(blockData)) {
+                    if (!designBlock.key().equals(blockStuff.key())) {
                         continue;
                     }
 
                     // this block is same as in the design, get the offset
-                    Vector offset = designBlock.subtractInverted(cannonBlock).toVector();
+                    Vector offset = new Vector(
+                        cannonBlock.getBlockX() - designBlock.x(),
+                        cannonBlock.getBlockY() - designBlock.y(),
+                        cannonBlock.getBlockZ() - designBlock.z()
+                    );
 
-                    // check all other blocks of the cannon
-                    boolean isCannon = true;
+                    OffsetSchematic offsetSchematic = new OffsetSchematicImpl(
+                        offset.getBlockX(),
+                        offset.getBlockY(),
+                        offset.getBlockZ(),
+                        schem
+                    );
 
-                    for (SimpleBlock checkBlocks : designBlockList) {
-                        if (!checkBlocks.compareMaterial(world, offset)) {
-                            // if the block does not match this is not the
-                            // right one
-                            isCannon = false;
-                            break;
-                        }
-                    }
-
-                    // this is a cannon
-                    if (isCannon) {
-                        return new Cannon(cannonDesign, world.getUID(), offset, cannonDirection, owner);
+                    boolean matches = processor.matches(offsetSchematic, world.getUID());
+                    if (matches) {
+                        return new Cannon(
+                            cannonDesign,
+                            world.getUID(),
+                            offset,
+                            cannonDirection,
+                            owner
+                        );
                     }
                 }
             }
         }
+
         return null;
     }
 

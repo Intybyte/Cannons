@@ -1,6 +1,7 @@
 package at.pavlov.cannons.hooks.movecraft.listener;
 
 import at.pavlov.cannons.cannon.Cannon;
+import at.pavlov.cannons.hooks.movecraft.MovecraftCannonTracker;
 import at.pavlov.cannons.hooks.movecraft.MovecraftUtils;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.events.CraftTranslateEvent;
@@ -21,7 +22,9 @@ public class TranslationListener implements Listener {
         if (v == null)
             return;
 
-        Set<Cannon> cannons = MovecraftUtils.getCannons(e.getCraft());
+        Set<Cannon> cannons = MovecraftCannonTracker.getCannons(e.getCraft().getUUID());
+        if (cannons == null) return; //for sinking ships
+
         if (cannons.isEmpty())
             return;
         for (Cannon c : cannons) {

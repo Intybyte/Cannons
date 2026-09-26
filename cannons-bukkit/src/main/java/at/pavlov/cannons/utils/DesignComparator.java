@@ -2,6 +2,7 @@ package at.pavlov.cannons.utils;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.CannonDesign;
+import me.vaan.schematiclib.base.schematic.Schematic;
 import org.bukkit.block.BlockFace;
 
 import java.util.Comparator;
@@ -23,13 +24,14 @@ public class DesignComparator implements Comparator<CannonDesign>
 	{
 		if (design == null) return 0;
 		//if the design is invalid something goes wrong, message the user
-		if (design.getAllCannonBlocks(BlockFace.NORTH) == null) 
+        Schematic schematic = design.getSchematicMap().get(BlockFace.NORTH);
+		if (schematic == null)
 		{
 			Cannons.logger().log(Level.SEVERE, "invalid cannon design for " + design.getDesignName());
 			return 0;
 		}
 		
-		return design.getAllCannonBlocks(BlockFace.NORTH).size();
+		return schematic.positions().size();
 	}
 
 }
