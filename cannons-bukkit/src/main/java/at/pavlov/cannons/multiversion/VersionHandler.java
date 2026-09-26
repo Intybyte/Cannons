@@ -30,10 +30,6 @@ public final class VersionHandler {
             return true;
         }
 
-        if (version[1] == 20 && version[2] >= 5) {
-            return true;
-        }
-
-        return false;
+        return version[1] == 20 && version[2] >= 5;
     }
 }
