@@ -24,12 +24,4 @@ public final class VersionHandler {
             version[2] = 0;
         }
     }
-
-    public static boolean isGreaterThan1_20_5() {
-        if (version[1] >= 21) {
-            return true;
-        }
-
-        return version[1] == 20 && version[2] >= 5;
-    }
 }

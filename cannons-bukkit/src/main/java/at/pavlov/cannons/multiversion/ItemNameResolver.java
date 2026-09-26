@@ -13,7 +13,7 @@ public class ItemNameResolver {
         ItemMeta meta = item.getItemMeta();
         if (meta.hasDisplayName() && meta.getDisplayName() != null) {
             return meta.getDisplayName();
-        } else if (VersionHandler.isGreaterThan1_20_5() && meta.hasItemName()) {
+        } else if (meta.hasItemName()) {
             return meta.getItemName();
         } else if (!meta.hasDisplayName()) {
             return getFriendlyName(item);
