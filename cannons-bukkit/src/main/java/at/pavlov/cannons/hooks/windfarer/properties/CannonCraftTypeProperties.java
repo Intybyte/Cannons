@@ -12,6 +12,10 @@ import java.util.List;
 
 public class CannonCraftTypeProperties {
 
+    private CannonCraftTypeProperties() {
+        // Prevent initialization
+    }
+
     // Simple types
     public static final PropertyKey<Integer> MIN_CANNON_MASS = PropertyKeyTypes.intPropertyKey(new NamespacedKey(Cannons.getPlugin(), "mass/min"), 0);
     public static final PropertyKey<Integer> MAX_CANNON_MASS = PropertyKeyTypes.intPropertyKey(new NamespacedKey(Cannons.getPlugin(), "mass/max"), 0);
@@ -25,19 +29,19 @@ public class CannonCraftTypeProperties {
                     new NamespacedKey(Cannons.getPlugin(), "cannon_constraints"),
                     typeSafeCraftType -> List.of(),
                     (yamlObject, type) -> {
-                        if (yamlObject instanceof CannonTypeConstraint ctc) {
-                            return List.of(ctc);
-                        } else if (yamlObject instanceof List<?> rawList) {
-                            List<CannonTypeConstraint> result = new ArrayList<>();
-                            for (Object object : rawList) {
-                                if (object instanceof CannonTypeConstraint ctc) {
-                                    result.add(ctc);
+                        return switch(yamlObject) {
+                            case CannonTypeConstraint ctc -> List.of(ctc);
+                            case List<?> rawList -> {
+                                List<CannonTypeConstraint> result = new ArrayList<>();
+                                for (Object object : rawList) {
+                                    if (object instanceof CannonTypeConstraint ctc) {
+                                        result.add(ctc);
+                                    }
                                 }
+                                yield result;
                             }
-                            return result;
-                        } else {
-                            return List.of();
-                        }
+                            default -> List.of();
+                        };
                     },
                     (t) -> t,
                     (list) -> {
