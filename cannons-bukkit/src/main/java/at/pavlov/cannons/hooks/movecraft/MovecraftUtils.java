@@ -24,7 +24,7 @@ public class MovecraftUtils {
     private static final CraftDataTagKey<Set<Cannon>> CRAFT_CANNONS = CraftDataTagRegistry.INSTANCE.registerTagKey(new NamespacedKey(Cannons.getPlugin(), "movecraft_cannons"), CraftCannonFinderHelper::findCannonsAboardCraft);
 
     public static Set<Cannon> getCannons(Craft craft) {
-        // TODO: Might be worth it adding a "lifetime" to the cached value and to re-scan for new cannons every now and then
+        // Note: Might be worth it adding a "lifetime" to the cached value and to re-scan for new cannons every now and then
         return craft.getDataTag(CRAFT_CANNONS);
     }
 

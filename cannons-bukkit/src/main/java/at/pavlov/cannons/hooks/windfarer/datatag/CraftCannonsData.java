@@ -31,8 +31,7 @@ public class CraftCannonsData {
     // Search happens multithreaded, thus the concurrent set
     protected Set<Cannon> cannons = ConcurrentHashMap.newKeySet();
     // Attention: This field is null after validation has finished!
-    // TODO: Perhaps switch to FastUtil if this has a threadsafe version?
-    // TODO: If possible, switch back to a 3d bitmap as that consumes way less memory
+    // Improvement note: Perhaps switch to FastUtil if this has a threadsafe version?
     protected BitmapHitBox cannonBlocks = new BitmapHitBox();
 
     public static @NotNull CraftCannonsData of(Craft craft) {
@@ -48,7 +47,7 @@ public class CraftCannonsData {
 
         this.cannons = CraftCannonFinderHelper.findCannonsAboardCraft(craft, () -> ConcurrentHashMap.newKeySet(), this.cannonBlocks);
 
-        return cannons.size() > 0;
+        return !cannons.isEmpty();
     }
 
     public boolean validateCannons(Consumer<String> setFailMessage, Craft craft) {
