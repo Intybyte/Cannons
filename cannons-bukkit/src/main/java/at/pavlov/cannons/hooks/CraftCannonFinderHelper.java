@@ -28,34 +28,41 @@ public class CraftCannonFinderHelper {
             if (!worldUID.equals(cannon.getWorld())) {
                 continue;
             }
-            // Now check for in HitBox
-            boolean added = false;
-
             List<MovecraftLocation> cannonBlocksTmp = new ArrayList<>(cannon.getCannonDesign().getAllCannonBlocks(cannon).size());
-            for (Location cannonBlock : cannon.getCannonDesign().getAllCannonBlocks(cannon)) {
-                MovecraftLocation movecraftLocation = MathUtils.bukkit2MovecraftLoc(cannonBlock);
-                cannonBlocksTmp.add(movecraftLocation);
 
-                if (added) {
-                    continue;
-                }
-
-                if (!hitBox.inBounds(movecraftLocation)) {
-                    continue;
-                }
-                if (!hitBox.contains(movecraftLocation)) {
-                    continue;
-                }
-
-                added = true;
-            }
-
-            if (added) {
+            if (checkForCannonIntersection(cannon, hitBox, cannonBlocksTmp)) {
                 if (cannonBlocks != null) {
                     cannonBlocks.addAll(cannonBlocksTmp);
                 }
                 result.add(cannon);
             }
+        }
+        return result;
+    }
+
+    /*
+     * Goes over all blocks of the cannon, as soon as at least one block intersects with the hitbox, this returns true
+     * All blocks of the cannon are added to cannonBlockCollection, regardless if they have been added or not
+     * All positions of the cannon are always walked over!
+     */
+    private static boolean checkForCannonIntersection(final Cannon cannon, final MutableHitBox hitBox, List<MovecraftLocation> cannonBlockCollection) {
+        boolean result = false;
+        for (Location cannonBlock : cannon.getCannonDesign().getAllCannonBlocks(cannon)) {
+            MovecraftLocation movecraftLocation = MathUtils.bukkit2MovecraftLoc(cannonBlock);
+            cannonBlockCollection.add(movecraftLocation);
+
+            if (result) {
+                continue;
+            }
+
+            if (!hitBox.inBounds(movecraftLocation)) {
+                continue;
+            }
+            if (!hitBox.contains(movecraftLocation)) {
+                continue;
+            }
+
+            result = true;
         }
         return result;
     }
