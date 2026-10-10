@@ -2,19 +2,15 @@ package at.pavlov.cannons.hooks.movecraft;
 
 import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.cannon.CannonManager;
+import at.pavlov.cannons.hooks.CraftCannonFinderHelper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PilotedCraft;
 import net.countercraft.movecraft.craft.SubCraft;
 import net.countercraft.movecraft.craft.datatag.CraftDataTagKey;
 import net.countercraft.movecraft.craft.datatag.CraftDataTagRegistry;
-import net.countercraft.movecraft.util.MathUtils;
 import net.countercraft.movecraft.util.Pair;
-import net.countercraft.movecraft.util.hitboxes.BitmapHitBox;
-import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,46 +21,7 @@ import static net.countercraft.movecraft.craft.type.TypeData.NUMERIC_PREFIX;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MovecraftUtils {
 
-    private static final CraftDataTagKey<Set<Cannon>> CRAFT_CANNONS = CraftDataTagRegistry.INSTANCE.registerTagKey(new NamespacedKey(Cannons.getPlugin(), "movecraft_cannons"), MovecraftUtils::getCannonsInternally);
-
-    private static Set<Cannon> getCannonsInternally(Craft craft) {
-        final BitmapHitBox hitBox = new BitmapHitBox(craft.getHitBox());
-        final UUID worldUID = craft.getMovecraftWorld().getWorldUUID();
-        final Set<Cannon> result = new HashSet<>();
-        for (Cannon cannon : CannonManager.getCannonList().values()) {
-            // Not even in the same world
-            if (!worldUID.equals(cannon.getWorld())) {
-                continue;
-            }
-            // Now check for in HitBox
-            boolean added = false;
-
-            List<MovecraftLocation> cannonBlocksTmp = new ArrayList<>(cannon.getCannonDesign().getAllCannonBlocks(cannon).size());
-            for (Location cannonBlock : cannon.getCannonDesign().getAllCannonBlocks(cannon)) {
-                MovecraftLocation movecraftLocation = MathUtils.bukkit2MovecraftLoc(cannonBlock);
-                cannonBlocksTmp.add(movecraftLocation);
-
-                if (added) {
-                    continue;
-                }
-
-                if (!hitBox.inBounds(movecraftLocation)) {
-                    continue;
-                }
-                if (!hitBox.contains(movecraftLocation)) {
-                    continue;
-                }
-
-                added = true;
-            }
-
-            if (added) {
-                //cannonBlocks.addAll(cannonBlocksTmp);
-                result.add(cannon);
-            }
-        }
-        return result;
-    }
+    private static final CraftDataTagKey<Set<Cannon>> CRAFT_CANNONS = CraftDataTagRegistry.INSTANCE.registerTagKey(new NamespacedKey(Cannons.getPlugin(), "movecraft_cannons"), CraftCannonFinderHelper::findCannonsAboardCraft);
 
     public static Set<Cannon> getCannons(Craft craft) {
         // TODO: Might be worth it adding a "lifetime" to the cached value and to re-scan for new cannons every now and then

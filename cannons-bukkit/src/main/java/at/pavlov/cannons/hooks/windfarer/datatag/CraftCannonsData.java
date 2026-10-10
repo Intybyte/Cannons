@@ -6,6 +6,7 @@ import at.pavlov.cannons.Enum.CannonRotation;
 import at.pavlov.cannons.cannon.Cannon;
 import at.pavlov.cannons.cannon.CannonDesign;
 import at.pavlov.cannons.cannon.CannonManager;
+import at.pavlov.cannons.hooks.CraftCannonFinderHelper;
 import at.pavlov.cannons.hooks.windfarer.DataTagKeys;
 import at.pavlov.cannons.hooks.windfarer.WindfarerUtils;
 import at.pavlov.cannons.hooks.windfarer.properties.CannonCraftTypeProperties;
@@ -15,13 +16,9 @@ import net.countercraft.movecraft.MovecraftRotation;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.craft.type.TypeSafeCraftType;
-import net.countercraft.movecraft.util.MathUtils;
 import net.countercraft.movecraft.util.hitboxes.BitmapHitBox;
 import net.countercraft.movecraft.util.hitboxes.HitBox;
 import net.countercraft.movecraft.util.hitboxes.MutableHitBox;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,47 +46,7 @@ public class CraftCannonsData {
             return false;
         }
 
-        // Check for cannon, if there is one, add it to ourselves
-        final UUID worldUID = craft.getMovecraftWorld().getWorldUUID();
-        final World bukkitWorld = Bukkit.getWorld(worldUID);
-        // This should never happen but caution is the mother of the porcellain box or sth
-        if (bukkitWorld == null) {
-            return false;
-        }
-
-        final BitmapHitBox hitBox = new BitmapHitBox(craft.getHitBox());
-        for (Cannon cannon : CannonManager.getCannonList().values()) {
-            // Not even in the same world
-            if (!worldUID.equals(cannon.getWorld())) {
-                continue;
-            }
-            // Now check for in HitBox
-            boolean added = false;
-
-            List<MovecraftLocation> cannonBlocksTmp = new ArrayList<>(cannon.getCannonDesign().getAllCannonBlocks(cannon).size());
-            for (Location cannonBlock : cannon.getCannonDesign().getAllCannonBlocks(cannon)) {
-                MovecraftLocation movecraftLocation = MathUtils.bukkit2MovecraftLoc(cannonBlock);
-                cannonBlocksTmp.add(movecraftLocation);
-
-                if (added) {
-                    continue;
-                }
-
-                if (!hitBox.inBounds(movecraftLocation)) {
-                    continue;
-                }
-                if (!hitBox.contains(movecraftLocation)) {
-                    continue;
-                }
-
-                added = true;
-            }
-
-            if (added) {
-                cannonBlocks.addAll(cannonBlocksTmp);
-                cannons.add(cannon);
-            }
-        }
+        this.cannons = CraftCannonFinderHelper.findCannonsAboardCraft(craft, () -> ConcurrentHashMap.newKeySet(), this.cannonBlocks);
 
         return cannons.size() > 0;
     }
