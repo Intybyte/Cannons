@@ -101,16 +101,25 @@ public record CannonTypeConstraint(
     public static @NotNull CannonTypeConstraint deserialize(@NotNull Map<String, Object> yamlData) {
         List<String> cannonTypes = new ArrayList<>();
         Object listRaw = yamlData.getOrDefault("cannonTypes", "");
-        if (listRaw instanceof String rawString) {
-            // Split all the strings in "cannonTypes" apart by ",", then add them all to our cannonTypeList
-            cannonTypes.addAll(Arrays.asList(rawString.split(",")));
-        } else if (listRaw instanceof List rawList) {
-            for (Object object : rawList) {
-                if (object instanceof String stringTmp) {
-                    cannonTypes.add(stringTmp);
+
+        switch(listRaw) {
+            case String rawString -> {
+                // Split all the strings in "cannonTypes" apart by ",", then add them all to our cannonTypeList
+                cannonTypes.addAll(Arrays.asList(rawString.split(",")));
+            }
+            case List<?> rawList -> {
+                for (Object object : rawList) {
+                    if (object instanceof String stringTmp) {
+                        cannonTypes.add(stringTmp);
+                    }
                 }
             }
-        }
+            default -> {
+                // NOt relevant here, ignored
+                // Added anyway so the compiler is happy
+            }
+        };
+
         Pair<Boolean, ? extends Number> min = parseLimit(yamlData.getOrDefault("min", null));
         Pair<Boolean, ? extends Number> max = parseLimit(yamlData.getOrDefault("max", null));
 
