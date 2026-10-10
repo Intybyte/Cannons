@@ -7,10 +7,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @SerializableAs("CannonsRevamped_CannonTypeConstraint")
 public record CannonTypeConstraint(
@@ -85,8 +82,7 @@ public record CannonTypeConstraint(
         if (input == null) {
             return null;
         }
-        if (input instanceof String) {
-            String str = (String) input;
+        if (input instanceof String str) {
             if (str.contains(TypeData.NUMERIC_PREFIX)) {
                 String[] parts = str.split(TypeData.NUMERIC_PREFIX);
                 int val = Integer.parseInt(parts[1]);
@@ -95,8 +91,8 @@ public record CannonTypeConstraint(
             else
                 return new Pair<>(false, Double.valueOf(str));
         }
-        else if (input instanceof Integer) {
-            return new Pair<>(false, (Integer) input);
+        else if (input instanceof Integer intTmp) {
+            return new Pair<>(false, intTmp);
         }
         else
             return new Pair<>(false, (double) input);
@@ -107,9 +103,7 @@ public record CannonTypeConstraint(
         Object listRaw = yamlData.getOrDefault("cannonTypes", "");
         if (listRaw instanceof String rawString) {
             // Split all the strings in "cannonTypes" apart by ",", then add them all to our cannonTypeList
-            for (String subString : rawString.split(",")) {
-                cannonTypes.add(subString);
-            }
+            cannonTypes.addAll(Arrays.asList(rawString.split(",")));
         } else if (listRaw instanceof List rawList) {
             for (Object object : rawList) {
                 if (object instanceof String stringTmp) {
