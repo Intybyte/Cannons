@@ -138,6 +138,7 @@ public final class Cannons extends JavaPlugin {
                 CannonCraftTypeProperties.register();
                 windfarerLoaded = true;
             } catch(Exception ignored) {
+                // Exceptions here can be ignored! We simply check for that class as it is a Windfarer-only class!
             }
         }
         // TTE: Windfarer provides Movecraft, but has different API! If Windfarer is used, do not init Movecraft!
@@ -146,6 +147,7 @@ public final class Cannons extends JavaPlugin {
                 Class.forName("net.countercraft.movecraft.craft.type.property.Property");
                 CannonProperties.register();
             } catch (Exception ignored) {
+                // Exceptions here can be ignored! We simply check for a common class shared by Movecraft and Windfarer!
             }
 
         }
