@@ -42,7 +42,7 @@ public class CraftCannonsData {
     // Attempts to register a cannon at that location, if there is one
     // Warning: This gets called from multiple worker threads!
     public boolean findCannonsAboardCraft(@NotNull Craft craft) {
-        if (!(craft instanceof PlayerCraft playerCraft)) {
+        if (!(craft instanceof PlayerCraft)) {
             return false;
         }
 
