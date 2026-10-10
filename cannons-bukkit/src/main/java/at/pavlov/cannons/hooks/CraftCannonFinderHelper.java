@@ -51,14 +51,7 @@ public class CraftCannonFinderHelper {
             MovecraftLocation movecraftLocation = MathUtils.bukkit2MovecraftLoc(cannonBlock);
             cannonBlockCollection.add(movecraftLocation);
 
-            if (result) {
-                continue;
-            }
-
-            if (!hitBox.inBounds(movecraftLocation)) {
-                continue;
-            }
-            if (!hitBox.contains(movecraftLocation)) {
+            if (result || !hitBox.inBounds(movecraftLocation) || !hitBox.contains(movecraftLocation)) {
                 continue;
             }
 
