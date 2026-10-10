@@ -22,6 +22,30 @@ public record CannonTypeConstraint(
         this(new ArrayList(toCopy.cannonTypes()), toCopy.numericMin, Optional.ofNullable(toCopy.min().get()), toCopy.numericMax, Optional.ofNullable(toCopy.max().get()));
     }
 
+    protected Optional<String> checkMin(double blockPercent, int count) {
+        final double minD = min.get();
+        if (numericMax) {
+            if (count < minD)
+                return Optional.of(String.format("You have too few %s cannon types : %d < %d", allNames(), count, (int) minD));
+        } else {
+            if (blockPercent < minD)
+                return Optional.of(String.format("You have too few %s cannon types : %.2f%% < %.2f%%", allNames(), blockPercent, minD));
+        }
+        return Optional.empty();
+    }
+
+    protected Optional<String> checkMax(double blockPercent, int count) {
+        final double maxD = max.get();
+        if (numericMax) {
+            if (count > maxD)
+                return Optional.of(String.format("You have too many %s cannon types : %d > %d", allNames(), count, (int) maxD));
+        } else {
+            if (blockPercent > maxD)
+                return Optional.of(String.format("You have too many %s cannon types : %.2f%% > %.2f%%", allNames(), blockPercent, maxD));
+        }
+        return Optional.empty();
+    }
+
     /**
      *
      * @return Empty if no error, otherwise return the error
@@ -29,24 +53,16 @@ public record CannonTypeConstraint(
     public Optional<String> callOnDetection(int count, int size) {
         final double blockPercent = 100D * count / size;
         if (min.isPresent()) {
-            final double minD = min.get();
-            if (numericMax) {
-                if (count < minD)
-                    return Optional.of(String.format("You have too few %s cannon types : %d < %d", allNames(), count, (int) minD));
-            } else {
-                if (blockPercent < minD)
-                    return Optional.of(String.format("You have too few %s cannon types : %.2f%% < %.2f%%", allNames(), blockPercent, minD));
+            Optional<String> tempResult = this.checkMin(blockPercent, count);
+            if (tempResult.isPresent()) {
+                return tempResult;
             }
         }
 
         if (max.isPresent()) {
-            final double maxD = max.get();
-            if (numericMax) {
-                if (count > maxD)
-                    return Optional.of(String.format("You have too many %s cannon types : %d > %d", allNames(), count, (int) maxD));
-            } else {
-                if (blockPercent > maxD)
-                    return Optional.of(String.format("You have too many %s cannon types : %.2f%% > %.2f%%", allNames(), blockPercent, maxD));
+            Optional<String> tempResult = this.checkMax(blockPercent, count);
+            if (tempResult.isPresent()) {
+                return tempResult;
             }
         }
 
