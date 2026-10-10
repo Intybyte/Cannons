@@ -47,7 +47,7 @@ public class WindfarerHook extends BukkitHook<Movecraft> {
 
     @Override
     public void onDisable() {
-
+        // Unnecessary, left empty for now. Can be used in the future to un-register event handlers or similar
     }
 
     @Override
