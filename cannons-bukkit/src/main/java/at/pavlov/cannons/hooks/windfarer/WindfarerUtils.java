@@ -13,6 +13,8 @@ import java.util.UUID;
 // Due to Windfarer and Movecraft sharing partly the same classes, some ugly hacks are sadly necessary
 public class WindfarerUtils {
 
+    private WindfarerUtils() {}
+
     private static final MethodHandle m_getCraftProperties;
     private static final MethodHandle m_getPilotUUID;
 

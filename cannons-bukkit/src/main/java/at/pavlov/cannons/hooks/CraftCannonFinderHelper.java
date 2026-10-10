@@ -15,6 +15,10 @@ import java.util.function.Supplier;
 
 public class CraftCannonFinderHelper {
 
+    private CraftCannonFinderHelper() {
+        // Nope!
+    }
+
     public static Set<Cannon> findCannonsAboardCraft(final Craft craft) {
         return findCannonsAboardCraft(craft, HashSet::new, null);
     }
