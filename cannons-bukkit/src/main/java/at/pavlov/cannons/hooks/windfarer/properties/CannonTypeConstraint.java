@@ -29,7 +29,7 @@ public record CannonTypeConstraint(
      *
      * @return Empty if no error, otherwise return the error
      */
-    public Optional<String> detect(int count, int size) {
+    public Optional<String> callOnDetection(int count, int size) {
         final double blockPercent = 100D * count / size;
         if (min.isPresent()) {
             final double minD = min.get();
@@ -66,7 +66,7 @@ public record CannonTypeConstraint(
             count += cannonCountMap.getOrDefault(name, 0);
         }
 
-        return detect(count, craft.getOrigBlockCount());
+        return callOnDetection(count, craft.getOrigBlockCount());
     }
 
     @Override
@@ -78,6 +78,9 @@ public record CannonTypeConstraint(
         );
     }
 
+    // Copied over code from Windfarer and Movecraft
+    // Tries to parse a given input of the format N1234 or 123.456
+    // If the "numeric" format is detected, Left will be true, otherwise false
     static Pair<Boolean, ? extends Number> parseLimit(@NotNull Object input) {
         if (input == null) {
             return null;
@@ -100,16 +103,17 @@ public record CannonTypeConstraint(
     }
 
     public static @NotNull CannonTypeConstraint deserialize(@NotNull Map<String, Object> yamlData) {
-        List<String> typeList = new ArrayList<>();
+        List<String> cannonTypes = new ArrayList<>();
         Object listRaw = yamlData.getOrDefault("cannonTypes", "");
         if (listRaw instanceof String rawString) {
+            // Split all the strings in "cannonTypes" apart by ",", then add them all to our cannonTypeList
             for (String subString : rawString.split(",")) {
-                typeList.add(subString);
+                cannonTypes.add(subString);
             }
         } else if (listRaw instanceof List rawList) {
             for (Object object : rawList) {
                 if (object instanceof String stringTmp) {
-                    typeList.add(stringTmp);
+                    cannonTypes.add(stringTmp);
                 }
             }
         }
@@ -117,10 +121,10 @@ public record CannonTypeConstraint(
         Pair<Boolean, ? extends Number> max = parseLimit(yamlData.getOrDefault("max", null));
 
         return new CannonTypeConstraint(
-            typeList,
-            min != null ? min.getLeft() : false,
+            cannonTypes,
+            min != null ? min.getLeft() : false, // If present, use numeric min, otherwise dont
             Optional.ofNullable(min != null ? min.getRight().doubleValue() : null),
-            max != null ? max.getLeft() : false,
+            max != null ? max.getLeft() : false, // If present, use numeric max, otherwise dont
             Optional.ofNullable(max != null ? max.getRight().doubleValue() : null)
         );
     }
