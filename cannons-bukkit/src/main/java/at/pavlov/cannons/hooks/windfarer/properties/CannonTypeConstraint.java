@@ -98,20 +98,19 @@ public record CannonTypeConstraint(
         if (input == null) {
             return null;
         }
-        if (input instanceof String str) {
-            if (str.contains(TypeData.NUMERIC_PREFIX)) {
-                String[] parts = str.split(TypeData.NUMERIC_PREFIX);
-                int val = Integer.parseInt(parts[1]);
-                return new Pair<>(true, val);
+        return switch (input) {
+            case String str -> {
+                if (str.contains(TypeData.NUMERIC_PREFIX)) {
+                    String[] parts = str.split(TypeData.NUMERIC_PREFIX);
+                    int val = Integer.parseInt(parts[1]);
+                    yield new Pair<>(true, val);
+                }
+                else
+                    yield new Pair<>(false, Double.valueOf(str));
             }
-            else
-                return new Pair<>(false, Double.valueOf(str));
-        }
-        else if (input instanceof Integer intTmp) {
-            return new Pair<>(false, intTmp);
-        }
-        else
-            return new Pair<>(false, (double) input);
+            case Integer intTmp -> new Pair<>(false, intTmp);
+            default -> new Pair<>(false, (double) input);
+        };
     }
 
     public static @NotNull CannonTypeConstraint deserialize(@NotNull Map<String, Object> yamlData) {
@@ -119,10 +118,9 @@ public record CannonTypeConstraint(
         Object listRaw = yamlData.getOrDefault("cannonTypes", "");
 
         switch(listRaw) {
-            case String rawString -> {
+            case String rawString ->
                 // Split all the strings in "cannonTypes" apart by ",", then add them all to our cannonTypeList
                 cannonTypes.addAll(Arrays.asList(rawString.split(",")));
-            }
             case List<?> rawList -> {
                 for (Object object : rawList) {
                     if (object instanceof String stringTmp) {
@@ -134,7 +132,7 @@ public record CannonTypeConstraint(
                 // NOt relevant here, ignored
                 // Added anyway so the compiler is happy
             }
-        };
+        }
 
         Pair<Boolean, ? extends Number> min = parseLimit(yamlData.getOrDefault("min", null));
         Pair<Boolean, ? extends Number> max = parseLimit(yamlData.getOrDefault("max", null));
