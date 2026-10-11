@@ -1,34 +1,31 @@
 package at.pavlov.cannons.hooks.movecraft;
 
+import at.pavlov.cannons.Cannons;
 import at.pavlov.cannons.cannon.Cannon;
-import at.pavlov.cannons.cannon.CannonManager;
+import at.pavlov.cannons.hooks.CraftCannonFinderHelper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PilotedCraft;
 import net.countercraft.movecraft.craft.SubCraft;
+import net.countercraft.movecraft.craft.datatag.CraftDataTagKey;
+import net.countercraft.movecraft.craft.datatag.CraftDataTagRegistry;
 import net.countercraft.movecraft.util.Pair;
-import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static net.countercraft.movecraft.craft.type.TypeData.NUMERIC_PREFIX;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MovecraftUtils {
 
-    public static Set<Cannon> getCannons(Craft craft) {
-        List<Location> shipLocations = new ArrayList<>();
-        for (MovecraftLocation loc : craft.getHitBox()) {
-            shipLocations.add(loc.toBukkit(craft.getWorld()));
-        }
+    private static final CraftDataTagKey<Set<Cannon>> CRAFT_CANNONS = CraftDataTagRegistry.INSTANCE.registerTagKey(new NamespacedKey(Cannons.getPlugin(), "movecraft_cannons"), CraftCannonFinderHelper::findCannonsAboardCraft);
 
-        return CannonManager.getCannonsByLocations(shipLocations);
+    public static Set<Cannon> getCannons(Craft craft) {
+        // Note: Might be worth it adding a "lifetime" to the cached value and to re-scan for new cannons every now and then
+        return craft.getDataTag(CRAFT_CANNONS);
     }
 
     /**

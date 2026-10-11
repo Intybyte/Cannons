@@ -39,8 +39,11 @@ import java.util.List;
     //movecraft
     private boolean movecraftEnabled;
     private boolean movecraftCannonEnabled;
+
+    //windfarer
+    private boolean windfarerEnabled;
     //endregion
-	
+
 	//build limits
     private boolean buildLimitEnabled;
     private int buildLimitA;
@@ -132,6 +135,7 @@ import java.util.List;
         setEconomyEnabled(config.getBoolean("hooks.vault.enabled", true));
         setMovecraftEnabled(config.getBoolean("hooks.movecraft.enabled", true));
         setMovecraftCannonEnabled(config.getBoolean("hooks.movecraftCombat.enabled", true));
+        setWindfarerEnabled(config.getBoolean("hooks.windfarer.enabled", true));
 
         setRelayExplosionEvent(config.getBoolean("general.relayExplosionEvent", false));
         setClaimEdgeLength(config.getInt("general.claimEdgeLength", 60));

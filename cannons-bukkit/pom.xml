@@ -65,6 +65,10 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>Modrinth</id>
+            <url>https://api.modrinth.com/maven</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -146,6 +150,20 @@
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.11.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Windfarer Modrinth Release -->
+        <dependency>
+            <groupId>maven.modrinth</groupId>
+            <artifactId>windfarer-plugin</artifactId>
+            <version>8.13.0-TTE</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- RoaringBitmap for merging cannons to crafts -->
+        <dependency>
+            <groupId>org.roaringbitmap</groupId>
+            <artifactId>RoaringBitmap</artifactId>
+            <version>1.0.6</version>
             <scope>provided</scope>
         </dependency>
 

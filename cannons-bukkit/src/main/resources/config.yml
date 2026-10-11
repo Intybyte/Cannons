@@ -19,6 +19,8 @@ hooks:
     enabled: true
   movecraftCombat:
     enabled: true
+  windfarer:
+    enabled: true
 
 
 cannonLimits:

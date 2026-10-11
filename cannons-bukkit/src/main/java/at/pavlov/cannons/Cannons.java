@@ -19,6 +19,8 @@ import at.pavlov.cannons.hooks.movecraft.MovecraftHook;
 import at.pavlov.cannons.hooks.movecraft.type.properties.CannonProperties;
 import at.pavlov.cannons.hooks.movecraftcombat.MovecraftCombatHook;
 import at.pavlov.cannons.hooks.papi.PlaceholderAPIHook;
+import at.pavlov.cannons.hooks.windfarer.WindfarerHook;
+import at.pavlov.cannons.hooks.windfarer.properties.CannonCraftTypeProperties;
 import at.pavlov.cannons.listener.BlockListener;
 import at.pavlov.cannons.listener.EntityListener;
 import at.pavlov.cannons.listener.PlayerListener;
@@ -119,19 +121,35 @@ public final class Cannons extends JavaPlugin {
 
         initUpdater();
 
-        if (config.isMovecraftEnabled()) {
-            try {
-                Class.forName("net.countercraft.movecraft.craft.type.property.Property");
-                CannonProperties.register();
-            } catch (Exception ignored) {
-            }
-
-        }
+        loadMovecraftAndWindfarer();
 
         try {
             Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
             folia = true;
         } catch (Exception ignored) {
+        }
+    }
+
+    private void loadMovecraftAndWindfarer() {
+        boolean windfarerLoaded = false;
+        if (config.isWindfarerEnabled()) {
+            try {
+                Class.forName("net.countercraft.movecraft.craft.type.CraftProperties");
+                CannonCraftTypeProperties.register();
+                windfarerLoaded = true;
+            } catch(Exception ignored) {
+                // Exceptions here can be ignored! We simply check for that class as it is a Windfarer-only class!
+            }
+        }
+        // TTE: Windfarer provides Movecraft, but has different API! If Windfarer is used, do not init Movecraft!
+        if (config.isMovecraftEnabled() && !windfarerLoaded) {
+            try {
+                Class.forName("net.countercraft.movecraft.craft.type.property.Property");
+                CannonProperties.register();
+            } catch (Exception ignored) {
+                // Exceptions here can be ignored! We simply check for a common class shared by Movecraft and Windfarer!
+            }
+
         }
     }
 
@@ -275,6 +293,10 @@ public final class Cannons extends JavaPlugin {
         logDebug("Loading MovecraftCombatHook");
         MovecraftCombatHook movecraftCombatHook = new MovecraftCombatHook(this);
         hookManager.registerHook(movecraftCombatHook);
+
+        logDebug("Loading WindfarerHook");
+        WindfarerHook windfarerHook = new WindfarerHook(this);
+        hookManager.registerHook(windfarerHook);
 
         logDebug("Loading PlaceholderAPIHook");
         PlaceholderAPIHook placeholderAPIHook = new PlaceholderAPIHook(this);
